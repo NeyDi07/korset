@@ -124,7 +124,7 @@ function SectionBlock({ title, subtitle, children }) {
         <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-sub)', textTransform: 'uppercase', letterSpacing: '0.8px' }}>
           {title}
         </div>
-        {subtitle && <div style={{ fontSize: 12, color: 'var(--text-sub)', marginTop: 3, lineHeight: 1.4 }}>{subtitle}</div>}
+        {subtitle && <div style={{ fontSize: 12, color: 'rgba(232,232,255,0.72)', marginTop: 3, lineHeight: 1.4 }}>{subtitle}</div>}
       </div>
       {children}
     </div>
@@ -134,8 +134,10 @@ function DietChip({ children, active, onClick }) {
   return (
     <button onClick={onClick} style={{
       display: 'flex', alignItems: 'center', gap: 6,
-      padding: '9px 14px', borderRadius: 12, fontSize: 13, fontWeight: 500,
-      border: '1.5px solid', cursor: 'pointer', whiteSpace: 'nowrap',
+      width: '100%', justifyContent: 'center',
+      padding: '9px 12px', minHeight: 44,
+      borderRadius: 12, fontSize: 13, fontWeight: 500,
+      border: '1.5px solid', cursor: 'pointer', whiteSpace: 'normal', textAlign: 'center',
       transition: 'all 0.15s', fontFamily: 'var(--font-body)',
       borderColor: active ? 'var(--primary-mid)' : 'var(--border)',
       background: active ? 'var(--primary-dim)' : 'var(--card)',
@@ -265,7 +267,12 @@ export default function ProfileScreen() {
 
       {/* ── Diet goals ── */}
       <SectionBlock title="Диета и предпочтения" subtitle="Выберите всё что подходит">
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+          gap: 8,
+          alignItems: 'stretch',
+        }}>
           {DIET_GOALS.map(d => (
             <DietChip key={d.id} active={profile.dietGoals.includes(d.id)} onClick={() => toggleDiet(d.id)}>
               <span style={{ width: 18, height: 18, display: 'inline-flex', color: profile.dietGoals.includes(d.id) ? 'var(--primary-bright)' : 'var(--text-dim)' }}>
