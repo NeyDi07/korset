@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Outfit:wght@300;400;500;600&display=swap');
 
 :root {
   --bg: #07070F;
@@ -22,7 +22,7 @@
   --text: #E8E8FF;
   --text-sub: #C9C9E8;
   --text-dim: #8E8EB6;
-  --font-display: 'Syne', sans-serif;
+  --font-display: 'Space Grotesk', sans-serif;
   --font-body: 'Outfit', sans-serif;
   --radius-sm: 10px;
   --radius: 14px;
@@ -53,6 +53,7 @@ body {
   line-height: 1.5;
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
+  font-variant-numeric: lining-nums tabular-nums;
 }
 
 #root {
@@ -980,10 +981,9 @@ body {
   background: rgba(255,255,255,0.02);
   border-radius: 16px;
   padding: 10px 12px;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 10px;
-  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
 }
 
 .nutri-label {
@@ -991,28 +991,30 @@ body {
   color: var(--text-sub);
 }
 
-.nutri-stack {
-  display: grid;
-  justify-items: end;
+.nutri-value {
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  color: var(--text);
+  font-size: 15px;
   line-height: 1;
-  font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum" 1, "lnum" 1;
+  font-variant-numeric: tabular-nums lining-nums;
 }
 
-.nutri-stack .num {
-  font-family: var(--font-body, system-ui);
-  font-weight: 900;
-  font-size: 22px;
-  line-height: 1;
+.nutri-num {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text);
 }
 
-.nutri-stack .unit {
-  margin-top: 4px;
-  font-family: var(--font-body, system-ui);
+.nutri-unit {
+  font-family: var(--font-body);
   font-weight: 700;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-sub);
-  opacity: 0.9;
 }
 
 .more-btn {
