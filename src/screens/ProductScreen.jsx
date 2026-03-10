@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import products from '../data/products.json'
 import { checkProductFit, formatPrice, CATEGORY_LABELS } from '../utils/fitCheck.js'
@@ -7,6 +8,7 @@ export default function ProductScreen() {
   const { id } = useParams()
   const navigate = useNavigate()
   const profile = loadProfile()
+  const [detailsOpen, setDetailsOpen] = useState(false)
 
   const product = products.find((p) => p.id === id)
 
@@ -27,6 +29,8 @@ export default function ProductScreen() {
   const { fits, reasons } = checkProductFit(product, profile)
 
   const specEntries = Object.entries(product.specs || {}).slice(0, 4)
+  const nutrition = product.nutritionPer100
+  const hasDetails = Boolean(product.manufacturer || product.ingredients || (nutrition && (nutrition.kcal || nutrition.protein || nutrition.fat || nutrition.carbs)) || (product.images && product.images.length))
 
   return (
     <div className="screen">
@@ -112,6 +116,27 @@ export default function ProductScreen() {
                 {product.qualityScore}/100
               </span>
             </div>
+
+            {hasDetails && (
+              <button
+                onClick={() => setDetailsOpen(v => !v)}
+                style={{
+                  marginLeft: 'auto',
+                  background: detailsOpen ? 'rgba(124, 58, 237, 0.16)' : 'transparent',
+                  border: '1px solid rgba(167, 139, 250, 0.28)',
+                  color: 'var(--primary-bright)',
+                  borderRadius: 16,
+                  padding: '6px 10px',
+                  fontSize: 12,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  fontFamily: 'var(--font-body)',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                {detailsOpen ? 'Скрыть' : 'Подробнее'}
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -172,6 +197,97 @@ export default function ProductScreen() {
                 <span className="info-value">{String(val)}</span>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* Details */}
+      {detailsOpen && hasDetails && (
+        <div className="section" style={{ paddingTop: 0 }}>
+          <div className="card">
+            <div className="section-title" style={{ marginBottom: 10 }}>Подробнее</div>
+
+            {product.images?.[0] ? (
+              <div style={{
+                width: '100%',
+                borderRadius: 16,
+                overflow: 'hidden',
+                border: '1px solid var(--border)',
+                background: 'rgba(255,255,255,0.03)',
+                marginBottom: 12,
+              }}>
+                <img
+                  src={product.images[0]}
+                  alt={product.name}
+                  style={{ width: '100%', height: 200, objectFit: 'contain', display: 'block' }}
+                  loading="lazy"
+                />
+              </div>
+            ) : (
+              <div style={{
+                width: '100%',
+                height: 140,
+                borderRadius: 16,
+                border: '1px dashed rgba(255,255,255,0.12)',
+                background: 'rgba(255,255,255,0.02)',
+                display: 'grid',
+                placeItems: 'center',
+                color: 'var(--text-dim)',
+                fontSize: 12,
+                marginBottom: 12,
+              }}>
+                Фото можно добавить позже
+              </div>
+            )}
+
+            {nutrition && (
+              <div style={{ marginBottom: 12 }}>
+                <div style={{ fontSize: 12, color: 'var(--text-dim)', marginBottom: 8 }}>
+                  Пищевая ценность ({product.nutritionBase || 'на 100 г'})
+                  {product.demoData ? ' · демо' : ''}
+                </div>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+                  gap: 8,
+                }}>
+                  {[['Ккал', nutrition.kcal], ['Белки', nutrition.protein], ['Жиры', nutrition.fat], ['Углеводы', nutrition.carbs]].map(([label, val]) => (
+                    <div key={label} style={{
+                      border: '1px solid var(--border)',
+                      background: 'rgba(255,255,255,0.02)',
+                      borderRadius: 14,
+                      padding: '10px 12px',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}>
+                      <span style={{ fontSize: 12, color: 'var(--text-sub)' }}>{label}</span>
+                      <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, color: 'var(--text)' }}>
+                        {val ?? '—'}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {product.ingredients && (
+              <div style={{ marginBottom: 12 }}>
+                <div style={{ fontSize: 12, color: 'var(--text-dim)', marginBottom: 6 }}>Состав</div>
+                <div style={{ fontSize: 13, color: 'var(--text-sub)', lineHeight: 1.55 }}>
+                  {product.ingredients}
+                </div>
+              </div>
+            )}
+
+            {product.manufacturer && (
+              <div style={{ marginBottom: 0 }}>
+                <div style={{ fontSize: 12, color: 'var(--text-dim)', marginBottom: 6 }}>Производитель</div>
+                <div style={{ fontSize: 13, color: 'var(--text-sub)' }}>
+                  {product.manufacturer}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
