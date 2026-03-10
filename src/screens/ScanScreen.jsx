@@ -4,114 +4,78 @@ import products from '../data/products.json'
 import { formatPrice, CATEGORY_LABELS, checkProductFit } from '../utils/fitCheck.js'
 import { loadProfile } from '../utils/profile.js'
 
-// ─── Scanner Component ────────────────────────────────────────────────────────
+// ─── Scanner ──────────────────────────────────────────────────────────────────
 function BarcodeScanner({ onDetected, onClose }) {
-  const videoRef = useRef(null)
-  const streamRef = useRef(null)
-  const detectedRef = useRef(false)
-  const [status, setStatus] = useState('Запрашиваю доступ к камере...')
   const [error, setError] = useState(null)
   const [ready, setReady] = useState(false)
+  const scannerRef = useRef(null)
+  const detectedRef = useRef(false)
+  const ELEMENT_ID = 'html5qr-scanner'
 
   useEffect(() => {
-    let stopped = false
-    let animId = null
+    let scanner = null
 
     async function start() {
-      // 1. Get camera stream
-      let stream
       try {
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } },
-          audio: false,
-        })
-      } catch (e) {
-        if (!stopped) setError(
-          e.name === 'NotAllowedError'
-            ? 'Доступ к камере отклонён.\nОткройте настройки браузера и разрешите доступ к камере.'
-            : `Не удалось открыть камеру: ${e.message}`
-        )
-        return
-      }
-      if (stopped) { stream.getTracks().forEach(t => t.stop()); return }
+        // Dynamic import — avoids SSR issues and ensures DOM is ready
+        const { Html5Qrcode } = await import('html5-qrcode')
 
-      streamRef.current = stream
-      videoRef.current.srcObject = stream
-      await videoRef.current.play()
+        scanner = new Html5Qrcode(ELEMENT_ID, { verbose: false })
+        scannerRef.current = scanner
 
-      if (stopped) return
-      setStatus('Наводите на штрихкод')
-      setReady(true)
-
-      // 2. Load ZXing from CDN (no npm conflicts)
-      if (!window.ZXingBrowser) {
-        await new Promise((res, rej) => {
-          // use the UMD build from jsdelivr - very reliable
-          const s = document.createElement('script')
-          s.src = 'https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.1/umd/index.min.js'
-          s.onload = res
-          s.onerror = () => {
-            // fallback to unpkg
-            const s2 = document.createElement('script')
-            s2.src = 'https://unpkg.com/@zxing/browser@0.0.9/umd/index.min.js'
-            s2.onload = res
-            s2.onerror = rej
-            document.head.appendChild(s2)
-          }
-          document.head.appendChild(s)
-        })
-      }
-      if (stopped) return
-
-      // 3. Scan loop using canvas snapshot
-      const ZXing = window.ZXingBrowser || window.ZXing
-      let reader
-      try {
-        reader = new ZXing.BrowserMultiFormatReader()
-      } catch {
-        // try alternate export name
-        const lib = window.ZXingBrowser || window.ZXing
-        const keys = Object.keys(lib || {})
-        const ReaderClass = lib[keys.find(k => k.includes('MultiFormat') || k.includes('Reader'))]
-        if (!ReaderClass) { setError('Не удалось инициализировать сканер'); return }
-        reader = new ReaderClass()
-      }
-
-      const canvas = document.createElement('canvas')
-      const ctx = canvas.getContext('2d')
-
-      const tick = async () => {
-        if (stopped || detectedRef.current) return
-        const video = videoRef.current
-        if (video && video.readyState >= 2) {
-          try {
-            canvas.width = video.videoWidth
-            canvas.height = video.videoHeight
-            ctx.drawImage(video, 0, 0)
-            const imgData = canvas.toDataURL('image/jpeg', 0.8)
-            const img = new Image()
-            img.src = imgData
-            await img.decode()
-            const result = await reader.decodeFromImageElement(img)
-            if (result && !detectedRef.current) {
-              detectedRef.current = true
-              setStatus('✓ Штрихкод считан!')
-              onDetected(result.getText())
-              return
-            }
-          } catch { /* no barcode in frame - normal */ }
+        // Get cameras list first to show permission dialog properly
+        const cameras = await Html5Qrcode.getCameras()
+        if (!cameras || cameras.length === 0) {
+          setError('Камера не обнаружена на устройстве.')
+          return
         }
-        animId = setTimeout(tick, 300) // check 3x per second
+
+        // Prefer back camera, fallback to last (usually back on mobile)
+        const cam =
+          cameras.find(c => /back|rear|environment/i.test(c.label)) ||
+          cameras[cameras.length - 1]
+
+        await scanner.start(
+          cam.id,
+          {
+            fps: 15,
+            qrbox: (w, h) => {
+              const size = Math.min(w, h) * 0.6
+              return { width: Math.round(size * 1.8), height: Math.round(size * 0.8) }
+            },
+            aspectRatio: 1.7,
+            disableFlip: false,
+          },
+          (decodedText) => {
+            if (detectedRef.current) return
+            detectedRef.current = true
+            // small vibration if supported
+            try { navigator.vibrate?.(80) } catch {}
+            onDetected(decodedText)
+          },
+          () => {} // per-frame failure is normal - ignore
+        )
+
+        setReady(true)
+      } catch (e) {
+        const msg = String(e.message || e)
+        if (/permission|not allowed|denied/i.test(msg)) {
+          setError('Доступ к камере отклонён.\nРазрешите доступ в настройках браузера и перезагрузите страницу.')
+        } else if (/not found|no camera/i.test(msg)) {
+          setError('Камера не найдена на устройстве.')
+        } else {
+          setError(`Ошибка камеры:\n${msg}`)
+        }
       }
-      tick()
     }
 
     start()
 
     return () => {
-      stopped = true
-      clearTimeout(animId)
-      streamRef.current?.getTracks().forEach(t => t.stop())
+      if (scannerRef.current) {
+        scannerRef.current.stop().catch(() => {})
+        scannerRef.current.clear()
+      }
     }
   }, [])
 
@@ -120,43 +84,35 @@ function BarcodeScanner({ onDetected, onClose }) {
       position: 'fixed', inset: 0, zIndex: 500,
       background: '#000', display: 'flex', flexDirection: 'column',
     }}>
-      <div style={{ flex: 1, position: 'relative', overflow: 'hidden' }}>
-        <video
-          ref={videoRef}
-          muted playsInline
-          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+      {/* Scanner mounts here — html5-qrcode injects video into this div */}
+      <div style={{ flex: 1, position: 'relative', overflow: 'hidden', background: '#000' }}>
+        <div
+          id={ELEMENT_ID}
+          style={{ width: '100%', height: '100%' }}
         />
 
-        {!error && ready && (
-          <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
-            <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.4)' }} />
-            <div style={{
-              position: 'absolute', inset: 0,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>
+        {/* Purple corner markers overlay */}
+        {ready && !error && (
+          <div style={{
+            position: 'absolute', inset: 0, pointerEvents: 'none',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <div style={{ position: 'relative', width: 260, height: 130 }}>
+              {[
+                { top: -3, left: -3,   borderTop: '3px solid #A78BFA', borderLeft: '3px solid #A78BFA',  borderRadius: '4px 0 0 0' },
+                { top: -3, right: -3,  borderTop: '3px solid #A78BFA', borderRight: '3px solid #A78BFA', borderRadius: '0 4px 0 0' },
+                { bottom: -3, left: -3,  borderBottom: '3px solid #A78BFA', borderLeft: '3px solid #A78BFA',  borderRadius: '0 0 0 4px' },
+                { bottom: -3, right: -3, borderBottom: '3px solid #A78BFA', borderRight: '3px solid #A78BFA', borderRadius: '0 0 4px 0' },
+              ].map((s, i) => (
+                <div key={i} style={{ position: 'absolute', width: 24, height: 24, ...s }} />
+              ))}
+              {/* scan line */}
               <div style={{
-                position: 'relative', zIndex: 2,
-                width: 280, height: 160,
-                borderRadius: 12,
-                boxShadow: '0 0 0 9999px rgba(0,0,0,0.4)',
-              }}>
-                {/* Corners */}
-                {[
-                  { top: -3, left: -3,  borderTop: '3px solid #A78BFA', borderLeft: '3px solid #A78BFA',  borderRadius: '4px 0 0 0' },
-                  { top: -3, right: -3, borderTop: '3px solid #A78BFA', borderRight: '3px solid #A78BFA', borderRadius: '0 4px 0 0' },
-                  { bottom: -3, left: -3,  borderBottom: '3px solid #A78BFA', borderLeft: '3px solid #A78BFA',  borderRadius: '0 0 0 4px' },
-                  { bottom: -3, right: -3, borderBottom: '3px solid #A78BFA', borderRight: '3px solid #A78BFA', borderRadius: '0 0 4px 0' },
-                ].map((s, i) => (
-                  <div key={i} style={{ position: 'absolute', width: 26, height: 26, ...s }} />
-                ))}
-                {/* Scan line */}
-                <div style={{
-                  position: 'absolute', left: 4, right: 4, height: 2,
-                  background: 'linear-gradient(90deg, transparent, #A78BFA 30%, #7C3AED 70%, transparent)',
-                  animation: 'scanLine 2s ease-in-out infinite',
-                  borderRadius: 2,
-                }} />
-              </div>
+                position: 'absolute', left: 4, right: 4, height: 2,
+                background: 'linear-gradient(90deg,transparent,#A78BFA 30%,#7C3AED 70%,transparent)',
+                animation: 'scanLine 2s ease-in-out infinite',
+                borderRadius: 2,
+              }} />
             </div>
           </div>
         )}
@@ -164,48 +120,62 @@ function BarcodeScanner({ onDetected, onClose }) {
         {/* Error */}
         {error && (
           <div style={{
-            position: 'absolute', inset: 0, background: 'rgba(7,7,15,0.96)',
-            display: 'flex', flexDirection: 'column',
-            alignItems: 'center', justifyContent: 'center',
-            padding: '32px 24px', gap: 16, textAlign: 'center',
+            position: 'absolute', inset: 0, background: 'rgba(7,7,15,0.97)',
+            display: 'flex', flexDirection: 'column', alignItems: 'center',
+            justifyContent: 'center', padding: '32px 28px', gap: 18, textAlign: 'center',
           }}>
-            <div style={{ fontSize: 52 }}>📷</div>
-            <p style={{ color: '#F87171', fontSize: 15, lineHeight: 1.7, whiteSpace: 'pre-line' }}>{error}</p>
+            <div style={{ fontSize: 56 }}>📷</div>
+            <p style={{ color: '#F87171', fontSize: 15, lineHeight: 1.8, whiteSpace: 'pre-line' }}>{error}</p>
             <button onClick={onClose} style={{
-              padding: '13px 32px', borderRadius: 14,
-              background: '#7C3AED', border: 'none',
-              color: 'white', fontSize: 15, fontWeight: 600, cursor: 'pointer',
+              padding: '13px 36px', borderRadius: 14, background: '#7C3AED',
+              border: 'none', color: '#fff', fontSize: 15, fontWeight: 600, cursor: 'pointer',
             }}>Закрыть</button>
           </div>
         )}
 
-        {/* Close button */}
+        {/* Close btn */}
         {!error && (
           <button onClick={onClose} style={{
-            position: 'absolute', top: 52, right: 16, zIndex: 10,
+            position: 'absolute', top: 52, right: 16, zIndex: 20,
             width: 44, height: 44, borderRadius: '50%',
-            background: 'rgba(0,0,0,0.65)', border: '1.5px solid rgba(255,255,255,0.25)',
-            color: 'white', fontSize: 22, cursor: 'pointer',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            background: 'rgba(0,0,0,0.7)', border: '1.5px solid rgba(255,255,255,0.25)',
+            color: '#fff', fontSize: 22, cursor: 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1,
           }}>×</button>
         )}
       </div>
 
+      {/* Status bar */}
       {!error && (
         <div style={{
-          padding: '20px 24px 40px', background: '#09090F',
+          padding: '18px 24px 40px', background: '#09090F',
           borderTop: '1px solid rgba(139,92,246,0.2)', textAlign: 'center',
         }}>
-          <p style={{ color: ready ? '#C4B5FD' : '#9898B8', fontSize: 15, fontWeight: 500 }}>{status}</p>
-          <p style={{ color: '#58587A', fontSize: 12, marginTop: 6 }}>EAN-8 · EAN-13 · QR-код · Code-128</p>
+          <p style={{ color: ready ? '#C4B5FD' : '#9898B8', fontSize: 15, fontWeight: 500 }}>
+            {ready ? 'Наводите на штрихкод товара' : 'Запуск камеры...'}
+          </p>
+          <p style={{ color: '#58587A', fontSize: 12, marginTop: 6 }}>
+            EAN-8 · EAN-13 · QR · Code-128
+          </p>
         </div>
       )}
 
+      {/* Override html5-qrcode default styles */}
       <style>{`
+        #${ELEMENT_ID} video {
+          width: 100% !important;
+          height: 100% !important;
+          object-fit: cover !important;
+          position: absolute !important;
+          top: 0 !important; left: 0 !important;
+        }
+        #${ELEMENT_ID} img { display: none !important; }
+        #${ELEMENT_ID} > div:not([id]) { display: none !important; }
+        #${ELEMENT_ID} canvas { display: none !important; }
         @keyframes scanLine {
-          0%   { top: 8%; }
-          50%  { top: 86%; }
-          100% { top: 8%; }
+          0%   { top: 6%; }
+          50%  { top: 88%; }
+          100% { top: 6%; }
         }
       `}</style>
     </div>
@@ -225,12 +195,10 @@ export default function ScanScreen() {
 
   const handleDetected = (ean) => {
     setScannerOpen(false)
-    // Check our local DB first
     const local = products.find(p => p.ean === ean)
     if (local) {
       navigate(`/product/${local.id}`)
     } else {
-      // Not in DB → go to external product screen with EAN
       navigate(`/product/ext/${ean}`)
     }
   }
