@@ -12,8 +12,16 @@ function getPrimaryImage(product) {
 }
 
 function CategoryIcon({ category }) {
-  // Simple mono icons: no emoji "stickers".
-  const common = { width: 20, height: 20, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round' }
+  const common = {
+    width: 20,
+    height: 20,
+    viewBox: '0 0 24 24',
+    fill: 'none',
+    stroke: 'currentColor',
+    strokeWidth: 1.8,
+    strokeLinecap: 'round',
+    strokeLinejoin: 'round',
+  }
   if (category === 'electronics') {
     return (
       <svg {...common}>
@@ -33,7 +41,6 @@ function CategoryIcon({ category }) {
       </svg>
     )
   }
-  // grocery
   return (
     <svg {...common}>
       <path d="M6 8h12l-1 12H7L6 8Z" />
@@ -75,8 +82,8 @@ export default function CatalogScreen() {
       })
     }
 
-    if (sort === 'cheap') arr.sort((a, b) => a.priceKzt - b.priceKzt)
-    if (sort === 'expensive') arr.sort((a, b) => b.priceKzt - a.priceKzt)
+    if (sort === 'cheap') arr.sort((a, b) => (a.priceKzt || 0) - (b.priceKzt || 0))
+    if (sort === 'expensive') arr.sort((a, b) => (b.priceKzt || 0) - (a.priceKzt || 0))
     if (sort === 'quality') arr.sort((a, b) => (b.qualityScore || 0) - (a.qualityScore || 0))
 
     return arr
@@ -91,7 +98,7 @@ export default function CatalogScreen() {
           <div className="screen-title">Товары</div>
         </div>
         <div className="screen-subtitle" style={{ textAlign: 'center' }}>
-          Поиск, фильтры и сортировка. Никаких лишних вкладок.
+          Поиск, фильтры и сортировка
         </div>
       </div>
 
@@ -124,11 +131,7 @@ export default function CatalogScreen() {
 
         <div style={{ display: 'flex', gap: 8, marginTop: 12, overflowX: 'auto', paddingBottom: 4 }}>
           {CATEGORY_FILTERS.map((c) => (
-            <button
-              key={c.id}
-              className={`chip ${cat === c.id ? 'active' : ''}`}
-              onClick={() => setCat(c.id)}
-            >
+            <button key={c.id} className={`chip ${cat === c.id ? 'active' : ''}`} onClick={() => setCat(c.id)}>
               {c.label}
             </button>
           ))}
@@ -136,44 +139,51 @@ export default function CatalogScreen() {
 
         <div style={{ display: 'flex', gap: 8, marginTop: 10, overflowX: 'auto', paddingBottom: 4 }}>
           {SORTS.map((s) => (
-            <button
-              key={s.id}
-              className={`chip ${sort === s.id ? 'active' : ''}`}
-              onClick={() => setSort(s.id)}
-            >
+            <button key={s.id} className={`chip ${sort === s.id ? 'active' : ''}`} onClick={() => setSort(s.id)}>
               {s.label}
             </button>
           ))}
         </div>
 
-        <div style={{ marginTop: 14, display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div style={{ marginTop: 14, display: 'flex', flexDirection: 'column', gap: 10 }}>
           {list.map((product, i) => {
-            const fits = hasProfile ? checkProductFit(product, profile).fits : null
+            const fit = hasProfile ? checkProductFit(product, profile) : null
+            const fits = fit ? fit.fits : null
+
             return (
               <div
                 key={product.id}
                 className="product-item"
-                style={{ animationDelay: `${i * 0.02}s` }}
+                style={{ animationDelay: `${i * 0.02}s`, alignItems: 'stretch' }}
                 onClick={() => navigate(`/product/${product.id}`)}
               >
-                <div className="product-emoji" style={{ display: 'grid', placeItems: 'center' }}>
+                <div className="catalog-thumb">
                   <CatalogThumb product={product} />
                 </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
+
+                <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                   <div className="product-name" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {product.name}
                   </div>
-                  <div className="product-meta">
+
+                  <div className="product-meta" style={{ marginTop: 6 }}>
                     <span className="product-price">{formatPrice(product.priceKzt)}</span>
                     <span className="product-shelf">{product.shelf}</span>
                     <span className={`category-badge ${product.category}`}>{CATEGORY_LABELS[product.category]}</span>
                   </div>
+
+                  {fits !== null && (
+                    <div style={{ marginTop: 8 }}>
+                      <span className={`fit-badge ${fits ? 'ok' : 'no'}`}>{fits ? '✅ Подходит' : '❌ Не подходит'}</span>
+                    </div>
+                  )}
                 </div>
-                {fits !== null && (
-                  <span style={{ fontSize: 16, flexShrink: 0, color: fits ? 'var(--success-bright)' : 'var(--error-bright)' }}>
-                    {fits ? '✓' : '×'}
-                  </span>
-                )}
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0, color: 'var(--text-dim)' }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M9 18l6-6-6-6" />
+                  </svg>
+                </div>
               </div>
             )
           })}
@@ -192,16 +202,14 @@ export default function CatalogScreen() {
 function CatalogThumb({ product }) {
   const src = getPrimaryImage(product)
   const [ok, setOk] = useState(true)
+
   if (src && ok) {
-    return (
-      <img
-        src={src}
-        alt={product.name}
-        className="product-thumb-img"
-        loading="lazy"
-        onError={() => setOk(false)}
-      />
-    )
+    return <img src={src} alt={product.name} className="catalog-thumb-img" loading="lazy" onError={() => setOk(false)} />
   }
-  return <CategoryIcon category={product.category} />
+
+  return (
+    <div className="catalog-thumb-fallback">
+      <CategoryIcon category={product.category} />
+    </div>
+  )
 }
