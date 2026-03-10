@@ -440,6 +440,16 @@ export default function ProfileScreen() {
           </svg>
           Сканировать товар
         </button>
+
+        {/* Hidden — for internal use only */}
+        <div style={{ textAlign: 'center', paddingTop: 6 }}>
+          <span
+            onClick={() => navigate('/qr-print')}
+            style={{ fontSize: 11, color: 'var(--text-dim)', opacity: 0.25, cursor: 'pointer' }}
+          >
+            v1.0
+          </span>
+        </div>
       </div>
 
     </div>
