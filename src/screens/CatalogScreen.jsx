@@ -22,13 +22,16 @@ function ProductThumb({ product }) {
   const src = product.images?.[0]
   if (src && imgOk) {
     return <img src={src} alt={product.name} onError={() => setImgOk(false)}
-      style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 6 }} />
+      style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 8 }} />
   }
   const colors = { grocery: '#10B981', electronics: '#60A5FA', diy: '#FCD34D' }
+  const bgs   = { grocery: 'rgba(16,185,129,0.08)', electronics: 'rgba(96,165,250,0.08)', diy: 'rgba(252,211,77,0.08)' }
+  const cat = product.category
   return (
     <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center',
-      justifyContent: 'center', fontSize: 18, fontWeight: 800,
-      color: colors[product.category] || '#A78BFA', fontFamily: 'var(--font-display)' }}>
+      justifyContent: 'center', background: bgs[cat] || 'rgba(167,139,250,0.08)',
+      fontSize: 22, fontWeight: 800,
+      color: colors[cat] || '#A78BFA', fontFamily: 'var(--font-display)' }}>
       {product.name[0]}
     </div>
   )
@@ -295,63 +298,60 @@ export default function CatalogScreen() {
             return (
               <div key={product.id} onClick={() => navigate(`/product/${product.id}`)}
                 style={{
-                  display: 'flex', alignItems: 'stretch', gap: 0,
+                  display: 'flex', alignItems: 'stretch', height: 72,
                   background: 'var(--card)',
-                  border: `1px solid ${fits===true ? 'rgba(16,185,129,0.22)' : fits===false ? 'rgba(239,68,68,0.15)' : 'var(--border)'}`,
+                  border: `1px solid ${fits===true ? 'rgba(16,185,129,0.25)' : fits===false ? 'rgba(239,68,68,0.18)' : 'var(--border)'}`,
                   borderRadius: 'var(--radius)', cursor: 'pointer', overflow: 'hidden',
                   transition: 'border-color 0.15s',
                 }}>
-                {/* Left accent bar */}
-                {fits !== null && (
-                  <div style={{ width: 3, flexShrink: 0,
-                    background: fits ? '#10B981' : '#EF4444', opacity: 0.7 }} />
-                )}
 
-                {/* Thumbnail */}
-                <div style={{ width: 58, height: 58, flexShrink: 0, margin: 10,
-                  borderRadius: 10, overflow: 'hidden',
-                  background: 'var(--surface)', border: '1px solid var(--border)' }}>
+                {/* Thumbnail — full card height, wider */}
+                <div style={{ width: 72, flexShrink: 0,
+                  background: 'rgba(255,255,255,0.04)', borderRight: '1px solid rgba(255,255,255,0.06)' }}>
                   <ProductThumb product={product} />
                 </div>
 
-                {/* Info — fills all space */}
-                <div style={{ flex: 1, minWidth: 0, padding: '10px 8px 10px 0', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                  <div style={{ fontSize: 14, fontWeight: 500, color: 'rgba(235,235,255,0.95)',
+                {/* Info — fills all space, vertically centered */}
+                <div style={{ flex: 1, minWidth: 0, padding: '0 10px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 4 }}>
+                  <div style={{ fontSize: 13.5, fontWeight: 500, color: 'rgba(235,235,255,0.95)',
                     overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3 }}>
                     {product.name}
                   </div>
-                  <div style={{ display: 'flex', gap: 8, marginTop: 5, alignItems: 'center' }}>
+                  <div style={{ display: 'flex', gap: 7, alignItems: 'center' }}>
                     <span style={{ fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 700, color: 'var(--primary-bright)' }}>
                       {formatPrice(product.priceKzt)}
                     </span>
-                    <span style={{ fontSize: 11, color: 'rgba(150,150,190,0.85)',
-                      background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)',
+                    <span style={{ fontSize: 11, color: 'rgba(140,140,180,0.85)',
+                      background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.07)',
                       padding: '1px 7px', borderRadius: 20 }}>
                       {product.shelf}
                     </span>
                   </div>
                   {fitResult && !fitResult.fits && fitResult.reasons[0] && (
-                    <div style={{ fontSize: 11, color: '#F87171', marginTop: 3, opacity: 0.85,
+                    <div style={{ fontSize: 11, color: '#F87171', opacity: 0.85,
                       overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       {fitResult.reasons[0].text}
                     </div>
                   )}
                 </div>
 
-                {/* Fit badge — 2:1 aspect on right */}
+                {/* Fit badge — no border, just colored column */}
                 {fits !== null && (
-                  <div style={{ width: 52, flexShrink: 0, display: 'flex', flexDirection: 'column',
-                    alignItems: 'center', justifyContent: 'center', gap: 4,
-                    background: fits ? 'rgba(16,185,129,0.09)' : 'rgba(239,68,68,0.07)',
-                    borderLeft: `1px solid ${fits ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.18)'}`,
+                  <div style={{ width: 48, flexShrink: 0, display: 'flex', flexDirection: 'column',
+                    alignItems: 'center', justifyContent: 'center', gap: 3,
+                    background: fits ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.08)',
                   }}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                      stroke={fits ? '#10B981' : '#F87171'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      {fits
-                        ? <polyline points="20 6 9 17 4 12"/>
-                        : <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>}
-                    </svg>
-                    <span style={{ fontSize: 10, fontWeight: 800, color: fits ? '#10B981' : '#F87171', letterSpacing: 0.3 }}>
+                    <div style={{ width: 28, height: 28, borderRadius: '50%',
+                      background: fits ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.18)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                        stroke={fits ? '#10B981' : '#F87171'} strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
+                        {fits
+                          ? <polyline points="20 6 9 17 4 12"/>
+                          : <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>}
+                      </svg>
+                    </div>
+                    <span style={{ fontSize: 9.5, fontWeight: 800, color: fits ? '#10B981' : '#F87171', letterSpacing: 0.4 }}>
                       {fits ? 'OK' : 'НЕТ'}
                     </span>
                   </div>
