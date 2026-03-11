@@ -298,60 +298,57 @@ export default function CatalogScreen() {
             return (
               <div key={product.id} onClick={() => navigate(`/product/${product.id}`)}
                 style={{
-                  display: 'flex', alignItems: 'stretch', height: 72,
+                  display: 'flex', alignItems: 'stretch',
                   background: 'var(--card)',
                   border: `1px solid ${fits===true ? 'rgba(16,185,129,0.25)' : fits===false ? 'rgba(239,68,68,0.18)' : 'var(--border)'}`,
                   borderRadius: 'var(--radius)', cursor: 'pointer', overflow: 'hidden',
-                  transition: 'border-color 0.15s',
                 }}>
 
-                {/* Thumbnail — full card height, wider */}
-                <div style={{ width: 72, flexShrink: 0,
-                  background: 'rgba(255,255,255,0.04)', borderRight: '1px solid rgba(255,255,255,0.06)' }}>
+                {/* Thumbnail — flush, no border, no margin */}
+                <div style={{ width: 68, flexShrink: 0, minHeight: 68,
+                  background: 'rgba(255,255,255,0.03)' }}>
                   <ProductThumb product={product} />
                 </div>
 
-                {/* Info — fills all space, vertically centered */}
-                <div style={{ flex: 1, minWidth: 0, padding: '0 10px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 4 }}>
+                {/* Info — tight, no extra space */}
+                <div style={{ flex: 1, minWidth: 0, padding: '11px 8px 11px 10px',
+                  display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 5 }}>
                   <div style={{ fontSize: 13.5, fontWeight: 500, color: 'rgba(235,235,255,0.95)',
-                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.3 }}>
+                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {product.name}
                   </div>
                   <div style={{ display: 'flex', gap: 7, alignItems: 'center' }}>
-                    <span style={{ fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 700, color: 'var(--primary-bright)' }}>
+                    <span style={{ fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 700, color: 'var(--primary-bright)', lineHeight: 1 }}>
                       {formatPrice(product.priceKzt)}
                     </span>
-                    <span style={{ fontSize: 11, color: 'rgba(140,140,180,0.85)',
+                    <span style={{ fontSize: 10, color: 'rgba(130,130,175,0.9)',
                       background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.07)',
-                      padding: '1px 7px', borderRadius: 20 }}>
+                      padding: '1px 6px', borderRadius: 20, lineHeight: '16px' }}>
                       {product.shelf}
                     </span>
                   </div>
                   {fitResult && !fitResult.fits && fitResult.reasons[0] && (
-                    <div style={{ fontSize: 11, color: '#F87171', opacity: 0.85,
+                    <div style={{ fontSize: 10.5, color: '#F87171',
                       overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       {fitResult.reasons[0].text}
                     </div>
                   )}
                 </div>
 
-                {/* Fit badge — no border, just colored column */}
+                {/* Fit badge — pill shape, vertically centered, no excess */}
                 {fits !== null && (
-                  <div style={{ width: 48, flexShrink: 0, display: 'flex', flexDirection: 'column',
-                    alignItems: 'center', justifyContent: 'center', gap: 3,
-                    background: fits ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.08)',
+                  <div style={{ flexShrink: 0, alignSelf: 'center', margin: '0 10px',
+                    padding: '5px 10px', borderRadius: 20, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2,
+                    background: fits ? 'rgba(16,185,129,0.13)' : 'rgba(239,68,68,0.1)',
+                    border: `1px solid ${fits ? 'rgba(16,185,129,0.35)' : 'rgba(239,68,68,0.3)'}`,
                   }}>
-                    <div style={{ width: 28, height: 28, borderRadius: '50%',
-                      background: fits ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.18)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-                        stroke={fits ? '#10B981' : '#F87171'} strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
-                        {fits
-                          ? <polyline points="20 6 9 17 4 12"/>
-                          : <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>}
-                      </svg>
-                    </div>
-                    <span style={{ fontSize: 9.5, fontWeight: 800, color: fits ? '#10B981' : '#F87171', letterSpacing: 0.4 }}>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                      stroke={fits ? '#10B981' : '#F87171'} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                      {fits
+                        ? <polyline points="20 6 9 17 4 12"/>
+                        : <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>}
+                    </svg>
+                    <span style={{ fontSize: 9, fontWeight: 800, color: fits ? '#10B981' : '#F87171', letterSpacing: 0.5, lineHeight: 1 }}>
                       {fits ? 'OK' : 'НЕТ'}
                     </span>
                   </div>
