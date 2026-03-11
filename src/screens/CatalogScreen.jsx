@@ -298,14 +298,14 @@ export default function CatalogScreen() {
             return (
               <div key={product.id} onClick={() => navigate(`/product/${product.id}`)}
                 style={{
-                  display: 'flex', alignItems: 'stretch',
+                  display: 'flex', alignItems: 'stretch', height: 72,
                   background: 'var(--card)',
                   border: `1px solid ${fits===true ? 'rgba(16,185,129,0.25)' : fits===false ? 'rgba(239,68,68,0.18)' : 'var(--border)'}`,
                   borderRadius: 'var(--radius)', cursor: 'pointer', overflow: 'hidden',
                 }}>
 
-                {/* Thumbnail — flush, no border, no margin */}
-                <div style={{ width: 68, flexShrink: 0, minHeight: 68,
+                {/* Thumbnail — fixed size, centered, no stretching */}
+                <div style={{ width: 72, height: 72, flexShrink: 0,
                   background: 'rgba(255,255,255,0.03)' }}>
                   <ProductThumb product={product} />
                 </div>
