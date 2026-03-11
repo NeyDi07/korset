@@ -214,27 +214,34 @@ export default function ProfileScreen() {
 
       {/* ── HERO ── */}
       <div style={{
-        paddingTop: 48, paddingBottom: 20,
-        background: 'linear-gradient(180deg, rgba(124,58,237,0.18) 0%, transparent 100%)',
+        background: 'linear-gradient(180deg, rgba(124,58,237,0.2) 0%, transparent 100%)',
         borderBottom: '1px solid var(--border)',
-        display: 'flex', flexDirection: 'column', alignItems: 'center',
-        gap: 0,
+        display: 'flex', alignItems: 'center', gap: 16,
+        padding: '16px 20px',
       }}>
-        <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        {/* Logo — small but crisp, no wasted space */}
+        <div style={{ position: 'relative', flexShrink: 0 }}>
           <div style={{
-            position: 'absolute',
-            width: 200, height: 200,
-            background: 'radial-gradient(circle, rgba(124,58,237,0.3) 0%, transparent 65%)',
-            pointerEvents: 'none',
+            position: 'absolute', inset: -10,
+            background: 'radial-gradient(circle, rgba(124,58,237,0.4) 0%, transparent 70%)',
+            pointerEvents: 'none', borderRadius: '50%',
           }}/>
           <img src="/logo.png" alt="Körset"
-            style={{ height: 140, width: 140, objectFit: 'contain', position: 'relative',
-              filter: 'drop-shadow(0 0 32px rgba(139,92,246,0.85))' }}
+            style={{ height: 56, width: 56, objectFit: 'contain', display: 'block', position: 'relative',
+              filter: 'drop-shadow(0 0 14px rgba(139,92,246,0.9))' }}
           />
         </div>
-        <p style={{ color: 'rgba(180,175,210,0.85)', fontSize: 13, lineHeight: 1.7, textAlign: 'center', maxWidth: 260, margin: '12px 24px 0' }}>
-          Настройте профиль — AI мгновенно покажет подходит ли товар вам
-        </p>
+        {/* Text right of logo */}
+        <div>
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 800, lineHeight: 1.1,
+            background: 'linear-gradient(135deg, #E9D5FF 0%, #A78BFA 60%, #7C3AED 100%)',
+            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            Körset
+          </div>
+          <div style={{ fontSize: 12, color: 'rgba(175,170,210,0.85)', marginTop: 3, lineHeight: 1.4 }}>
+            AI‑помощник покупателя
+          </div>
+        </div>
       </div>
 
       {/* ── HALAL ── */}
