@@ -138,7 +138,10 @@ export default function AIScreen() {
     <div className="screen" style={{ display:'flex', flexDirection:'column', paddingBottom:0 }}>
       {/* Header */}
       <div className="header">
-        <button className="back-btn" onClick={() => navigate(`/product/${id}`)}>
+        <button className="back-btn" onClick={() => {
+          // Go back to product, replacing AI in history to break the loop
+          navigate(`/product/${id}`, { replace: true })
+        }}>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M19 12H5M12 5l-7 7 7 7"/>
           </svg>
