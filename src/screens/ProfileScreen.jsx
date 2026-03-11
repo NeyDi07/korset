@@ -219,7 +219,7 @@ export default function ProfileScreen() {
         position: 'relative', overflow: 'hidden',
       }}>
         <img src="/logo.png" alt="Körset"
-          style={{ width: '100%', display: 'block', objectFit: 'contain',
+          style={{ width: '60%', margin: '0 auto', display: 'block', objectFit: 'contain',
             filter: 'drop-shadow(0 0 48px rgba(139,92,246,0.95))' }}
         />
         <p style={{ color: 'rgba(180,175,210,0.85)', fontSize: 13, lineHeight: 1.6,
