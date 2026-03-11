@@ -217,6 +217,7 @@ export default function ProfileScreen() {
         background: 'linear-gradient(180deg, rgba(124,58,237,0.2) 0%, transparent 100%)',
         borderBottom: '1px solid var(--border)',
         position: 'relative', overflow: 'hidden',
+        paddingTop: 44,
       }}>
         <img src="/logo.png" alt="Körset"
           style={{ width: '60%', margin: '0 auto', display: 'block', objectFit: 'contain',
