@@ -29,81 +29,152 @@ const PRIORITIES = [
   { id: 'quality',  label: 'Качество', desc: 'Лучший состав',   icon: 'quality' },
 ]
 
-// All custom SVG icons — no emoji
-function Icon({ name, size = 20, color = 'currentColor' }) {
-  const s = { width: size, height: size, viewBox: '0 0 24 24', fill: 'none', stroke: color, strokeWidth: 1.9, strokeLinecap: 'round', strokeLinejoin: 'round' }
+// Colored filled icons — no emoji
+function Icon({ name, size = 20 }) {
+  const w = size, h = size
   switch (name) {
-    // DIET — clear, recognizable
+    // DIET — colored, filled, instantly recognizable
     case 'nosugar': return (
-      // Sugar cube with X through it
-      <svg {...s}><rect x="5" y="8" width="14" height="10" rx="2"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/><line x1="4" y1="4" x2="20" y2="20" strokeWidth="2.2"/></svg>
+      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
+        {/* Sugar = cube with slash */}
+        <rect x="4" y="9" width="16" height="11" rx="2" fill="#A78BFA" opacity="0.25"/>
+        <rect x="4" y="9" width="16" height="11" rx="2" stroke="#A78BFA" strokeWidth="1.8"/>
+        <path d="M8 9V7a4 4 0 0 1 8 0v2" stroke="#A78BFA" strokeWidth="1.8" strokeLinecap="round"/>
+        <line x1="3" y1="3" x2="21" y2="21" stroke="#F87171" strokeWidth="2.2" strokeLinecap="round"/>
+      </svg>
     )
     case 'nodairy': return (
-      // Milk carton crossed out
-      <svg {...s}><path d="M9 3h6l2 4v13a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V7l2-4z"/><path d="M9 7h6"/><line x1="4" y1="4" x2="20" y2="20" strokeWidth="2.2"/></svg>
+      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
+        <path d="M9 3h6l2 5v12a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V8l2-5z" fill="#60A5FA" opacity="0.2"/>
+        <path d="M9 3h6l2 5v12a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V8l2-5z" stroke="#60A5FA" strokeWidth="1.8" strokeLinejoin="round"/>
+        <path d="M7 8h10" stroke="#60A5FA" strokeWidth="1.8" strokeLinecap="round"/>
+        <line x1="3" y1="3" x2="21" y2="21" stroke="#F87171" strokeWidth="2.2" strokeLinecap="round"/>
+      </svg>
     )
     case 'nogluten': return (
-      // Wheat stalk crossed out
-      <svg {...s}><path d="M12 3v18"/><path d="M8 7c1 .8 2.5 1 4 .5s3-.3 4 .5M8 11c1 .8 2.5 1 4 .5s3-.3 4 .5M8 15c1 .8 2.5 1 4 .5"/><line x1="4" y1="4" x2="20" y2="20" strokeWidth="2.2"/></svg>
+      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
+        <path d="M12 2v20" stroke="#FCD34D" strokeWidth="1.8" strokeLinecap="round"/>
+        <path d="M8 6c1.3.9 2.7 1 4 .5s2.7-.4 4 .5M8 10c1.3.9 2.7 1 4 .5s2.7-.4 4 .5M8 14c1.3.9 2.7 1 4 .5" stroke="#FCD34D" strokeWidth="1.8" strokeLinecap="round"/>
+        <line x1="3" y1="3" x2="21" y2="21" stroke="#F87171" strokeWidth="2.2" strokeLinecap="round"/>
+      </svg>
     )
     case 'vegan': return (
-      // Leaf — clear vegan symbol
-      <svg {...s}><path d="M21 3C9 3 4 12 4 19"/><path d="M4 19c3-6 8-10 17-10C21 12 19 18 4 19z"/></svg>
+      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
+        <path d="M21 3C9 3 4 12 4 20" stroke="#34D399" strokeWidth="1.8" strokeLinecap="round"/>
+        <path d="M4 20c3-7 9-12 17-11C21 13 18 19 4 20z" fill="#34D399" opacity="0.3" stroke="#34D399" strokeWidth="1.8" strokeLinejoin="round"/>
+      </svg>
     )
     case 'veggie': return (
-      // Carrot
-      <svg {...s}><path d="M12 2c0 0-2 4-2 8s2 8 2 8"/><path d="M12 2c0 0 2 4 2 8s-2 8-2 8"/><path d="M5 9l7-7 7 7"/><path d="M12 2v4"/></svg>
+      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
+        {/* Carrot */}
+        <path d="M12 4c0 0 5 3 5 9s-5 9-5 9-5-3-5-9 5-9 5-9z" fill="#F97316" opacity="0.3" stroke="#F97316" strokeWidth="1.8" strokeLinejoin="round"/>
+        <path d="M10 4c-1-2-2-3-3-2M12 4c0-2 0-3.5 1-4M14 4c1-2 2-3 3-2" stroke="#34D399" strokeWidth="1.8" strokeLinecap="round"/>
+        <path d="M10 10h4M10 13h4" stroke="#E2724A" strokeWidth="1.4" strokeLinecap="round"/>
+      </svg>
     )
     case 'keto': return (
-      // Fat droplet / avocado shape — keto = high fat
-      <svg {...s}><path d="M12 3c4.4 0 7 3 7 7 0 5-3.5 9-7 11-3.5-2-7-6-7-11 0-4 2.6-7 7-7z"/><circle cx="12" cy="13" r="2.5"/></svg>
+      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
+        {/* Avocado */}
+        <path d="M12 3c4.5 0 7 3.5 7 8 0 5.5-3.5 10-7 11-3.5-1-7-5.5-7-11 0-4.5 2.5-8 7-8z" fill="#84CC16" opacity="0.25" stroke="#84CC16" strokeWidth="1.8"/>
+        <circle cx="12" cy="13.5" r="3" fill="#A16207" opacity="0.5" stroke="#A16207" strokeWidth="1.5"/>
+      </svg>
     )
     case 'lowcal': return (
-      // Scale / weight
-      <svg {...s}><path d="M12 3v2M5 9h14l-1.5 9a2 2 0 0 1-2 1.5h-7a2 2 0 0 1-2-1.5L5 9z"/><path d="M9 9V7a3 3 0 0 1 6 0v2"/></svg>
+      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
+        {/* Scale */}
+        <path d="M12 3v18" stroke="#C084FC" strokeWidth="1.8" strokeLinecap="round"/>
+        <path d="M4 12h16" stroke="#C084FC" strokeWidth="1.8" strokeLinecap="round"/>
+        <path d="M5 12l-2 5h6l-2-5-2 0zM19 12l-2 5h6l-2-5-2 0z" fill="#C084FC" opacity="0.25" stroke="#C084FC" strokeWidth="1.6" strokeLinejoin="round"/>
+        <path d="M6 21h12" stroke="#C084FC" strokeWidth="1.8" strokeLinecap="round"/>
+      </svg>
     )
-    // ALLERGENS — distinct, clear icons
+    // ALLERGENS — distinctive colored icons
     case 'milk': return (
-      <svg {...s}><path d="M9 3h6l2 4v13a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V7l2-4z"/><path d="M9 7h6"/><path d="M8 14c1.5 2 6.5 2 8 0"/></svg>
+      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
+        <path d="M9 3h6l2 5v12a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V8l2-5z" fill="#E2E8F0" opacity="0.15" stroke="#E2E8F0" strokeWidth="1.8" strokeLinejoin="round"/>
+        <path d="M7 8h10" stroke="#E2E8F0" strokeWidth="1.8" strokeLinecap="round"/>
+        <path d="M9 14c1.5 1.5 5.5 1.5 7 0" stroke="#94A3B8" strokeWidth="1.5" strokeLinecap="round"/>
+      </svg>
     )
     case 'wheat': return (
-      <svg {...s}><path d="M12 3v18"/><path d="M8 7c1 .8 2.5 1 4 .5s3-.3 4 .5M8 11c1 .8 2.5 1 4 .5s3-.3 4 .5M8 15c1 .8 2.5 1 4 .5"/></svg>
+      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
+        <path d="M12 2v20" stroke="#FCD34D" strokeWidth="1.8" strokeLinecap="round"/>
+        <ellipse cx="8.5" cy="7" rx="3" ry="1.8" fill="#FCD34D" opacity="0.4" stroke="#FCD34D" strokeWidth="1.2" transform="rotate(-30 8.5 7)"/>
+        <ellipse cx="15.5" cy="7" rx="3" ry="1.8" fill="#FCD34D" opacity="0.4" stroke="#FCD34D" strokeWidth="1.2" transform="rotate(30 15.5 7)"/>
+        <ellipse cx="8" cy="11" rx="3" ry="1.8" fill="#FCD34D" opacity="0.4" stroke="#FCD34D" strokeWidth="1.2" transform="rotate(-30 8 11)"/>
+        <ellipse cx="16" cy="11" rx="3" ry="1.8" fill="#FCD34D" opacity="0.4" stroke="#FCD34D" strokeWidth="1.2" transform="rotate(30 16 11)"/>
+        <ellipse cx="9" cy="15" rx="2.5" ry="1.6" fill="#FCD34D" opacity="0.4" stroke="#FCD34D" strokeWidth="1.2" transform="rotate(-30 9 15)"/>
+        <ellipse cx="15" cy="15" rx="2.5" ry="1.6" fill="#FCD34D" opacity="0.4" stroke="#FCD34D" strokeWidth="1.2" transform="rotate(30 15 15)"/>
+      </svg>
     )
     case 'nuts': return (
-      // Walnut shape
-      <svg {...s}><path d="M12 4c5 0 8 3 8 6 0 5-3.5 9.5-8 11-4.5-1.5-8-6-8-11 0-3 3-6 8-6z"/><path d="M12 4v4M9 7h6"/></svg>
+      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
+        <path d="M12 3c5 0 8 3 8 7 0 5.5-4 10-8 11-4-1-8-5.5-8-11 0-4 3-7 8-7z" fill="#A16207" opacity="0.3" stroke="#A16207" strokeWidth="1.8"/>
+        <path d="M12 3v5" stroke="#92400E" strokeWidth="1.8" strokeLinecap="round"/>
+        <path d="M9 7h6" stroke="#92400E" strokeWidth="1.8" strokeLinecap="round"/>
+      </svg>
     )
     case 'peanut': return (
-      // Two bumps = peanut shape
-      <svg {...s}><path d="M9.5 4a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 0 0-7h-5z"/><path d="M9.5 11a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 0 0-7h-5z"/><line x1="12" y1="11" x2="12" y2="11" strokeWidth="3"/></svg>
+      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
+        <path d="M9.5 3.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 0 0-7h-5z" fill="#D97706" opacity="0.3" stroke="#D97706" strokeWidth="1.8"/>
+        <path d="M9.5 13.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 0 0-7h-5z" fill="#D97706" opacity="0.3" stroke="#D97706" strokeWidth="1.8"/>
+        <path d="M10 10.5c.5.5 1 .8 2 .8s1.5-.3 2-.8M10 13.5c.5-.5 1-.8 2-.8s1.5.3 2 .8" stroke="#D97706" strokeWidth="1.4" strokeLinecap="round"/>
+      </svg>
     )
     case 'soy': return (
-      // Three beans / pods
-      <svg {...s}><ellipse cx="8" cy="8" rx="3" ry="5" transform="rotate(-20 8 8)"/><ellipse cx="16" cy="8" rx="3" ry="5" transform="rotate(20 16 8)"/><ellipse cx="12" cy="16" rx="3" ry="5"/><path d="M8 13c2 1 6 1 8 0"/></svg>
+      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
+        <ellipse cx="9" cy="8" rx="4" ry="6" fill="#84CC16" opacity="0.25" stroke="#84CC16" strokeWidth="1.6" transform="rotate(-15 9 8)"/>
+        <ellipse cx="15" cy="8" rx="4" ry="6" fill="#84CC16" opacity="0.25" stroke="#84CC16" strokeWidth="1.6" transform="rotate(15 15 8)"/>
+        <ellipse cx="12" cy="16" rx="3.5" ry="5" fill="#84CC16" opacity="0.35" stroke="#84CC16" strokeWidth="1.6"/>
+      </svg>
     )
     case 'egg': return (
-      <svg {...s}><path d="M12 3C8.5 3 6 8 6 12.5a6 6 0 0 0 12 0C18 8 15.5 3 12 3z"/></svg>
+      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
+        <path d="M12 3C8.5 3 6 8 6 12.5a6 6 0 0 0 12 0C18 8 15.5 3 12 3z" fill="#FEF3C7" opacity="0.3" stroke="#FCD34D" strokeWidth="1.8"/>
+        <ellipse cx="12" cy="14" rx="2.5" ry="2" fill="#FDE68A" opacity="0.6" stroke="#F59E0B" strokeWidth="1.2"/>
+      </svg>
     )
     case 'fish': return (
-      <svg {...s}><path d="M20 12c-4-4-8-5-13-3L4 12l3 3c5 2 9 1 13-3z"/><path d="M4 12l3-3"/><circle cx="17" cy="9" r="1" fill={color} stroke="none"/><path d="M21 7l1 5-1 5"/></svg>
+      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
+        <path d="M20 12c-3-3.5-7-5-12-3.5L4 12l4 3.5c5 2 9 1 12-3.5z" fill="#60A5FA" opacity="0.3" stroke="#60A5FA" strokeWidth="1.8" strokeLinejoin="round"/>
+        <circle cx="17.5" cy="9.5" r="1" fill="#60A5FA"/>
+        <path d="M4 12L2 8M4 12l-2 4" stroke="#60A5FA" strokeWidth="1.8" strokeLinecap="round"/>
+      </svg>
     )
     case 'shell': return (
-      // Shrimp / prawn shape
-      <svg {...s}><path d="M14 4c3 1 5 4 5 7a7 7 0 0 1-12 4.9"/><path d="M7 16c-2-1.5-3-3.5-3-5.5a7 7 0 0 1 10-6.3"/><path d="M10 20l2-3-1-3 3-1 1-3"/></svg>
+      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
+        {/* Shrimp */}
+        <path d="M16 4c2 1.5 3 4 2 7l-2 3-3 2-2 4" stroke="#F9A8D4" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M16 4c-2 0-4 1-5 3l-2 5 2 4" stroke="#F9A8D4" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+        <circle cx="16.5" cy="4.5" r="1.5" fill="#F9A8D4" opacity="0.7"/>
+        <path d="M11 20l2-2M9 19l3-2" stroke="#F9A8D4" strokeWidth="1.4" strokeLinecap="round"/>
+      </svg>
     )
     // PRIORITIES
     case 'price': return (
-      <svg {...s}><circle cx="12" cy="12" r="9"/><path d="M12 6v2"/><path d="M12 16v2"/><path d="M9 9.5c0-1.4 1.3-2.5 3-2.5s3 1.1 3 2.5c0 2.5-6 2.5-6 5 0 1.4 1.3 2.5 3 2.5s3-1.1 3-2.5"/></svg>
+      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="9" fill="#34D399" opacity="0.15" stroke="#34D399" strokeWidth="1.8"/>
+        <path d="M12 6v1.5M12 16.5V18" stroke="#34D399" strokeWidth="1.8" strokeLinecap="round"/>
+        <path d="M9.5 9.5c0-1.1.9-2 2.5-2s2.5.9 2.5 2c0 2.5-5 2.5-5 5 0 1.1.9 2 2.5 2s2.5-.9 2.5-2" stroke="#34D399" strokeWidth="1.8" strokeLinecap="round"/>
+      </svg>
     )
     case 'balance': return (
-      <svg {...s}><path d="M12 3v18"/><path d="M4 6h16"/><path d="M5 6L2 12h6L5 6z"/><path d="M19 6l3 6h-6l3-6z"/><path d="M5 20h14"/></svg>
+      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
+        <path d="M12 3v18" stroke="#A78BFA" strokeWidth="1.8" strokeLinecap="round"/>
+        <path d="M4 7h16" stroke="#A78BFA" strokeWidth="1.8" strokeLinecap="round"/>
+        <path d="M5 7L2 13h6l-3-6zM19 7l3 6h-6l3-6z" fill="#A78BFA" opacity="0.25" stroke="#A78BFA" strokeWidth="1.6" strokeLinejoin="round"/>
+        <path d="M4 21h16" stroke="#A78BFA" strokeWidth="1.8" strokeLinecap="round"/>
+      </svg>
     )
     case 'quality': return (
-      <svg {...s}><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6L12 2z"/></svg>
+      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
+        <path d="M12 2l2.5 7.5H22l-6.5 4.7 2.5 7.5L12 17l-6 4.7 2.5-7.5L2 9.5h7.5L12 2z" fill="#FCD34D" opacity="0.3" stroke="#FCD34D" strokeWidth="1.8" strokeLinejoin="round"/>
+      </svg>
     )
     default: return null
   }
 }
+
 
 export default function ProfileScreen() {
   const navigate = useNavigate()
@@ -143,23 +214,25 @@ export default function ProfileScreen() {
 
       {/* ── HERO ── */}
       <div style={{
-        padding: '52px 24px 24px',
-        background: 'linear-gradient(160deg, rgba(124,58,237,0.15) 0%, transparent 65%)',
+        paddingTop: 48, paddingBottom: 20,
+        background: 'linear-gradient(180deg, rgba(124,58,237,0.18) 0%, transparent 100%)',
         borderBottom: '1px solid var(--border)',
         display: 'flex', flexDirection: 'column', alignItems: 'center',
+        gap: 0,
       }}>
-        <div style={{ position: 'relative', marginBottom: 10 }}>
+        <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div style={{
-            position: 'absolute', inset: -40,
-            background: 'radial-gradient(circle, rgba(124,58,237,0.28) 0%, transparent 70%)',
+            position: 'absolute',
+            width: 200, height: 200,
+            background: 'radial-gradient(circle, rgba(124,58,237,0.3) 0%, transparent 65%)',
             pointerEvents: 'none',
           }}/>
           <img src="/logo.png" alt="Körset"
-            style={{ height: 110, width: 110, objectFit: 'contain', position: 'relative',
-              filter: 'drop-shadow(0 0 28px rgba(139,92,246,0.75))' }}
+            style={{ height: 140, width: 140, objectFit: 'contain', position: 'relative',
+              filter: 'drop-shadow(0 0 32px rgba(139,92,246,0.85))' }}
           />
         </div>
-        <p style={{ color: 'var(--text-dim)', fontSize: 13, lineHeight: 1.7, textAlign: 'center', maxWidth: 260, marginTop: 4 }}>
+        <p style={{ color: 'rgba(180,175,210,0.85)', fontSize: 13, lineHeight: 1.7, textAlign: 'center', maxWidth: 260, margin: '12px 24px 0' }}>
           Настройте профиль — AI мгновенно покажет подходит ли товар вам
         </p>
       </div>
