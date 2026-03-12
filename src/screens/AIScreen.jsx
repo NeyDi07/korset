@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import products from '../data/products.json'
 import { loadProfile } from '../utils/profile.js'
 
@@ -50,11 +50,42 @@ function buildChipQuestion(chipId, product) {
   return map[chipId] || chipId
 }
 
+
+// System prompt для внешних товаров (из Open Food Facts)
+function buildExternalSystemPrompt(product, profile) {
+  const nutr = product.nutrition
+  const nutrStr = nutr
+    ? `Белки ${nutr.protein ?? '—'}г, Жиры ${nutr.fat ?? '—'}г, Углеводы ${nutr.carbs ?? '—'}г, Ккал ${nutr.kcal ?? '—'}`
+    : 'не указано'
+  const profileParts = []
+  if (profile?.halal || profile?.halalOnly) profileParts.push('нужен халал')
+  if (profile?.allergens?.length) profileParts.push(`аллергии: ${profile.allergens.join(', ')}`)
+  if (profile?.dietGoals?.length) profileParts.push(`диета: ${profile.dietGoals.join(', ')}`)
+  const halalStr = product.isHalal === true ? 'да' : product.isHalal === false ? 'нет' : 'неизвестно'
+  return `Ты — Körset AI, умный помощник покупателя в супермаркете Казахстана. Отвечай кратко, по делу, на русском языке. Максимум 3–4 предложения. Без markdown, без списков с дефисами — пиши живым текстом.
+
+ТОВАР: ${product.name}
+Бренд: ${product.brand || '—'} | Объём/вес: ${product.quantity || '—'}
+КБЖУ: ${nutrStr}
+Состав: ${product.ingredients || '—'}
+Халал: ${halalStr}
+Аллергены: ${product.allergens?.join(', ') || 'нет'}
+Nutri-Score: ${product.nutriscore?.toUpperCase() || '—'}
+
+ПРОФИЛЬ ПОКУПАТЕЛЯ: ${profileParts.length ? profileParts.join('; ') : 'не задан'}
+
+Отвечай только на вопросы об этом конкретном товаре. Если покупатель спрашивает что-то не по теме — мягко верни к товару.\`
+}
+
 export default function AIScreen() {
-  const { id } = useParams()
+  const { id, ean } = useParams()
   const navigate = useNavigate()
-  const product = products.find(p => p.id === id)
+  const { state: navState } = useLocation()
   const profile = loadProfile()
+  const isExternal = Boolean(ean)
+  const product = isExternal
+    ? (navState?.product ?? null)
+    : products.find(p => p.id === id)
 
   const [messages, setMessages] = useState([])  // {role: 'user'|'assistant', content: string}
   const [input, setInput] = useState('')
@@ -92,7 +123,7 @@ export default function AIScreen() {
           max_tokens: 300,
           temperature: 0.7,
           messages: [
-            { role: 'system', content: buildSystemPrompt(product, profile) },
+            { role: 'system', content: isExternal ? buildExternalSystemPrompt(product, profile) : buildSystemPrompt(product, profile) },
             ...newMessages,
           ],
         }),
@@ -140,7 +171,7 @@ export default function AIScreen() {
       <div className="header">
         <button className="back-btn" onClick={() => {
           // Go back to product, replacing AI in history to break the loop
-          navigate(`/product/${id}`, { replace: true })
+          isExternal ? navigate(`/product/ext/${ean}`, { replace: true, state: { product } }) : navigate(`/product/${id}`, { replace: true })
         }}>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M19 12H5M12 5l-7 7 7 7"/>
