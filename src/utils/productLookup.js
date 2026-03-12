@@ -1,22 +1,38 @@
 /**
- * productLookup.js
+ * productLookup.js — v15
  * Порядок поиска:
- * 1. Локальный products.json (по полю ean)
- * 2. Supabase (кэш ранее найденных товаров)
+ * 1. Supabase → products (наши товары с EAN)
+ * 2. Supabase → products_cache (ранее найденные из OFF)
  * 3. Open Food Facts API
- * Если найдено в OFF — сохраняем в Supabase для следующих запросов
+ *    → если нашли: AI улучшает данные через Groq → сохраняем в cache
+ * 4. Не найден нигде
+ *
+ * Fallback: если Supabase недоступен — products.json
  */
 
-import products from '../data/products.json'
+import localProducts from '../data/products.json'
 import { supabase } from './supabase.js'
 
-// ── 1. Локальный поиск ────────────────────────────────────────────────────────
-export function findLocalByEan(ean) {
-  return products.find(p => p.ean === ean) || null
+const GROQ_KEY = import.meta.env.VITE_GROQ_API_KEY
+
+// ── 1. Поиск в Supabase products ─────────────────────────────────────────────
+async function findInSupabaseProducts(ean) {
+  if (!supabase) return null
+  try {
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .eq('ean', ean)
+      .eq('is_active', true)
+      .single()
+    if (error || !data) return null
+    return normalizeSupabaseProduct(data)
+  } catch { return null }
 }
 
-// ── 2. Supabase кэш ───────────────────────────────────────────────────────────
-export async function findInSupabase(ean) {
+// ── 2. Поиск в кэше OFF ───────────────────────────────────────────────────────
+async function findInCache(ean) {
+  if (!supabase) return null
   try {
     const { data, error } = await supabase
       .from('products_cache')
@@ -25,131 +41,189 @@ export async function findInSupabase(ean) {
       .single()
     if (error || !data) return null
     return data
-  } catch {
-    return null
-  }
+  } catch { return null }
 }
 
 // ── 3. Open Food Facts ────────────────────────────────────────────────────────
-export async function fetchFromOpenFoodFacts(ean) {
+async function fetchFromOFF(ean) {
   try {
     const res = await fetch(
-      `https://world.openfoodfacts.org/api/v2/product/${ean}?fields=product_name,brands,ingredients_text_ru,ingredients_text,allergens_tags,allergens_hierarchy,nutriments,image_front_url,categories_tags,labels_tags,quantity,nutriscore_grade`,
+      `https://world.openfoodfacts.org/api/v2/product/${ean}?fields=product_name,brands,ingredients_text_ru,ingredients_text,allergens_tags,allergens_hierarchy,nutriments,image_front_url,labels_tags,quantity`,
       { signal: AbortSignal.timeout(8000) }
     )
     if (!res.ok) return null
     const json = await res.json()
     if (json.status !== 1 || !json.product) return null
-    return normalizeOFFProduct(ean, json.product)
-  } catch {
-    return null
+    return normalizeOFF(ean, json.product)
+  } catch { return null }
+}
+
+// ── 4. AI улучшение через Groq ────────────────────────────────────────────────
+async function enrichWithAI(product) {
+  if (!GROQ_KEY) return product
+  // Только если данных мало
+  const needsEnrichment = !product.ingredients || product.ingredients.length < 20
+  if (!needsEnrichment) return product
+
+  try {
+    const prompt = `Товар: "${product.name}"${product.brand ? `, бренд: ${product.brand}` : ''}.
+Ответь ТОЛЬКО JSON без markdown, без пояснений:
+{
+  "ingredients": "краткий состав на русском (если знаешь)",
+  "allergens": ["milk","gluten","nuts","eggs","fish","soy","peanuts","shellfish"] (только те что есть),
+  "dietTags": ["halal","vegan","vegetarian","gluten_free","dairy_free","sugar_free"] (только подходящие),
+  "description": "1 предложение о товаре на русском"
+}`
+
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${GROQ_KEY}` },
+      body: JSON.stringify({
+        model: 'llama-3.1-8b-instant',
+        max_tokens: 300,
+        messages: [{ role: 'user', content: prompt }]
+      }),
+      signal: AbortSignal.timeout(5000)
+    })
+
+    const data = await res.json()
+    const text = data.choices?.[0]?.message?.content?.trim()
+    if (!text) return product
+
+    const clean = text.replace(/```json|```/g, '').trim()
+    const ai = JSON.parse(clean)
+
+    return {
+      ...product,
+      ingredients: ai.ingredients || product.ingredients,
+      allergens:   ai.allergens   || product.allergens,
+      dietTags:    ai.dietTags    || product.dietTags,
+      description: ai.description || product.description,
+    }
+  } catch { return product }
+}
+
+// ── Сохранение в кэш ──────────────────────────────────────────────────────────
+async function saveToCache(product) {
+  if (!supabase) return
+  try {
+    await supabase.from('products_cache').upsert({
+      ean:         product.ean,
+      name:        product.name,
+      brand:       product.brand || null,
+      ingredients: product.ingredients || null,
+      allergens:   product.allergens || [],
+      diet_tags:   product.dietTags || [],
+      nutrition:   product.nutrition || null,
+      image:       product.image || null,
+      source:      'openfoodfacts',
+    }, { onConflict: 'ean' })
+  } catch {}
+}
+
+// ── Аналитика ─────────────────────────────────────────────────────────────────
+async function logScan(ean, found, source) {
+  if (!supabase) return
+  try {
+    await supabase.from('scan_events').insert({
+      ean, found, source, scanned_at: new Date().toISOString()
+    })
+  } catch {}
+}
+
+// ── Нормализация: Supabase products → единый формат ──────────────────────────
+function normalizeSupabaseProduct(p) {
+  return {
+    id:          p.id,
+    ean:         p.ean,
+    name:        p.name,
+    brand:       p.brand,
+    category:    p.category,
+    shelf:       p.shelf,
+    priceKzt:    p.price_kzt,
+    images:      p.images || [],
+    ingredients: p.ingredients,
+    allergens:   p.allergens || [],
+    dietTags:    p.diet_tags || [],
+    nutrition:   p.nutrition,
+    specs:       p.specs,
+    halal:       p.halal,
+    qualityScore:p.quality_score,
+    source:      'supabase',
   }
 }
 
-// ── Нормализация данных OFF → наш формат ──────────────────────────────────────
-function normalizeOFFProduct(ean, p) {
-  const name = p.product_name || p.brands || `Товар ${ean}`
-  const brand = p.brands || ''
-  const ingredients = p.ingredients_text_ru || p.ingredients_text || ''
-  const image = p.image_front_url || null
-
-  // Аллергены
+// ── Нормализация: OFF → единый формат ────────────────────────────────────────
+function normalizeOFF(ean, p) {
   const ALLERGEN_MAP = {
-    'en:milk': 'milk', 'en:gluten': 'gluten', 'en:nuts': 'nuts',
-    'en:peanuts': 'peanuts', 'en:soybeans': 'soy', 'en:eggs': 'eggs',
-    'en:fish': 'fish', 'en:crustaceans': 'shellfish', 'en:wheat': 'gluten',
-    'en:celery': 'celery', 'en:sesame-seeds': 'sesame',
+    'en:milk':'milk','en:gluten':'gluten','en:nuts':'nuts',
+    'en:peanuts':'peanuts','en:soybeans':'soy','en:eggs':'eggs',
+    'en:fish':'fish','en:crustaceans':'shellfish','en:wheat':'gluten',
   }
   const raw = p.allergens_tags || p.allergens_hierarchy || []
   const allergens = [...new Set(raw.map(a => ALLERGEN_MAP[a]).filter(Boolean))]
 
-  // Питательность на 100г
-  const n = p.nutriments || {}
-  const nutrition = {
-    calories:  n['energy-kcal_100g'] ?? n['energy_100g'] ?? null,
-    protein:   n.proteins_100g ?? null,
-    fat:       n.fat_100g ?? null,
-    carbs:     n.carbohydrates_100g ?? null,
-    sugar:     n.sugars_100g ?? null,
-    salt:      n.salt_100g ?? null,
-  }
-
-  // Теги диеты из меток
   const labels = p.labels_tags || []
   const dietTags = []
   if (labels.some(l => /vegan/i.test(l)))       dietTags.push('vegan')
   if (labels.some(l => /vegetarian/i.test(l)))  dietTags.push('vegetarian')
   if (labels.some(l => /halal/i.test(l)))        dietTags.push('halal')
-  if (labels.some(l => /gluten-free/i.test(l)))  dietTags.push('gluten_free')
-  if (labels.some(l => /organic/i.test(l)))      dietTags.push('organic')
-  if (nutrition.sugar !== null && nutrition.sugar < 1) dietTags.push('sugar_free')
-  if (allergens.includes('milk') === false && dietTags.includes('vegan') === false
-      && labels.some(l => /dairy.free|lactose/i.test(l))) dietTags.push('dairy_free')
+  if (labels.some(l => /gluten.free/i.test(l))) dietTags.push('gluten_free')
 
+  const n = p.nutriments || {}
   return {
     ean,
-    name:        name.trim(),
-    brand:       brand.trim(),
-    ingredients,
+    name:        (p.product_name || '').trim() || `Товар ${ean}`,
+    brand:       (p.brands || '').trim(),
+    ingredients: p.ingredients_text_ru || p.ingredients_text || '',
     allergens,
     dietTags,
-    nutrition,
-    image,
-    source:      'openfoodfacts',
-    cached_at:   new Date().toISOString(),
+    nutrition: {
+      calories: n['energy-kcal_100g'] ?? null,
+      protein:  n.proteins_100g ?? null,
+      fat:      n.fat_100g ?? null,
+      carbs:    n.carbohydrates_100g ?? null,
+      sugar:    n.sugars_100g ?? null,
+    },
+    image:  p.image_front_url || null,
+    source: 'openfoodfacts',
   }
 }
 
-// ── Сохранение в Supabase ─────────────────────────────────────────────────────
-export async function saveToSupabase(product) {
-  try {
-    await supabase
-      .from('products_cache')
-      .upsert(product, { onConflict: 'ean' })
-  } catch {
-    // Silent fail — кэш не критичен
-  }
-}
-
-// ── Запись события сканирования (аналитика) ───────────────────────────────────
-export async function logScanEvent(ean, found, source) {
-  try {
-    await supabase.from('scan_events').insert({
-      ean,
-      found,
-      source, // 'local' | 'supabase' | 'openfoodfacts' | 'not_found'
-      scanned_at: new Date().toISOString(),
-    })
-  } catch {
-    // Silent fail
-  }
-}
-
-// ── Главная функция поиска ────────────────────────────────────────────────────
+// ── ГЛАВНАЯ ФУНКЦИЯ ───────────────────────────────────────────────────────────
 export async function lookupProduct(ean) {
-  // 1. Локальный JSON
-  const local = findLocalByEan(ean)
-  if (local) {
-    logScanEvent(ean, true, 'local')
-    return { type: 'local', product: local }
+
+  // 1. Supabase products (наши товары)
+  const sbProduct = await findInSupabaseProducts(ean)
+  if (sbProduct) {
+    logScan(ean, true, 'supabase_products')
+    return { type: 'local', product: sbProduct }
   }
 
-  // 2. Supabase кэш
-  const cached = await findInSupabase(ean)
+  // Fallback: локальный JSON если Supabase недоступен
+  const localMatch = localProducts.find(p => p.ean === ean)
+  if (localMatch) {
+    logScan(ean, true, 'local_json')
+    return { type: 'local', product: localMatch }
+  }
+
+  // 2. Кэш OFF
+  const cached = await findInCache(ean)
   if (cached) {
-    logScanEvent(ean, true, 'supabase')
+    logScan(ean, true, 'cache')
     return { type: 'external', product: cached }
   }
 
-  // 3. Open Food Facts
-  const off = await fetchFromOpenFoodFacts(ean)
+  // 3. Open Food Facts + AI улучшение
+  const off = await fetchFromOFF(ean)
   if (off) {
-    saveToSupabase(off) // async, не ждём
-    logScanEvent(ean, true, 'openfoodfacts')
-    return { type: 'external', product: off }
+    const enriched = await enrichWithAI(off)
+    saveToCache(enriched)
+    logScan(ean, true, 'openfoodfacts')
+    return { type: 'external', product: enriched }
   }
 
-  // Не найден нигде
-  logScanEvent(ean, false, 'not_found')
+  // Не найден
+  logScan(ean, false, 'not_found')
   return { type: 'not_found', ean }
 }
