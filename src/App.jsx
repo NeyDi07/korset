@@ -21,6 +21,7 @@ export default function App() {
         <Route path="/scan" element={<ScanScreen />} />
         <Route path="/qr-print" element={<QRPrintScreen />} />
         <Route path="/product/ext/:ean" element={<ExternalProductScreen />} />
+        <Route path="/product/ext/:ean/ai" element={<AIScreen />} />
         <Route path="/product/:id" element={<ProductScreen />} />
         <Route path="/product/:id/alternatives" element={<AlternativesScreen />} />
         <Route path="/product/:id/ai" element={<AIScreen />} />
