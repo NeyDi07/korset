@@ -7,8 +7,11 @@ function BarcodeScanner({ onDetected, onClose }) {
   const [status, setStatus] = useState('starting')
   const [error, setError]   = useState(null)
   const [searching, setSearching] = useState(false)
+  const [torchOn, setTorchOn] = useState(false)
+  const [torchSupported, setTorchSupported] = useState(false)
   const scannerRef = useRef(null)
   const busyRef    = useRef(false)
+  const trackRef   = useRef(null)
   const ID = 'korset-barcode-reader'
 
   const doClose = async () => {
@@ -66,6 +69,18 @@ function BarcodeScanner({ onDetected, onClose }) {
           () => {}
         )
         if (mounted) setStatus('ready')
+        // Torch support detection
+        try {
+          const videoEl = document.querySelector(`#${ID} video`)
+          if (videoEl?.srcObject) {
+            const track = videoEl.srcObject.getVideoTracks()[0]
+            if (track) {
+              trackRef.current = track
+              const caps = track.getCapabilities?.()
+              if (caps?.torch) setTorchSupported(true)
+            }
+          }
+        } catch {}
       } catch (e) {
         if (!mounted) return
         const msg = String(e?.message || e)
@@ -81,6 +96,15 @@ function BarcodeScanner({ onDetected, onClose }) {
       if (scannerRef.current) { scannerRef.current.stop().catch(()=>{}); try{scannerRef.current.clear()}catch{} }
     }
   }, [])
+
+  const toggleTorch = async () => {
+    if (!trackRef.current) return
+    try {
+      const next = !torchOn
+      await trackRef.current.applyConstraints({ advanced: [{ torch: next }] })
+      setTorchOn(next)
+    } catch {}
+  }
 
   return (
     <div style={{position:'fixed',inset:0,zIndex:500,background:'#000',display:'flex',flexDirection:'column'}}>
@@ -119,7 +143,29 @@ function BarcodeScanner({ onDetected, onClose }) {
         )}
 
         {status!=='error' && !searching && (
-          <button onClick={doClose} style={{position:'absolute',top:52,right:16,zIndex:30,width:44,height:44,borderRadius:'50%',background:'rgba(0,0,0,0.75)',border:'2px solid rgba(255,255,255,0.3)',color:'#fff',fontSize:22,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center'}}>×</button>
+          <>
+            <button onClick={doClose} style={{position:'absolute',top:52,right:16,zIndex:30,width:44,height:44,borderRadius:'50%',background:'rgba(0,0,0,0.75)',border:'2px solid rgba(255,255,255,0.3)',color:'#fff',fontSize:22,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center'}}>×</button>
+            {torchSupported && (
+              <button
+                onClick={toggleTorch}
+                style={{
+                  position:'absolute',top:52,left:16,zIndex:30,
+                  width:44,height:44,borderRadius:'50%',cursor:'pointer',
+                  display:'flex',alignItems:'center',justifyContent:'center',
+                  background: torchOn ? 'rgba(250,204,21,0.25)' : 'rgba(0,0,0,0.75)',
+                  border: torchOn ? '2px solid rgba(250,204,21,0.8)' : '2px solid rgba(255,255,255,0.3)',
+                  boxShadow: torchOn ? '0 0 16px rgba(250,204,21,0.4)' : 'none',
+                  transition:'all 0.2s ease',
+                }}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 6H6l2 7h8l2-7z" stroke={torchOn ? '#FDE68A' : 'rgba(255,255,255,0.7)'} strokeWidth="1.8"/>
+                  <path d="M10 13v5l2 2 2-2v-5" stroke={torchOn ? '#FDE68A' : 'rgba(255,255,255,0.7)'} strokeWidth="1.8"/>
+                  {torchOn && <circle cx="12" cy="12" r="10" stroke="rgba(250,204,21,0.3)" strokeWidth="1" strokeDasharray="2 3"/>}
+                </svg>
+              </button>
+            )}
+          </>
         )}
       </div>
 
