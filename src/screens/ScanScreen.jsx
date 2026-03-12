@@ -96,18 +96,26 @@ function BarcodeScanner({ onDetected, onClose }) {
 
   const toggleTorch = async () => {
     const next = !torchOn
-    if (trackRef.current) {
-      try {
-        await trackRef.current.applyConstraints({ advanced: [{ torch: next }] })
-        setTorchOn(next)
-        setTorchErr(false)
-        return
-      } catch {}
+    const track = trackRef.current
+    // Проверяем поддержку через getCapabilities — надёжнее чем try/catch
+    const supported = (() => {
+      try { return Boolean(track?.getCapabilities?.()?.torch) } catch { return false }
+    })()
+    if (!supported) {
+      clearTimeout(errTimerRef.current)
+      setTorchErr(true)
+      errTimerRef.current = setTimeout(() => setTorchErr(false), 3000)
+      return
     }
-    // Браузер не поддерживает — показываем ошибку, НЕ меняем состояние
-    clearTimeout(errTimerRef.current)
-    setTorchErr(true)
-    errTimerRef.current = setTimeout(() => setTorchErr(false), 3000)
+    try {
+      await track.applyConstraints({ advanced: [{ torch: next }] })
+      setTorchOn(next)
+      setTorchErr(false)
+    } catch {
+      clearTimeout(errTimerRef.current)
+      setTorchErr(true)
+      errTimerRef.current = setTimeout(() => setTorchErr(false), 3000)
+    }
   }
 
   return (
@@ -124,52 +132,23 @@ function BarcodeScanner({ onDetected, onClose }) {
             {/* Рамка */}
             <div style={{ position: 'relative', zIndex: 2, width: 300, height: 130, boxShadow: '0 0 0 9999px rgba(0,0,0,0.6)' }}>
 
-              {/* Угловые маркеры — крупнее, с glow */}
+              {/* Угловые маркеры — белые, тонкие */}
               {[
-                { top: -2, left: -2,  borderTop: '3px solid #A78BFA', borderLeft:  '3px solid #A78BFA', borderRadius: '8px 0 0 0' },
-                { top: -2, right: -2, borderTop: '3px solid #A78BFA', borderRight: '3px solid #A78BFA', borderRadius: '0 8px 0 0' },
-                { bottom: -2, left: -2,  borderBottom: '3px solid #A78BFA', borderLeft:  '3px solid #A78BFA', borderRadius: '0 0 0 8px' },
-                { bottom: -2, right: -2, borderBottom: '3px solid #A78BFA', borderRight: '3px solid #A78BFA', borderRadius: '0 0 8px 0' },
+                { top: -2, left: -2,  borderTop: '2px solid rgba(255,255,255,0.9)', borderLeft:  '2px solid rgba(255,255,255,0.9)', borderRadius: '6px 0 0 0' },
+                { top: -2, right: -2, borderTop: '2px solid rgba(255,255,255,0.9)', borderRight: '2px solid rgba(255,255,255,0.9)', borderRadius: '0 6px 0 0' },
+                { bottom: -2, left: -2,  borderBottom: '2px solid rgba(255,255,255,0.9)', borderLeft:  '2px solid rgba(255,255,255,0.9)', borderRadius: '0 0 0 6px' },
+                { bottom: -2, right: -2, borderBottom: '2px solid rgba(255,255,255,0.9)', borderRight: '2px solid rgba(255,255,255,0.9)', borderRadius: '0 0 6px 0' },
               ].map((s, i) => (
-                <div key={i} style={{
-                  position: 'absolute', width: 36, height: 36, ...s,
-                  filter: 'drop-shadow(0 0 6px rgba(167,139,250,0.9))',
-                }} />
+                <div key={i} style={{ position: 'absolute', width: 28, height: 28, ...s }} />
               ))}
 
-              {/* Тонкая граница рамки (слабая) */}
+              {/* Линия сканирования — тонкая, белая с лёгким свечением */}
               <div style={{
-                position: 'absolute', inset: 0,
-                border: '1px solid rgba(167,139,250,0.2)',
-                borderRadius: 4,
-              }} />
-
-              {/* Линия сканирования — жирнее + glow */}
-              <div style={{
-                position: 'absolute', left: 0, right: 0, height: 3,
-                background: 'linear-gradient(90deg, transparent 0%, rgba(167,139,250,0.4) 15%, #A78BFA 40%, #7C3AED 60%, rgba(167,139,250,0.4) 85%, transparent 100%)',
-                boxShadow: '0 0 12px 3px rgba(139,92,246,0.7)',
+                position: 'absolute', left: 0, right: 0, height: 1.5,
+                background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 15%, rgba(255,255,255,0.95) 45%, rgba(255,255,255,0.95) 55%, rgba(255,255,255,0.3) 85%, transparent 100%)',
+                boxShadow: '0 0 8px 2px rgba(255,255,255,0.25)',
                 animation: 'scanLine 2s cubic-bezier(0.45,0,0.55,1) infinite',
-                borderRadius: 2,
               }} />
-
-              {/* Пульс по углам когда готово */}
-              <div style={{
-                position: 'absolute', inset: -8,
-                border: '1px solid rgba(167,139,250,0.15)',
-                borderRadius: 10,
-                animation: 'framePulse 2.5s ease-in-out infinite',
-              }} />
-            </div>
-
-            {/* Подсказка под прицелом */}
-            <div style={{
-              position: 'absolute', bottom: '28%',
-              fontSize: 13, color: 'rgba(196,181,253,0.8)', fontWeight: 500,
-              textShadow: '0 1px 8px rgba(0,0,0,0.8)',
-              letterSpacing: '0.2px',
-            }}>
-              Наведите на штрихкод товара
             </div>
           </div>
         )}
@@ -197,7 +176,7 @@ function BarcodeScanner({ onDetected, onClose }) {
           <div style={{
             position: 'absolute', top: 0, left: 0, right: 0, zIndex: 30,
             display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start',
-            padding: '52px 20px 0',
+            padding: '14px 16px 0',
             pointerEvents: 'none',
           }}>
             {/* Фонарик */}
@@ -205,10 +184,10 @@ function BarcodeScanner({ onDetected, onClose }) {
               onClick={toggleTorch}
               style={{
                 pointerEvents: 'all',
-                width: 48, height: 48, borderRadius: '50%', cursor: 'pointer',
+                width: 44, height: 44, borderRadius: 14, cursor: 'pointer',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 background: torchOn ? 'rgba(250,204,21,0.22)' : 'rgba(0,0,0,0.65)',
-                border: torchOn ? '2px solid rgba(250,204,21,0.85)' : '2px solid rgba(255,255,255,0.25)',
+                border: torchOn ? '1.5px solid rgba(250,204,21,0.85)' : '1.5px solid rgba(255,255,255,0.25)',
                 backdropFilter: 'blur(8px)',
                 boxShadow: torchOn ? '0 0 18px rgba(250,204,21,0.5)' : 'none',
                 transition: 'all 0.22s ease',
@@ -249,10 +228,10 @@ function BarcodeScanner({ onDetected, onClose }) {
               onClick={doClose}
               style={{
                 pointerEvents: 'all',
-                width: 48, height: 48, borderRadius: '50%', cursor: 'pointer',
+                width: 44, height: 44, borderRadius: 14, cursor: 'pointer',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 background: 'rgba(0,0,0,0.65)',
-                border: '2px solid rgba(255,255,255,0.25)',
+                border: '1.5px solid rgba(255,255,255,0.25)',
                 backdropFilter: 'blur(8px)',
                 transition: 'all 0.2s ease',
               }}
@@ -299,7 +278,6 @@ function BarcodeScanner({ onDetected, onClose }) {
         #${ID} img,#${ID} canvas{display:none!important;}
         #${ID}>div{background:transparent!important;border:none!important;}
         @keyframes scanLine{0%{top:5%}50%{top:88%}100%{top:5%}}
-        @keyframes framePulse{0%,100%{opacity:0.3;transform:scale(1)}50%{opacity:0.8;transform:scale(1.012)}}
         @keyframes fadeSlideDown{from{opacity:0;transform:translateX(-50%) translateY(-6px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
         @keyframes spin{to{transform:rotate(360deg)}}
       `}</style>
