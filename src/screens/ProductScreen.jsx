@@ -129,17 +129,18 @@ export default function ProductScreen() {
   return (
     <div className="screen">
       {/* Header */}
-      <div className="header">
-        <button className="back-btn" onClick={() => navigate(-1)}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M19 12H5M12 5l-7 7 7 7" />
+      <div className="header" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <button onClick={() => navigate(-1)} style={{
+          width: 38, height: 38, borderRadius: 12,
+          border: '1px solid rgba(255,255,255,0.1)',
+          background: 'rgba(255,255,255,0.05)', cursor: 'pointer',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+        }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth="2" strokeLinecap="round">
+            <path d="M19 12H5M12 5l-7 7 7 7"/>
           </svg>
-          Назад
         </button>
-        <div className="header-row">
-          <div className="screen-title">Карточка товара</div>
-          {/* Right-side icon removed: it looked like a cart and confused users */}
-        </div>
+        <div className="screen-title" style={{ margin: 0 }}>Карточка товара</div>
       </div>
 
       {/* Product Card */}
@@ -322,39 +323,78 @@ export default function ProductScreen() {
 
       {/* FIT / NOT FIT */}
       <div className="section" style={{ paddingTop: 0 }}>
-        <div className={`status-badge ${fits ? 'fit' : 'no-fit'}`}>
-          <span className="status-icon">{fits ? '✅' : '❌'}</span>
+        {/* Большой статус блок */}
+        <div style={{
+          borderRadius: 18,
+          padding: '18px 20px',
+          display: 'flex', alignItems: 'center', gap: 16,
+          background: fits ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)',
+          border: `1.5px solid ${fits ? 'rgba(16,185,129,0.35)' : 'rgba(239,68,68,0.35)'}`,
+        }}>
+          <div style={{
+            width: 44, height: 44, borderRadius: 14, flexShrink: 0,
+            background: fits ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            {fits
+              ? <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2.5" strokeLinecap="round"><path d="M20 6L9 17l-5-5"/></svg>
+              : <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="2.5" strokeLinecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            }
+          </div>
           <div>
-            <div className="status-text">{fits ? 'Подходит' : 'Не подходит'}</div>
-            <div style={{ fontSize: 12, color: 'var(--text-sub)', marginTop: 2 }}>
+            <div style={{ fontSize: 17, fontWeight: 700, color: fits ? '#10B981' : '#EF4444', fontFamily: 'var(--font-display)' }}>
+              {fits ? 'Подходит вам' : 'Не подходит'}
+            </div>
+            <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginTop: 2 }}>
               {fits ? 'Соответствует вашему профилю' : 'Есть ограничения по вашему профилю'}
             </div>
           </div>
         </div>
 
-        <div className="card" style={{ marginTop: 12 }}>
-          <div className="section-title" style={{ marginBottom: 8 }}>Причины</div>
-          {reasons.map((r, i) => (
-            <div key={i} className="reason-item" style={{ animationDelay: `${0.1 + i * 0.08}s` }}>
-              <div className={`reason-dot ${r.type}`} />
-              <span className="reason-text">{r.text}</span>
-            </div>
-          ))}
-        </div>
+        {/* Причины */}
+        {reasons.length > 0 && (
+          <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {reasons.map((r, i) => (
+              <div key={i} style={{
+                display: 'flex', alignItems: 'center', gap: 12,
+                padding: '11px 14px', borderRadius: 14,
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.07)',
+              }}>
+                <div style={{
+                  width: 8, height: 8, borderRadius: '50%', flexShrink: 0,
+                  background: r.type === 'good' ? '#10B981' : r.type === 'warn' ? '#F59E0B' : '#EF4444',
+                }}/>
+                <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.8)', lineHeight: 1.4 }}>{r.text}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* CTA Buttons */}
-      <div style={{ padding: '0 20px 24px', display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <button className="btn btn-primary btn-full" onClick={() => navigate(`/product/${id}/alternatives`)}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
+      <div style={{ padding: '0 20px 28px', display: 'flex', gap: 10 }}>
+        <button onClick={() => navigate(`/product/${id}/alternatives`)} style={{
+          flex: 1, padding: '14px 10px', borderRadius: 16, cursor: 'pointer',
+          background: 'rgba(255,255,255,0.06)', border: '1.5px solid rgba(255,255,255,0.12)',
+          color: '#fff', fontSize: 14, fontWeight: 600, fontFamily: 'var(--font-display)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+        }}>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>
           </svg>
-          Показать альтернативы
+          Альтернативы
         </button>
-        <button className="btn btn-secondary btn-full" onClick={() => navigate(`/product/${id}/ai`)}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z" />
-            <path d="M4 14l1.2 3.2L8 18.4l-3.2 1.2L4 22l-1.2-2.4L0.6 18.4l2.2-1.2L4 14z" opacity="0.75" />
+        <button onClick={() => navigate(`/product/${id}/ai`)} style={{
+          flex: 1, padding: '14px 10px', borderRadius: 16, cursor: 'pointer',
+          background: 'linear-gradient(135deg, #7C3AED, #6D28D9)',
+          border: 'none',
+          color: '#fff', fontSize: 14, fontWeight: 600, fontFamily: 'var(--font-display)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+          boxShadow: '0 4px 16px rgba(124,58,237,0.4)',
+        }}>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z"/>
           </svg>
           Спросить AI
         </button>
