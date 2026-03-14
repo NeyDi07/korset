@@ -75,7 +75,7 @@ export default function AIAssistantScreen() {
       </div>
 
       {/* Сообщения */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '16px 16px 8px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <div style={{ flex: 1, overflowY: 'auto', padding: '16px 16px 140px', display: 'flex', flexDirection: 'column', gap: 16 }}>
         {messages.length === 0 && (
           <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
             <KorsetAvatar size={34}/>
@@ -114,7 +114,7 @@ export default function AIAssistantScreen() {
       </div>
 
       {/* Инпут — прилипает над навигацией */}
-      <div style={{ padding: '8px 16px 16px', background: '#0C0C18', borderTop: '1px solid rgba(255,255,255,0.06)', flexShrink: 0, paddingBottom: 'calc(16px + env(safe-area-inset-bottom))' }}>
+      <div style={{ position: 'fixed', left: 0, right: 0, bottom: '86px', zIndex: 90, padding: '8px 16px 16px', background: '#0C0C18', borderTop: '1px solid rgba(255,255,255,0.06)', paddingBottom: 'calc(16px + env(safe-area-inset-bottom))' }}>
         {messages.length === 0 && (
           <div style={{ display: 'flex', gap: 8, overflowX: 'auto', scrollbarWidth: 'none', paddingBottom: 10 }}>
             {CHIPS.map(chip => (
