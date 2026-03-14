@@ -204,7 +204,6 @@ function BarcodeScanner({ onDetected, onClose }) {
                   <path d="M13 10V3L5 14H11V21L19 10H13Z"/>
                 </svg>
               )}
-            </button>
 
             {/* Закрыть */}
             <button
