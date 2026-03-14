@@ -4,24 +4,26 @@ import { loadProfile, saveProfile } from '../utils/profile.js'
 import { setLang, useI18n } from '../utils/i18n.js'
 
 const DIET_GOALS = [
-  { id: 'sugar_free',  label: { ru: 'Без сахара', kz: 'Қантсыз' },    icon: 'nosugar'  },
-  { id: 'dairy_free',  label: { ru: 'Без молочки', kz: 'Сүтсіз' },   icon: 'nodairy'  },
-  { id: 'gluten_free', label: { ru: 'Без глютена', kz: 'Глютенсіз' },   icon: 'nogluten' },
-  { id: 'vegan',       label: { ru: 'Веган', kz: 'Веган' },         icon: 'vegan'    },
-  { id: 'vegetarian',  label: { ru: 'Вегетарианец', kz: 'Вегетариан' },  icon: 'veggie'   },
-  { id: 'keto',        label: { ru: 'Кето', kz: 'Кето' },          icon: 'keto'     },
-  { id: 'low_calorie', label: { ru: 'Меньше калорий', kz: 'Калориясы аз' },icon: 'lowcal'   },
+  { id: 'sugar_free',  label: { ru: 'Без сахара', kz: 'Қантсыз' }, icon: 'nosugar' },
+  { id: 'dairy_free',  label: { ru: 'Без лактозы', kz: 'Лактозасыз' }, icon: 'nodairy' },
+  { id: 'gluten_free', label: { ru: 'Без глютена', kz: 'Глютенсіз' }, icon: 'nogluten' },
+  { id: 'vegan',       label: { ru: 'Веган', kz: 'Веган' }, icon: 'vegan' },
+  { id: 'vegetarian',  label: { ru: 'Вегетариан', kz: 'Вегетариан' }, icon: 'veggie' },
+  { id: 'keto',        label: { ru: 'Кето', kz: 'Кето' }, icon: 'keto' },
+  { id: 'kid_friendly',label: { ru: 'Для детей', kz: 'Балаларға' }, icon: 'kids' },
 ]
 
 const ALLERGENS = [
-  { id: 'milk',      label: { ru: 'Молоко', kz: 'Сүт' },   icon: 'milk'     },
-  { id: 'gluten',    label: { ru: 'Глютен', kz: 'Глютен' },   icon: 'wheat'    },
-  { id: 'nuts',      label: { ru: 'Орехи', kz: 'Жаңғақ' },    icon: 'nuts'     },
-  { id: 'peanuts',   label: { ru: 'Арахис', kz: 'Жержаңғақ' },   icon: 'peanut'   },
-  { id: 'soy',       label: { ru: 'Соя', kz: 'Соя' },      icon: 'soy'      },
-  { id: 'eggs',      label: { ru: 'Яйца', kz: 'Жұмыртқа' },     icon: 'egg'      },
-  { id: 'fish',      label: { ru: 'Рыба', kz: 'Балық' },     icon: 'fish'     },
-  { id: 'shellfish', label: { ru: 'Моллюски', kz: 'Теңіз өнімдері' }, icon: 'shell'    },
+  { id: 'milk', label: { ru: 'Молоко', kz: 'Сүт' }, icon: 'milk' },
+  { id: 'eggs', label: { ru: 'Яйца', kz: 'Жұмыртқа' }, icon: 'egg' },
+  { id: 'gluten', label: { ru: 'Глютен', kz: 'Глютен' }, icon: 'wheat' },
+  { id: 'nuts', label: { ru: 'Орехи', kz: 'Жаңғақ' }, icon: 'nuts' },
+  { id: 'peanuts', label: { ru: 'Арахис', kz: 'Жержаңғақ' }, icon: 'peanut' },
+  { id: 'soy', label: { ru: 'Соя', kz: 'Соя' }, icon: 'soy' },
+  { id: 'fish', label: { ru: 'Рыба', kz: 'Балық' }, icon: 'fish' },
+  { id: 'shellfish', label: { ru: 'Морепродукты', kz: 'Теңіз өнімдері' }, icon: 'shell' },
+  { id: 'sesame', label: { ru: 'Кунжут', kz: 'Күнжіт' }, icon: 'sesame' },
+  { id: 'honey', label: { ru: 'Мёд', kz: 'Бал' }, icon: 'honey' },
 ]
 
 const PRIORITIES = [
@@ -325,7 +327,7 @@ export default function ProfileScreen() {
           <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '1.2px' }}>{t.profile.allergens}</div>
           <div style={{ fontSize: 12, color: 'var(--text-dim)', opacity: 0.6, marginTop: 3 }}>{t.profile.allergensSub}</div>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, marginBottom: 12 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, marginBottom: 12 }}>
           {ALLERGENS.map(a => {
             const active = profile.allergens.includes(a.id)
             return (
@@ -468,7 +470,7 @@ export default function ProfileScreen() {
             <rect x="3" y="16" width="5" height="5" rx="1"/>
             <path d="M16 16h5v5M16 16v5M3 12h4M10 3v4M12 10h7M10 16v5"/>
           </svg>
-          {lang === 'kz' ? 'QR-кодты сканерлеу' : 'Сканировать QR-код'}
+          {lang === 'kz' ? 'Штрихкодты сканерлеу' : 'Сканировать штрихкод'}
         </button>
         <div style={{ textAlign: 'center', paddingTop: 4 }}>
           <span onClick={() => navigate('/qr-print')} style={{ fontSize: 11, color: 'var(--text-dim)', opacity: 0.2, cursor: 'pointer' }}>v1.0</span>
