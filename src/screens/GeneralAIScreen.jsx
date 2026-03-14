@@ -66,7 +66,7 @@ export default function GeneralAIScreen() {
   }
 
   return (
-    <div style={{ position: 'fixed', inset: 0, background: 'var(--bg)', display: 'flex', flexDirection: 'column', paddingBottom: 80 }}>
+    <div style={{ position: 'fixed', inset: 0, background: 'var(--bg)', display: 'flex', flexDirection: 'column' }}>
 
       {/* Хедер */}
       <div style={{
@@ -82,7 +82,7 @@ export default function GeneralAIScreen() {
       </div>
 
       {/* Сообщения */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <div style={{ flex: 1, overflowY: 'auto', padding: '12px 16px 24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
         {messages.length === 0 && (
           <div style={{ padding: '20px 0 8px', display: 'flex', gap: 12, alignItems: 'flex-start' }}>
             <KorsetAvatar size={34} />
@@ -131,7 +131,7 @@ export default function GeneralAIScreen() {
       </div>
 
       {/* Инпут */}
-      <div style={{ padding: '10px 16px 16px', background: '#0C0C18', borderTop: '1px solid rgba(255,255,255,0.06)', flexShrink: 0 }}>
+      <div style={{ padding: '10px 16px 16px', marginBottom: 'calc(84px + env(safe-area-inset-bottom, 0px))', background: '#0C0C18', borderTop: '1px solid rgba(255,255,255,0.06)', flexShrink: 0 }}>
         {messages.length === 0 && (
           <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 10, scrollbarWidth: 'none' }}>
             {CHIPS.map((c, i) => (

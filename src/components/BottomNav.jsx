@@ -90,16 +90,14 @@ export default function BottomNav() {
         if (tab.isScan) {
           return (
             <button key={tab.id} onClick={() => navigate('/scan')} style={{
-              width: on ? 58 : 52, height: on ? 58 : 52, borderRadius: '50%', border: 'none', cursor: 'pointer',
-              background: on ? 'linear-gradient(145deg, #8B5CF6, #6D28D9)' : 'linear-gradient(145deg, #7C3AED, #5B21B6)',
+              width: 52, height: 52, borderRadius: '50%', border: 'none', cursor: 'pointer',
+              background: 'linear-gradient(145deg, #7C3AED, #5B21B6)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: on
-                ? '0 0 0 6px rgba(124,58,237,0.26), 0 8px 28px rgba(124,58,237,0.62)'
-                : '0 0 0 4px rgba(124,58,237,0.2), 0 4px 20px rgba(124,58,237,0.5)',
+              boxShadow: on ? '0 0 0 6px rgba(124,58,237,0.24), 0 8px 28px rgba(124,58,237,0.62)' : '0 0 0 4px rgba(124,58,237,0.2), 0 4px 20px rgba(124,58,237,0.5)',
               flexShrink: 0,
-              transform: on ? 'translateY(-16px)' : 'translateY(-10px)',
-              transition: 'all 0.2s ease',
-            }} aria-pressed={on}>
+              transform: on ? 'translateY(-14px) scale(1.04)' : 'translateY(-10px)',
+              transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+            }}>
               {tab.icon()}
             </button>
           )
