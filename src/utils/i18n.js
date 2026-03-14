@@ -1,234 +1,163 @@
 import { useEffect, useMemo, useState } from 'react'
 
 const STORAGE_KEY = 'korset_lang'
-const DEFAULT_LANG = 'ru'
 
-const translations = {
+export const dictionaries = {
   ru: {
     common: {
       appName: 'Körset',
-      loading: 'Загрузка...',
       continue: 'Продолжить',
       skip: 'Пропустить',
-      back: 'Назад',
-      scanAgain: 'Сканировать ещё раз',
-      notFound: 'Товар не найден',
-      unknown: 'Неизвестно',
-      yes: 'Да',
-      no: 'Нет',
-      all: 'Все',
-      forYou: 'Для вас',
-      online: 'Онлайн',
-      add: 'Добавить',
-      reset: 'Сбросить',
       save: 'Сохранить',
-      start: 'Начать',
-      close: 'Закрыть',
-      demo: 'демо',
-      noData: 'Данные появятся позже',
+      cancel: 'Отмена',
+      back: 'Назад',
+      loading: 'Загрузка...',
+      notFound: 'Не найдено',
+      scan: 'Скан',
+      ai: 'ИИ',
+      home: 'Главная',
+      catalog: 'Каталог',
+      profile: 'Профиль',
+      favorites: 'Избранное',
       language: 'Язык',
       russian: 'Русский',
       kazakh: 'Қазақша',
+      yes: 'Да',
+      no: 'Нет',
+      unknown: 'Неизвестно',
     },
     nav: { home: 'Главная', catalog: 'Каталог', scan: 'Скан', ai: 'ИИ', profile: 'Профиль' },
+    onboarding: {
+      title1: 'Этот товар тебе',
+      title2: 'подходит?',
+      subtitle: 'Выбери язык и скажи, что важно — Körset будет проверять каждый товар за тебя.',
+      chooseLang: 'Выберите язык',
+      choosePrefs: 'Что важно для вас',
+      skipSetup: 'Продолжить без настройки',
+      start: 'Начать сканировать →',
+      skipSmall: 'Пропустить',
+      opts: {
+        halal: ['Халал', 'Только разрешённые продукты'],
+        allergy_milk: ['Без молока', 'Аллергия или непереносимость'],
+        allergy_gluten: ['Без глютена', 'Целиакия или диета'],
+        allergy_nuts: ['Без орехов', 'Аллергия на орехи / арахис'],
+        sugar_free: ['Без сахара', 'Диабет, диета или ЗОЖ'],
+        vegan: ['Веган', 'Без мяса, молока и яиц'],
+      },
+    },
     home: {
       welcome: 'Добро пожаловать',
       subtitle: 'Сканируй товары и узнай — подходят ли они именно тебе',
       scanTitle: 'Сканировать штрихкод',
       scanSub: 'Наведи на любой товар в магазине',
-    },
-    onboarding: {
-      title1: 'Выберите язык',
-      subtitle1: 'Интерфейс можно будет изменить позже в профиле.',
-      title2a: 'Этот товар тебе',
-      title2b: 'подходит?',
-      subtitle2: 'Скажи что важно — и Körset будет проверять каждый товар за тебя.',
-      startScanning: 'Начать сканировать →',
-      continueWithoutSetup: 'Продолжить без настройки',
-      halalLabel: 'Халал',
-      halalSub: 'Только разрешённые продукты',
-      milkLabel: 'Без молока',
-      milkSub: 'Аллергия или непереносимость',
-      glutenLabel: 'Без глютена',
-      glutenSub: 'Целиакия или диета',
-      nutsLabel: 'Без орехов',
-      nutsSub: 'Аллергия на орехи / арахис',
-      sugarLabel: 'Без сахара',
-      sugarSub: 'Диабет, диета или ЗОЖ',
-      veganLabel: 'Веган',
-      veganSub: 'Без мяса, молока и яиц',
+      catalogTitle: 'Каталог',
+      catalogSub: 'Все товары',
+      aiTitle: 'AI помощник',
+      aiSub: 'Спроси что угодно',
+      how: 'Как это работает',
+      steps: [
+        'Сканируй штрихкод любого товара в магазине',
+        'Körset найдёт состав, аллергены и КБЖУ',
+        'AI мгновенно проверит — подходит ли товар тебе',
+      ],
     },
     profile: {
       hero: 'Настройте профиль — AI мгновенно покажет подходит ли товар вам',
-      religious: 'Религиозные требования',
-      halalOnly: 'Только Халал',
-      halalOnlySub: 'Исключит товары без маркировки',
-      dietPrefs: 'Диета и предпочтения',
-      dietHint: 'Нажмите всё что подходит',
+      religion: 'Религиозные требования',
+      halalTitle: 'Только Халал',
+      halalSub: 'Исключит товары без маркировки',
+      diet: 'Диета и предпочтения',
+      dietSub: 'Нажмите всё что подходит',
       allergens: 'Мои аллергены',
-      allergensHint: 'Товары с этим составом будут помечены ⚠️',
-      customHint: 'Не нашли? Введите вручную',
-      customPlaceholder: 'Клубника, кунжут...',
-      priority: 'Приоритет выбора',
-      activeFilters: 'Активных фильтров: {{count}}',
-      showProducts: 'Показать подходящие товары',
-      scanQr: 'Сканировать QR-код',
-      prefsLanguage: 'Язык интерфейса',
+      allergensSub: 'Товары с этим составом будут помечены ⚠️',
+      customAllergen: 'Добавить свой аллерген',
+      customPlaceholder: 'Например: кунжут',
+      priority: 'Приоритет подбора',
+      prioritySub: 'Что важнее при поиске альтернатив',
+      summary: 'Ваш профиль',
+      summaryActive: 'Активных параметров',
+      langTitle: 'Язык интерфейса',
+      options: {
+        sugar_free: 'Без сахара', dairy_free: 'Без молочки', gluten_free: 'Без глютена', vegan: 'Веган', vegetarian: 'Вегетарианец', keto: 'Кето', low_calorie: 'Меньше калорий',
+        milk: 'Молоко', gluten: 'Глютен', nuts: 'Орехи', peanuts: 'Арахис', soy: 'Соя', eggs: 'Яйца', fish: 'Рыба', shellfish: 'Моллюски',
+        price: ['Цена', 'Самый дешёвый'], balanced: ['Баланс', 'Цена + качество'], quality: ['Качество', 'Лучший состав'],
+      },
     },
     catalog: {
       title: 'Каталог',
-      itemsInBase: '{{count}} товаров в базе',
-      searchPlaceholder: 'Поиск продуктов...',
-      nothingFound: 'Ничего не найдено',
-      sortFit: 'Подходящие мне',
-      sortCheap: 'Сначала дешевле',
-      sortPricey: 'Сначала дороже',
-      sortRating: 'По рейтингу',
-      catAll: 'Все',
-      catFit: 'Для вас',
-      catGrocery: 'Продукты',
-      catElectronics: 'Электроника',
-      catDiy: 'Стройка',
+      count: 'товаров в базе',
+      cats: { all: 'Все', fit: 'Для вас', grocery: 'Продукты', electronics: 'Электроника', diy: 'Стройка' },
+      sorts: { fit: 'Подходящие мне', cheap: 'Сначала дешевле', pricey: 'Сначала дороже', rating: 'По рейтингу' },
+      search: 'Поиск товара...',
+      empty: 'Ничего не найдено',
     },
     scan: {
-      title: 'Сканер',
-      startScan: 'Сканировать штрихкод',
-      aimAny: 'Наведите на любой товар в магазине',
-      howWorks: 'Как это работает',
-      step1: 'Наведите камеру на штрихкод любого товара',
-      step2: 'Körset найдёт состав, аллергены и КБЖУ',
-      step3: 'AI проверит подходит ли товар именно вам',
-      dbTitle: '3+ млн товаров в базе',
-      dbSub: 'Open Food Facts · Обновляется автоматически',
-      finding: 'Ищем товар...',
+      searching: 'Ищем товар...',
       checkingDb: 'Проверяем базу данных',
-      cameraBack: '← Назад',
-      torchUnavailable: '⚠️ Фонарик недоступен в этом браузере',
-      aimBarcode: 'Наведите на штрихкод товара',
-      supportedFormats: 'Поддерживаются все форматы штрихкодов',
-      notFoundBody: 'Штрихкод {{ean}} не найден в базе данных',
       cameraNotFound: 'Камера не обнаружена',
+      close: '← Назад',
+      torchError: '⚠️ Фонарик недоступен в этом браузере',
+      aim: 'Наведите на штрихкод товара',
+      launching: 'Запуск камеры...',
+      formats: 'Поддерживаются все форматы штрихкодов',
+      headerTitle: 'Сканирование',
+      helper: 'Отсканируй штрихкод и сразу узнай, подходит ли товар тебе',
+      start: 'Запустить сканер',
+      million: '3+ млн товаров',
+      live: 'LIVE база данных',
+      notFoundTitle: 'Товар не найден',
+      notFoundSub: 'Попробуйте отсканировать другой штрихкод',
+      scanAgain: 'Сканировать ещё раз',
     },
-    product: {
-      cardTitle: 'Карточка товара',
-      manufacturerMissing: 'Производитель не указан',
-      specs: 'Характеристики',
-      nutrition: 'КБЖУ ({{base}})',
-      base100: 'на 100 г',
-      params: 'Основные параметры',
-      proteins: 'Белки', fats: 'Жиры', carbs: 'Углеводы', kcal: 'Ккал',
-      extraWillAppear: 'Характеристики будут добавлены',
-      more: 'Дополнительно', hide: 'Скрыть',
-      ingredients: 'Состав', storage: 'Условия хранения', expiry: 'Срок хранения', extraSpecs: 'Доп. характеристики',
-      fits: 'Подходит вам', notFits: 'Не подходит',
-      fitsSub: 'Соответствует вашему профилю', notFitsSub: 'Есть ограничения по вашему профилю',
-      alternatives: 'Альтернативы', askAi: '✦ Спросить AI',
-      photoLater: 'Фото добавим позже',
-      goods: 'Товары', shelf: 'Полка',
-      volume: 'Объём', weight: 'Вес', fat: 'Жирность', sugar: 'Сахар', calories: 'Калории', length: 'Длина', maxPower: 'Мощность', standard: 'Стандарт', power: 'Мощность', type: 'Тип', anc: 'Шумоподавление', battery: 'Батарея', waterproof: 'Защита', coverage: 'Расход', dryTime: 'Сохнет', moisture: 'Влагостойкость', brand: 'Бренд', model: 'Модель', material: 'Материал', size: 'Размер',
-    },
-    external: {
-      searchDb: 'Ищу товар в базе данных...',
-      notFoundBody: 'Этот штрихкод не найден в нашем каталоге и в мировой базе Open Food Facts.',
-      noConnection: 'Нет подключения к интернету или сервер временно недоступен.',
-      askAi: 'Спросить AI',
-      dataSource: 'Данные: Open Food Facts · EAN: {{ean}}',
-      halalUnknown: 'Халал-статус неизвестен — уточните по упаковке',
-      notHalal: 'Не является халал',
-      containsAllergen: 'Содержит аллерген: {{name}}',
-      containsCustom: 'Содержит: {{name}}',
-      containsSugar: 'Содержит сахар',
-      containsDairy: 'Содержит молочные продукты',
-      containsGluten: 'Содержит глютен',
-      notVegan: 'Не подходит для веганов',
-      halalOk: 'Подтверждено как халал ✓',
-      allergensOk: 'Не содержит ваших аллергенов ✓',
-      prefsOk: 'Соответствует вашим предпочтениям',
-      milk: 'Молоко', gluten: 'Глютен', nuts: 'Орехи', peanuts: 'Арахис', soy: 'Соя', eggs: 'Яйца', fish: 'Рыба', shellfish: 'Моллюски', sesame: 'Кунжут', celery: 'Сельдерей', mustard: 'Горчица',
-    },
-    ai: {
-      helperStore: 'Помощник в магазине',
-      helloGeneral: 'Привет! Спроси меня про любой товар, рецепт или что найти в магазине 🛒',
-      helloProduct: 'Привет! Спроси меня про этот товар. Я объясню состав, подскажу альтернативу и скажу, подходит ли он тебе.',
-      retry: 'Попробуй ещё раз.',
-      somethingWrong: 'Что-то пошло не так, попробуй ещё раз.',
-      askProducts: 'Спросить про товары...',
-      askProductOrRecipe: 'Спросить о товаре или рецепте...',
-      qHalal: 'Есть ли халал продукты?',
-      qLactose: 'Что без лактозы?',
-      qNuts: 'Где найти орехи?',
-      qRatatouille: 'Что для рататуя?',
-      qCook: 'Что приготовить?',
-      qHalalGoods: 'Халал товары',
-      qGlutenFree: 'Без глютена',
-      qUnder500: 'Дешевле 500₸',
-    },
-    alternatives: {
-      title: 'Альтернативы',
-      original: 'Исходный товар',
-      betterOptions: 'Подходящие альтернативы',
-      noAlternatives: 'Подходящих альтернатив пока не нашли',
+    aiGeneral: {
+      title: 'Körset AI',
+      online: 'Помощник в магазине',
+      intro: 'Привет! Спроси меня про любой товар, рецепт или что найти в магазине 🛒',
+      placeholder: 'Спросить про товары...',
+      chips: ['Есть ли халал продукты?', 'Что без лактозы?', 'Где найти орехи?', 'Что для рататуя?'],
+      error: 'Что-то пошло не так, попробуй ещё раз.',
     },
   },
   kz: {
     common: {
-      appName: 'Körset', loading: 'Жүктелуде...', continue: 'Жалғастыру', skip: 'Өткізу', back: 'Артқа', scanAgain: 'Қайта сканерлеу', notFound: 'Тауар табылмады', unknown: 'Белгісіз', yes: 'Иә', no: 'Жоқ', all: 'Барлығы', forYou: 'Сізге', online: 'Онлайн', add: 'Қосу', reset: 'Тазарту', save: 'Сақтау', start: 'Бастау', close: 'Жабу', demo: 'демо', noData: 'Дерек кейін қосылады', language: 'Тіл', russian: 'Русский', kazakh: 'Қазақша',
+      appName: 'Körset', continue: 'Жалғастыру', skip: 'Өткізіп жіберу', save: 'Сақтау', cancel: 'Бас тарту', back: 'Артқа', loading: 'Жүктелуде...', notFound: 'Табылмады', scan: 'Скан', ai: 'ЖИ', home: 'Басты', catalog: 'Каталог', profile: 'Профиль', favorites: 'Таңдаулылар', language: 'Тіл', russian: 'Русский', kazakh: 'Қазақша', yes: 'Иә', no: 'Жоқ', unknown: 'Белгісіз'
     },
-    nav: { home: 'Басты', catalog: 'Каталог', scan: 'Скан', ai: 'ИИ', profile: 'Профиль' },
-    home: { welcome: 'Қош келдіңіз', subtitle: 'Тауарды сканерлеп, оның сізге сай екенін бірден біліңіз', scanTitle: 'Штрихкодты сканерлеу', scanSub: 'Дүкендегі кез келген тауарға камераны бағыттаңыз' },
+    nav: { home: 'Басты', catalog: 'Каталог', scan: 'Скан', ai: 'ЖИ', profile: 'Профиль' },
     onboarding: {
-      title1: 'Тілді таңдаңыз', subtitle1: 'Кейін профильде өзгертуге болады.', title2a: 'Бұл тауар саған', title2b: 'сәйкес пе?', subtitle2: 'Өзіңе маңыздысын таңда — Körset әр тауарды сен үшін тексереді.', startScanning: 'Сканерлеуді бастау →', continueWithoutSetup: 'Баптаусыз жалғастыру', halalLabel: 'Халал', halalSub: 'Тек рұқсат етілген өнімдер', milkLabel: 'Сүтсіз', milkSub: 'Аллергия немесе көтере алмау', glutenLabel: 'Глютенсіз', glutenSub: 'Целиакия немесе диета', nutsLabel: 'Жаңғақсыз', nutsSub: 'Жаңғақ / жержаңғақ аллергиясы', sugarLabel: 'Қантсыз', sugarSub: 'Диабет, диета немесе салауатты өмір', veganLabel: 'Веган', veganSub: 'Етсіз, сүтсіз және жұмыртқасыз',
+      title1: 'Бұл тауар саған', title2: 'сәйкес пе?', subtitle: 'Тілді таңда да, не маңызды екенін белгіле — Körset әр тауарды сен үшін тексереді.', chooseLang: 'Тілді таңдаңыз', choosePrefs: 'Сіз үшін не маңызды', skipSetup: 'Баптаусыз жалғастыру', start: 'Сканерлеуді бастау →', skipSmall: 'Өткізіп жіберу',
+      opts: { halal: ['Халал', 'Тек рұқсат етілген өнімдер'], allergy_milk: ['Сүтсіз', 'Аллергия немесе көтере алмау'], allergy_gluten: ['Глютенсіз', 'Целиакия немесе диета'], allergy_nuts: ['Жаңғақсыз', 'Жаңғақ / жержаңғақ аллергиясы'], sugar_free: ['Қантсыз', 'Диабет, диета немесе салауатты өмір'], vegan: ['Веган', 'Етсіз, сүтсіз және жұмыртқасыз'] },
+    },
+    home: {
+      welcome: 'Қош келдіңіз', subtitle: 'Тауарды сканерлеп, оның сізге сай келетінін біліңіз', scanTitle: 'Штрихкодты сканерлеу', scanSub: 'Дүкендегі кез келген тауарға бағыттаңыз', catalogTitle: 'Каталог', catalogSub: 'Барлық тауарлар', aiTitle: 'AI көмекші', aiSub: 'Кез келген сұрақ қойыңыз', how: 'Бұл қалай жұмыс істейді', steps: ['Дүкендегі кез келген тауардың штрихкодын сканерлеңіз', 'Körset құрамын, аллергендерін және КБЖУ-ны табады', 'AI тауардың сізге сай келетінін бірден тексереді'],
     },
     profile: {
-      hero: 'Профильді баптаңыз — AI тауардың сізге сай екенін бірден көрсетеді', religious: 'Діни талаптар', halalOnly: 'Тек халал', halalOnlySub: 'Таңбасы жоқ тауарларды алып тастайды', dietPrefs: 'Диета және таңдаулар', dietHint: 'Сізге керегінің бәрін таңдаңыз', allergens: 'Менің аллергендерім', allergensHint: 'Осындай құрамы бар тауарлар ⚠️ деп белгіленеді', customHint: 'Тізімде жоқ па? Қолмен енгізіңіз', customPlaceholder: 'Құлпынай, күнжіт...', priority: 'Таңдау басымдығы', activeFilters: 'Белсенді сүзгілер: {{count}}', showProducts: 'Сәйкес тауарларды көрсету', scanQr: 'QR-кодты сканерлеу', prefsLanguage: 'Интерфейс тілі',
+      hero: 'Профильді баптаңыз — AI тауардың сізге сай келетінін бірден көрсетеді', religion: 'Діни талаптар', halalTitle: 'Тек Халал', halalSub: 'Белгісі жоқ тауарларды алып тастайды', diet: 'Диета және таңдаулар', dietSub: 'Сәйкес келетіндерінің бәрін белгілеңіз', allergens: 'Менің аллергендерім', allergensSub: 'Осы құрамдағы тауарлар ⚠️ деп белгіленеді', customAllergen: 'Өз аллергеніңізді қосу', customPlaceholder: 'Мысалы: күнжіт', priority: 'Ұсыныс басымдығы', prioritySub: 'Баламаларды іздегенде не маңызды', summary: 'Сіздің профиль', summaryActive: 'Белсенді параметрлер', langTitle: 'Интерфейс тілі',
+      options: { sugar_free: 'Қантсыз', dairy_free: 'Сүтсіз', gluten_free: 'Глютенсіз', vegan: 'Веган', vegetarian: 'Вегетариан', keto: 'Кето', low_calorie: 'Калориясы аз', milk: 'Сүт', gluten: 'Глютен', nuts: 'Жаңғақ', peanuts: 'Жержаңғақ', soy: 'Соя', eggs: 'Жұмыртқа', fish: 'Балық', shellfish: 'Теңіз өнімдері', price: ['Баға', 'Ең арзан'], balanced: ['Теңгерім', 'Баға + сапа'], quality: ['Сапа', 'Ең жақсы құрам'] },
     },
-    catalog: { title: 'Каталог', itemsInBase: 'Базада {{count}} тауар', searchPlaceholder: 'Өнімдерді іздеу...', nothingFound: 'Ештеңе табылмады', sortFit: 'Маған сайлары', sortCheap: 'Алдымен арзаны', sortPricey: 'Алдымен қымбаты', sortRating: 'Рейтинг бойынша', catAll: 'Барлығы', catFit: 'Сізге', catGrocery: 'Өнімдер', catElectronics: 'Электроника', catDiy: 'Құрылыс' },
-    scan: { title: 'Сканер', startScan: 'Штрихкодты сканерлеу', aimAny: 'Дүкендегі кез келген тауарға бағыттаңыз', howWorks: 'Қалай жұмыс істейді', step1: 'Камераны кез келген тауардың штрихкодысына бағыттаңыз', step2: 'Körset құрамын, аллергендерді және КБЖУ табады', step3: 'AI тауардың дәл сізге сай екенін тексереді', dbTitle: 'Базада 3+ млн тауар', dbSub: 'Open Food Facts · Автоматты жаңарады', finding: 'Тауар ізделуде...', checkingDb: 'Дерекқор тексерілуде', cameraBack: '← Артқа', torchUnavailable: '⚠️ Бұл браузерде фонарь қолжетімсіз', aimBarcode: 'Штрихкодқа бағыттаңыз', supportedFormats: 'Штрихкодтың барлық форматтары қолдайды', notFoundBody: '{{ean}} штрихкоды дерекқордан табылмады', cameraNotFound: 'Камера табылмады' },
-    product: { cardTitle: 'Тауар картасы', manufacturerMissing: 'Өндіруші көрсетілмеген', specs: 'Сипаттамалар', nutrition: 'КБЖУ ({{base}})', base100: '100 г үшін', params: 'Негізгі параметрлер', proteins: 'Ақуыз', fats: 'Май', carbs: 'Көмірсу', kcal: 'Ккал', extraWillAppear: 'Сипаттамалар кейін қосылады', more: 'Қосымша', hide: 'Жасыру', ingredients: 'Құрамы', storage: 'Сақтау шарттары', expiry: 'Сақтау мерзімі', extraSpecs: 'Қосымша сипаттамалар', fits: 'Сізге сай', notFits: 'Сізге сай емес', fitsSub: 'Профиліңізге сәйкес келеді', notFitsSub: 'Профиліңіз бойынша шектеулер бар', alternatives: 'Балама нұсқалар', askAi: '✦ ИИ-ден сұрау', photoLater: 'Фото кейін қосылады', goods: 'Тауарлар', shelf: 'Сөре', volume: 'Көлемі', weight: 'Салмағы', fat: 'Майлылығы', sugar: 'Қант', calories: 'Калория', length: 'Ұзындығы', maxPower: 'Қуаты', standard: 'Стандарт', power: 'Қуат', type: 'Түрі', anc: 'Шуды басу', battery: 'Батарея', waterproof: 'Қорғаныс', coverage: 'Шығыны', dryTime: 'Кебуі', moisture: 'Ылғалға төзімді', brand: 'Бренд', model: 'Модель', material: 'Материал', size: 'Өлшем' },
-    external: { searchDb: 'Тауар дерекқордан ізделуде...', notFoundBody: 'Бұл штрихкод біздің каталогтан да, Open Food Facts базасынан да табылмады.', noConnection: 'Интернетке қосылу жоқ немесе сервер уақытша қолжетімсіз.', askAi: 'ИИ-ден сұрау', dataSource: 'Дерек: Open Food Facts · EAN: {{ean}}', halalUnknown: 'Халал мәртебесі белгісіз — қаптамадан нақтылаңыз', notHalal: 'Халал емес', containsAllergen: 'Аллерген бар: {{name}}', containsCustom: 'Құрамында бар: {{name}}', containsSugar: 'Құрамында қант бар', containsDairy: 'Құрамында сүт өнімдері бар', containsGluten: 'Құрамында глютен бар', notVegan: 'Вегандарға жарамайды', halalOk: 'Халал екені расталды ✓', allergensOk: 'Сіздің аллергендеріңіз жоқ ✓', prefsOk: 'Сіздің қалауыңызға сәйкес', milk: 'Сүт', gluten: 'Глютен', nuts: 'Жаңғақ', peanuts: 'Жержаңғақ', soy: 'Соя', eggs: 'Жұмыртқа', fish: 'Балық', shellfish: 'Теңіз өнімдері', sesame: 'Күнжіт', celery: 'Балдыркөк', mustard: 'Қыша' },
-    ai: { helperStore: 'Дүкендегі көмекші', helloGeneral: 'Сәлем! Кез келген тауар, рецепт немесе дүкеннен не табу туралы сұраңыз 🛒', helloProduct: 'Сәлем! Осы тауар туралы сұраңыз. Құрамын түсіндіріп, балама ұсынамын және сізге сай ма соны айтамын.', retry: 'Қайта көріңіз.', somethingWrong: 'Бір нәрсе дұрыс болмады, қайта көріңіз.', askProducts: 'Тауар туралы сұрау...', askProductOrRecipe: 'Тауар немесе рецепт туралы сұраңыз...', qHalal: 'Халал өнімдер бар ма?', qLactose: 'Лактозасыз не бар?', qNuts: 'Жаңғақ қайда?', qRatatouille: 'Рататуйға не керек?', qCook: 'Не пісіруге болады?', qHalalGoods: 'Халал тауарлар', qGlutenFree: 'Глютенсіз', qUnder500: '500₸-ден арзан' },
-    alternatives: { title: 'Балама нұсқалар', original: 'Бастапқы тауар', betterOptions: 'Сәйкес баламалар', noAlternatives: 'Сәйкес баламалар әлі табылмады' },
-  },
+    catalog: { title: 'Каталог', count: 'тауар базада', cats: { all: 'Барлығы', fit: 'Сізге сай', grocery: 'Өнімдер', electronics: 'Электроника', diy: 'Құрылыс' }, sorts: { fit: 'Маған сайлары', cheap: 'Алдымен арзаны', pricey: 'Алдымен қымбаты', rating: 'Рейтинг бойынша' }, search: 'Тауарды іздеу...', empty: 'Ештеңе табылмады' },
+    scan: { searching: 'Тауар ізделуде...', checkingDb: 'Дерекқор тексерілуде', cameraNotFound: 'Камера табылмады', close: '← Артқа', torchError: '⚠️ Бұл браузерде шам қолжетімсіз', aim: 'Штрихкодқа бағыттаңыз', launching: 'Камера іске қосылуда...', formats: 'Барлық штрихкод форматтары қолдау табады', headerTitle: 'Сканерлеу', helper: 'Штрихкодты сканерлеп, тауардың сізге сай келетінін бірден біліңіз', start: 'Сканерді іске қосу', million: '3+ млн тауар', live: 'LIVE дерекқоры', notFoundTitle: 'Тауар табылмады', notFoundSub: 'Басқа штрихкодты сканерлеп көріңіз', scanAgain: 'Қайта сканерлеу' },
+    aiGeneral: { title: 'Körset AI', online: 'Дүкендегі көмекші', intro: 'Сәлем! Маған кез келген тауар, рецепт немесе дүкеннен не табуға болатыны туралы сұрақ қойыңыз 🛒', placeholder: 'Тауарлар туралы сұраңыз...', chips: ['Халал өнімдер бар ма?', 'Лактозасыз не бар?', 'Жаңғақ қай жерде?', 'Рататуйға не керек?'], error: 'Бір нәрсе дұрыс болмады, тағы бір рет көріңіз.' },
+  }
 }
 
-function resolve(obj, path) { return path.split('.').reduce((acc, key) => acc?.[key], obj) }
-function interpolate(str, vars = {}) { return String(str).replace(/\{\{(.*?)\}\}/g, (_, key) => vars[key.trim()] ?? '') }
+export function getLang() { return localStorage.getItem(STORAGE_KEY) || 'ru' }
+export function setLang(lang) { localStorage.setItem(STORAGE_KEY, lang); window.dispatchEvent(new CustomEvent('korset-lang-change', { detail: lang })) }
 
-export function getLang() {
-  if (typeof window === 'undefined') return DEFAULT_LANG
-  return localStorage.getItem(STORAGE_KEY) || DEFAULT_LANG
-}
-
-export function setLang(lang) {
-  localStorage.setItem(STORAGE_KEY, lang)
-  window.dispatchEvent(new CustomEvent('korset-lang-changed', { detail: lang }))
-}
-
-export function translate(key, vars = {}, lang = getLang()) {
-  const value = resolve(translations[lang] || translations[DEFAULT_LANG], key) ?? resolve(translations[DEFAULT_LANG], key) ?? key
-  return typeof value === 'string' ? interpolate(value, vars) : value
-}
+function deepGet(obj, path) { return path.split('.').reduce((acc, part) => acc?.[part], obj) }
 
 export function useI18n() {
   const [lang, setLangState] = useState(getLang())
   useEffect(() => {
-    const handler = (e) => setLangState(e.detail || getLang())
-    window.addEventListener('korset-lang-changed', handler)
-    return () => window.removeEventListener('korset-lang-changed', handler)
+    const h = (e) => setLangState(e.detail || getLang())
+    window.addEventListener('korset-lang-change', h)
+    return () => window.removeEventListener('korset-lang-change', h)
   }, [])
-  const api = useMemo(() => ({
-    lang,
-    setLang: (next) => { setLang(next); setLangState(next) },
-    t: (key, vars) => translate(key, vars, lang),
-  }), [lang])
-  return api
+  const dict = dictionaries[lang] || dictionaries.ru
+  const t = useMemo(() => (key, fallback) => deepGet(dict, key) ?? fallback ?? key, [dict])
+  return { lang, setLang, t }
 }
 
-export function formatDateLocalized(date = new Date(), lang = getLang()) {
-  return new Intl.DateTimeFormat(lang === 'kz' ? 'kk-KZ' : 'ru-RU', { weekday: 'long', day: 'numeric', month: 'long' }).format(date)
+export function formatHomeDate(lang) {
+  const locale = lang === 'kz' ? 'kk-KZ' : 'ru-RU'
+  return new Date().toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long' })
 }
-
-export const languageOptions = [
-  { id: 'ru', labelKey: 'common.russian' },
-  { id: 'kz', labelKey: 'common.kazakh' },
-]
