@@ -56,6 +56,7 @@ export const DEFAULT_PROFILE = {
   allergens: [],
   sugarFree: false,
   priority: 'quality',
+  lang: 'ru',
 }
 
 export function loadProfile() {

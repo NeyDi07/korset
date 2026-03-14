@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { loadProfile, saveProfile } from '../utils/profile.js'
+import { useI18n } from '../utils/i18n.js'
 
 const DIET_GOALS = [
   { id: 'sugar_free',  label: 'Без сахара',    icon: 'nosugar'  },
@@ -178,11 +179,13 @@ function Icon({ name, size = 20 }) {
 
 export default function ProfileScreen() {
   const navigate = useNavigate()
+  const { t, lang, setLang } = useI18n()
   const allergenInputRef = useRef(null)
   const [profile, setProfile] = useState(() => {
     const s = loadProfile()
     return {
       halal: s.halal || false,
+      lang: s.lang || lang,
       dietGoals: s.dietGoals || [],
       allergens: s.allergens || [],
       customAllergens: s.customAllergens || [],
@@ -191,7 +194,7 @@ export default function ProfileScreen() {
   })
   const [allergenInput, setAllergenInput] = useState('')
 
-  useEffect(() => { saveProfile({ ...profile, presetId: 'custom' }) }, [profile])
+  useEffect(() => { saveProfile({ ...profile, presetId: 'custom', lang }) }, [profile, lang])
 
   const toggleDiet = id => setProfile(p => ({
     ...p, dietGoals: p.dietGoals.includes(id) ? p.dietGoals.filter(x => x !== id) : [...p.dietGoals, id]
@@ -209,6 +212,12 @@ export default function ProfileScreen() {
 
   const activeCount = profile.dietGoals.length + profile.allergens.length + profile.customAllergens.length + (profile.halal ? 1 : 0)
 
+
+  const dietLabel = (id) => t(`profile.options.${id}`)
+  const allergenLabel = (id) => t(`profile.options.${id}`)
+  const priorityLabel = (id) => t(`profile.options.${id}.0`)
+  const priorityDesc = (id) => t(`profile.options.${id}.1`)
+
   return (
     <div className="screen" style={{ paddingTop: 0, overflowX: 'hidden' }}>
 
@@ -225,14 +234,14 @@ export default function ProfileScreen() {
         />
         <p style={{ color: 'rgba(180,175,210,0.85)', fontSize: 13, lineHeight: 1.6,
           textAlign: 'center', padding: '4px 24px 18px', margin: 0 }}>
-          Настройте профиль — AI мгновенно покажет подходит ли товар вам
+          {t('profile.hero')}
         </p>
       </div>
 
       {/* ── HALAL ── */}
       <div style={{ padding: '20px 20px 8px' }}>
         <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '1.2px', marginBottom: 10 }}>
-          Религиозные требования
+          {t('profile.religion')}
         </div>
         <div onClick={() => setProfile(p => ({ ...p, halal: !p.halal }))} style={{
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -250,8 +259,8 @@ export default function ProfileScreen() {
               </svg>
             </div>
             <div>
-              <div style={{ fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 600, color: 'var(--text)' }}>Только Халал</div>
-              <div style={{ fontSize: 12, color: 'var(--text-dim)', marginTop: 1 }}>Исключит товары без маркировки</div>
+              <div style={{ fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 600, color: 'var(--text)' }}>{t('profile.halalTitle')}</div>
+              <div style={{ fontSize: 12, color: 'var(--text-dim)', marginTop: 1 }}>{t('profile.halalSub')}</div>
             </div>
           </div>
           <div style={{ width: 46, height: 26, borderRadius: 13,
@@ -269,8 +278,8 @@ export default function ProfileScreen() {
       {/* ── DIET ── */}
       <div style={{ padding: '16px 20px 8px' }}>
         <div style={{ marginBottom: 12 }}>
-          <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '1.2px' }}>Диета и предпочтения</div>
-          <div style={{ fontSize: 12, color: 'var(--text-dim)', opacity: 0.6, marginTop: 3 }}>Нажмите всё что подходит</div>
+          <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '1.2px' }}>{t('profile.diet')}</div>
+          <div style={{ fontSize: 12, color: 'var(--text-dim)', opacity: 0.6, marginTop: 3 }}>{t('profile.dietSub')}</div>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
           {DIET_GOALS.map(d => {
@@ -289,7 +298,7 @@ export default function ProfileScreen() {
                   <Icon name={d.icon} size={16} />
                 </div>
                 <span style={{ fontSize: 13, fontWeight: 500, color: active ? 'var(--primary-bright)' : 'rgba(210,210,240,0.95)', lineHeight: 1.3 }}>
-                  {d.label}
+                  {dietLabel(d.id)}
                 </span>
                 {active && <div style={{ marginLeft: 'auto', width: 16, height: 16, borderRadius: '50%',
                   background: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -303,8 +312,8 @@ export default function ProfileScreen() {
       {/* ── ALLERGENS ── */}
       <div style={{ padding: '16px 20px 8px' }}>
         <div style={{ marginBottom: 12 }}>
-          <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '1.2px' }}>Мои аллергены</div>
-          <div style={{ fontSize: 12, color: 'var(--text-dim)', opacity: 0.6, marginTop: 3 }}>Товары с этим составом будут помечены ⚠️</div>
+          <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '1.2px' }}>{t('profile.allergens')}</div>
+          <div style={{ fontSize: 12, color: 'var(--text-dim)', opacity: 0.6, marginTop: 3 }}>{t('profile.allergensSub')}</div>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, marginBottom: 12 }}>
           {ALLERGENS.map(a => {
@@ -324,7 +333,7 @@ export default function ProfileScreen() {
                   <Icon name={a.icon} size={17} />
                 </div>
                 <span style={{ fontSize: 11, fontWeight: 500, textAlign: 'center', lineHeight: 1.2,
-                  color: active ? '#F87171' : 'rgba(200,200,235,0.95)' }}>{a.label}</span>
+                  color: active ? '#F87171' : 'rgba(200,200,235,0.95)' }}>{allergenLabel(a.id)}</span>
                 {active && <div style={{ position: 'absolute', top: -5, right: -5,
                   width: 16, height: 16, borderRadius: '50%', background: '#EF4444',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -336,12 +345,12 @@ export default function ProfileScreen() {
 
         {/* Custom input */}
         <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 14, padding: '12px 14px' }}>
-          <div style={{ fontSize: 12, color: 'var(--text-dim)', marginBottom: 8 }}>Не нашли? Введите вручную</div>
+          <div style={{ fontSize: 12, color: 'var(--text-dim)', marginBottom: 8 }}>{t('profile.customAllergen')}</div>
           <div style={{ display: 'flex', gap: 8 }}>
             <input ref={allergenInputRef} value={allergenInput}
               onChange={e => setAllergenInput(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && addCustom()}
-              placeholder="Клубника, кунжут..."
+              placeholder={t('profile.customPlaceholder')}
               style={{ flex: 1, background: 'var(--surface)', border: '1px solid var(--border-bright)',
                 borderRadius: 10, padding: '9px 12px', color: 'var(--text)',
                 fontSize: 13, fontFamily: 'var(--font-body)', outline: 'none' }}
@@ -350,7 +359,7 @@ export default function ProfileScreen() {
               background: 'var(--primary-dim)', border: '1px solid rgba(139,92,246,0.3)',
               color: 'var(--primary-bright)', fontSize: 13, fontWeight: 600,
               cursor: 'pointer', fontFamily: 'var(--font-body)', whiteSpace: 'nowrap' }}>
-              + Добавить
+              {t('common.save')}
             </button>
           </div>
           {profile.customAllergens.length > 0 && (
@@ -372,7 +381,7 @@ export default function ProfileScreen() {
       {/* ── PRIORITY ── */}
       <div style={{ padding: '16px 20px 8px' }}>
         <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '1.2px', marginBottom: 12 }}>
-          Приоритет выбора
+          {t('profile.priority')}
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
           {PRIORITIES.map(p => {
@@ -395,10 +404,30 @@ export default function ProfileScreen() {
                 </div>
                 <div style={{ textAlign: 'center' }}>
                   <div style={{ fontFamily: 'var(--font-display)', fontSize: 13, fontWeight: 700,
-                    color: active ? 'var(--primary-bright)' : 'rgba(230,230,255,1)' }}>{p.label}</div>
-                  <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 3, lineHeight: 1.3 }}>{p.desc}</div>
+                    color: active ? 'var(--primary-bright)' : 'rgba(230,230,255,1)' }}>{priorityLabel(p.id)}</div>
+                  <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 3, lineHeight: 1.3 }}>{priorityDesc(p.id)}</div>
                 </div>
                 {active && <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--primary)' }} />}
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+
+      <div style={{ padding: '16px 20px 8px' }}>
+        <div style={{ marginBottom: 12 }}>
+          <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '1.2px' }}>{t('profile.langTitle')}</div>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+          {['ru','kz'].map(code => {
+            const active = lang === code
+            return (
+              <button key={code} onClick={() => { setLang(code); setProfile(p => ({ ...p, lang: code })) }} style={{
+                padding: '12px 14px', borderRadius: 14, border: `1.5px solid ${active ? 'var(--primary-mid)' : 'var(--border)'}`,
+                background: active ? 'rgba(124,58,237,0.1)' : 'var(--card)', cursor: 'pointer', color: active ? 'var(--primary-bright)' : 'rgba(210,210,240,0.95)', fontWeight: 600,
+              }}>
+                {code === 'ru' ? t('common.russian') : t('common.kazakh')}
               </button>
             )
           })}
