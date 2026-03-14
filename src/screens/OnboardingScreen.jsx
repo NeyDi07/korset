@@ -1,218 +1,322 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { saveProfile, loadProfile } from '../utils/profile.js'
+import { loadProfile, saveProfile } from '../utils/profile.js'
 import { setLang, useI18n } from '../utils/i18n.js'
 
-const OPTIONS = [
-  {
-    id: 'halal',
-    emoji: '☪️',
-    label: 'Халал',
-    sub: 'Только разрешённые продукты',
-    apply: p => ({ ...p, halalOnly: true }),
-  },
-  {
-    id: 'allergy_milk',
-    emoji: '🥛',
-    label: 'Без молока',
-    sub: 'Аллергия или непереносимость',
-    apply: p => ({ ...p, allergens: [...(p.allergens||[]).filter(a=>a!=='milk'), 'milk'] }),
-  },
-  {
-    id: 'allergy_gluten',
-    emoji: '🌾',
-    label: 'Без глютена',
-    sub: 'Целиакия или диета',
-    apply: p => ({ ...p, allergens: [...(p.allergens||[]).filter(a=>a!=='gluten'), 'gluten'], dietGoals: [...(p.dietGoals||[]).filter(g=>g!=='gluten_free'), 'gluten_free'] }),
-  },
-  {
-    id: 'allergy_nuts',
-    emoji: '🥜',
-    label: 'Без орехов',
-    sub: 'Аллергия на орехи / арахис',
-    apply: p => ({ ...p, allergens: [...(p.allergens||[]).filter(a=>a!=='nuts'&&a!=='peanuts'), 'nuts', 'peanuts'] }),
-  },
-  {
-    id: 'sugar_free',
-    emoji: '🚫',
-    label: 'Без сахара',
-    sub: 'Диабет, диета или ЗОЖ',
-    apply: p => ({ ...p, sugarFree: true, dietGoals: [...(p.dietGoals||[]).filter(g=>g!=='sugar_free'), 'sugar_free'] }),
-  },
-  {
-    id: 'vegan',
-    emoji: '🌱',
-    label: 'Веган',
-    sub: 'Без мяса, молока и яиц',
-    apply: p => ({ ...p, dietGoals: [...(p.dietGoals||[]).filter(g=>g!=='vegan'), 'vegan'] }),
-  },
+const PREFERENCES = [
+  { id: 'halal', icon: 'halal', ru: 'Халал', kz: 'Халал' },
+  { id: 'sugar_free', icon: 'nosugar', ru: 'Без сахара', kz: 'Қантсыз' },
+  { id: 'dairy_free', icon: 'nodairy', ru: 'Без лактозы', kz: 'Лактозасыз' },
+  { id: 'gluten_free', icon: 'nogluten', ru: 'Без глютена', kz: 'Глютенсіз' },
+  { id: 'vegan', icon: 'vegan', ru: 'Веган', kz: 'Веган' },
+  { id: 'vegetarian', icon: 'veggie', ru: 'Вегетариан', kz: 'Вегетариан' },
+  { id: 'keto', icon: 'keto', ru: 'Кето', kz: 'Кето' },
+  { id: 'kid_friendly', icon: 'kids', ru: 'Для детей', kz: 'Балаларға' },
 ]
+
+const ALLERGENS = [
+  { id: 'milk', icon: 'milk', ru: 'Молоко', kz: 'Сүт' },
+  { id: 'eggs', icon: 'egg', ru: 'Яйца', kz: 'Жұмыртқа' },
+  { id: 'gluten', icon: 'wheat', ru: 'Глютен', kz: 'Глютен' },
+  { id: 'nuts', icon: 'nuts', ru: 'Орехи', kz: 'Жаңғақ' },
+  { id: 'peanuts', icon: 'peanut', ru: 'Арахис', kz: 'Жержаңғақ' },
+  { id: 'soy', icon: 'soy', ru: 'Соя', kz: 'Соя' },
+  { id: 'fish', icon: 'fish', ru: 'Рыба', kz: 'Балық' },
+  { id: 'shellfish', icon: 'shell', ru: 'Морепродукты', kz: 'Теңіз өнімдері' },
+  { id: 'sesame', icon: 'sesame', ru: 'Кунжут', kz: 'Күнжіт' },
+  { id: 'honey', icon: 'honey', ru: 'Мёд', kz: 'Бал' },
+]
+
+const FEATURE_KEYS = ['fit', 'halal', 'allergens', 'ai', 'alternatives', 'facts']
+
+function FeatureIcon({ name }) {
+  const common = { width: 18, height: 18, viewBox: '0 0 24 24', fill: 'none' }
+  switch (name) {
+    case 'fit':
+      return <svg {...common}><path d="M12 3l2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.5-4.8 2.5.9-5.4L4.2 8.7l5.4-.8L12 3z" stroke="#A78BFA" strokeWidth="1.7" fill="rgba(167,139,250,0.18)" /></svg>
+    case 'halal':
+      return <svg {...common}><path d="M20 12.2A8.5 8.5 0 1 1 11.8 3a7 7 0 1 0 8.2 9.2Z" stroke="#A78BFA" strokeWidth="1.8" strokeLinecap="round"/><path d="M16.5 7.5l.6 1.6 1.7.1-1.3 1 .5 1.7-1.5-.9-1.5.9.5-1.7-1.3-1 1.7-.1.6-1.6Z" fill="#A78BFA"/></svg>
+    case 'allergens':
+      return <svg {...common}><path d="M12 3 3 19h18L12 3Z" stroke="#F87171" strokeWidth="1.8" fill="rgba(248,113,113,0.14)"/><path d="M12 9v4" stroke="#FCA5A5" strokeWidth="1.8" strokeLinecap="round"/><circle cx="12" cy="16.5" r="1" fill="#FCA5A5"/></svg>
+    case 'ai':
+      return <svg {...common}><rect x="4" y="5" width="16" height="12" rx="4" stroke="#A78BFA" strokeWidth="1.8" fill="rgba(167,139,250,0.14)"/><path d="M9 11h6M9 14h4" stroke="#C4B5FD" strokeWidth="1.7" strokeLinecap="round"/><path d="M10 17 8 20l6-3" stroke="#A78BFA" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
+    case 'alternatives':
+      return <svg {...common}><path d="M7 7h10M7 12h7M7 17h10" stroke="#A78BFA" strokeWidth="1.8" strokeLinecap="round"/><path d="m14 10 3 2-3 2" stroke="#C4B5FD" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
+    default:
+      return <svg {...common}><path d="M7 5h10M5 12h14M7 19h10" stroke="#A78BFA" strokeWidth="1.8" strokeLinecap="round"/></svg>
+  }
+}
+
+function ChoiceIcon({ name, active = false, size = 18 }) {
+  const color = active ? '#E9D5FF' : 'rgba(214,214,245,0.9)'
+  const fill = active ? 'rgba(124,58,237,0.22)' : 'rgba(255,255,255,0.06)'
+  const common = { width: size, height: size, viewBox: '0 0 24 24', fill: 'none' }
+  switch (name) {
+    case 'nosugar':
+      return <svg {...common}><rect x="5" y="8" width="14" height="11" rx="2" stroke={color} strokeWidth="1.7" fill={fill}/><line x1="4" y1="4" x2="20" y2="20" stroke="#F87171" strokeWidth="2" strokeLinecap="round"/></svg>
+    case 'nodairy':
+      return <svg {...common}><path d="M9 3h6l2 5v12H7V8l2-5Z" stroke={color} strokeWidth="1.7" fill={fill}/><line x1="4" y1="4" x2="20" y2="20" stroke="#F87171" strokeWidth="2" strokeLinecap="round"/></svg>
+    case 'nogluten':
+      return <svg {...common}><path d="M12 2v20" stroke={color} strokeWidth="1.7" strokeLinecap="round"/><path d="M8 7c1 .7 2 .8 4 .1 1.4-.5 2.3-.4 4 .4M8 12c1 .7 2 .8 4 .1 1.4-.5 2.3-.4 4 .4" stroke={color} strokeWidth="1.6" strokeLinecap="round"/><line x1="4" y1="4" x2="20" y2="20" stroke="#F87171" strokeWidth="2" strokeLinecap="round"/></svg>
+    case 'vegan':
+      return <svg {...common}><path d="M21 4C10 4 5 12 5 20" stroke="#34D399" strokeWidth="1.8" strokeLinecap="round"/><path d="M5 20c3-7 8-12 16-11-1 4-4 10-16 11Z" stroke="#34D399" strokeWidth="1.8" fill="rgba(52,211,153,0.18)"/></svg>
+    case 'veggie':
+      return <svg {...common}><path d="M12 4c4 2 5 5 5 8 0 5-5 8-5 8s-5-3-5-8c0-3 1-6 5-8Z" fill="rgba(249,115,22,0.18)" stroke="#FB923C" strokeWidth="1.8"/><path d="M10 4c-1-2-2-3-3-2M12 4V1M14 4c1-2 2-3 3-2" stroke="#34D399" strokeWidth="1.7" strokeLinecap="round"/></svg>
+    case 'keto':
+      return <svg {...common}><path d="M12 3c4.5 0 7 3.5 7 8 0 5.5-3.5 10-7 11-3.5-1-7-5.5-7-11 0-4.5 2.5-8 7-8z" fill="rgba(132,204,22,0.16)" stroke="#84CC16" strokeWidth="1.8"/><circle cx="12" cy="13.5" r="3" fill="rgba(161,98,7,0.45)" stroke="#A16207" strokeWidth="1.4"/></svg>
+    case 'kids':
+      return <svg {...common}><circle cx="9" cy="8" r="2.3" fill="rgba(96,165,250,0.18)" stroke="#60A5FA" strokeWidth="1.6"/><circle cx="15.5" cy="9.5" r="1.8" fill="rgba(167,139,250,0.18)" stroke="#A78BFA" strokeWidth="1.6"/><path d="M5.5 18c.7-2.5 2.5-4 4.5-4s3.8 1.5 4.5 4" stroke="#60A5FA" strokeWidth="1.7" strokeLinecap="round"/><path d="M13.5 18c.4-1.6 1.5-2.7 3-2.7s2.7 1.1 3 2.7" stroke="#A78BFA" strokeWidth="1.7" strokeLinecap="round"/></svg>
+    case 'milk':
+      return <svg {...common}><path d="M9 3h6l2 5v12H7V8l2-5Z" stroke={color} strokeWidth="1.7" fill={fill}/></svg>
+    case 'egg':
+      return <svg {...common}><path d="M12 3C8.8 3 6.5 8 6.5 12.3a5.5 5.5 0 1 0 11 0C17.5 8 15.2 3 12 3Z" stroke="#FCD34D" strokeWidth="1.7" fill="rgba(252,211,77,0.18)"/></svg>
+    case 'wheat':
+      return <svg {...common}><path d="M12 3v18" stroke="#FCD34D" strokeWidth="1.7" strokeLinecap="round"/><path d="M9 8c1 .7 1.8 1 3 .5M15 8c-1 .7-1.8 1-3 .5M9 12c1 .7 1.8 1 3 .5M15 12c-1 .7-1.8 1-3 .5" stroke="#FCD34D" strokeWidth="1.6" strokeLinecap="round"/></svg>
+    case 'nuts':
+      return <svg {...common}><path d="M12 4c4.2 0 6.8 2.7 6.8 6.3 0 4.8-3.4 8.8-6.8 9.7-3.4-.9-6.8-4.9-6.8-9.7C5.2 6.7 7.8 4 12 4Z" stroke="#D97706" strokeWidth="1.7" fill="rgba(217,119,6,0.16)"/></svg>
+    case 'peanut':
+      return <svg {...common}><path d="M10 4.5a3.5 3.5 0 1 0 0 7h4a3.5 3.5 0 1 0 0-7h-4ZM10 12.5a3.5 3.5 0 1 0 0 7h4a3.5 3.5 0 1 0 0-7h-4Z" stroke="#F59E0B" strokeWidth="1.7" fill="rgba(245,158,11,0.16)"/></svg>
+    case 'soy':
+      return <svg {...common}><ellipse cx="9" cy="9" rx="3.6" ry="5.2" transform="rotate(-18 9 9)" stroke="#84CC16" strokeWidth="1.7" fill="rgba(132,204,22,0.16)"/><ellipse cx="15" cy="9" rx="3.6" ry="5.2" transform="rotate(18 15 9)" stroke="#84CC16" strokeWidth="1.7" fill="rgba(132,204,22,0.12)"/></svg>
+    case 'fish':
+      return <svg {...common}><path d="M20 12c-3-3.4-7-4.8-12-3.4L4 12l4 3.4c5 1.6 9 .2 12-3.4Z" stroke="#60A5FA" strokeWidth="1.7" fill="rgba(96,165,250,0.16)"/><path d="M4 12 2.5 9M4 12l-1.5 3" stroke="#60A5FA" strokeWidth="1.6" strokeLinecap="round"/></svg>
+    case 'shell':
+      return <svg {...common}><path d="M15 5c2 1.4 3 3.8 2 6.6l-2 2.8-2.8 1.7-1.7 3.4" stroke="#F472B6" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/><path d="M15 5c-2 0-3.8 1-5 2.8L8.3 12l1.5 3.2" stroke="#F472B6" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/></svg>
+    case 'sesame':
+      return <svg {...common}><ellipse cx="8" cy="12" rx="2.2" ry="3.4" transform="rotate(-18 8 12)" stroke="#FDE68A" strokeWidth="1.6" fill="rgba(253,230,138,0.18)"/><ellipse cx="12" cy="10" rx="2.2" ry="3.4" stroke="#FDE68A" strokeWidth="1.6" fill="rgba(253,230,138,0.14)"/><ellipse cx="16" cy="12" rx="2.2" ry="3.4" transform="rotate(18 16 12)" stroke="#FDE68A" strokeWidth="1.6" fill="rgba(253,230,138,0.12)"/></svg>
+    case 'honey':
+      return <svg {...common}><path d="M9 5h6l2 4v8a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V9l2-4Z" stroke="#F59E0B" strokeWidth="1.7" fill="rgba(245,158,11,0.16)"/><path d="M7 11h10M7 15h10" stroke="#FBBF24" strokeWidth="1.5" strokeLinecap="round"/></svg>
+    default:
+      return <svg {...common}><circle cx="12" cy="12" r="8" stroke={color} strokeWidth="1.7" fill={fill}/></svg>
+  }
+}
+
+function PhoneIllustration() {
+  return (
+    <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginBottom: 22 }}>
+      <div style={{ width: 250, borderRadius: 28, border: '1px solid rgba(124,58,237,0.32)', background: 'linear-gradient(180deg, rgba(15,15,30,0.98), rgba(9,9,20,0.98))', boxShadow: '0 18px 50px rgba(0,0,0,0.42), 0 0 40px rgba(124,58,237,0.14)', padding: 14, position: 'relative' }}>
+        <div style={{ width: 72, height: 6, borderRadius: 999, background: 'rgba(255,255,255,0.08)', margin: '0 auto 14px' }} />
+        <div style={{ borderRadius: 22, border: '1px solid rgba(255,255,255,0.06)', background: 'linear-gradient(180deg, rgba(18,18,36,1), rgba(10,10,22,1))', padding: 14 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+            <div style={{ color: '#fff', fontWeight: 700, fontSize: 13 }}>Körset</div>
+            <div style={{ padding: '4px 8px', borderRadius: 999, background: 'rgba(124,58,237,0.18)', color: '#C4B5FD', fontSize: 10, fontWeight: 700 }}>AI</div>
+          </div>
+          <div style={{ borderRadius: 18, border: '1px solid rgba(124,58,237,0.28)', background: 'rgba(124,58,237,0.08)', padding: 14, position: 'relative', overflow: 'hidden' }}>
+            <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at 50% 0%, rgba(124,58,237,0.22), transparent 58%)' }} />
+            <div style={{ position: 'relative' }}>
+              <div style={{ width: '100%', height: 110, borderRadius: 16, background: 'linear-gradient(180deg, rgba(10,14,24,1), rgba(9,9,18,1))', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>
+                <div style={{ width: 136, height: 72, borderRadius: 18, border: '2px solid rgba(196,181,253,0.9)', position: 'relative', boxShadow: '0 0 18px rgba(124,58,237,0.22) inset' }}>
+                  <div style={{ position: 'absolute', left: -1, right: -1, top: '50%', height: 2, transform: 'translateY(-50%)', background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.45) 20%, rgba(255,255,255,0.95) 50%, rgba(255,255,255,0.45) 80%, transparent 100%)' }} />
+                </div>
+              </div>
+              <div style={{ display: 'grid', gap: 8 }}>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <div style={{ padding: '6px 10px', borderRadius: 12, background: 'rgba(52,211,153,0.14)', border: '1px solid rgba(52,211,153,0.24)', color: '#86EFAC', fontSize: 11, fontWeight: 700 }}>Халал</div>
+                  <div style={{ padding: '6px 10px', borderRadius: 12, background: 'rgba(248,113,113,0.14)', border: '1px solid rgba(248,113,113,0.24)', color: '#FCA5A5', fontSize: 11, fontWeight: 700 }}>Аллерген</div>
+                </div>
+                <div style={{ padding: '10px 12px', borderRadius: 14, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.05)', color: 'rgba(230,230,250,0.95)', fontSize: 12, lineHeight: 1.45 }}>
+                  Сканируй товар и сразу узнай, подходит ли он именно тебе.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function StepIndicator({ step }) {
+  return (
+    <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 20 }}>
+      {[0, 1, 2].map((i) => (
+        <div key={i} style={{ width: i === step ? 28 : 8, height: 8, borderRadius: 999, background: i === step ? 'linear-gradient(90deg, #A78BFA, #7C3AED)' : 'rgba(255,255,255,0.12)', transition: 'all 0.28s ease' }} />
+      ))}
+    </div>
+  )
+}
+
+function ChoicePill({ item, label, active, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 10,
+        padding: '12px 14px',
+        borderRadius: 16,
+        border: `1.5px solid ${active ? 'rgba(124,58,237,0.62)' : 'rgba(255,255,255,0.08)'}`,
+        background: active ? 'linear-gradient(135deg, rgba(124,58,237,0.18), rgba(109,40,217,0.08))' : 'rgba(255,255,255,0.04)',
+        color: active ? '#F3E8FF' : 'rgba(232,232,250,0.92)',
+        cursor: 'pointer',
+        transition: 'all 0.18s ease',
+        boxShadow: active ? '0 0 18px rgba(124,58,237,0.18)' : 'none',
+      }}
+    >
+      <div style={{ width: 34, height: 34, borderRadius: 12, background: active ? 'rgba(124,58,237,0.22)' : 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <ChoiceIcon name={item.icon} active={active} size={18} />
+      </div>
+      <span style={{ fontSize: 14, fontWeight: 700, lineHeight: 1.25 }}>{label}</span>
+      {active && <span style={{ width: 18, height: 18, borderRadius: '50%', background: '#7C3AED', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, flexShrink: 0 }}>✓</span>}
+    </button>
+  )
+}
 
 export default function OnboardingScreen({ onDone }) {
   const navigate = useNavigate()
   const { lang, t } = useI18n()
-  const [selected, setSelected] = useState(new Set())
+  const [step, setStep] = useState(0)
+  const [direction, setDirection] = useState(1)
+  const [selectedPrefs, setSelectedPrefs] = useState(() => new Set())
+  const [selectedAllergens, setSelectedAllergens] = useState(() => new Set())
+  const [customInput, setCustomInput] = useState('')
+  const [customItems, setCustomItems] = useState([])
   const [leaving, setLeaving] = useState(false)
 
-  const toggle = (id) => {
-    setSelected(prev => {
+  const featureLabels = t.onboarding.features
+
+  const toggle = (setter, value) => {
+    setter((prev) => {
       const next = new Set(prev)
-      next.has(id) ? next.delete(id) : next.add(id)
+      next.has(value) ? next.delete(value) : next.add(value)
       return next
     })
   }
 
+  const nextStep = () => {
+    setDirection(1)
+    setStep((s) => Math.min(2, s + 1))
+  }
+  const prevStep = () => {
+    setDirection(-1)
+    setStep((s) => Math.max(0, s - 1))
+  }
+
+  const addCustom = () => {
+    const val = customInput.trim()
+    if (!val) return
+    if (customItems.some((x) => x.toLowerCase() === val.toLowerCase())) return
+    setCustomItems((prev) => [...prev, val])
+    setCustomInput('')
+  }
+
   const finish = () => {
-    // Собираем профиль из выбранных опций
     let profile = loadProfile()
-    OPTIONS.forEach(opt => {
-      if (selected.has(opt.id)) profile = opt.apply(profile)
-    })
+    const goals = [...selectedPrefs]
+    const halalEnabled = goals.includes('halal')
+    const normalizedGoals = goals.filter((x) => x !== 'halal')
+
+    profile = {
+      ...profile,
+      halal: halalEnabled,
+      halalOnly: halalEnabled,
+      sugarFree: normalizedGoals.includes('sugar_free'),
+      dietGoals: normalizedGoals,
+      allergens: [...selectedAllergens],
+      customAllergens: customItems,
+      presetId: 'custom',
+    }
+
     saveProfile(profile)
     localStorage.setItem('korset_onboarding_done', '1')
     setLang(lang)
-    setLang(lang)
-
     setLeaving(true)
     setTimeout(() => {
       onDone()
       navigate('/scan')
-    }, 300)
+    }, 320)
   }
 
-  const skip = () => {
-    localStorage.setItem('korset_onboarding_done', '1')
-    setLeaving(true)
-    setTimeout(() => { onDone(); navigate('/scan') }, 300)
-  }
+  const currentTitle = [t.onboarding.step1Title, t.onboarding.step2Title, t.onboarding.step3Title][step]
+  const currentSub = [t.onboarding.step1Sub, t.onboarding.step2Sub, t.onboarding.step3Sub][step]
+
+  const slideStyle = useMemo(() => ({
+    transform: leaving ? 'translateY(16px)' : `translateX(${direction > 0 ? 0 : 0}px)`,
+    opacity: leaving ? 0 : 1,
+    transition: 'opacity 0.28s ease, transform 0.32s cubic-bezier(0.22, 1, 0.36, 1)',
+  }), [leaving, direction])
 
   return (
-    <div style={{
-      position: 'fixed', inset: 0, zIndex: 1000,
-      background: 'var(--bg, #07070F)',
-      display: 'flex', flexDirection: 'column',
-      opacity: leaving ? 0 : 1,
-      transition: 'opacity 0.3s ease',
-      overflowY: 'auto',
-    }}>
-
-      {/* ── Хэдер ── */}
-      <div style={{ padding: '56px 24px 0', flexShrink: 0 }}>
-        {/* Лого */}
-        <div style={{ fontSize: 22, fontFamily: 'var(--font-display)', fontWeight: 800, color: '#fff', letterSpacing: '-0.5px', marginBottom: 28 }}>
-          kö<span style={{ color: '#7C3AED' }}>r</span>set
+    <div style={{ position: 'fixed', inset: 0, zIndex: 1200, background: 'linear-gradient(180deg, #080811 0%, #05050D 100%)', display: 'flex', flexDirection: 'column', overflowY: 'auto', ...slideStyle }}>
+      <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(circle at 50% -10%, rgba(124,58,237,0.18) 0%, transparent 45%)' }} />
+      <div style={{ position: 'relative', padding: '28px 20px 32px', minHeight: '100%' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
+          <div style={{ fontSize: 22, fontFamily: 'var(--font-display)', fontWeight: 800, color: '#fff', letterSpacing: '-0.5px' }}>kö<span style={{ color: '#7C3AED' }}>r</span>set</div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button onClick={() => setLang('ru')} style={{ padding: '9px 12px', borderRadius: 12, border: `1px solid ${lang === 'ru' ? 'rgba(124,58,237,0.55)' : 'rgba(255,255,255,0.08)'}`, background: lang === 'ru' ? 'rgba(124,58,237,0.14)' : 'rgba(255,255,255,0.03)', color: '#fff', cursor: 'pointer', fontSize: 12, fontWeight: 700 }}>Рус</button>
+            <button onClick={() => setLang('kz')} style={{ padding: '9px 12px', borderRadius: 12, border: `1px solid ${lang === 'kz' ? 'rgba(124,58,237,0.55)' : 'rgba(255,255,255,0.08)'}`, background: lang === 'kz' ? 'rgba(124,58,237,0.14)' : 'rgba(255,255,255,0.03)', color: '#fff', cursor: 'pointer', fontSize: 12, fontWeight: 700 }}>Қаз</button>
+          </div>
         </div>
 
-        {/* Заголовок — дерзко */}
-        <div style={{ display: 'flex', gap: 8, marginBottom: 18 }}><button onClick={() => setLang('ru')} style={{ padding: '8px 12px', borderRadius: 12, border: `1px solid ${lang === 'ru' ? 'rgba(124,58,237,0.55)' : 'rgba(255,255,255,0.08)'}`, background: lang === 'ru' ? 'rgba(124,58,237,0.14)' : 'rgba(255,255,255,0.03)', color: '#fff', cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>Русский</button><button onClick={() => setLang('kz')} style={{ padding: '8px 12px', borderRadius: 12, border: `1px solid ${lang === 'kz' ? 'rgba(124,58,237,0.55)' : 'rgba(255,255,255,0.08)'}`, background: lang === 'kz' ? 'rgba(124,58,237,0.14)' : 'rgba(255,255,255,0.03)', color: '#fff', cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>Қазақша</button></div><div style={{ fontSize: 12, color: 'rgba(180,180,210,0.72)', marginBottom: 18 }}>{t.onboarding.langTitle}</div><h1 style={{
-          fontFamily: 'var(--font-display)',
-          fontSize: 30, fontWeight: 900,
-          lineHeight: 1.15, color: '#fff',
-          marginBottom: 10,
-          letterSpacing: '-0.5px',
-        }}>
-          {t.onboarding.title1}<br />
-          <span style={{
-            background: 'linear-gradient(90deg, #A78BFA, #7C3AED)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}>{t.onboarding.title2}</span>
-        </h1>
-        <p style={{ fontSize: 15, color: 'rgba(180,180,210,0.8)', lineHeight: 1.55, marginBottom: 32 }}>
-          {t.onboarding.subtitle}
-        </p>
-      </div>
+        <StepIndicator step={step} />
 
-      {/* ── Карточки выбора ── */}
-      <div style={{ padding: '0 24px', flex: 1 }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-          {OPTIONS.map(opt => {
-            const on = selected.has(opt.id)
-            return (
-              <button
-                key={opt.id}
-                onClick={() => toggle(opt.id)}
-                style={{
-                  padding: '14px 14px 13px',
-                  borderRadius: 16,
-                  border: on
-                    ? '1.5px solid rgba(124,58,237,0.7)'
-                    : '1.5px solid rgba(255,255,255,0.08)',
-                  background: on
-                    ? 'linear-gradient(135deg, rgba(124,58,237,0.22), rgba(109,40,217,0.12))'
-                    : 'rgba(255,255,255,0.04)',
-                  cursor: 'pointer',
-                  textAlign: 'left',
-                  transition: 'all 0.18s ease',
-                  boxShadow: on ? '0 0 20px rgba(124,58,237,0.2)' : 'none',
-                  position: 'relative',
-                  overflow: 'hidden',
-                }}
-              >
-                {/* Галочка */}
-                {on && (
-                  <div style={{
-                    position: 'absolute', top: 8, right: 8,
-                    width: 18, height: 18, borderRadius: '50%',
-                    background: '#7C3AED',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  }}>
-                    <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
-                      <path d="M2 6l3 3 5-5" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </div>
-                )}
-                <div style={{ fontSize: 26, marginBottom: 6 }}>{opt.emoji}</div>
-                <div style={{
-                  fontSize: 14, fontWeight: 700,
-                  color: on ? '#E9D5FF' : 'rgba(220,220,240,0.9)',
-                  marginBottom: 2, fontFamily: 'var(--font-display)',
-                }}>
-                  {t.onboarding.options[opt.id][0]}
-                </div>
-                <div style={{ fontSize: 11, color: on ? 'rgba(196,181,253,0.8)' : 'rgba(140,140,170,0.7)', lineHeight: 1.4 }}>
-                  {t.onboarding.options[opt.id][1]}
-                </div>
-              </button>
-            )
-          })}
+        <div style={{ textAlign: 'center', marginBottom: 20 }}>
+          <div style={{ fontSize: 13, color: 'rgba(175,175,205,0.72)', marginBottom: 10 }}>{t.onboarding.langTitle}</div>
+          <h1 style={{ margin: 0, fontFamily: 'var(--font-display)', fontSize: 28, lineHeight: 1.12, color: '#fff', letterSpacing: '-0.6px' }}>{currentTitle}</h1>
+          <p style={{ margin: '10px auto 0', maxWidth: 330, fontSize: 14, lineHeight: 1.58, color: 'rgba(185,185,214,0.84)' }}>{currentSub}</p>
         </div>
-      </div>
 
-      {/* ── Кнопки ── */}
-      <div style={{ padding: '20px 24px 44px', flexShrink: 0 }}>
-        <button
-          onClick={finish}
-          style={{
-            width: '100%', padding: '16px',
-            borderRadius: 16, border: 'none', cursor: 'pointer',
-            background: selected.size > 0
-              ? 'linear-gradient(135deg, #7C3AED, #6D28D9)'
-              : 'rgba(124,58,237,0.35)',
-            color: '#fff',
-            fontFamily: 'var(--font-display)',
-            fontSize: 16, fontWeight: 700,
-            boxShadow: selected.size > 0 ? '0 4px 24px rgba(124,58,237,0.4)' : 'none',
-            transition: 'all 0.2s ease',
-            marginBottom: 10,
-          }}
-        >
-          {selected.size > 0 ? t.onboarding.start : t.onboarding.continueNoSetup}
-        </button>
-
-        {selected.size > 0 && (
-          <button
-            onClick={skip}
-            style={{
-              width: '100%', padding: '12px',
-              background: 'none', border: 'none', cursor: 'pointer',
-              color: 'rgba(140,140,170,0.7)', fontSize: 13,
-              fontFamily: 'var(--font-body)',
-            }}
-          >
-            {t.onboarding.skip}
-          </button>
+        {step === 0 && (
+          <>
+            <PhoneIllustration />
+            <div style={{ marginBottom: 12, fontSize: 12, fontWeight: 700, color: 'rgba(175,175,205,0.72)', textTransform: 'uppercase', letterSpacing: '1.1px' }}>{t.onboarding.featuresTitle}</div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+              {FEATURE_KEYS.map((key) => (
+                <div key={key} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '14px 14px', borderRadius: 16, border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.04)' }}>
+                  <div style={{ width: 36, height: 36, borderRadius: 12, background: 'rgba(124,58,237,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><FeatureIcon name={key} /></div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: '#F4F0FF', lineHeight: 1.25 }}>{featureLabels[key]}</div>
+                </div>
+              ))}
+            </div>
+          </>
         )}
+
+        {step === 1 && (
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+            {PREFERENCES.map((item) => {
+              const active = selectedPrefs.has(item.id)
+              return <ChoicePill key={item.id} item={item} label={lang === 'kz' ? item.kz : item.ru} active={active} onClick={() => toggle(setSelectedPrefs, item.id)} />
+            })}
+          </div>
+        )}
+
+        {step === 2 && (
+          <>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 14 }}>
+              {ALLERGENS.map((item) => {
+                const active = selectedAllergens.has(item.id)
+                return <ChoicePill key={item.id} item={item} label={lang === 'kz' ? item.kz : item.ru} active={active} onClick={() => toggle(setSelectedAllergens, item.id)} />
+              })}
+            </div>
+            <div style={{ borderRadius: 18, border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.04)', padding: 14 }}>
+              <div style={{ fontSize: 12, color: 'rgba(185,185,214,0.74)', marginBottom: 8 }}>{lang === 'kz' ? 'Өз шектеуіңізді қосыңыз' : 'Добавьте своё исключение'}</div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <input value={customInput} onChange={(e) => setCustomInput(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && addCustom()} placeholder={t.onboarding.customPlaceholder} style={{ flex: 1, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12, padding: '12px 14px', color: '#fff', fontSize: 14, outline: 'none' }} />
+                <button onClick={addCustom} style={{ padding: '0 16px', borderRadius: 12, border: '1px solid rgba(124,58,237,0.32)', background: 'rgba(124,58,237,0.16)', color: '#E9D5FF', fontWeight: 700, cursor: 'pointer' }}>{t.onboarding.add}</button>
+              </div>
+              {customItems.length > 0 && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 12 }}>
+                  {customItems.map((item) => (
+                    <span key={item} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 10px', borderRadius: 999, background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.18)', color: '#FCA5A5', fontSize: 12 }}>
+                      {item}
+                      <span onClick={() => setCustomItems((prev) => prev.filter((x) => x !== item))} style={{ cursor: 'pointer', fontSize: 14, lineHeight: 1 }}>×</span>
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </>
+        )}
+
+        <div style={{ display: 'flex', gap: 10, marginTop: 24, paddingBottom: 18 }}>
+          {step > 0 && (
+            <button onClick={prevStep} style={{ flex: '0 0 110px', height: 52, borderRadius: 16, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.03)', color: '#EDE9FE', fontWeight: 700, cursor: 'pointer' }}>{t.onboarding.back}</button>
+          )}
+          <button onClick={step === 2 ? finish : nextStep} style={{ flex: 1, height: 52, borderRadius: 16, border: 'none', background: 'linear-gradient(135deg, #8B5CF6, #7C3AED)', color: '#fff', fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 800, boxShadow: '0 10px 30px rgba(124,58,237,0.34)', cursor: 'pointer' }}>
+            {step === 2 ? t.onboarding.finish : t.onboarding.next}
+          </button>
+        </div>
       </div>
     </div>
   )
