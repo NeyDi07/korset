@@ -75,7 +75,7 @@ export default function AIAssistantScreen() {
   }
 
   return (
-    <div className="screen" style={{ display: 'flex', flexDirection: 'column', paddingBottom: 0, height: '100%' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', paddingBottom: 80, background: 'var(--bg)' }}>
 
       {/* Хедер */}
       <div style={{
@@ -143,7 +143,7 @@ export default function AIAssistantScreen() {
       </div>
 
       {/* Инпут */}
-      <div style={{ padding: '8px 16px 16px', background: '#0C0C18', borderTop: '1px solid rgba(255,255,255,0.06)', flexShrink: 0 }}>
+      <div style={{ padding: '8px 16px 16px', background: '#0C0C18', borderTop: '1px solid rgba(255,255,255,0.06)', flexShrink: 0, position: 'sticky', bottom: 0 }}>
         {messages.length === 0 && (
           <div style={{ display: 'flex', gap: 8, overflowX: 'auto', scrollbarWidth: 'none', paddingBottom: 10 }}>
             {CHIPS.map(chip => (
