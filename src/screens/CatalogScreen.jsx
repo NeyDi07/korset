@@ -7,6 +7,7 @@ import { loadProfile } from '../utils/profile.js'
 const CATEGORY_ORDER = ['grocery', 'electronics', 'diy']
 
 const FILTERS = [
+  { id: 'all',         label: 'Все' },
   { id: 'fit',         label: 'Для вас' },
   { id: 'grocery',     label: 'Продукты' },
   { id: 'electronics', label: 'Электроника' },
@@ -30,19 +31,17 @@ function ProductThumb({ product }) {
   if (src && imgOk) {
     return (
       <img src={src} alt={product.name} onError={() => setImgOk(false)}
-        style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 12 }} />
+        style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 10 }} />
     )
   }
   const colors = { grocery: '#10B981', electronics: '#60A5FA', diy: '#FCD34D' }
-  const bgs    = { grocery: 'rgba(16,185,129,0.1)', electronics: 'rgba(96,165,250,0.1)', diy: 'rgba(252,211,77,0.1)' }
   const cat = product.category
   return (
     <div style={{
       width: '100%', height: '100%',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      background: bgs[cat] || 'rgba(167,139,250,0.08)',
-      fontSize: 32, fontWeight: 800,
-      color: colors[cat] || '#A78BFA', fontFamily: 'var(--font-display)',
+      fontSize: 36, fontWeight: 800,
+      color: colors[cat] || '#A78BFA',
     }}>
       {product.name[0]}
     </div>
@@ -50,10 +49,10 @@ function ProductThumb({ product }) {
 }
 
 export default function CatalogScreen() {
-  const navigate  = useNavigate()
-  const profile   = loadProfile()
+  const navigate = useNavigate()
+  const profile  = loadProfile()
   const [q, setQ] = useState('')
-  const [activeFilter, setActiveFilter] = useState('fit')
+  const [activeFilter, setActiveFilter] = useState('all')
   const [sortOpen, setSortOpen] = useState(false)
   const [sort, setSort] = useState('fit')
 
@@ -65,20 +64,17 @@ export default function CatalogScreen() {
   const list = useMemo(() => {
     let arr = products.slice()
 
-    // Фильтр
     if (activeFilter === 'fit') {
       if (hasProfile) arr = arr.filter(p => checkProductFit(p, profile).fits)
-    } else {
+    } else if (activeFilter !== 'all') {
       arr = arr.filter(p => p.category === activeFilter)
     }
 
-    // Поиск
     const query = q.trim().toLowerCase()
     if (query) arr = arr.filter(p =>
       `${p.name} ${(p.tags || []).join(' ')}`.toLowerCase().includes(query)
     )
 
-    // Сортировка
     arr.sort((a, b) => {
       if (sort === 'cheap')  return a.priceKzt - b.priceKzt
       if (sort === 'pricey') return b.priceKzt - a.priceKzt
@@ -101,19 +97,32 @@ export default function CatalogScreen() {
 
   return (
     <div className="screen" onClick={() => setSortOpen(false)}>
-      <div className="header" style={{ paddingTop: 52, paddingBottom: 16 }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ fontFamily: 'var(--font-display)', fontSize: 26, fontWeight: 900, color: '#fff', letterSpacing: '-0.5px' }}>
-            Каталог <span style={{ color: 'rgba(167,139,250,0.6)', fontSize: 20 }}>•</span>
+
+      {/* ── Хедер ── */}
+      <div style={{ padding: '52px 20px 0' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
+          {/* Заголовок */}
+          <div>
+            <div style={{
+              fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 900,
+              color: '#fff', letterSpacing: '-0.5px', lineHeight: 1,
+            }}>
+              Каталог
+            </div>
+            <div style={{ fontSize: 12, color: 'rgba(167,139,250,0.7)', marginTop: 3, fontWeight: 500 }}>
+              {products.length} товаров в базе
+            </div>
           </div>
+
           {/* Сортировка */}
           <div style={{ position: 'relative' }} onClick={e => e.stopPropagation()}>
             <button onClick={() => setSortOpen(o => !o)} style={{
               display: 'flex', alignItems: 'center', gap: 6,
-              padding: '7px 12px', borderRadius: 12,
-              background: 'rgba(124,58,237,0.12)', border: '1px solid rgba(124,58,237,0.3)',
-              color: '#C4B5FD', fontSize: 12, fontWeight: 600, cursor: 'pointer',
-              fontFamily: 'var(--font-body)',
+              padding: '8px 14px', borderRadius: 12,
+              background: 'rgba(124,58,237,0.15)',
+              border: '1px solid rgba(124,58,237,0.35)',
+              color: '#C4B5FD', fontSize: 12, fontWeight: 600,
+              cursor: 'pointer', fontFamily: 'var(--font-body)',
             }}>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                 <path d="M3 6h18M7 12h10M11 18h2"/>
@@ -127,7 +136,7 @@ export default function CatalogScreen() {
 
             {sortOpen && (
               <div style={{
-                position: 'absolute', top: 'calc(100% + 6px)', right: 0, minWidth: 180,
+                position: 'absolute', top: 'calc(100% + 6px)', right: 0, minWidth: 190,
                 background: '#151525', border: '1px solid rgba(255,255,255,0.1)',
                 borderRadius: 14, overflow: 'hidden',
                 boxShadow: '0 12px 32px rgba(0,0,0,0.5)', zIndex: 200,
@@ -155,17 +164,15 @@ export default function CatalogScreen() {
             )}
           </div>
         </div>
-      </div>
-
-      <div style={{ padding: '0 16px 24px' }}>
 
         {/* Поиск */}
         <div style={{
           display: 'flex', alignItems: 'center', gap: 10,
-          background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.09)',
+          background: 'rgba(255,255,255,0.05)',
+          border: '1px solid rgba(255,255,255,0.09)',
           borderRadius: 14, padding: '11px 14px', marginBottom: 14,
         }}>
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(160,160,200,0.7)" strokeWidth="2">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(160,160,200,0.6)" strokeWidth="2">
             <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
           </svg>
           <input
@@ -177,26 +184,26 @@ export default function CatalogScreen() {
           />
           {q && (
             <button onClick={() => setQ('')} style={{
-              background: 'none', border: 'none', color: 'rgba(160,160,200,0.7)',
-              cursor: 'pointer', fontSize: 18, lineHeight: 1,
+              background: 'none', border: 'none',
+              color: 'rgba(160,160,200,0.6)', cursor: 'pointer', fontSize: 18, lineHeight: 1,
             }}>×</button>
           )}
         </div>
 
-        {/* Фильтры — горизонтальные чипсы */}
-        <div style={{ display: 'flex', gap: 8, overflowX: 'auto', scrollbarWidth: 'none', marginBottom: 16 }}>
+        {/* Фильтры */}
+        <div style={{ display: 'flex', gap: 8, overflowX: 'auto', scrollbarWidth: 'none', marginBottom: 18 }}>
           {FILTERS.map(f => {
-            const active = activeFilter === f.id
             if (f.id === 'fit' && !hasProfile) return null
+            const active = activeFilter === f.id
             return (
               <button key={f.id} onClick={() => setActiveFilter(f.id)} style={{
-                flexShrink: 0, padding: '8px 16px', borderRadius: 24,
+                flexShrink: 0, padding: '8px 18px', borderRadius: 24,
                 fontSize: 13, fontWeight: 600, cursor: 'pointer',
                 fontFamily: 'var(--font-body)',
                 background: active ? '#7C3AED' : 'rgba(255,255,255,0.06)',
                 border: active ? 'none' : '1px solid rgba(255,255,255,0.1)',
-                color: active ? '#fff' : 'rgba(200,200,240,0.8)',
-                boxShadow: active ? '0 2px 12px rgba(124,58,237,0.4)' : 'none',
+                color: active ? '#fff' : 'rgba(200,200,240,0.75)',
+                boxShadow: active ? '0 2px 14px rgba(124,58,237,0.45)' : 'none',
                 transition: 'all 0.18s ease',
               }}>
                 {f.label}
@@ -204,11 +211,13 @@ export default function CatalogScreen() {
             )
           })}
         </div>
+      </div>
 
-        {/* Сетка 2 колонки */}
+      {/* ── Сетка ── */}
+      <div style={{ padding: '0 16px 100px' }}>
         {list.length === 0 ? (
-          <div style={{ padding: '40px 0', textAlign: 'center', color: 'rgba(160,160,200,0.7)' }}>
-            <div style={{ fontSize: 36, marginBottom: 8 }}>🔍</div>
+          <div style={{ padding: '60px 0', textAlign: 'center', color: 'rgba(160,160,200,0.6)' }}>
+            <div style={{ fontSize: 40, marginBottom: 10 }}>🔍</div>
             <p style={{ fontSize: 14 }}>Ничего не найдено</p>
           </div>
         ) : (
@@ -217,39 +226,42 @@ export default function CatalogScreen() {
               const fitResult = hasProfile ? checkProductFit(product, profile) : null
               const fits = fitResult?.fits ?? null
               const nutriscore = product.nutriscore || product.nutriScore
+              const brand = typeof product.manufacturer === 'object'
+                ? product.manufacturer?.name
+                : product.manufacturer
 
               return (
                 <div key={product.id} onClick={() => navigate(`/product/${product.id}`)}
                   style={{
                     borderRadius: 18,
-                    background: '#0F0F1A',
-                    border: `1px solid ${fits === true ? 'rgba(16,185,129,0.2)' : fits === false ? 'rgba(239,68,68,0.15)' : 'rgba(255,255,255,0.07)'}`,
+                    background: 'linear-gradient(160deg, #13132a 0%, #0d0d1f 100%)',
+                    border: `1px solid ${fits === true ? 'rgba(16,185,129,0.25)' : fits === false ? 'rgba(239,68,68,0.2)' : 'rgba(255,255,255,0.08)'}`,
                     cursor: 'pointer', overflow: 'hidden',
-                    transition: 'transform 0.15s ease',
+                    boxShadow: fits === true ? '0 4px 20px rgba(16,185,129,0.08)' : '0 4px 16px rgba(0,0,0,0.2)',
                   }}>
 
-                  {/* Фото с бейджем */}
-                  <div style={{ position: 'relative', padding: 10, background: 'rgba(255,255,255,0.02)' }}>
-                    {/* Внутренний квадрат с фото */}
+                  {/* Фото */}
+                  <div style={{ position: 'relative', padding: '10px 10px 0' }}>
                     <div style={{
-                      height: 110, borderRadius: 12,
-                      background: 'rgba(255,255,255,0.04)',
-                      border: '1px solid rgba(255,255,255,0.07)',
+                      height: 120, borderRadius: 12,
+                      background: 'rgba(255,255,255,0.05)',
+                      border: '1px solid rgba(255,255,255,0.08)',
                       overflow: 'hidden',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
                     }}>
                       <ProductThumb product={product} />
                     </div>
 
-                    {/* Бейдж — только иконка, не закрывает фото */}
+                    {/* Бейдж fit — правый верхний угол внутри паддинга */}
                     {fits !== null && (
                       <div style={{
-                        position: 'absolute', top: 16, right: 16,
-                        width: 26, height: 26, borderRadius: 8,
-                        background: fits ? 'rgba(16,185,129,0.92)' : 'rgba(239,68,68,0.88)',
-                        backdropFilter: 'blur(8px)',
+                        position: 'absolute', top: 18, right: 18,
+                        width: 28, height: 28, borderRadius: 9,
+                        background: fits ? '#10B981' : '#EF4444',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        boxShadow: fits ? '0 2px 8px rgba(16,185,129,0.5)' : '0 2px 8px rgba(239,68,68,0.4)',
                       }}>
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round">
                           {fits
                             ? <polyline points="20 6 9 17 4 12"/>
                             : <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>
@@ -260,27 +272,20 @@ export default function CatalogScreen() {
                   </div>
 
                   {/* Инфо */}
-                  <div style={{ padding: '10px 12px 12px' }}>
-                    {/* Бренд */}
-                    {product.manufacturer && (
-                      <div style={{ fontSize: 11, color: 'rgba(160,160,200,0.6)', marginBottom: 3, fontWeight: 500 }}>
-                        {typeof product.manufacturer === 'object'
-                          ? product.manufacturer.name
-                          : product.manufacturer}
+                  <div style={{ padding: '10px 12px 14px' }}>
+                    {brand && (
+                      <div style={{ fontSize: 11, color: 'rgba(167,139,250,0.6)', marginBottom: 3, fontWeight: 600, letterSpacing: '0.3px' }}>
+                        {brand}
                       </div>
                     )}
-
-                    {/* Название */}
                     <div style={{
-                      fontSize: 13, fontWeight: 600, color: 'rgba(235,235,255,0.95)',
-                      lineHeight: 1.35, marginBottom: 8,
+                      fontSize: 13, fontWeight: 600, color: 'rgba(235,235,255,0.92)',
+                      lineHeight: 1.35, marginBottom: 10,
                       display: '-webkit-box', WebkitLineClamp: 2,
                       WebkitBoxOrient: 'vertical', overflow: 'hidden',
                     }}>
                       {product.name}
                     </div>
-
-                    {/* Цена + Nutriscore */}
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                       <span style={{
                         fontFamily: 'var(--font-display)', fontSize: 15,
@@ -288,13 +293,11 @@ export default function CatalogScreen() {
                       }}>
                         {formatPrice(product.priceKzt)}
                       </span>
-
                       {nutriscore && (
                         <div style={{
-                          padding: '3px 8px', borderRadius: 8,
+                          padding: '3px 8px', borderRadius: 7,
                           background: NUTRISCORE_COLORS[nutriscore.toUpperCase()] || '#555',
-                          fontSize: 11, fontWeight: 800, color: '#fff',
-                          letterSpacing: '0.3px',
+                          fontSize: 11, fontWeight: 800, color: '#fff', letterSpacing: '0.3px',
                         }}>
                           {nutriscore.toUpperCase()}
                         </div>
@@ -310,4 +313,3 @@ export default function CatalogScreen() {
     </div>
   )
 }
-" " 
