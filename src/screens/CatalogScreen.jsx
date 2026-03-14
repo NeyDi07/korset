@@ -95,7 +95,35 @@ export default function CatalogScreen() {
     return arr
   }, [q, activeFilter, sort, hasProfile])
 
-  const activeSort = SORT_OPTIONS.find(s => s.id === sort)
+
+  const filterOptions = FILTERS.map((f) => ({
+    ...f,
+    label:
+      lang === 'kz'
+        ? ({
+            all: 'Барлығы',
+            fit: 'Сізге сай',
+            grocery: 'Азық-түлік',
+            electronics: 'Электроника',
+            diy: 'Құрылыс',
+          }[f.id] || f.label)
+        : f.label,
+  }))
+
+  const sortOptions = SORT_OPTIONS.map((s) => ({
+    ...s,
+    label:
+      lang === 'kz'
+        ? ({
+            fit: 'Алдымен сізге сайы',
+            cheap: 'Алдымен арзанырақ',
+            pricey: 'Алдымен қымбатырақ',
+            rating: 'Рейтинг бойынша',
+          }[s.id] || s.label)
+        : s.label,
+  }))
+
+  const activeSort = sortOptions.find(s => s.id === sort)
 
   return (
     <div className="screen" onClick={() => setSortOpen(false)}>
@@ -143,7 +171,7 @@ export default function CatalogScreen() {
                 borderRadius: 14, overflow: 'hidden',
                 boxShadow: '0 12px 32px rgba(0,0,0,0.5)', zIndex: 200,
               }}>
-                {SORT_OPTIONS.map((opt, i) => {
+                {sortOptions.map((opt, i) => {
                   if (opt.id === 'fit' && !hasProfile) return null
                   const active = sort === opt.id
                   return (
@@ -152,7 +180,7 @@ export default function CatalogScreen() {
                         width: '100%', padding: '11px 14px',
                         background: active ? 'rgba(124,58,237,0.15)' : 'transparent',
                         border: 'none',
-                        borderBottom: i < SORT_OPTIONS.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none',
+                        borderBottom: i < sortOptions.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none',
                         cursor: 'pointer', textAlign: 'left',
                         fontSize: 13, fontFamily: 'var(--font-body)',
                         color: active ? '#C4B5FD' : 'rgba(220,220,250,0.85)',
