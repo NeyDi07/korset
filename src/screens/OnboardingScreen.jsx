@@ -4,10 +4,9 @@ import { loadProfile, saveProfile } from '../utils/profile.js'
 import { setLang, useI18n } from '../utils/i18n.js'
 
 const FEATURE_ROWS = [
-  ['scan', 'fit'],
-  ['halal'],
-  ['ai', 'allergens'],
-  ['alternatives', 'facts'],
+  ['scan', 'fit', 'halal'],
+  ['ai', 'allergens', 'alternatives'],
+  ['facts', 'history'],
 ]
 
 const PREFERENCES = [
@@ -22,11 +21,9 @@ const PREFERENCES = [
 ]
 
 const PREFERENCE_ROWS = [
-  ['halal', 'sugar_free'],
-  ['dairy_free'],
-  ['gluten_free', 'vegan'],
-  ['vegetarian', 'keto'],
-  ['kid_friendly'],
+  ['halal', 'sugar_free', 'dairy_free'],
+  ['gluten_free', 'vegan', 'vegetarian'],
+  ['keto', 'kid_friendly'],
 ]
 
 const ALLERGENS = [
@@ -43,11 +40,9 @@ const ALLERGENS = [
 ]
 
 const ALLERGEN_ROWS = [
-  ['milk', 'eggs'],
-  ['gluten'],
-  ['nuts', 'peanuts'],
-  ['soy', 'fish'],
-  ['shellfish'],
+  ['milk', 'eggs', 'gluten'],
+  ['nuts', 'peanuts', 'soy'],
+  ['fish', 'shellfish'],
   ['sesame', 'honey'],
 ]
 
@@ -64,6 +59,8 @@ function FeatureIcon({ name }) {
       return <svg {...common}><rect x="4" y="5" width="16" height="12" rx="4" stroke="#A78BFA" strokeWidth="1.8" fill="rgba(167,139,250,0.12)"/><path d="M9 11h6M9 14h4" stroke="#C4B5FD" strokeWidth="1.7" strokeLinecap="round"/></svg>
     case 'alternatives':
       return <svg {...common}><path d="M7 7h10M7 12h7M7 17h10" stroke="#A78BFA" strokeWidth="1.8" strokeLinecap="round"/><path d="m14 10 3 2-3 2" stroke="#C4B5FD" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
+    case 'history':
+      return <svg {...common}><circle cx="12" cy="12" r="8" stroke="#A78BFA" strokeWidth="1.8" fill="rgba(167,139,250,0.10)"/><path d="M12 8v4l2.8 1.8" stroke="#C4B5FD" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
     default:
       return <svg {...common}><path d="M6 7h12M5 12h14M7 17h10" stroke="#A78BFA" strokeWidth="1.8" strokeLinecap="round"/></svg>
   }
@@ -123,19 +120,19 @@ function StepIndicator({ step }) {
   )
 }
 
-function CircleRows({ rows, renderItem, gap = 12, rowGap = 14 }) {
+function CircleRows({ rows, renderItem, gap = 10, rowGap = 14 }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: rowGap }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: rowGap, width: '100%' }}>
       {rows.map((row, index) => (
-        <div key={index} style={{ display: 'flex', justifyContent: 'center', gap, flexWrap: 'nowrap' }}>
-          {row.map(renderItem)}
+        <div key={index} style={{ display: 'flex', justifyContent: row.length === 3 ? 'space-between' : 'center', gap, width: '100%' }}>
+          {row.map((item, itemIndex) => renderItem(item, index, itemIndex))}
         </div>
       ))}
     </div>
   )
 }
 
-function CircleCard({ children, selected = false, onClick, size = 110, label, interactive = false }) {
+function CircleCard({ children, selected = false, onClick, size = 110, label, delay = 0 }) {
   const Comp = onClick ? 'button' : 'div'
   return (
     <Comp
@@ -159,6 +156,8 @@ function CircleCard({ children, selected = false, onClick, size = 110, label, in
         color: '#F5F3FF',
         transition: 'transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background 0.18s ease',
         transform: selected ? 'scale(1.03)' : 'scale(1)',
+        animation: `onboardPop 420ms cubic-bezier(0.22, 1, 0.36, 1) both`,
+        animationDelay: `${delay}ms`,
         cursor: onClick ? 'pointer' : 'default',
         padding: 10,
         textAlign: 'center',
@@ -170,24 +169,35 @@ function CircleCard({ children, selected = false, onClick, size = 110, label, in
   )
 }
 
-function FeatureCard({ name, label }) {
+function FeatureCard({ name, label, size = 100, delay = 0 }) {
   return (
-    <CircleCard size={110} label={label}>
+    <CircleCard size={size} label={label} delay={delay}>
       <FeatureIcon name={name} />
     </CircleCard>
   )
 }
 
-function ChoicePill({ item, label, active, onClick, size = 104 }) {
+function ChoicePill({ item, label, active, onClick, size = 104, delay = 0 }) {
   return (
-    <CircleCard size={size} selected={active} onClick={onClick} label={label}>
+    <CircleCard size={size} selected={active} onClick={onClick} label={label} delay={delay}>
       <ChoiceIcon name={item.icon} active={active} size={22} />
     </CircleCard>
   )
 }
 
-function FeatureByKey(key, labels) {
-  return <FeatureCard key={key} name={key} label={labels[key]} />
+function FeatureByKey(key, labels, rowIndex = 0, itemIndex = 0) {
+  const fallback = {
+    scan: 'Скан',
+    fit: 'Подходит ли тебе',
+    halal: 'Халал',
+    ai: 'Чат с ИИ',
+    allergens: 'Аллергены',
+    alternatives: 'Альтернативы',
+    facts: 'Состав и КБЖУ',
+    history: 'История сканов',
+  }
+  const label = labels[key] || fallback[key] || key
+  return <FeatureCard key={key} name={key} label={label} size={100} delay={(rowIndex * 3 + itemIndex) * 55} />
 }
 
 export default function OnboardingScreen({ onDone }) {
@@ -202,7 +212,7 @@ export default function OnboardingScreen({ onDone }) {
   const [customItems, setCustomItems] = useState(profile.customAllergens || [])
   const [customInput, setCustomInput] = useState('')
 
-  const featureLabels = t.onboarding.features
+  const featureLabels = t.onboarding.features || {}
 
   function toggle(setter, value) {
     setter((prev) => {
@@ -271,6 +281,7 @@ export default function OnboardingScreen({ onDone }) {
 
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 1200, background: 'linear-gradient(180deg, #080811 0%, #05050D 100%)', overflowY: 'auto' }}>
+      <style>{`@keyframes onboardPop { 0% { opacity: 0; transform: scale(.74) translateY(12px); } 60% { opacity: 1; transform: scale(1.05) translateY(-3px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }`} </style>
       <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(circle at 50% -10%, rgba(124,58,237,0.18) 0%, transparent 45%)' }} />
       <div style={{ position: 'relative', padding: '24px 20px 34px', minHeight: '100%' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14, minHeight: 54 }}>
@@ -295,17 +306,17 @@ export default function OnboardingScreen({ onDone }) {
           {step === 0 && (
             <>
               <div style={{ marginBottom: 12, fontSize: 12, fontWeight: 800, color: 'rgba(175,175,205,0.74)', textTransform: 'uppercase', letterSpacing: '1.05px', textAlign: 'center' }}>{t.onboarding.featuresTitle}</div>
-              <CircleRows rows={FEATURE_ROWS} renderItem={(key) => FeatureByKey(key, featureLabels)} />
+              <CircleRows rows={FEATURE_ROWS} renderItem={(key, rowIndex, itemIndex) => FeatureByKey(key, featureLabels, rowIndex, itemIndex)} />
             </>
           )}
 
           {step === 1 && (
-            <CircleRows rows={PREFERENCE_ROWS} renderItem={(id) => { const item = PREFERENCES.find((x) => x.id === id); const active = selectedPrefs.has(item.id); return <ChoicePill key={item.id} item={item} label={lang === 'kz' ? item.kz : item.ru} active={active} onClick={() => toggle(setSelectedPrefs, item.id)} size={104} /> }} />
+            <CircleRows rows={PREFERENCE_ROWS} renderItem={(id, rowIndex, itemIndex) => { const item = PREFERENCES.find((x) => x.id === id); const active = selectedPrefs.has(item.id); return <ChoicePill key={item.id} item={item} label={lang === 'kz' ? item.kz : item.ru} active={active} onClick={() => toggle(setSelectedPrefs, item.id)} size={100} delay={(rowIndex * 3 + itemIndex) * 55} /> }} />
           )}
 
           {step === 2 && (
             <>
-              <CircleRows rows={ALLERGEN_ROWS} renderItem={(id) => { const item = ALLERGENS.find((x) => x.id === id); const active = selectedAllergens.has(item.id); return <ChoicePill key={item.id} item={item} label={lang === 'kz' ? item.kz : item.ru} active={active} onClick={() => toggle(setSelectedAllergens, item.id)} size={98} /> }} />
+              <CircleRows rows={ALLERGEN_ROWS} renderItem={(id, rowIndex, itemIndex) => { const item = ALLERGENS.find((x) => x.id === id); const active = selectedAllergens.has(item.id); return <ChoicePill key={item.id} item={item} label={lang === 'kz' ? item.kz : item.ru} active={active} onClick={() => toggle(setSelectedAllergens, item.id)} size={96} delay={(rowIndex * 3 + itemIndex) * 55} /> }} />
               <div style={{ borderRadius: 18, border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.04)', padding: 14, marginTop: 16 }}>
                 <div style={{ fontSize: 12, color: 'rgba(185,185,214,0.74)', marginBottom: 8 }}>{lang === 'kz' ? 'Өз шектеуіңізді қосыңыз' : 'Добавьте своё исключение'}</div>
                 <div style={{ display: 'flex', gap: 8 }}>
