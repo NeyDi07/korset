@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import products from '../data/products.json'
-import { loadProfile } from '../utils/profile.js'
+import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useI18n } from '../utils/i18n.js'
 import KorsetAvatar from '../components/KorsetAvatar.jsx'
 import { askProductAI } from '../services/ai.js'
@@ -25,7 +25,7 @@ export default function AIScreen() {
   const { id, ean } = useParams()
   const navigate = useNavigate()
   const { state: navState } = useLocation()
-  const profile = loadProfile()
+  const { profile } = useProfile()
   const { lang, t } = useI18n()
   const isExternal = Boolean(ean)
   const product = isExternal

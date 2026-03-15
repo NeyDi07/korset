@@ -1,8 +1,10 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import products from '../data/products.json'
 import { checkProductFit, formatPrice, CATEGORY_LABELS } from '../utils/fitCheck.js'
-import { loadProfile } from '../utils/profile.js'
+import { useProfile } from '../contexts/ProfileContext.jsx'
+import { useAuth } from '../contexts/AuthContext.jsx'
+import { supabase } from '../utils/supabase.js'
 import { useI18n } from '../utils/i18n.js'
 
 function clamp(n, a, b) {
@@ -86,11 +88,36 @@ function formatShelfLine(product, lang, t) {
 export default function ProductScreen() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const profile = loadProfile()
+  const { profile } = useProfile()
+  const { user } = useAuth()
   const { lang, t } = useI18n()
   const [moreOpen, setMoreOpen] = useState(false)
-
+  const [isFavorite, setIsFavorite] = useState(false)
+  
   const product = useMemo(() => products.find((p) => p.id === id), [id])
+
+  useEffect(() => {
+    if (user && product) {
+      supabase.from('user_favorites').select('id').eq('user_id', user.id).eq('product_id', product.id).maybeSingle()
+        .then(({ data }) => setIsFavorite(!!data))
+    } else {
+      setIsFavorite(false)
+    }
+  }, [user, product])
+
+  const toggleFavorite = async () => {
+    if (!user) {
+      navigate('/auth')
+      return
+    }
+    const newVal = !isFavorite
+    setIsFavorite(newVal)
+    if (newVal) {
+      await supabase.from('user_favorites').insert({ user_id: user.id, product_id: product.id })
+    } else {
+      await supabase.from('user_favorites').delete().eq('user_id', user.id).eq('product_id', product.id)
+    }
+  }
 
   if (!product) {
     return (
@@ -131,18 +158,31 @@ export default function ProductScreen() {
   return (
     <div className="screen">
       {/* Header */}
-      <div className="header" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-        <button onClick={() => navigate(-1)} style={{
-          width: 38, height: 38, borderRadius: 12,
-          border: '1px solid rgba(255,255,255,0.1)',
-          background: 'rgba(255,255,255,0.05)', cursor: 'pointer',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-        }}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth="2" strokeLinecap="round">
-            <path d="M19 12H5M12 5l-7 7 7 7"/>
-          </svg>
+      <div className="header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <button onClick={() => navigate(-1)} style={{
+            width: 38, height: 38, borderRadius: 12,
+            border: '1px solid rgba(255,255,255,0.1)',
+            background: 'rgba(255,255,255,0.05)', cursor: 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+          }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth="2" strokeLinecap="round">
+              <path d="M19 12H5M12 5l-7 7 7 7"/>
+            </svg>
+          </button>
+          <div className="screen-title" style={{ margin: 0 }}>{t.product.title}</div>
+        </div>
+        <button onClick={toggleFavorite} style={{
+            width: 38, height: 38, borderRadius: 12,
+            border: '1px solid rgba(255,255,255,0.1)',
+            background: isFavorite ? 'rgba(239,68,68,0.15)' : 'rgba(255,255,255,0.05)', cursor: 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+            transition: 'all 0.2s ease',
+          }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill={isFavorite ? '#EF4444' : 'none'} stroke={isFavorite ? '#EF4444' : 'rgba(255,255,255,0.8)'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
         </button>
-        <div className="screen-title" style={{ margin: 0 }}>{t.product.title}</div>
       </div>
 
       {/* Product Card */}

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
-import { loadProfile } from '../utils/profile.js'
+import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useI18n } from '../utils/i18n.js'
 import { ALLERGEN_NAMES, OFF_ALLERGEN_MAP, getAllergenName } from '../data/allergens.js'
 const ALLERGEN_MAP = OFF_ALLERGEN_MAP
@@ -160,7 +160,7 @@ export default function ExternalProductScreen() {
   const { ean } = useParams()
   const navigate = useNavigate()
   const { state: navState } = useLocation()
-  const profile = loadProfile()
+  const { profile } = useProfile()
   const { lang, t } = useI18n()
 
   const [status, setStatus] = useState('loading')

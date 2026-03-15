@@ -3,7 +3,7 @@ import { useI18n } from '../utils/i18n.js'
 import { useNavigate } from 'react-router-dom'
 import products from '../data/products.json'
 import { checkProductFit, formatPrice } from '../utils/fitCheck.js'
-import { loadProfile } from '../utils/profile.js'
+import { useProfile } from '../contexts/ProfileContext.jsx'
 
 const CATEGORY_ORDER = ['grocery', 'electronics', 'diy']
 
@@ -39,8 +39,8 @@ function ProductThumb({ product }) {
 
 export default function CatalogScreen() {
   const navigate = useNavigate()
-  const { lang, t } = useI18n()
-  const profile  = loadProfile()
+  const { t } = useI18n()
+  const { profile } = useProfile()
   const [q, setQ] = useState('')
   const [activeFilter, setActiveFilter] = useState('all')
   const [sortOpen, setSortOpen] = useState(false)

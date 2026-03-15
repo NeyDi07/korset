@@ -63,7 +63,7 @@ export default function HomeScreen() {
         </button>
 
         {/* Быстрые действия */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 24 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 10 }}>
           <button onClick={() => navigate('/catalog')} style={{
             padding: '16px', borderRadius: 18, cursor: 'pointer',
             background: 'rgba(96,165,250,0.08)', border: '1px solid rgba(96,165,250,0.18)',
@@ -92,6 +92,25 @@ export default function HomeScreen() {
             <div style={{ fontSize: 11, color: 'rgba(167,139,250,0.6)', marginTop: 2 }}>{t.home.aiSub}</div>
           </button>
         </div>
+
+        <button onClick={() => navigate('/history')} style={{
+          width: '100%', padding: '16px', borderRadius: 18, cursor: 'pointer',
+          background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.18)',
+          display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24,
+        }}>
+          <div style={{ width: 44, height: 44, borderRadius: 14, background: 'rgba(52,211,153,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#34D399" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+          </div>
+          <div style={{ textAlign: 'left' }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: '#fff', fontFamily: 'var(--font-display)' }}>{lang === 'kz' ? 'Менің тарихым' : 'Моя история'}</div>
+            <div style={{ fontSize: 11, color: 'rgba(52,211,153,0.6)', marginTop: 2 }}>{lang === 'kz' ? 'Сканерленген тауарлар' : 'Отсканированные товары'}</div>
+          </div>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(52,211,153,0.5)" strokeWidth="2" strokeLinecap="round" style={{ marginLeft: 'auto' }}>
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
+        </button>
 
         {/* Как работает */}
         <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(160,160,200,0.4)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 12 }}>
