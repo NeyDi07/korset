@@ -2,19 +2,10 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { loadProfile } from '../utils/profile.js'
 import { useI18n } from '../utils/i18n.js'
+import { ALLERGEN_NAMES, OFF_ALLERGEN_MAP, getAllergenName } from '../data/allergens.js'
+const ALLERGEN_MAP = OFF_ALLERGEN_MAP
 
-const ALLERGEN_MAP = {
-  'en:milk': 'milk', 'en:gluten': 'gluten', 'en:nuts': 'nuts',
-  'en:peanuts': 'peanuts', 'en:soybeans': 'soy', 'en:eggs': 'eggs',
-  'en:fish': 'fish', 'en:crustaceans': 'shellfish', 'en:wheat': 'gluten',
-  'en:sesame-seeds': 'sesame', 'en:celery': 'celery', 'en:mustard': 'mustard',
-}
-
-export const ALLERGEN_NAMES = {
-  milk: 'Молоко', gluten: 'Глютен', nuts: 'Орехи', peanuts: 'Арахис',
-  soy: 'Соя', eggs: 'Яйца', fish: 'Рыба', shellfish: 'Моллюски',
-  sesame: 'Кунжут', celery: 'Сельдерей', mustard: 'Горчица',
-}
+// ALLERGEN_NAMES now imported from shared data
 
 const NUTRISCORE_COLORS = {
   a: { bg: 'rgba(3,129,65,0.15)', border: 'rgba(3,129,65,0.4)', text: '#22c55e' },
@@ -35,7 +26,7 @@ function detectHalal(labelsTag = []) {
   return null
 }
 
-function checkFit(product, profile) {
+function checkFit(product, profile, t) {
   const reasons = []
   const halalOn = profile.halal || profile.halalOnly || profile.religion?.includes('halal')
   const ingredients = (product.ingredients || '').toLowerCase()
@@ -45,20 +36,20 @@ function checkFit(product, profile) {
     if (product.isHalal === true) {
       // позитив добавим ниже
     } else if (product.isHalal === false) {
-      reasons.push({ type: 'fail', text: lang === 'kz' ? 'Халал емес' : 'Не является халал' })
+      reasons.push({ type: 'fail', text: t.product.halalNot })
     } else {
-      reasons.push({ type: 'warn', text: lang === 'kz' ? 'Халал мәртебесі белгісіз — қаптамадан тексеріңіз' : 'Халал-статус неизвестен — уточните по упаковке' })
+      reasons.push({ type: 'warn', text: t.product.halalUnknown })
     }
   }
 
   const profileAllergens = profile.allergens || []
   const found = allergens.filter(a => profileAllergens.includes(a))
-  found.forEach(a => reasons.push({ type: 'fail', text: lang === 'kz' ? `Құрамында аллерген бар: ${ALLERGEN_NAMES[a] || a}` : `Содержит аллерген: ${ALLERGEN_NAMES[a] || a}` }))
+  found.forEach(a => reasons.push({ type: 'fail', text: `${t.product.containsAllergen} ${ALLERGEN_NAMES[a] || a}` }))
 
   const customAllergens = profile.customAllergens || []
   customAllergens.forEach(ca => {
     if (ingredients.includes(ca.toLowerCase()))
-      reasons.push({ type: 'fail', text: lang === 'kz' ? `Құрамында бар: ${ca}` : `Содержит: ${ca}` })
+      reasons.push({ type: 'fail', text: `${t.product.contains} ${ca}` })
   })
 
   const goals = profile.dietGoals || []
@@ -66,34 +57,34 @@ function checkFit(product, profile) {
   if (goals.includes('sugar_free') || profile.sugarFree) {
     const sw = ['сахар', 'sugar', 'sucre', 'zucker', 'глюкоз', 'фруктоз', 'сироп']
     if (sw.some(w => ingredients.includes(w)))
-      reasons.push({ type: 'fail', text: lang === 'kz' ? 'Қант бар' : 'Содержит сахар' })
+      reasons.push({ type: 'fail', text: t.product.containsSugar })
   }
 
   if (goals.includes('dairy_free')) {
     const dw = ['молок', 'сливк', 'масло слив', 'сметан', 'сыр', 'milk', 'cream', 'butter', 'cheese', 'whey', 'casein', 'лактоз']
     if (allergens.includes('milk') || dw.some(w => ingredients.includes(w)))
-      reasons.push({ type: 'fail', text: lang === 'kz' ? 'Сүт өнімдері бар' : 'Содержит молочные продукты' })
+      reasons.push({ type: 'fail', text: t.product.containsDairy })
   }
 
   if (goals.includes('gluten_free')) {
     if (allergens.includes('gluten') || allergens.includes('wheat') ||
         ['пшениц', 'wheat', 'gluten', 'ячмен', 'рожь'].some(w => ingredients.includes(w)))
-      reasons.push({ type: 'fail', text: lang === 'kz' ? 'Глютен бар' : 'Содержит глютен' })
+      reasons.push({ type: 'fail', text: t.product.containsGluten })
   }
 
   if (goals.includes('vegan')) {
     const mw = ['говядин', 'свинин', 'курин', 'мясо', 'beef', 'pork', 'chicken', 'meat']
     if (allergens.includes('milk') || allergens.includes('eggs') || mw.some(w => ingredients.includes(w)))
-      reasons.push({ type: 'fail', text: lang === 'kz' ? 'Вегандарға сай емес' : 'Не подходит для веганов' })
+      reasons.push({ type: 'fail', text: t.product.notForVegans })
   }
 
   const fits = !reasons.some(r => r.type === 'fail')
 
   if (fits) {
     const pos = []
-    if (halalOn && product.isHalal === true) pos.push({ type: 'pass', text: lang === 'kz' ? 'Халал екені расталды ✓' : 'Подтверждено как халал ✓' })
-    if (profileAllergens.length > 0 && allergens.length === 0) pos.push({ type: 'pass', text: lang === 'kz' ? 'Сіздің аллергендеріңіз жоқ ✓' : 'Не содержит ваших аллергенов ✓' })
-    if (pos.length === 0) pos.push({ type: 'pass', text: lang === 'kz' ? 'Таңдауыңызға сәйкес келеді' : 'Соответствует вашим предпочтениям' })
+    if (halalOn && product.isHalal === true) pos.push({ type: 'pass', text: t.product.halalConfirmed })
+    if (profileAllergens.length > 0 && allergens.length === 0) pos.push({ type: 'pass', text: t.product.noAllergens })
+    if (pos.length === 0) pos.push({ type: 'pass', text: t.product.matchesPrefs })
     return { fits, reasons: [...reasons, ...pos].slice(0, 3) }
   }
 
@@ -107,12 +98,12 @@ function formatNutri(val) {
   return Number.isInteger(n) ? String(n) : n.toFixed(1)
 }
 
-function NutriGrid({ nutrition }) {
+function NutriGrid({ nutrition, t }) {
   const items = [
-    [lang === 'kz' ? 'Ақуыз' : 'Белки', nutrition.protein, 'г'],
-    [lang === 'kz' ? 'Май' : 'Жиры', nutrition.fat, 'г'],
-    [lang === 'kz' ? 'Көмірсу' : 'Углеводы', nutrition.carbs, 'г'],
-    ['Ккал', nutrition.kcal, 'ккал'],
+    [t.product.protein, nutrition.protein, 'г'],
+    [t.product.fat, nutrition.fat, 'г'],
+    [t.product.carbs, nutrition.carbs, 'г'],
+    [t.product.kcal, nutrition.kcal, 'ккал'],
   ]
   if (!items.some(([, v]) => v != null)) return null
   return (
@@ -181,7 +172,7 @@ export default function ExternalProductScreen() {
     if (navState?.product) {
       const p = navState.product
       setProduct(p)
-      setFitResult(checkFit(p, profile))
+      setFitResult(checkFit(p, profile, t))
       setStatus('found')
       return
     }
@@ -218,7 +209,7 @@ export default function ExternalProductScreen() {
           },
         }
         setProduct(parsed)
-        setFitResult(checkFit(parsed, profile))
+        setFitResult(checkFit(parsed, profile, t))
         setStatus('found')
       } catch {
         setStatus('error')
@@ -315,7 +306,7 @@ export default function ExternalProductScreen() {
                   КБЖУ (на 100 г/мл)
                 </span>
               </div>
-              <NutriGrid nutrition={nutr} />
+              <NutriGrid nutrition={nutr} t={t} />
             </div>
           )}
 

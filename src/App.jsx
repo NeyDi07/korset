@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import HomeScreen from './screens/HomeScreen.jsx'
 import ProfileScreen from './screens/ProfileScreen.jsx'
@@ -12,6 +12,8 @@ import AIAssistantScreen from './screens/AIAssistantScreen.jsx'
 import QRPrintScreen from './screens/QRPrintScreen.jsx'
 import BottomNav from './components/BottomNav.jsx'
 import OnboardingScreen from './screens/OnboardingScreen.jsx'
+import ErrorBoundary from './components/ErrorBoundary.jsx'
+import { initStoreFromURL } from './utils/store.js'
 
 export default function App() {
   const { pathname } = useLocation()
@@ -20,24 +22,29 @@ export default function App() {
     !localStorage.getItem('korset_onboarding_done') || !localStorage.getItem('korset_lang')
   )
 
+  // Читаем ?store=CODE из QR-кода при первом визите
+  useEffect(() => { initStoreFromURL() }, [])
+
   return (
-    <div className="app-frame">
-      {showOnboarding && <OnboardingScreen onDone={() => setShowOnboarding(false)} />}
-      <Routes>
-        <Route path="/"                         element={<HomeScreen />} />
-        <Route path="/profile"                  element={<ProfileScreen />} />
-        <Route path="/catalog"                  element={<CatalogScreen />} />
-        <Route path="/scan"                     element={<ScanScreen />} />
-        <Route path="/ai"                       element={<AIAssistantScreen />} />
-        <Route path="/qr-print"                 element={<QRPrintScreen />} />
-        <Route path="/product/ext/:ean"         element={<ExternalProductScreen />} />
-        <Route path="/product/ext/:ean/ai"      element={<AIScreen />} />
-        <Route path="/product/:id"              element={<ProductScreen />} />
-        <Route path="/product/:id/alternatives" element={<AlternativesScreen />} />
-        <Route path="/product/:id/ai"           element={<AIScreen />} />
-        <Route path="*"                         element={<Navigate to="/" replace />} />
-      </Routes>
-      {!hideNav && <BottomNav />}
-    </div>
+    <ErrorBoundary>
+      <div className="app-frame">
+        {showOnboarding && <OnboardingScreen onDone={() => setShowOnboarding(false)} />}
+        <Routes>
+          <Route path="/"                         element={<HomeScreen />} />
+          <Route path="/profile"                  element={<ProfileScreen />} />
+          <Route path="/catalog"                  element={<CatalogScreen />} />
+          <Route path="/scan"                     element={<ScanScreen />} />
+          <Route path="/ai"                       element={<AIAssistantScreen />} />
+          <Route path="/qr-print"                 element={<QRPrintScreen />} />
+          <Route path="/product/ext/:ean"         element={<ExternalProductScreen />} />
+          <Route path="/product/ext/:ean/ai"      element={<AIScreen />} />
+          <Route path="/product/:id"              element={<ProductScreen />} />
+          <Route path="/product/:id/alternatives" element={<AlternativesScreen />} />
+          <Route path="/product/:id/ai"           element={<AIScreen />} />
+          <Route path="*"                         element={<Navigate to="/" replace />} />
+        </Routes>
+        {!hideNav && <BottomNav />}
+      </div>
+    </ErrorBoundary>
   )
 }

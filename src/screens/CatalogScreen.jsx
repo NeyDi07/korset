@@ -7,20 +7,8 @@ import { loadProfile } from '../utils/profile.js'
 
 const CATEGORY_ORDER = ['grocery', 'electronics', 'diy']
 
-const FILTERS = [
-  { id: 'all',         label: 'Все' },
-  { id: 'fit',         label: 'Для вас' },
-  { id: 'grocery',     label: 'Продукты' },
-  { id: 'electronics', label: 'Электроника' },
-  { id: 'diy',         label: 'Стройка' },
-]
-
-const SORT_OPTIONS = [
-  { id: 'fit',    label: 'Подходящие мне' },
-  { id: 'cheap',  label: 'Сначала дешевле' },
-  { id: 'pricey', label: 'Сначала дороже' },
-  { id: 'rating', label: 'По рейтингу' },
-]
+const FILTER_IDS = ['all', 'fit', 'grocery', 'electronics', 'diy']
+const SORT_IDS = ['fit', 'cheap', 'pricey', 'rating']
 
 const NUTRISCORE_COLORS = {
   A: '#1a7c1a', B: '#4a9a1a', C: '#d4b800', D: '#e07000', E: '#c0392b'
@@ -51,7 +39,7 @@ function ProductThumb({ product }) {
 
 export default function CatalogScreen() {
   const navigate = useNavigate()
-  const { lang } = useI18n()
+  const { lang, t } = useI18n()
   const profile  = loadProfile()
   const [q, setQ] = useState('')
   const [activeFilter, setActiveFilter] = useState('all')
@@ -96,33 +84,8 @@ export default function CatalogScreen() {
   }, [q, activeFilter, sort, hasProfile])
 
 
-  const filterOptions = FILTERS.map((f) => ({
-    ...f,
-    label:
-      lang === 'kz'
-        ? ({
-            all: 'Барлығы',
-            fit: 'Сізге сай',
-            grocery: 'Азық-түлік',
-            electronics: 'Электроника',
-            diy: 'Құрылыс',
-          }[f.id] || f.label)
-        : f.label,
-  }))
-
-  const sortOptions = SORT_OPTIONS.map((s) => ({
-    ...s,
-    label:
-      lang === 'kz'
-        ? ({
-            fit: 'Алдымен сізге сайы',
-            cheap: 'Алдымен арзанырақ',
-            pricey: 'Алдымен қымбатырақ',
-            rating: 'Рейтинг бойынша',
-          }[s.id] || s.label)
-        : s.label,
-  }))
-
+  const filterOptions = FILTER_IDS.map(id => ({ id, label: t.catalog.filters[id] }))
+  const sortOptions = SORT_IDS.map(id => ({ id, label: t.catalog.sort[id] }))
   const activeSort = sortOptions.find(s => s.id === sort)
 
   return (
@@ -137,10 +100,10 @@ export default function CatalogScreen() {
               fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 900,
               color: '#fff', letterSpacing: '-0.5px', lineHeight: 1,
             }}>
-              {lang === 'kz' ? 'Каталог' : 'Каталог'}
+              {t.catalog.title}
             </div>
             <div style={{ fontSize: 12, color: 'rgba(167,139,250,0.7)', marginTop: 3, fontWeight: 500 }}>
-              {lang === 'kz' ? `${products.length} тауар базада` : `${products.length} товаров в базе`}
+              {products.length} {t.catalog.productsCount}
             </div>
           </div>
 
@@ -210,7 +173,7 @@ export default function CatalogScreen() {
               background: 'transparent', border: 'none', outline: 'none',
               color: '#fff', fontSize: 14, fontFamily: 'var(--font-body)', flex: 1,
             }}
-            placeholder={lang === 'kz' ? 'Тауарды іздеу...' : 'Поиск продуктов...'} value={q} onChange={e => setQ(e.target.value)}
+            placeholder={t.catalog.search} value={q} onChange={e => setQ(e.target.value)}
           />
           {q && (
             <button onClick={() => setQ('')} style={{
@@ -248,7 +211,7 @@ export default function CatalogScreen() {
         {list.length === 0 ? (
           <div style={{ padding: '60px 0', textAlign: 'center', color: 'rgba(160,160,200,0.6)' }}>
             <div style={{ fontSize: 40, marginBottom: 10 }}>🔍</div>
-            <p style={{ fontSize: 14 }}>{lang === 'kz' ? 'Ештеңе табылмады' : 'Ничего не найдено'}</p>
+            <p style={{ fontSize: 14 }}>{t.catalog.nothingFound}</p>
           </div>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>

@@ -1,10 +1,7 @@
 import products from '../data/products.json'
+import { ALLERGEN_NAMES } from '../data/allergens.js'
 
-export const ALLERGEN_NAMES = {
-  milk: 'Молоко', gluten: 'Глютен', nuts: 'Орехи',
-  soy: 'Соя', eggs: 'Яйца', fish: 'Рыба',
-  shellfish: 'Моллюски', peanuts: 'Арахис', wheat: 'Пшеница',
-}
+export { ALLERGEN_NAMES }
 
 export function checkProductFit(product, profile) {
   const reasons = []
