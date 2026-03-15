@@ -1,11 +1,13 @@
 import { useNavigate } from 'react-router-dom'
 import QRCode from 'react-qr-code'
 import products from '../data/products.json'
+import { useI18n } from '../utils/i18n.js'
 
 const QR_PREFIX = 'korset:'
 
 export default function QRPrintScreen() {
   const navigate = useNavigate()
+  const { t } = useI18n()
 
   return (
     <div className="screen">
@@ -15,9 +17,9 @@ export default function QRPrintScreen() {
           onClick={() => navigate(-1)}
           style={{ background: 'none', border: 'none', color: 'var(--text-dim)', fontSize: 14, cursor: 'pointer', fontFamily: 'var(--font-body)', display: 'flex', alignItems: 'center', gap: 6, padding: 0, marginBottom: 14 }}
         >
-          ← Назад
+          {t.qr.back}
         </button>
-        <div className="screen-title">QR-коды для ценников</div>
+        <div className="screen-title">{t.qr.title}</div>
 
         {/* Instruction card */}
         <div style={{
@@ -26,15 +28,10 @@ export default function QRPrintScreen() {
           borderRadius: 'var(--radius)', lineHeight: 1.7,
         }}>
           <div style={{ fontFamily: 'var(--font-display)', fontSize: 13, fontWeight: 700, color: 'var(--primary-bright)', marginBottom: 8 }}>
-            Как использовать:
+            {t.qr.howTitle}
           </div>
-          {[
-            '1. Нажмите "Распечатать" — откроется диалог принтера',
-            '2. Распечатайте лист на обычной бумаге',
-            '3. Разрежьте по карточкам и положите рядом с товарами',
-            '4. Покупатель сканирует QR → мгновенно открывается карточка с ✅/❌',
-          ].map((t, i) => (
-            <div key={i} style={{ fontSize: 13, color: 'var(--text-sub)' }}>{t}</div>
+          {t.qr.howSteps.map((step, i) => (
+            <div key={i} style={{ fontSize: 13, color: 'var(--text-sub)' }}>{step}</div>
           ))}
         </div>
 
@@ -43,7 +40,7 @@ export default function QRPrintScreen() {
           className="btn btn-primary btn-full"
           style={{ marginTop: 14 }}
         >
-          🖨️ Распечатать все {products.length} QR-кодов
+          🖨️ {t.qr.printAll} {products.length} {t.qr.qrCodes}
         </button>
       </div>
 

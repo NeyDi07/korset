@@ -15,14 +15,9 @@ function getChips(t) {
   ]
 }
 
-function buildChipQuestion(chipId, product) {
-  const map = {
-    why:     `Объясни, почему "${product.name}" подходит или не подходит для моего профиля.`,
-    cook:    `Как использовать "${product.name}"? Дай практический совет.`,
-    compare: `Сравни "${product.name}" с типичными аналогами. Чем лучше или хуже?`,
-    store:   `Как хранить "${product.name}" после покупки?`,
-  }
-  return map[chipId] || chipId
+function buildChipQuestion(chipId, product, t) {
+  const fn = t.ai.chipQuestions[chipId]
+  return fn ? fn(product.name) : chipId
 }
 
 
@@ -238,7 +233,7 @@ export default function AIScreen() {
         {messages.length === 0 && (
           <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 10, scrollbarWidth: 'none' }}>
             {getChips(t).map(chip => (
-              <button key={chip.id} onClick={() => sendMessage(buildChipQuestion(chip.id, product))} disabled={loading}
+              <button key={chip.id} onClick={() => sendMessage(buildChipQuestion(chip.id, product, t))} disabled={loading}
                 style={{
                   flexShrink: 0, padding: '7px 14px', borderRadius: 20,
                   fontSize: 13, fontWeight: 500, cursor: 'pointer',

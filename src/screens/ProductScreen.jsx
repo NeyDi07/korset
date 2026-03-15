@@ -97,9 +97,9 @@ export default function ProductScreen() {
       <div className="screen" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '80vh' }}>
         <div style={{ textAlign: 'center', color: 'var(--text-dim)' }}>
           <div style={{ fontSize: 48, marginBottom: 12 }}>🔍</div>
-          <p>{lang === 'kz' ? 'Тауар табылмады' : 'Товар не найден'}</p>
+          <p>{t.common.notFound}</p>
           <button className="btn btn-secondary" style={{ marginTop: 16 }} onClick={() => navigate('/catalog')}>
-            Назад к списку
+            {t.product.backToList}
           </button>
         </div>
       </div>
@@ -187,7 +187,7 @@ export default function ProductScreen() {
 
           {/* Image on top */}
           <div className="product-hero" style={{ marginBottom: 12 }}>
-            <HeroImage product={product} />
+            <HeroImage product={product} t={t} />
           </div>
 
           {/* Name */}
@@ -402,14 +402,14 @@ export default function ProductScreen() {
   )
 }
 
-function HeroImage({ product }) {
+function HeroImage({ product, t }) {
   const [ok, setOk] = useState(true)
   const src = getPrimaryImage(product)
-  if (!src || !ok) return <div className="product-hero-placeholder">{lang === 'kz' ? 'Фото кейін қосылады' : 'Фото добавим позже'}</div>
+  if (!src || !ok) return <div className="product-hero-placeholder">{t.product.photoLater}</div>
   return (
     <img
       src={src}
-      alt={product?.name || lang === 'kz' ? 'Тауар суреті' : 'Фото товара'}
+      alt={product?.name || ''}
       className="product-hero-img"
       loading="lazy"
       onError={() => setOk(false)}
