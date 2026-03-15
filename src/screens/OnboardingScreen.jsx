@@ -126,16 +126,16 @@ function StepIndicator({ step }) {
 function CircleRows({ rows, renderItem, gap = 12, rowGap = 14 }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: rowGap }}>
-      {rows.map((row, rowIndex) => (
-        <div key={rowIndex} style={{ display: 'flex', justifyContent: 'center', gap, flexWrap: 'nowrap' }}>
-          {row.map((item, itemIndex) => renderItem(item, itemIndex, rowIndex))}
+      {rows.map((row, index) => (
+        <div key={index} style={{ display: 'flex', justifyContent: 'center', gap, flexWrap: 'nowrap' }}>
+          {row.map(renderItem)}
         </div>
       ))}
     </div>
   )
 }
 
-function CircleCard({ children, selected = false, onClick, size = 110, label, interactive = false, delay = 0 }) {
+function CircleCard({ children, selected = false, onClick, size = 110, label, interactive = false }) {
   const Comp = onClick ? 'button' : 'div'
   return (
     <Comp
@@ -162,9 +162,6 @@ function CircleCard({ children, selected = false, onClick, size = 110, label, in
         cursor: onClick ? 'pointer' : 'default',
         padding: 10,
         textAlign: 'center',
-        animation: `onboardPopIn 0.48s cubic-bezier(0.22, 1, 0.36, 1) both`,
-        animationDelay: `${delay}ms`,
-        willChange: 'transform, opacity',
       }}
     >
       {children}
@@ -173,24 +170,24 @@ function CircleCard({ children, selected = false, onClick, size = 110, label, in
   )
 }
 
-function FeatureCard({ name, label, delay = 0 }) {
+function FeatureCard({ name, label }) {
   return (
-    <CircleCard size={110} label={label} delay={delay}>
+    <CircleCard size={110} label={label}>
       <FeatureIcon name={name} />
     </CircleCard>
   )
 }
 
-function ChoicePill({ item, label, active, onClick, size = 104, delay = 0 }) {
+function ChoicePill({ item, label, active, onClick, size = 104 }) {
   return (
-    <CircleCard size={size} selected={active} onClick={onClick} label={label} delay={delay}>
+    <CircleCard size={size} selected={active} onClick={onClick} label={label}>
       <ChoiceIcon name={item.icon} active={active} size={22} />
     </CircleCard>
   )
 }
 
-function FeatureByKey(key, labels, itemIndex = 0, rowIndex = 0) {
-  return <FeatureCard key={key} name={key} label={labels[key]} delay={rowIndex * 90 + itemIndex * 75} />
+function FeatureByKey(key, labels) {
+  return <FeatureCard key={key} name={key} label={labels[key]} />
 }
 
 export default function OnboardingScreen({ onDone }) {
@@ -272,19 +269,9 @@ export default function OnboardingScreen({ onDone }) {
     t.onboarding.step3Sub,
   ][step]
 
-
-  const motionStyle = `
-    @keyframes onboardPopIn {
-      0% { opacity: 0; transform: translateY(10px) scale(0.84); }
-      65% { opacity: 1; transform: translateY(-3px) scale(1.045); }
-      100% { opacity: 1; transform: translateY(0) scale(1); }
-    }
-  `
-
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 1200, background: 'linear-gradient(180deg, #080811 0%, #05050D 100%)', overflowY: 'auto' }}>
       <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(circle at 50% -10%, rgba(124,58,237,0.18) 0%, transparent 45%)' }} />
-      <style>{motionStyle}</style>
       <div style={{ position: 'relative', padding: '24px 20px 34px', minHeight: '100%' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14, minHeight: 54 }}>
           <img src="/korset_logo.svg" alt="Körset" style={{ height: 54, width: 'auto', filter: 'drop-shadow(0 10px 24px rgba(124,58,237,0.20))' }} />
@@ -308,17 +295,17 @@ export default function OnboardingScreen({ onDone }) {
           {step === 0 && (
             <>
               <div style={{ marginBottom: 12, fontSize: 12, fontWeight: 800, color: 'rgba(175,175,205,0.74)', textTransform: 'uppercase', letterSpacing: '1.05px', textAlign: 'center' }}>{t.onboarding.featuresTitle}</div>
-              <CircleRows rows={FEATURE_ROWS} renderItem={(key, itemIndex, rowIndex) => FeatureByKey(key, featureLabels, itemIndex, rowIndex)} />
+              <CircleRows rows={FEATURE_ROWS} renderItem={(key) => FeatureByKey(key, featureLabels)} />
             </>
           )}
 
           {step === 1 && (
-            <CircleRows rows={PREFERENCE_ROWS} renderItem={(id, itemIndex, rowIndex) => { const item = PREFERENCES.find((x) => x.id === id); const active = selectedPrefs.has(item.id); return <ChoicePill key={item.id} item={item} label={lang === 'kz' ? item.kz : item.ru} active={active} onClick={() => toggle(setSelectedPrefs, item.id)} size={104} delay={rowIndex * 90 + itemIndex * 75} /> }} />
+            <CircleRows rows={PREFERENCE_ROWS} renderItem={(id) => { const item = PREFERENCES.find((x) => x.id === id); const active = selectedPrefs.has(item.id); return <ChoicePill key={item.id} item={item} label={lang === 'kz' ? item.kz : item.ru} active={active} onClick={() => toggle(setSelectedPrefs, item.id)} size={104} /> }} />
           )}
 
           {step === 2 && (
             <>
-              <CircleRows rows={ALLERGEN_ROWS} renderItem={(id, itemIndex, rowIndex) => { const item = ALLERGENS.find((x) => x.id === id); const active = selectedAllergens.has(item.id); return <ChoicePill key={item.id} item={item} label={lang === 'kz' ? item.kz : item.ru} active={active} onClick={() => toggle(setSelectedAllergens, item.id)} size={98} delay={rowIndex * 90 + itemIndex * 75} /> }} />
+              <CircleRows rows={ALLERGEN_ROWS} renderItem={(id) => { const item = ALLERGENS.find((x) => x.id === id); const active = selectedAllergens.has(item.id); return <ChoicePill key={item.id} item={item} label={lang === 'kz' ? item.kz : item.ru} active={active} onClick={() => toggle(setSelectedAllergens, item.id)} size={98} /> }} />
               <div style={{ borderRadius: 18, border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.04)', padding: 14, marginTop: 16 }}>
                 <div style={{ fontSize: 12, color: 'rgba(185,185,214,0.74)', marginBottom: 8 }}>{lang === 'kz' ? 'Өз шектеуіңізді қосыңыз' : 'Добавьте своё исключение'}</div>
                 <div style={{ display: 'flex', gap: 8 }}>
