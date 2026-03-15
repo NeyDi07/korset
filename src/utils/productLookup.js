@@ -1,7 +1,7 @@
 import localProducts from '../data/products.json'
 import { supabase } from './supabase.js'
 
-const GROQ_KEY = import.meta.env.VITE_GROQ_API_KEY
+import { enrichProductAI } from '../services/ai.js'
 
 // Получаем или создаём device_id для аналитики
 function getDeviceId() {
@@ -84,25 +84,12 @@ async function fetchFromOFF(ean) {
   } catch { return null }
 }
 
-// ── 5. AI обогащение через Groq ──────────────────────────────────────────────
+// ── 5. AI обогащение через серверный прокси ──────────────────────────────────
 async function enrichWithAI(product) {
-  if (!GROQ_KEY) return product
   if (product.ingredients && product.ingredients.length > 20) return product
   try {
-    const prompt = `Товар: "${product.name}"${product.brand ? `, бренд: ${product.brand}` : ''}.
-Ответь ТОЛЬКО JSON без markdown:
-{"ingredients":"состав на русском","allergens":["milk","gluten","nuts","eggs","fish","soy","peanuts","shellfish"],"dietTags":["halal","vegan","vegetarian","gluten_free","dairy_free","sugar_free"],"description":"1 предложение о товаре"}`
-
-    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${GROQ_KEY}` },
-      body: JSON.stringify({ model: 'llama-3.1-8b-instant', max_tokens: 300, messages: [{ role: 'user', content: prompt }] }),
-      signal: AbortSignal.timeout(5000)
-    })
-    const data = await res.json()
-    const text = data.choices?.[0]?.message?.content?.trim()
-    if (!text) return product
-    const ai = JSON.parse(text.replace(/```json|```/g, '').trim())
+    const ai = await enrichProductAI(product)
+    if (!ai) return product
     return {
       ...product,
       ingredients: ai.ingredients || product.ingredients,

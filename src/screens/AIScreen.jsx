@@ -2,46 +2,17 @@ import { useState, useRef, useEffect } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import products from '../data/products.json'
 import { loadProfile } from '../utils/profile.js'
+import { useI18n } from '../utils/i18n.js'
+import KorsetAvatar from '../components/KorsetAvatar.jsx'
+import { askProductAI } from '../services/ai.js'
 
-const CHIPS = [
-  { id: 'why',     label: 'Почему подходит?' },
-  { id: 'cook',    label: 'Как использовать?' },
-  { id: 'compare', label: 'Сравни с аналогами' },
-  { id: 'store',   label: 'Как хранить?' },
-]
-
-function buildSystemPrompt(product, profile) {
-  const specs = Object.entries(product.specs || {}).map(([k,v]) => `${k}: ${v}`).join(', ')
-  const nutr = product.nutritionPer100
-    ? `Белки ${product.nutritionPer100.protein}г, Жиры ${product.nutritionPer100.fat}г, Углеводы ${product.nutritionPer100.carbs}г, Ккал ${product.nutritionPer100.kcal}`
-    : 'не указано'
-  const profileParts = []
-  if (profile?.halal || profile?.halalOnly) profileParts.push('нужен халал')
-  if (profile?.allergens?.length) profileParts.push(`аллергии: ${profile.allergens.join(', ')}`)
-  if (profile?.dietGoals?.length) profileParts.push(`диета: ${profile.dietGoals.join(', ')}`)
-  return `Ты — Körset AI, умный помощник покупателя в супермаркете Казахстана. Отвечай кратко, по делу, на русском языке. Максимум 3–4 предложения. Без markdown — пиши живым текстом как друг.
-
-ТОВАР: ${product.name} | Цена: ${product.priceKzt}₸ | Полка: ${product.shelf}
-КБЖУ: ${nutr} | Состав: ${product.ingredients || '—'}
-Халал: ${product.halal === 'yes' ? 'да' : product.halal === 'no' ? 'нет' : 'неизвестно'}
-Аллергены: ${product.allergens?.join(', ') || 'нет'}
-ПРОФИЛЬ: ${profileParts.length ? profileParts.join('; ') : 'не задан'}`
-}
-
-function buildExternalSystemPrompt(product, profile) {
-  const n = product.nutrition
-  const nutrStr = n ? `Белки ${n.protein ?? '—'}г, Жиры ${n.fat ?? '—'}г, Углеводы ${n.carbs ?? '—'}г, Ккал ${n.calories ?? '—'}` : 'не указано'
-  const profileParts = []
-  if (profile?.halal || profile?.halalOnly) profileParts.push('нужен халал')
-  if (profile?.allergens?.length) profileParts.push(`аллергии: ${profile.allergens.join(', ')}`)
-  if (profile?.dietGoals?.length) profileParts.push(`диета: ${profile.dietGoals.join(', ')}`)
-  return `Ты — Körset AI, умный помощник покупателя в супермаркете Казахстана. Отвечай кратко, по делу, на русском языке. Максимум 3–4 предложения. Без markdown — пиши живым текстом как друг.
-
-ТОВАР: ${product.name} | Бренд: ${product.brand || '—'}
-КБЖУ: ${nutrStr} | Состав: ${product.ingredients || '—'}
-Халал: ${product.isHalal === true ? 'да' : 'неизвестно'} | Аллергены: ${product.allergens?.join(', ') || 'нет'}
-Nutri-Score: ${product.nutriscore?.toUpperCase() || '—'}
-ПРОФИЛЬ: ${profileParts.length ? profileParts.join('; ') : 'не задан'}`
+function getChips(t) {
+  return [
+    { id: 'why',     label: t.ai.chips.why },
+    { id: 'cook',    label: t.ai.chips.cook },
+    { id: 'compare', label: t.ai.chips.compare },
+    { id: 'store',   label: t.ai.chips.store },
+  ]
 }
 
 function buildChipQuestion(chipId, product) {
@@ -54,26 +25,13 @@ function buildChipQuestion(chipId, product) {
   return map[chipId] || chipId
 }
 
-// Иконка-аватар Körset
-function KorsetAvatar({ size = 34 }) {
-  return (
-    <div style={{
-      width: size, height: size, borderRadius: '50%', flexShrink: 0,
-      background: 'linear-gradient(135deg, #7C3AED, #6D28D9)',
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      boxShadow: '0 2px 10px rgba(124,58,237,0.4)',
-      padding: size * 0.18,
-    }}>
-      <img src="/icon_logo.svg" alt="Körset" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-    </div>
-  )
-}
 
 export default function AIScreen() {
   const { id, ean } = useParams()
   const navigate = useNavigate()
   const { state: navState } = useLocation()
   const profile = loadProfile()
+  const { lang, t } = useI18n()
   const isExternal = Boolean(ean)
   const product = isExternal
     ? (navState?.product ?? null)
@@ -98,28 +56,10 @@ export default function AIScreen() {
     setInput('')
     setLoading(true)
     try {
-      const apiKey = import.meta.env.VITE_GROQ_API_KEY
-      if (!apiKey) throw new Error('NO_KEY')
-      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-        body: JSON.stringify({
-          model: 'llama-3.1-8b-instant',
-          max_tokens: 300, temperature: 0.7,
-          messages: [
-            { role: 'system', content: isExternal ? buildExternalSystemPrompt(product, profile) : buildSystemPrompt(product, profile) },
-            ...newMessages,
-          ],
-        }),
-      })
-      if (!res.ok) { const err = await res.json().catch(() => ({})); throw new Error(err.error?.message || `HTTP ${res.status}`) }
-      const data = await res.json()
-      const reply = data.choices?.[0]?.message?.content?.trim()
-      if (!reply) throw new Error('Пустой ответ')
+      const reply = await askProductAI(newMessages, product, profile, lang)
       setMessages(prev => [...prev, { role: 'assistant', content: reply }])
     } catch (e) {
-      if (e.message === 'NO_KEY') setError('API ключ не настроен.')
-      else setError(`Ошибка: ${e.message}`)
+      setError(`${t.ai.errorPrefix} ${e.message}`)
       setMessages(prev => prev.slice(0, -1))
     } finally {
       setLoading(false)
@@ -129,7 +69,7 @@ export default function AIScreen() {
   if (!product) {
     return (
       <div className="screen" style={{ display:'flex', alignItems:'center', justifyContent:'center' }}>
-        <p style={{ color:'var(--text-dim)' }}>Товар не найден</p>
+        <p style={{ color:'var(--text-dim)' }}>{t.common.notFound}</p>
       </div>
     )
   }
@@ -172,7 +112,7 @@ export default function AIScreen() {
             Körset AI
           </div>
           <div style={{ fontSize: 12, color: '#34D399', fontWeight: 500, marginTop: 1 }}>
-            Онлайн
+            {t.common.online}
           </div>
         </div>
       </div>
@@ -200,7 +140,7 @@ export default function AIScreen() {
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)', fontWeight: 600, letterSpacing: '0.5px', textTransform: 'uppercase', marginBottom: 2 }}>
-            Контекст продукта
+            {t.ai.productContext}
           </div>
           <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.85)', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {product.name}
@@ -220,7 +160,7 @@ export default function AIScreen() {
               padding: '13px 16px', borderRadius: '4px 18px 18px 18px',
               maxWidth: '85%', fontSize: 15, lineHeight: 1.65, color: 'rgba(255,255,255,0.85)',
             }}>
-              Привет! Задайте любой вопрос про <strong style={{ color: '#fff' }}>{product.name}</strong> — состав, аллергены, как использовать или сравнить с аналогами.
+              {t.ai.welcomeProduct} <strong style={{ color: '#fff' }}>{product.name}</strong> {t.ai.welcomeProductEnd}
             </div>
           </div>
         )}
@@ -297,7 +237,7 @@ export default function AIScreen() {
         {/* Быстрые вопросы */}
         {messages.length === 0 && (
           <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 10, scrollbarWidth: 'none' }}>
-            {CHIPS.map(chip => (
+            {getChips(t).map(chip => (
               <button key={chip.id} onClick={() => sendMessage(buildChipQuestion(chip.id, product))} disabled={loading}
                 style={{
                   flexShrink: 0, padding: '7px 14px', borderRadius: 20,
@@ -320,7 +260,7 @@ export default function AIScreen() {
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(input) } }}
-            placeholder="Спросить о продукте..."
+            placeholder={t.ai.inputProduct}
             disabled={loading}
             style={{
               flex: 1,

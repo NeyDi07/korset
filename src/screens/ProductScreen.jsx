@@ -77,10 +77,10 @@ function getManufacturerText(product) {
   return ''
 }
 
-function formatShelfLine(product) {
+function formatShelfLine(product, lang, t) {
   const cat = CATEGORY_LABELS[product.category] || (lang === 'kz' ? 'Тауарлар' : 'Товары')
   const shelf = product.shelf ? String(product.shelf).replace(/^Полка\s*/i, '').trim() : ''
-  return shelf ? `${cat} · Полка ${shelf}` : cat
+  return shelf ? `${cat} · ${lang === 'kz' ? 'Сөре' : 'Полка'} ${shelf}` : cat
 }
 
 export default function ProductScreen() {
@@ -142,7 +142,7 @@ export default function ProductScreen() {
             <path d="M19 12H5M12 5l-7 7 7 7"/>
           </svg>
         </button>
-        <div className="screen-title" style={{ margin: 0 }}>{lang === 'kz' ? 'Тауар картасы' : 'Карточка товара'}</div>
+        <div className="screen-title" style={{ margin: 0 }}>{t.product.title}</div>
       </div>
 
       {/* Product Card */}
@@ -160,7 +160,7 @@ export default function ProductScreen() {
                   opacity: 0.92,
                 }}
               >
-                {formatShelfLine(product)}
+                {formatShelfLine(product, lang, t)}
               </span>
               {product.demoData ? (
                 <span
@@ -219,26 +219,26 @@ export default function ProductScreen() {
             {manufacturerText ? (
               <span style={{ fontSize: 13, color: 'var(--text-sub)' }}>{manufacturerText}</span>
             ) : (
-              <span style={{ fontSize: 13, color: 'var(--text-dim)' }}>{lang === 'kz' ? 'Өндіруші көрсетілмеген' : 'Производитель не указан'}</span>
+              <span style={{ fontSize: 13, color: 'var(--text-dim)' }}>{t.product.noManufacturer}</span>
             )}
           </div>
 
           {/* Characteristics */}
           <div style={{ marginTop: 8 }}>
             <div className="section-title" style={{ marginBottom: 8 }}>
-              Характеристики
+              {t.product.characteristics}
               <span style={{ marginLeft: 8, fontSize: 12, color: 'var(--text-dim)', fontWeight: 500 }}>
-                {isFood ? lang === 'kz' ? `БЖУ (${product.nutritionBase || '100 г үшін'})` : `КБЖУ (${product.nutritionBase || 'на 100 г'})` : lang === 'kz' ? 'Негізгі параметрлер' : 'Основные параметры'}
+                {isFood ? `${t.product.nutrition} (${product.nutritionBase || t.product.nutritionPer100})` : t.product.mainParams}
               </span>
             </div>
 
             {isFood && nutrition ? (
               <div className="nutri-grid" style={{ marginBottom: 10 }}>
                 {[
-                  [lang === 'kz' ? 'Ақуыз' : lang === 'kz' ? 'Ақуыз' : 'Белки', nutrition.protein, 'г'],
-                  [lang === 'kz' ? 'Май' : 'Жиры', nutrition.fat, 'г'],
-                  [lang === 'kz' ? 'Көмірсу' : 'Углеводы', nutrition.carbs, 'г'],
-                  ['Ккал', nutrition.kcal, 'ккал'],
+                  [t.product.protein, nutrition.protein, 'г'],
+                  [t.product.fat, nutrition.fat, 'г'],
+                  [t.product.carbs, nutrition.carbs, 'г'],
+                  [t.product.kcal, nutrition.kcal, 'ккал'],
                 ].map(([label, val, unit]) => (
                   <div key={label} className="nutri-item">
                     <div className="nutri-label">{label}</div>
@@ -258,11 +258,11 @@ export default function ProductScreen() {
             ) : (
               <div className="spec-list" style={{ marginBottom: 10 }}>
                 {keySpecs.length === 0 ? (
-                  <div style={{ fontSize: 13, color: 'var(--text-dim)' }}>{lang === 'kz' ? 'Сипаттамалар кейін қосылады' : 'Характеристики будут добавлены'}</div>
+                  <div style={{ fontSize: 13, color: 'var(--text-dim)' }}>{t.product.specsLater}</div>
                 ) : (
                   keySpecs.map(([k, v]) => (
                     <div key={k} className="info-row">
-                      <span className="info-label">{humanizeSpecKey(k)}</span>
+                      <span className="info-label">{humanizeSpecKey(k, lang)}</span>
                       <span className="info-value">{String(v)}</span>
                     </div>
                   ))
@@ -276,7 +276,7 @@ export default function ProductScreen() {
                 className="more-btn"
                 type="button"
               >
-                {moreOpen ? (lang === 'kz' ? 'Жасыру' : 'Скрыть') : (lang === 'kz' ? 'Қосымша' : 'Дополнительно')}
+                {moreOpen ? t.product.hide : t.product.more}
                 <span style={{ marginLeft: 8, opacity: 0.9 }} aria-hidden="true">
                   {moreOpen ? '▴' : '▾'}
                 </span>
@@ -287,31 +287,31 @@ export default function ProductScreen() {
               <div style={{ marginTop: 10 }}>
                 {product.ingredients ? (
                   <div style={{ marginBottom: 10 }}>
-                    <div style={{ fontSize: 12, color: 'var(--text-dim)', marginBottom: 6 }}>{lang === 'kz' ? 'Құрамы' : 'Состав'}</div>
+                    <div style={{ fontSize: 12, color: 'var(--text-dim)', marginBottom: 6 }}>{t.product.ingredients}</div>
                     <div style={{ fontSize: 13, color: 'var(--text-sub)', lineHeight: 1.55 }}>{product.ingredients}</div>
                   </div>
                 ) : null}
 
                 {product.storage ? (
                   <div style={{ marginBottom: 10 }}>
-                    <div style={{ fontSize: 12, color: 'var(--text-dim)', marginBottom: 6 }}>{lang === 'kz' ? 'Сақтау шарттары' : 'Условия хранения'}</div>
+                    <div style={{ fontSize: 12, color: 'var(--text-dim)', marginBottom: 6 }}>{t.product.storage}</div>
                     <div style={{ fontSize: 13, color: 'var(--text-sub)', lineHeight: 1.55 }}>{product.storage}</div>
                   </div>
                 ) : null}
 
                 {product.expiry ? (
                   <div style={{ marginBottom: 10 }}>
-                    <div style={{ fontSize: 12, color: 'var(--text-dim)', marginBottom: 6 }}>{lang === 'kz' ? 'Сақтау мерзімі' : 'Срок хранения'}</div>
+                    <div style={{ fontSize: 12, color: 'var(--text-dim)', marginBottom: 6 }}>{t.product.expiry}</div>
                     <div style={{ fontSize: 13, color: 'var(--text-sub)' }}>{product.expiry}</div>
                   </div>
                 ) : null}
 
                 {product.fullSpecs && Object.keys(product.fullSpecs).length > 0 ? (
                   <div style={{ marginBottom: 0 }}>
-                    <div style={{ fontSize: 12, color: 'var(--text-dim)', marginBottom: 6 }}>{lang === 'kz' ? 'Қосымша сипаттамалар' : 'Доп. характеристики'}</div>
+                    <div style={{ fontSize: 12, color: 'var(--text-dim)', marginBottom: 6 }}>{t.product.additionalSpecs}</div>
                     {Object.entries(product.fullSpecs).map(([k, v]) => (
                       <div key={k} className="info-row">
-                        <span className="info-label">{humanizeSpecKey(k)}</span>
+                        <span className="info-label">{humanizeSpecKey(k, lang)}</span>
                         <span className="info-value">{String(v)}</span>
                       </div>
                     ))}
@@ -345,10 +345,10 @@ export default function ProductScreen() {
           </div>
           <div>
             <div style={{ fontSize: 17, fontWeight: 700, color: fits ? '#10B981' : '#EF4444', fontFamily: 'var(--font-display)' }}>
-              {fits ? (lang === 'kz' ? 'Сізге сай келеді' : 'Подходит вам') : (lang === 'kz' ? 'Сәйкес емес' : 'Не подходит')}
+              {fits ? t.product.fits : t.product.notFits}
             </div>
             <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginTop: 2 }}>
-              {fits ? (lang === 'kz' ? 'Профиліңізге сәйкес келеді' : 'Соответствует вашему профилю') : (lang === 'kz' ? 'Профиліңіз бойынша шектеулер бар' : 'Есть ограничения по вашему профилю')}
+              {fits ? t.product.fitsDesc : t.product.notFitsDesc}
             </div>
           </div>
         </div>
@@ -385,7 +385,7 @@ export default function ProductScreen() {
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>
           </svg>
-          Альтернативы
+          {t.common.alternatives}
         </button>
         <button onClick={() => navigate(`/product/${id}/ai`)} style={{
           flex: 1, padding: '14px 10px', borderRadius: 16, cursor: 'pointer',
@@ -395,7 +395,7 @@ export default function ProductScreen() {
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
           boxShadow: '0 4px 16px rgba(124,58,237,0.4)',
         }}>
-          ✦ Спросить AI
+          ✦ {t.common.askAI}
         </button>
       </div>
     </div>
@@ -423,7 +423,7 @@ function formatNutriNumber(val) {
   return Number.isInteger(n) ? String(n) : n.toFixed(1)
 }
 
-function humanizeSpecKey(key) {
+function humanizeSpecKey(key, lang) {
   return (
     {
       volume: lang === 'kz' ? 'Көлемі' : 'Объём',

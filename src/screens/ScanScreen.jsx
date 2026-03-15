@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { lookupProduct } from '../utils/productLookup.js'
+import { getStoreId } from '../utils/store.js'
+import { useI18n } from '../utils/i18n.js'
 
 // ─── Barcode Scanner ───────────────────────────────────────────────────────────
 function BarcodeScanner({ onDetected, onClose }) {
@@ -302,7 +304,7 @@ export default function ScanScreen() {
   const [notFoundEan, setNotFoundEan] = useState(null)
 
   const handleDetected = async (ean) => {
-    const result = await lookupProduct(ean)
+    const result = await lookupProduct(ean, getStoreId())
     if (result.type === 'local') {
       navigate(`/product/${result.product.id}`)
     } else if (result.type === 'external') {

@@ -3,11 +3,13 @@ import { useParams, useNavigate } from 'react-router-dom'
 import products from '../data/products.json'
 import { getAlternatives, formatPrice, CATEGORY_LABELS } from '../utils/fitCheck.js'
 import { loadProfile } from '../utils/profile.js'
+import { useI18n } from '../utils/i18n.js'
 
 export default function AlternativesScreen() {
   const { id } = useParams()
   const navigate = useNavigate()
   const profile = loadProfile()
+  const { lang, t } = useI18n()
 
   const product = products.find((p) => p.id === id)
   const alternatives = product ? getAlternatives(product, profile) : []
@@ -19,10 +21,10 @@ export default function AlternativesScreen() {
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M19 12H5M12 5l-7 7 7 7"/>
           </svg>
-          Назад
+          {t.common.back}
         </button>
-        <div className="screen-title">Альтернативы</div>
-        <div className="screen-subtitle">Подходят под ваш профиль</div>
+        <div className="screen-title">{t.alternatives.title}</div>
+        <div className="screen-subtitle">{t.alternatives.subtitle}</div>
       </div>
 
       <div className="section">
@@ -38,9 +40,9 @@ export default function AlternativesScreen() {
                 <path d="M8 8a4 4 0 1 1 8 0c0 3-4 3-4 6" />
               </svg>
             </div>
-            <p>Подходящих альтернатив не найдено</p>
+            <p>{t.alternatives.empty}</p>
             <p style={{ fontSize: 13, marginTop: 8, color: 'var(--text-dim)' }}>
-              Попробуйте изменить профиль
+              {t.alternatives.emptyHint}
             </p>
           </div>
         ) : (
@@ -104,8 +106,8 @@ export default function AlternativesScreen() {
                       <path d="M15 6v15" />
                     </svg>
                   </span>
-                  <span>Найти в магазине · {alt.shelf}</span>
-                  <span style={{ marginLeft: 'auto', fontSize: 11, opacity: 0.6 }}>Карта</span>
+                  <span>{t.product.findInStore} · {alt.shelf}</span>
+                  <span style={{ marginLeft: 'auto', fontSize: 11, opacity: 0.6 }}>{t.product.map}</span>
                 </div>
               </div>
             ))}
@@ -121,7 +123,7 @@ export default function AlternativesScreen() {
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z" />
           </svg>
-          Спросить AI о выборе
+          {t.alternatives.askAI}
         </button>
       </div>
     </div>
