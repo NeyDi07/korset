@@ -4,7 +4,6 @@ import products from '../data/products.json'
 import { checkProductFit, formatPrice, CATEGORY_LABELS } from '../utils/fitCheck.js'
 import { loadProfile } from '../utils/profile.js'
 import { useI18n } from '../utils/i18n.js'
-import ExpandToggle from '../components/ExpandToggle.jsx'
 
 function clamp(n, a, b) {
   return Math.max(a, Math.min(b, n))
@@ -272,13 +271,16 @@ export default function ProductScreen() {
             )}
 
             {showMoreAvailable && (
-              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <ExpandToggle
-                  checked={moreOpen}
-                  onChange={() => setMoreOpen((s) => !s)}
-                  label={moreOpen ? (lang === 'kz' ? 'Жасыру' : 'Скрыть') : (lang === 'kz' ? 'Қосымша' : 'Дополнительно')}
-                />
-              </div>
+              <button
+                onClick={() => setMoreOpen((s) => !s)}
+                className="more-btn"
+                type="button"
+              >
+                {moreOpen ? (lang === 'kz' ? 'Жасыру' : 'Скрыть') : (lang === 'kz' ? 'Қосымша' : 'Дополнительно')}
+                <span style={{ marginLeft: 8, opacity: 0.9 }} aria-hidden="true">
+                  {moreOpen ? '▴' : '▾'}
+                </span>
+              </button>
             )}
 
             {moreOpen && (
