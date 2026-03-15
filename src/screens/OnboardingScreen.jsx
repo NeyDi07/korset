@@ -57,6 +57,17 @@ function ScanIcon({ active = false }) {
   )
 }
 
+
+function AIIcon({ active = false }) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={active ? '#fff' : '#A78BFA'} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="4" y="5" width="16" height="12" rx="4" fill={active ? 'rgba(255,255,255,0.14)' : 'rgba(167,139,250,0.10)'} />
+      <path d="M9 11h6M9 14h4"/>
+      <path d="M9 17v2l3-2h2"/>
+    </svg>
+  )
+}
+
 function FeatureIcon({ name }) {
   const common = { width: 18, height: 18, viewBox: '0 0 24 24', fill: 'none' }
   switch (name) {
