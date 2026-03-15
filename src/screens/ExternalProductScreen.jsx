@@ -161,7 +161,7 @@ export default function ExternalProductScreen() {
   const navigate = useNavigate()
   const { state: navState } = useLocation()
   const profile = loadProfile()
-  const { lang } = useI18n()
+  const { lang, t } = useI18n()
 
   const [status, setStatus] = useState('loading')
   const [product, setProduct] = useState(null)
