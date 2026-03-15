@@ -36,14 +36,12 @@ const ALLERGENS = [
   { id: 'fish', icon: 'fish', ru: 'Рыба', kz: 'Балық' },
   { id: 'shellfish', icon: 'shell', ru: 'Морепродукты', kz: 'Теңіз өнімдері' },
   { id: 'sesame', icon: 'sesame', ru: 'Кунжут', kz: 'Күнжіт' },
-  { id: 'honey', icon: 'honey', ru: 'Мёд', kz: 'Бал' },
 ]
 
 const ALLERGEN_ROWS = [
   ['milk', 'eggs', 'gluten'],
   ['nuts', 'peanuts', 'soy'],
-  ['fish', 'shellfish'],
-  ['sesame', 'honey'],
+  ['fish', 'shellfish', 'sesame'],
 ]
 
 function FeatureIcon({ name }) {
@@ -112,7 +110,7 @@ function ChoiceIcon({ name, active = false, size = 18 }) {
 
 function StepIndicator({ step }) {
   return (
-    <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 18 }}>
+    <div style={{ display: 'flex', gap: 10, justifyContent: 'center', marginBottom: 14 }}>
       {[0, 1, 2].map((index) => (
         <div key={index} style={{ width: index === step ? 34 : 9, height: 9, borderRadius: 999, background: index === step ? 'linear-gradient(90deg, #8B5CF6, #7C3AED)' : 'rgba(255,255,255,0.12)', boxShadow: index === step ? '0 0 18px rgba(124,58,237,0.38)' : 'none', transition: 'all 0.28s ease' }} />
       ))}
@@ -120,7 +118,7 @@ function StepIndicator({ step }) {
   )
 }
 
-function CircleRows({ rows, renderItem, gap = 10, rowGap = 14 }) {
+function CircleRows({ rows, renderItem, gap = 8, rowGap = 10 }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: rowGap, width: '100%' }}>
       {rows.map((row, index) => (
@@ -164,12 +162,12 @@ function CircleCard({ children, selected = false, onClick, size = 110, label, de
       }}
     >
       {children}
-      {label && <div style={{ fontSize: 12, fontWeight: 700, lineHeight: 1.18, maxWidth: size - 22 }}>{label}</div>}
+      {label && <div style={{ fontSize: 14, fontWeight: 800, lineHeight: 1.18, maxWidth: size - 22 }}>{label}</div>}
     </Comp>
   )
 }
 
-function FeatureCard({ name, label, size = 100, delay = 0 }) {
+function FeatureCard({ name, label, size = 112, delay = 0 }) {
   return (
     <CircleCard size={size} label={label} delay={delay}>
       <FeatureIcon name={name} />
@@ -177,7 +175,7 @@ function FeatureCard({ name, label, size = 100, delay = 0 }) {
   )
 }
 
-function ChoicePill({ item, label, active, onClick, size = 104, delay = 0 }) {
+function ChoicePill({ item, label, active, onClick, size = 112, delay = 0 }) {
   return (
     <CircleCard size={size} selected={active} onClick={onClick} label={label} delay={delay}>
       <ChoiceIcon name={item.icon} active={active} size={22} />
@@ -197,7 +195,7 @@ function FeatureByKey(key, labels, rowIndex = 0, itemIndex = 0) {
     history: 'История сканов',
   }
   const label = labels[key] || fallback[key] || key
-  return <FeatureCard key={key} name={key} label={label} size={100} delay={(rowIndex * 3 + itemIndex) * 55} />
+  return <FeatureCard key={key} name={key} label={label} size={112} delay={(rowIndex * 3 + itemIndex) * 55} />
 }
 
 export default function OnboardingScreen({ onDone }) {
@@ -283,21 +281,21 @@ export default function OnboardingScreen({ onDone }) {
     <div style={{ position: 'fixed', inset: 0, zIndex: 1200, background: 'linear-gradient(180deg, #080811 0%, #05050D 100%)', overflowY: 'auto' }}>
       <style>{`@keyframes onboardPop { 0% { opacity: 0; transform: scale(.74) translateY(12px); } 60% { opacity: 1; transform: scale(1.05) translateY(-3px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }`} </style>
       <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(circle at 50% -10%, rgba(124,58,237,0.18) 0%, transparent 45%)' }} />
-      <div style={{ position: 'relative', padding: '24px 20px 34px', minHeight: '100%' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14, minHeight: 54 }}>
-          <img src="/korset_logo.svg" alt="Körset" style={{ height: 54, width: 'auto', filter: 'drop-shadow(0 10px 24px rgba(124,58,237,0.20))' }} />
+      <div style={{ position: 'relative', padding: '22px 16px 30px', minHeight: '100%' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10, minHeight: 72 }}>
+          <img src="/korset_logo.svg" alt="Körset" style={{ height: 74, width: 'auto', filter: 'drop-shadow(0 10px 24px rgba(124,58,237,0.20))' }} />
           {step === 0 ? (
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ color: 'rgba(185,185,214,0.78)', fontSize: 12, fontWeight: 700, whiteSpace: 'nowrap' }}>{t.onboarding.langTitle}</span>
-            <button onClick={() => setLang('ru')} style={{ padding: '8px 10px', borderRadius: 999, border: `1px solid ${lang === 'ru' ? 'rgba(124,58,237,0.55)' : 'rgba(255,255,255,0.08)'}`, background: lang === 'ru' ? 'rgba(124,58,237,0.14)' : 'rgba(255,255,255,0.03)', color: '#fff', cursor: 'pointer', fontSize: 12, fontWeight: 700 }}>RU</button>
-            <button onClick={() => setLang('kz')} style={{ padding: '8px 10px', borderRadius: 999, border: `1px solid ${lang === 'kz' ? 'rgba(124,58,237,0.55)' : 'rgba(255,255,255,0.08)'}`, background: lang === 'kz' ? 'rgba(124,58,237,0.14)' : 'rgba(255,255,255,0.03)', color: '#fff', cursor: 'pointer', fontSize: 12, fontWeight: 700 }}>KZ</button>
+            <span style={{ color: 'rgba(185,185,214,0.78)', fontSize: 14, fontWeight: 800, whiteSpace: 'nowrap', lineHeight: 1 }}>{t.onboarding.langTitle}</span>
+            <button onClick={() => setLang('ru')} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 56, height: 42, padding: 0, borderRadius: 999, border: `1px solid ${lang === 'ru' ? 'rgba(124,58,237,0.55)' : 'rgba(255,255,255,0.08)'}`, background: lang === 'ru' ? 'rgba(124,58,237,0.14)' : 'rgba(255,255,255,0.03)', color: '#fff', cursor: 'pointer', fontSize: 14, fontWeight: 800 }}>RU</button>
+            <button onClick={() => setLang('kz')} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 56, height: 42, padding: 0, borderRadius: 999, border: `1px solid ${lang === 'kz' ? 'rgba(124,58,237,0.55)' : 'rgba(255,255,255,0.08)'}`, background: lang === 'kz' ? 'rgba(124,58,237,0.14)' : 'rgba(255,255,255,0.03)', color: '#fff', cursor: 'pointer', fontSize: 12, fontWeight: 700 }}>KZ</button>
           </div>
-        ) : <div style={{ width: 150, height: 40 }} />}
+        ) : <div style={{ width: 196, height: 52 }} />}
         </div>
 
         <StepIndicator step={step} />
 
-        <div style={{ textAlign: 'center', marginBottom: 18, opacity: leaving ? 0 : 1, transform: leaving ? 'translateY(10px)' : 'translateY(0)', transition: 'all 0.28s ease' }}>
+        <div style={{ textAlign: 'center', marginBottom: 14, opacity: leaving ? 0 : 1, transform: leaving ? 'translateY(10px)' : 'translateY(0)', transition: 'all 0.28s ease' }}>
           <h1 style={{ margin: 0, fontFamily: 'var(--font-display)', fontSize: step === 0 ? 30 : 28, lineHeight: 1.08, color: '#fff', letterSpacing: '-0.7px' }}>{stepTitle}</h1>
           {step > 0 && <p style={{ margin: '10px auto 0', maxWidth: 330, fontSize: 14, lineHeight: 1.55, color: 'rgba(185,185,214,0.84)' }}>{stepSub}</p>}
         </div>
@@ -311,12 +309,12 @@ export default function OnboardingScreen({ onDone }) {
           )}
 
           {step === 1 && (
-            <CircleRows rows={PREFERENCE_ROWS} renderItem={(id, rowIndex, itemIndex) => { const item = PREFERENCES.find((x) => x.id === id); const active = selectedPrefs.has(item.id); return <ChoicePill key={item.id} item={item} label={lang === 'kz' ? item.kz : item.ru} active={active} onClick={() => toggle(setSelectedPrefs, item.id)} size={100} delay={(rowIndex * 3 + itemIndex) * 55} /> }} />
+            <CircleRows rows={PREFERENCE_ROWS} renderItem={(id, rowIndex, itemIndex) => { const item = PREFERENCES.find((x) => x.id === id); const active = selectedPrefs.has(item.id); return <ChoicePill key={item.id} item={item} label={lang === 'kz' ? item.kz : item.ru} active={active} onClick={() => toggle(setSelectedPrefs, item.id)} size={112} delay={(rowIndex * 3 + itemIndex) * 55} /> }} />
           )}
 
           {step === 2 && (
             <>
-              <CircleRows rows={ALLERGEN_ROWS} renderItem={(id, rowIndex, itemIndex) => { const item = ALLERGENS.find((x) => x.id === id); const active = selectedAllergens.has(item.id); return <ChoicePill key={item.id} item={item} label={lang === 'kz' ? item.kz : item.ru} active={active} onClick={() => toggle(setSelectedAllergens, item.id)} size={96} delay={(rowIndex * 3 + itemIndex) * 55} /> }} />
+              <CircleRows rows={ALLERGEN_ROWS} renderItem={(id, rowIndex, itemIndex) => { const item = ALLERGENS.find((x) => x.id === id); const active = selectedAllergens.has(item.id); return <ChoicePill key={item.id} item={item} label={lang === 'kz' ? item.kz : item.ru} active={active} onClick={() => toggle(setSelectedAllergens, item.id)} size={108} delay={(rowIndex * 3 + itemIndex) * 55} /> }} />
               <div style={{ borderRadius: 18, border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.04)', padding: 14, marginTop: 16 }}>
                 <div style={{ fontSize: 12, color: 'rgba(185,185,214,0.74)', marginBottom: 8 }}>{lang === 'kz' ? 'Өз шектеуіңізді қосыңыз' : 'Добавьте своё исключение'}</div>
                 <div style={{ display: 'flex', gap: 8 }}>
