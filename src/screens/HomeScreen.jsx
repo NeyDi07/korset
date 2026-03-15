@@ -19,7 +19,7 @@ export default function HomeScreen() {
             color: '#fff', lineHeight: 1.15, letterSpacing: '-0.5px', marginBottom: 8,
           }}>
             {t.home.welcome}<br/>
-            в <span style={{ color: '#A78BFA' }}>Körset</span>
+            {lang === 'kz' ? '' : 'в '}<span style={{ color: '#A78BFA' }}>Körset</span>{lang === 'kz' ? '-ке' : ''}
           </h1>
           <p style={{ fontSize: 14, color: 'rgba(180,180,210,0.65)', lineHeight: 1.55 }}>
             {t.home.intro}
@@ -75,8 +75,8 @@ export default function HomeScreen() {
               <rect x="3" y="14" width="7" height="7" rx="1.5" fill="rgba(96,165,250,0.15)"/>
               <rect x="14" y="14" width="7" height="7" rx="1.5" fill="rgba(96,165,250,0.15)"/>
             </svg>
-            <div style={{ fontSize: 14, fontWeight: 700, color: '#fff', fontFamily: 'var(--font-display)' }}>Каталог</div>
-            <div style={{ fontSize: 11, color: 'rgba(96,165,250,0.6)', marginTop: 2 }}>Все товары</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: '#fff', fontFamily: 'var(--font-display)' }}>{t.home.catalog}</div>
+            <div style={{ fontSize: 11, color: 'rgba(96,165,250,0.6)', marginTop: 2 }}>{t.home.catalogSub}</div>
           </button>
 
           <button onClick={() => navigate('/ai')} style={{
@@ -88,8 +88,8 @@ export default function HomeScreen() {
               <circle cx="12" cy="12" r="9" fill="rgba(167,139,250,0.1)"/>
               <path d="M8 12h.01M12 12h.01M16 12h.01" strokeWidth="2.5"/>
             </svg>
-            <div style={{ fontSize: 14, fontWeight: 700, color: '#fff', fontFamily: 'var(--font-display)' }}>AI помощник</div>
-            <div style={{ fontSize: 11, color: 'rgba(167,139,250,0.6)', marginTop: 2 }}>Спроси что угодно</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: '#fff', fontFamily: 'var(--font-display)' }}>{t.home.ai}</div>
+            <div style={{ fontSize: 11, color: 'rgba(167,139,250,0.6)', marginTop: 2 }}>{t.home.aiSub}</div>
           </button>
         </div>
 

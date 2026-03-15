@@ -431,14 +431,14 @@ export default function ProfileScreen() {
         <div style={{ padding: '12px 20px 0' }}>
           <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '10px 14px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-              <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-sub)' }}>{lang === 'kz' ? 'Белсенді сүзгілер:' : 'Активных фильтров:'} {activeCount}</span>
+              <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-sub)' }}>{t.profile.activeFilters || (lang === 'kz' ? 'Белсенді сүзгілер:' : 'Активных фильтров:')} {activeCount}</span>
               <button onClick={() => setProfile({ halal: false, dietGoals: [], allergens: [], customAllergens: [], priority: 'balanced' })}
                 style={{ background: 'none', border: 'none', color: 'var(--text-dim)', fontSize: 12, cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
-                {lang === 'kz' ? 'Тазалау' : 'Сбросить'}
+                {t.profile.reset || (lang === 'kz' ? 'Тазалау' : 'Сбросить')}
               </button>
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-              {profile.halal && <span style={{ fontSize: 11, padding: '3px 10px', borderRadius: 20, background: 'var(--primary-dim)', color: 'var(--primary-bright)', border: '1px solid rgba(139,92,246,0.2)' }}>{lang === 'kz' ? 'Халал' : 'Халал'}</span>}
+              {profile.halal && <span style={{ fontSize: 11, padding: '3px 10px', borderRadius: 20, background: 'var(--primary-dim)', color: 'var(--primary-bright)', border: '1px solid rgba(139,92,246,0.2)' }}>{t.profile.halalLabel}</span>}
               {profile.dietGoals.map(id => {
                 const d = DIET_GOALS.find(x => x.id === id)
                 return <span key={id} style={{ fontSize: 11, padding: '3px 10px', borderRadius: 20, background: 'var(--primary-dim)', color: 'var(--primary-bright)', border: '1px solid rgba(139,92,246,0.2)' }}>{d ? tr(d.label) : ''}</span>
@@ -459,7 +459,7 @@ export default function ProfileScreen() {
       <div style={{ padding: '20px 20px 40px', display: 'flex', flexDirection: 'column', gap: 10 }}>
         <button className="btn btn-primary btn-full" onClick={() => navigate('/catalog')}
           style={{ justifyContent: 'center', gap: 12 }}>
-          <span>{lang === 'kz' ? 'Сәйкес тауарларды көрсету' : 'Показать подходящие товары'}</span>
+          <span>{t.profile.showFit}</span>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M5 12h14M12 5l7 7-7 7"/>
           </svg>
@@ -470,7 +470,7 @@ export default function ProfileScreen() {
             <rect x="3" y="16" width="5" height="5" rx="1"/>
             <path d="M16 16h5v5M16 16v5M3 12h4M10 3v4M12 10h7M10 16v5"/>
           </svg>
-          {lang === 'kz' ? 'Штрихкодты сканерлеу' : 'Сканировать штрихкод'}
+          {t.profile.scanBarcode}
         </button>
         <div style={{ textAlign: 'center', paddingTop: 4 }}>
           <span onClick={() => navigate('/qr-print')} style={{ fontSize: 11, color: 'var(--text-dim)', opacity: 0.2, cursor: 'pointer' }}>v1.0</span>
