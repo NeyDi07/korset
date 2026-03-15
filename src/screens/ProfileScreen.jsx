@@ -1,7 +1,10 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { loadProfile, saveProfile } from '../utils/profile.js'
 import { setLang, useI18n } from '../utils/i18n.js'
+import { useProfile } from '../contexts/ProfileContext.jsx'
+import { useAuth } from '../contexts/AuthContext.jsx'
+import { supabase } from '../utils/supabase.js'
+import KorsetAvatar from '../components/KorsetAvatar.jsx'
 
 const DIET_GOALS = [
   { id: 'sugar_free',  label: { ru: 'Без сахара', kz: 'Қантсыз' }, icon: 'nosugar' },
@@ -183,19 +186,9 @@ export default function ProfileScreen() {
   const navigate = useNavigate()
   const { lang, t } = useI18n()
   const allergenInputRef = useRef(null)
-  const [profile, setProfile] = useState(() => {
-    const s = loadProfile()
-    return {
-      halal: s.halal || false,
-      dietGoals: s.dietGoals || [],
-      allergens: s.allergens || [],
-      customAllergens: s.customAllergens || [],
-      priority: s.priority || 'balanced',
-    }
-  })
+  const { profile, updateProfile: setProfile } = useProfile()
+  const { user } = useAuth()
   const [allergenInput, setAllergenInput] = useState('')
-
-  useEffect(() => { saveProfile({ ...profile, presetId: 'custom' }) }, [profile])
 
   const toggleDiet = id => setProfile(p => ({
     ...p, dietGoals: p.dietGoals.includes(id) ? p.dietGoals.filter(x => x !== id) : [...p.dietGoals, id]
@@ -235,7 +228,36 @@ export default function ProfileScreen() {
       </div>
 
 
-      <div style={{ padding: '14px 20px 0' }}>
+      <div style={{ padding: '14px 20px 0', display: 'flex', flexDirection: 'column', gap: 14 }}>
+        {/* ── AUTH BLOCK ── */}
+        <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 16, padding: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          {user ? (
+            <>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <KorsetAvatar size={40} />
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: '#fff' }}>{user.user_metadata?.full_name || 'Körset User'}</div>
+                  <div style={{ fontSize: 11, color: 'var(--text-dim)' }}>{user.email || user.phone}</div>
+                </div>
+              </div>
+              <button onClick={() => supabase.auth.signOut()} style={{ background: 'rgba(239,68,68,0.1)', color: '#F87171', border: '1px solid rgba(239,68,68,0.2)', padding: '8px 12px', borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+                {lang === 'kz' ? 'Шығу' : 'Выйти'}
+              </button>
+            </>
+          ) : (
+            <>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', marginBottom: 2 }}>Аккаунт Körset</div>
+                <div style={{ fontSize: 11, color: 'var(--text-dim)' }}>{lang === 'kz' ? 'Синхрондау үшін кіріңіз' : 'Войдите для синхронизации'}</div>
+              </div>
+              <button onClick={() => navigate('/auth')} style={{ background: 'var(--primary)', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
+                {lang === 'kz' ? 'Кіру' : 'Войти'}
+              </button>
+            </>
+          )}
+        </div>
+
+        {/* ── LANGUAGE BLOCK ── */}
         <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 16, padding: '12px 12px 10px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
             <div>

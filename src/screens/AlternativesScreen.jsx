@@ -2,13 +2,13 @@ import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import products from '../data/products.json'
 import { getAlternatives, formatPrice, CATEGORY_LABELS } from '../utils/fitCheck.js'
-import { loadProfile } from '../utils/profile.js'
+import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useI18n } from '../utils/i18n.js'
 
 export default function AlternativesScreen() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const profile = loadProfile()
+  const { profile } = useProfile()
   const { lang, t } = useI18n()
 
   const product = products.find((p) => p.id === id)

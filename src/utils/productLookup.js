@@ -23,19 +23,26 @@ function getSessionId() {
 }
 
 // ── 1. store_products — ассортимент магазина (с ценой и полкой) ──────────────
-async function findInStoreProducts(ean) {
+async function findInStoreProducts(ean, storeId) {
   try {
-    const { data } = await supabase.from('store_products').selectOne(
-      'id,ean,price_kzt,shelf_zone,shelf_position,local_name,local_sku,stock_status,global_product_id',
-      { ean, is_active: true }
-    )
-    if (!data?.global_product_id) return null
+    let query = supabase.from('store_products').select(
+      'id,ean,price_kzt,shelf_zone,shelf_position,local_name,local_sku,stock_status,global_product_id'
+    ).eq('ean', ean).eq('is_active', true)
+    
+    if (storeId) {
+      query = query.eq('store_id', storeId)
+    }
+    
+    const { data, error } = await query.maybeSingle()
+    if (error || !data?.global_product_id) return null
 
     // Подтягиваем глобальные данные товара
-    const { data: gp } = await supabase.from('global_products').selectOne('*', {
-      id: data.global_product_id
-    })
-    if (!gp) return null
+    const { data: gp, error: gpError } = await supabase.from('global_products')
+      .select('*')
+      .eq('id', data.global_product_id)
+      .maybeSingle()
+      
+    if (gpError || !gp) return null
 
     return normalizeGlobalProduct(gp, {
       priceKzt:  data.price_kzt,
@@ -48,10 +55,12 @@ async function findInStoreProducts(ean) {
 // ── 2. global_products — глобальный каталог Körset ───────────────────────────
 async function findInGlobalProducts(ean) {
   try {
-    const { data } = await supabase.from('global_products').selectOne('*', {
-      ean, is_active: true
-    })
-    if (!data) return null
+    const { data, error } = await supabase.from('global_products')
+      .select('*')
+      .eq('ean', ean)
+      .eq('is_active', true)
+      .maybeSingle()
+    if (error || !data) return null
     return normalizeGlobalProduct(data)
   } catch { return null }
 }
@@ -59,13 +68,18 @@ async function findInGlobalProducts(ean) {
 // ── 3. external_product_cache — кэш Open Food Facts ─────────────────────────
 async function findInCache(ean) {
   try {
-    const { data } = await supabase.from('external_product_cache').selectOne('*', { ean })
-    if (!data) return null
+    const { data, error } = await supabase.from('external_product_cache')
+      .select('*')
+      .eq('ean', ean)
+      .maybeSingle()
+    if (error || !data) return null
+    
     // Обновляем счётчик сканирований
     supabase.from('external_product_cache').upsert(
       { ean, scan_count: (data.scan_count || 1) + 1, updated_at: new Date().toISOString() },
-      'ean'
-    )
+      { onConflict: 'ean' }
+    ).then() // fire and forget
+    
     return normalizeCacheProduct(data)
   } catch { return null }
 }
@@ -116,7 +130,7 @@ async function saveToCache(product) {
       image_url:                 product.image || null,
       nutriscore:                product.nutriscore || null,
       scan_count:                1,
-    }, 'ean')
+    }, { onConflict: 'ean' })
   } catch {}
 }
 
@@ -131,19 +145,23 @@ async function logMissingProduct(ean, storeId) {
       first_seen_at: new Date().toISOString(),
       last_seen_at:  new Date().toISOString(),
       resolved:      false,
-    }, 'store_id,ean')
+    }, { onConflict: 'store_id,ean' })
   } catch {}
 }
 
 // ── Аналитика: пишем scan_event ──────────────────────────────────────────────
 async function logScan({ ean, foundStatus, globalProductId, storeProductId, storeId, fitResult }) {
   try {
+    const { data: { session } } = await supabase.auth.getSession()
+    const userId = session?.user?.id || null
+
     await supabase.from('scan_events').insert({
       ean,
       found_status:       foundStatus,
       global_product_id:  globalProductId  || null,
       store_product_id:   storeProductId   || null,
       store_id:           storeId          || null,
+      user_id:            userId,
       fit_result:         fitResult        ?? null,
       device_id:          getDeviceId(),
       session_id:         getSessionId(),
@@ -256,7 +274,7 @@ function tryParse(val, fallback) {
 // ── ГЛАВНАЯ ФУНКЦИЯ ───────────────────────────────────────────────────────────
 export async function lookupProduct(ean, storeId = null) {
   // 1. store_products (товар с ценой в конкретном магазине)
-  const storeProduct = await findInStoreProducts(ean)
+  const storeProduct = await findInStoreProducts(ean, storeId)
   if (storeProduct) {
     logScan({ ean, foundStatus: 'found_store', globalProductId: storeProduct.id, storeProductId: storeProduct.storeProductId, storeId })
     return { type: 'local', product: storeProduct }
