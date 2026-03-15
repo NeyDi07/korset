@@ -87,7 +87,7 @@ export default function ProductScreen() {
   const { id } = useParams()
   const navigate = useNavigate()
   const profile = loadProfile()
-  const { lang } = useI18n()
+  const { lang, t } = useI18n()
   const [moreOpen, setMoreOpen] = useState(false)
 
   const product = useMemo(() => products.find((p) => p.id === id), [id])
