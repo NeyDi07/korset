@@ -5,13 +5,12 @@ import { useAuth } from '../contexts/AuthContext.jsx'
 import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useI18n } from '../utils/i18n.js'
 
-// Временные премиум-аватарки (через DiceBear, пока дизайнер не нарисует свои)
 const DEFAULT_AVATARS = [
-  { id: 'av1', url: 'https://api.dicebear.com/7.x/bottts/svg?seed=Felix&backgroundColor=7C3AED' },
-  { id: 'av2', url: 'https://api.dicebear.com/7.x/bottts/svg?seed=Jack&backgroundColor=EC4899' },
-  { id: 'av3', url: 'https://api.dicebear.com/7.x/bottts/svg?seed=Lily&backgroundColor=34D399' },
-  { id: 'av4', url: 'https://api.dicebear.com/7.x/bottts/svg?seed=Leo&backgroundColor=FBBF24' },
-  { id: 'av5', url: 'https://api.dicebear.com/7.x/bottts/svg?seed=Zoe&backgroundColor=8B5CF6' }
+  { id: 'av1', url: 'https://api.dicebear.com/7.x/micah/svg?seed=Felix&backgroundColor=7C3AED' },
+  { id: 'av2', url: 'https://api.dicebear.com/7.x/micah/svg?seed=Jack&backgroundColor=EC4899' },
+  { id: 'av3', url: 'https://api.dicebear.com/7.x/micah/svg?seed=Lily&backgroundColor=34D399' },
+  { id: 'av4', url: 'https://api.dicebear.com/7.x/micah/svg?seed=Leo&backgroundColor=FBBF24' },
+  { id: 'av5', url: 'https://api.dicebear.com/7.x/micah/svg?seed=Zoe&backgroundColor=8B5CF6' }
 ]
 
 const ALLERGEN_OPTIONS = [
@@ -285,16 +284,14 @@ export default function SetupProfileScreen() {
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
                 
-                {/* Кнопка "Загрузить свое фото" */}
+                {/* Кнопка "Загрузить из галереи" (ВСЕГДА показывает камеру) */}
                 <div 
                   onClick={() => fileInputRef.current?.click()}
                   style={{ 
                     aspectRatio: '1', borderRadius: 24, background: 'rgba(255,255,255,0.05)', 
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     cursor: 'pointer', position: 'relative', overflow: 'hidden',
-                    border: selectedAvatarId === 'custom' ? '3px solid #7C3AED' : '3px solid rgba(255,255,255,0.1)',
-                    boxShadow: selectedAvatarId === 'custom' ? '0 10px 20px rgba(124,58,237,0.3)' : 'none',
-                    transform: selectedAvatarId === 'custom' ? 'scale(1.05)' : 'scale(1)',
+                    border: '3px dashed rgba(255,255,255,0.3)',
                     transition: 'all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
                   }}
                 >
@@ -308,20 +305,36 @@ export default function SetupProfileScreen() {
                   
                   {uploadingAvatar ? (
                     <div style={{ width: 28, height: 28, border: '3px solid rgba(255,255,255,0.2)', borderTopColor: '#EC4899', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
-                  ) : customAvatarUrl ? (
-                    <img src={customAvatarUrl} alt="Your Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-                      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
-                    </div>
-                  )}
-
-                  {selectedAvatarId === 'custom' && (
-                    <div style={{ position: 'absolute', bottom: -6, right: -6, width: 26, height: 26, background: '#34D399', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '4px solid #0F0F13' }}>
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/><line x1="12" y1="1" x2="12" y2="4"/><line x1="12" y1="4" x2="15" y2="4"/><line x1="12" y1="4" x2="9" y2="4"/></svg>
+                      <span style={{ fontSize: 10, fontWeight: 700, color: 'rgba(255,255,255,0.6)', textAlign: 'center' }}>{lang === 'kz' ? 'Галерея' : 'Галерея'}</span>
                     </div>
                   )}
                 </div>
+
+                {/* Если есть свое или гугл фото */}
+                {customAvatarUrl && (
+                  <div 
+                    onClick={() => setSelectedAvatarId('custom')}
+                    style={{ 
+                      aspectRatio: '1', borderRadius: 24, background: 'rgba(255,255,255,0.05)', 
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      cursor: 'pointer', position: 'relative', overflow: 'hidden',
+                      border: selectedAvatarId === 'custom' ? '3px solid #7C3AED' : '3px solid rgba(255,255,255,0.1)',
+                      boxShadow: selectedAvatarId === 'custom' ? '0 10px 20px rgba(124,58,237,0.3)' : 'none',
+                      transform: selectedAvatarId === 'custom' ? 'scale(1.05)' : 'scale(1)',
+                      transition: 'all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                    }}
+                  >
+                    <img src={customAvatarUrl} alt="Your Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    {selectedAvatarId === 'custom' && (
+                      <div style={{ position: 'absolute', bottom: -6, right: -6, width: 26, height: 26, background: '#34D399', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '4px solid #0F0F13' }}>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {/* Готовые аватарки (DiceBear) */}
                 {DEFAULT_AVATARS.map(av => (

@@ -208,299 +208,128 @@ export default function ProfileScreen() {
   const tr = (val) => typeof val === 'object' ? (val[lang] || val.ru) : val
 
   return (
-    <div className="screen" style={{ paddingTop: 0, overflowX: 'hidden' }}>
-
-      {/* ── HERO ── */}
-      <div style={{
-        background: 'linear-gradient(180deg, rgba(124,58,237,0.2) 0%, transparent 100%)',
-        borderBottom: '1px solid var(--border)',
-        position: 'relative', overflow: 'hidden',
-        paddingTop: 44,
-      }}>
-        <img src="/logo.png" alt="Körset"
-          style={{ width: '60%', margin: '0 auto', display: 'block', objectFit: 'contain',
-            filter: 'drop-shadow(0 0 48px rgba(139,92,246,0.95))' }}
-        />
-        <p style={{ color: 'rgba(180,175,210,0.85)', fontSize: 13, lineHeight: 1.6,
-          textAlign: 'center', padding: '4px 24px 18px', margin: 0 }}>
-          {t.profile.subtitle}
-        </p>
+    <div className="screen" style={{ paddingTop: 0, paddingBottom: 100, overflowX: 'hidden', minHeight: '100vh', background: '#0F0F13' }}>
+      
+      {/* ── HEADER ── */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '50px 24px 20px' }}>
+        <button onClick={() => navigate(-1)} style={{ background: 'rgba(255,255,255,0.05)', border: 'none', width: 40, height: 40, borderRadius: '50%', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div style={{ fontSize: 18, fontWeight: 700, color: '#fff' }}>Profile</div>
+        <button onClick={() => navigate('/setup')} style={{ background: 'rgba(255,255,255,0.05)', border: 'none', width: 40, height: 40, borderRadius: '50%', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        </button>
       </div>
 
-
-      <div style={{ padding: '14px 20px 0', display: 'flex', flexDirection: 'column', gap: 14 }}>
-        {/* ── AUTH BLOCK ── */}
-        <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 16, padding: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      {/* ── USER INFO ── */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '10px 24px 24px' }}>
+        <div style={{ position: 'relative', marginBottom: 16 }}>
           {user ? (
-            <>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <KorsetAvatar size={40} />
-                <div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: '#fff' }}>{user.user_metadata?.full_name || 'Körset User'}</div>
-                  <div style={{ fontSize: 11, color: 'var(--text-dim)' }}>{user.email || user.phone}</div>
-                </div>
-              </div>
-              <button onClick={() => supabase.auth.signOut()} style={{ background: 'rgba(239,68,68,0.1)', color: '#F87171', border: '1px solid rgba(239,68,68,0.2)', padding: '8px 12px', borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
-                {lang === 'kz' ? 'Шығу' : 'Выйти'}
-              </button>
-            </>
+            <div style={{ width: 100, height: 100, borderRadius: '50%', background: 'linear-gradient(135deg, #7C3AED, #EC4899)', padding: 3 }}>
+              <KorsetAvatar size={94} style={{ border: '4px solid #0F0F13' }} />
+            </div>
           ) : (
-            <>
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', marginBottom: 2 }}>Аккаунт Körset</div>
-                <div style={{ fontSize: 11, color: 'var(--text-dim)' }}>{lang === 'kz' ? 'Синхрондау үшін кіріңіз' : 'Войдите для синхронизации'}</div>
+            <div style={{ width: 100, height: 100, borderRadius: '50%', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px dashed rgba(255,255,255,0.2)' }}>
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+          )}
+        </div>
+        
+        {user ? (
+          <>
+            <h2 style={{ fontSize: 24, fontWeight: 800, color: '#fff', marginBottom: 4, fontFamily: 'var(--font-display)' }}>
+              {user.user_metadata?.full_name || 'Körset User'}
+            </h2>
+            <div style={{ fontSize: 13, color: 'var(--text-dim)' }}>{user.email || user.phone || 'Member'}</div>
+          </>
+        ) : (
+          <>
+            <h2 style={{ fontSize: 22, fontWeight: 700, color: '#fff', marginBottom: 4 }}>Гость</h2>
+            <button onClick={() => navigate('/auth')} style={{ marginTop: 10, background: 'none', border: 'none', color: '#7C3AED', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+              Войти в аккаунт →
+            </button>
+          </>
+        )}
+      </div>
+
+      {/* ── STATS ROW ── */}
+      <div style={{ display: 'flex', gap: 12, padding: '0 24px 24px' }}>
+        <div style={{ flex: 1, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 20, padding: '16px 12px', textAlign: 'center' }}>
+          <div style={{ fontSize: 24, fontWeight: 800, color: '#fff', fontFamily: 'var(--font-display)' }}>42</div>
+          <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 4 }}>Сканирования</div>
+        </div>
+        <div style={{ flex: 1, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 20, padding: '16px 12px', textAlign: 'center' }}>
+          <div style={{ fontSize: 24, fontWeight: 800, color: '#fff', fontFamily: 'var(--font-display)' }}>12</div>
+          <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 4 }}>Любимых</div>
+        </div>
+        <div style={{ flex: 1, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 20, padding: '16px 12px', textAlign: 'center' }}>
+          <div style={{ fontSize: 24, fontWeight: 800, color: '#34D399', fontFamily: 'var(--font-display)' }}>88%</div>
+          <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 4 }}>Здоровья</div>
+        </div>
+      </div>
+
+      {/* ── MY DIET ── */}
+      <div style={{ padding: '0 24px 24px' }}>
+        <h3 style={{ fontSize: 18, fontWeight: 700, color: '#fff', marginBottom: 16 }}>Мой рацион</h3>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          
+          <div onClick={() => toggleDiet('halal')} style={{ background: profile.halal ? 'rgba(124,58,237,0.15)' : 'rgba(255,255,255,0.03)', border: `1px solid ${profile.halal ? '#7C3AED' : 'rgba(255,255,255,0.05)'}`, borderRadius: 20, padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, cursor: 'pointer', transition: 'all 0.2s' }}>
+            <div style={{ width: 40, height: 40, borderRadius: '50%', background: profile.halal ? '#7C3AED' : 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 18 }}>🌙</div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: profile.halal ? '#fff' : 'rgba(255,255,255,0.5)' }}>Халяль</div>
+          </div>
+
+          {DIET_GOALS.slice(0, 3).map(d => {
+            const active = profile.dietGoals.includes(d.id);
+            return (
+              <div key={d.id} onClick={() => toggleDiet(d.id)} style={{ background: active ? 'rgba(124,58,237,0.15)' : 'rgba(255,255,255,0.03)', border: `1px solid ${active ? '#7C3AED' : 'rgba(255,255,255,0.05)'}`, borderRadius: 20, padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, cursor: 'pointer', transition: 'all 0.2s' }}>
+                <div style={{ width: 40, height: 40, borderRadius: '50%', background: active ? '#7C3AED' : 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
+                  <Icon name={d.icon} size={20} />
+                </div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: active ? '#fff' : 'rgba(255,255,255,0.5)' }}>{tr(d.label)}</div>
               </div>
-              <button onClick={() => navigate('/auth')} style={{ background: 'var(--primary)', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
-                {lang === 'kz' ? 'Кіру' : 'Войти'}
-              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* ── SETTINGS MENU ── */}
+      <div style={{ padding: '0 24px 40px' }}>
+        <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: 24, padding: '8px 0', border: '1px solid rgba(255,255,255,0.05)' }}>
+          
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', cursor: 'pointer' }}>
+            <div style={{ fontSize: 14, fontWeight: 500, color: '#fff' }}>Language / Тіл</div>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button onClick={() => setLang('ru')} style={{ background: lang === 'ru' ? '#7C3AED' : 'transparent', border: 'none', color: '#fff', padding: '4px 8px', borderRadius: 8, fontSize: 12, cursor: 'pointer' }}>RU</button>
+              <button onClick={() => setLang('kz')} style={{ background: lang === 'kz' ? '#7C3AED' : 'transparent', border: 'none', color: '#fff', padding: '4px 8px', borderRadius: 8, fontSize: 12, cursor: 'pointer' }}>KZ</button>
+            </div>
+          </div>
+          
+          <div style={{ height: 1, background: 'rgba(255,255,255,0.05)', margin: '0 20px' }} />
+
+          <div onClick={() => navigate('/setup')} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', cursor: 'pointer' }}>
+            <div style={{ fontSize: 14, fontWeight: 500, color: '#fff' }}>Редактировать профиль</div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+
+          <div style={{ height: 1, background: 'rgba(255,255,255,0.05)', margin: '0 20px' }} />
+          
+          <div onClick={() => { localStorage.removeItem('korset_onboarding_done'); window.location.reload() }} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', cursor: 'pointer' }}>
+            <div style={{ fontSize: 14, fontWeight: 500, color: '#fff' }}>Заново пройти обучение</div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+
+          {user && (
+            <>
+              <div style={{ height: 1, background: 'rgba(255,255,255,0.05)', margin: '0 20px' }} />
+              <div onClick={() => supabase.auth.signOut()} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', cursor: 'pointer' }}>
+                <div style={{ fontSize: 14, fontWeight: 500, color: '#F87171' }}>Выйти из аккаунта</div>
+              </div>
             </>
           )}
-        </div>
 
-        {/* ── LANGUAGE BLOCK ── */}
-        <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 16, padding: '12px 12px 10px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-            <div>
-              <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text)', marginBottom: 3 }}>{t.profile.language}</div>
-              <div style={{ fontSize: 11, color: 'var(--text-dim)' }}>{t.profile.languageSub}</div>
-            </div>
-            <div style={{ display: 'flex', gap: 8 }}>
-              <button onClick={() => setLang('ru')} style={{ padding: '9px 12px', borderRadius: 12, border: `1px solid ${lang === 'ru' ? 'rgba(124,58,237,0.55)' : 'var(--border)'}`, background: lang === 'ru' ? 'rgba(124,58,237,0.12)' : 'var(--surface)', color: lang === 'ru' ? 'var(--primary-bright)' : 'var(--text-sub)', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>Рус</button>
-              <button onClick={() => setLang('kz')} style={{ padding: '9px 12px', borderRadius: 12, border: `1px solid ${lang === 'kz' ? 'rgba(124,58,237,0.55)' : 'var(--border)'}`, background: lang === 'kz' ? 'rgba(124,58,237,0.12)' : 'var(--surface)', color: lang === 'kz' ? 'var(--primary-bright)' : 'var(--text-sub)', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>Қаз</button>
-            </div>
-          </div>
         </div>
       </div>
 
-      {/* ── HALAL ── */}
-      <div style={{ padding: '20px 20px 8px' }}>
-        <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '1.2px', marginBottom: 10 }}>
-          {t.profile.religion}
-        </div>
-        <div onClick={() => setProfile(p => ({ ...p, halal: !p.halal }))} style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          background: profile.halal ? 'rgba(124,58,237,0.1)' : 'var(--card)',
-          border: `1.5px solid ${profile.halal ? 'var(--primary-mid)' : 'var(--border)'}`,
-          borderRadius: 'var(--radius)', padding: '14px 16px', cursor: 'pointer', transition: 'all 0.2s',
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{ width: 38, height: 38, borderRadius: 12,
-              background: profile.halal ? 'var(--primary-dim)' : 'var(--surface)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={profile.halal ? 'var(--primary-bright)' : 'var(--text-dim)'} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 12.2A8.5 8.5 0 1 1 11.8 3a7 7 0 1 0 9.2 9.2Z"/>
-                <path d="M16.5 7.5l.6 1.6 1.7.1-1.3 1 .5 1.7-1.5-.9-1.5.9.5-1.7-1.3-1 1.7-.1.6-1.6Z"/>
-              </svg>
-            </div>
-            <div>
-              <div style={{ fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 600, color: 'var(--text)' }}>{t.profile.halalTitle}</div>
-              <div style={{ fontSize: 12, color: 'var(--text-dim)', marginTop: 1 }}>{t.profile.halalSub}</div>
-            </div>
-          </div>
-          <div style={{ width: 46, height: 26, borderRadius: 13,
-            background: profile.halal ? 'var(--primary)' : 'var(--border-bright)',
-            position: 'relative', transition: 'background 0.2s', flexShrink: 0,
-            boxShadow: profile.halal ? '0 0 10px var(--primary-glow)' : 'none' }}>
-            <span style={{ position: 'absolute', width: 20, height: 20, borderRadius: '50%',
-              background: 'white', top: 3, left: profile.halal ? 23 : 3,
-              transition: 'left 0.2s cubic-bezier(0.34,1.3,0.64,1)',
-              boxShadow: '0 1px 4px rgba(0,0,0,0.3)' }} />
-          </div>
-        </div>
-      </div>
-
-      {/* ── DIET ── */}
-      <div style={{ padding: '16px 20px 8px' }}>
-        <div style={{ marginBottom: 12 }}>
-          <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '1.2px' }}>{t.profile.diet}</div>
-          <div style={{ fontSize: 12, color: 'var(--text-dim)', opacity: 0.6, marginTop: 3 }}>{t.profile.dietSub}</div>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-          {DIET_GOALS.map(d => {
-            const active = profile.dietGoals.includes(d.id)
-            return (
-              <button key={d.id} onClick={() => toggleDiet(d.id)} style={{
-                display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px',
-                borderRadius: 14, border: `1.5px solid ${active ? 'var(--primary-mid)' : 'var(--border)'}`,
-                background: active ? 'rgba(124,58,237,0.1)' : 'var(--card)',
-                cursor: 'pointer', fontFamily: 'var(--font-body)', transition: 'all 0.15s',
-              }}>
-                <div style={{ width: 32, height: 32, borderRadius: 10, flexShrink: 0,
-                  background: active ? 'var(--primary-dim)' : 'rgba(255,255,255,0.06)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: active ? 'var(--primary-bright)' : 'rgba(200,200,240,1)' }}>
-                  <Icon name={d.icon} size={16} />
-                </div>
-                <span style={{ fontSize: 13, fontWeight: 500, color: active ? 'var(--primary-bright)' : 'rgba(210,210,240,0.95)', lineHeight: 1.3 }}>
-                  {tr(d.label)}
-                </span>
-                {active && <div style={{ marginLeft: 'auto', width: 16, height: 16, borderRadius: '50%',
-                  background: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  flexShrink: 0, fontSize: 10, color: 'white' }}>✓</div>}
-              </button>
-            )
-          })}
-        </div>
-      </div>
-
-      {/* ── ALLERGENS ── */}
-      <div style={{ padding: '16px 20px 8px' }}>
-        <div style={{ marginBottom: 12 }}>
-          <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '1.2px' }}>{t.profile.allergens}</div>
-          <div style={{ fontSize: 12, color: 'var(--text-dim)', opacity: 0.6, marginTop: 3 }}>{t.profile.allergensSub}</div>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, marginBottom: 12 }}>
-          {ALLERGENS.map(a => {
-            const active = profile.allergens.includes(a.id)
-            return (
-              <button key={a.id} onClick={() => toggleAllergen(a.id)} style={{
-                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 7,
-                padding: '12px 6px', borderRadius: 14, position: 'relative',
-                border: `1.5px solid ${active ? 'rgba(239,68,68,0.55)' : 'var(--border)'}`,
-                background: active ? 'rgba(239,68,68,0.08)' : 'var(--card)',
-                cursor: 'pointer', fontFamily: 'var(--font-body)', transition: 'all 0.15s',
-              }}>
-                <div style={{ width: 34, height: 34, borderRadius: 10,
-                  background: active ? 'rgba(239,68,68,0.15)' : 'rgba(255,255,255,0.07)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: active ? '#F87171' : 'rgba(200,200,240,1)' }}>
-                  <Icon name={a.icon} size={17} />
-                </div>
-                <span style={{ fontSize: 11, fontWeight: 500, textAlign: 'center', lineHeight: 1.2,
-                  color: active ? '#F87171' : 'rgba(200,200,235,0.95)' }}>{tr(a.label)}</span>
-                {active && <div style={{ position: 'absolute', top: -5, right: -5,
-                  width: 16, height: 16, borderRadius: '50%', background: '#EF4444',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 9, color: 'white', fontWeight: 800 }}>✕</div>}
-              </button>
-            )
-          })}
-        </div>
-
-        {/* Custom input */}
-        <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 14, padding: '12px 14px' }}>
-          <div style={{ fontSize: 12, color: 'var(--text-dim)', marginBottom: 8 }}>{t.profile.customHint}</div>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <input ref={allergenInputRef} value={allergenInput}
-              onChange={e => setAllergenInput(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && addCustom()}
-              placeholder={t.profile.customPlaceholder}
-              style={{ flex: 1, background: 'var(--surface)', border: '1px solid var(--border-bright)',
-                borderRadius: 10, padding: '9px 12px', color: 'var(--text)',
-                fontSize: 13, fontFamily: 'var(--font-body)', outline: 'none' }}
-            />
-            <button onClick={addCustom} style={{ padding: '9px 14px', borderRadius: 10,
-              background: 'var(--primary-dim)', border: '1px solid rgba(139,92,246,0.3)',
-              color: 'var(--primary-bright)', fontSize: 13, fontWeight: 600,
-              cursor: 'pointer', fontFamily: 'var(--font-body)', whiteSpace: 'nowrap' }}>
-              {t.profile.add}
-            </button>
-          </div>
-          {profile.customAllergens.length > 0 && (
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 10 }}>
-              {profile.customAllergens.map(val => (
-                <span key={val} style={{ display: 'inline-flex', alignItems: 'center', gap: 5,
-                  padding: '5px 12px', borderRadius: 20, fontSize: 12,
-                  background: 'rgba(239,68,68,0.1)', color: '#F87171',
-                  border: '1px solid rgba(239,68,68,0.25)' }}>
-                  ⚠️ {val}
-                  <span onClick={() => removeCustom(val)} style={{ cursor: 'pointer', opacity: 0.7, fontSize: 15 }}>×</span>
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* ── PRIORITY ── */}
-      <div style={{ padding: '16px 20px 8px' }}>
-        <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '1.2px', marginBottom: 12 }}>
-          {t.profile.priority}
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
-          {PRIORITIES.map(p => {
-            const active = profile.priority === p.id
-            return (
-              <button key={p.id} onClick={() => setProfile(prev => ({ ...prev, priority: p.id }))} style={{
-                padding: '16px 8px', borderRadius: 16, cursor: 'pointer',
-                border: `1.5px solid ${active ? 'var(--primary-mid)' : 'var(--border)'}`,
-                background: active ? 'rgba(124,58,237,0.1)' : 'var(--card)',
-                fontFamily: 'var(--font-body)', transition: 'all 0.15s',
-                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10,
-                boxShadow: active ? '0 0 18px rgba(124,58,237,0.12)' : 'none',
-              }}>
-                <div style={{ width: 44, height: 44, borderRadius: 14,
-                  background: active ? 'var(--primary-dim)' : 'rgba(255,255,255,0.07)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: active ? 'var(--primary-bright)' : 'rgba(210,210,245,1)',
-                  transition: 'all 0.15s' }}>
-                  <Icon name={p.icon} size={22} />
-                </div>
-                <div style={{ textAlign: 'center' }}>
-                  <div style={{ fontFamily: 'var(--font-display)', fontSize: 13, fontWeight: 700,
-                    color: active ? 'var(--primary-bright)' : 'rgba(230,230,255,1)' }}>{tr(p.label)}</div>
-                  <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 3, lineHeight: 1.3 }}>{tr(p.desc)}</div>
-                </div>
-                {active && <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--primary)' }} />}
-              </button>
-            )
-          })}
-        </div>
-      </div>
-
-      {/* ── SUMMARY ── */}
-      {activeCount > 0 && (
-        <div style={{ padding: '12px 20px 0' }}>
-          <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '10px 14px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-              <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-sub)' }}>{t.profile.activeFilters || (lang === 'kz' ? 'Белсенді сүзгілер:' : 'Активных фильтров:')} {activeCount}</span>
-              <button onClick={() => setProfile({ halal: false, dietGoals: [], allergens: [], customAllergens: [], priority: 'balanced' })}
-                style={{ background: 'none', border: 'none', color: 'var(--text-dim)', fontSize: 12, cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
-                {t.profile.reset || (lang === 'kz' ? 'Тазалау' : 'Сбросить')}
-              </button>
-            </div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-              {profile.halal && <span style={{ fontSize: 11, padding: '3px 10px', borderRadius: 20, background: 'var(--primary-dim)', color: 'var(--primary-bright)', border: '1px solid rgba(139,92,246,0.2)' }}>{t.profile.halalLabel}</span>}
-              {profile.dietGoals.map(id => {
-                const d = DIET_GOALS.find(x => x.id === id)
-                return <span key={id} style={{ fontSize: 11, padding: '3px 10px', borderRadius: 20, background: 'var(--primary-dim)', color: 'var(--primary-bright)', border: '1px solid rgba(139,92,246,0.2)' }}>{d ? tr(d.label) : ''}</span>
-              })}
-              {profile.allergens.map(id => {
-                const a = ALLERGENS.find(x => x.id === id)
-                return <span key={id} style={{ fontSize: 11, padding: '3px 10px', borderRadius: 20, background: 'rgba(239,68,68,0.1)', color: '#F87171', border: '1px solid rgba(239,68,68,0.2)' }}>{a ? tr(a.label) : ''}</span>
-              })}
-              {profile.customAllergens.map(val => (
-                <span key={val} style={{ fontSize: 11, padding: '3px 10px', borderRadius: 20, background: 'rgba(239,68,68,0.1)', color: '#F87171', border: '1px solid rgba(239,68,68,0.2)' }}>{val}</span>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ── CTA ── */}
-      <div style={{ padding: '20px 20px 40px', display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <button className="btn btn-primary btn-full" onClick={() => navigate('/catalog')}
-          style={{ justifyContent: 'center', gap: 12 }}>
-          <span>{t.profile.showFit}</span>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M5 12h14M12 5l7 7-7 7"/>
-          </svg>
-        </button>
-        <button className="btn btn-secondary btn-full" onClick={() => navigate('/scan')}>
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <rect x="3" y="3" width="5" height="5" rx="1"/><rect x="16" y="3" width="5" height="5" rx="1"/>
-            <rect x="3" y="16" width="5" height="5" rx="1"/>
-            <path d="M16 16h5v5M16 16v5M3 12h4M10 3v4M12 10h7M10 16v5"/>
-          </svg>
-          {t.profile.scanBarcode}
-        </button>
-        <button onClick={() => { localStorage.removeItem('korset_onboarding_done'); window.location.reload() }} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.1)', color: 'var(--text-dim)', padding: '12px', borderRadius: 14, fontSize: 13, fontWeight: 600, cursor: 'pointer', marginTop: 8 }}>
-          {lang === 'kz' ? 'Нұсқаулықты қайта көру (Оқыту)' : 'Повторить обучение (Онбординг)'}
-        </button>
-        <div style={{ textAlign: 'center', paddingTop: 4 }}>
-          <span onClick={() => navigate('/qr-print')} style={{ fontSize: 11, color: 'var(--text-dim)', opacity: 0.2, cursor: 'pointer' }}>v1.0</span>
-        </div>
-      </div>
     </div>
   )
 }
