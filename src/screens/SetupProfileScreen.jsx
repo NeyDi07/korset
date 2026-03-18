@@ -87,15 +87,20 @@ export default function SetupProfileScreen() {
   const [allergens, setAllergens] = useState(profile?.allergens || [])
 
   useEffect(() => {
-    if (user?.user_metadata?.full_name) {
-      setName(user.user_metadata.full_name)
-    }
-    if (user?.user_metadata?.avatar_id) {
-      if (user.user_metadata.avatar_id.startsWith('http')) {
-        setCustomAvatarUrl(user.user_metadata.avatar_id)
+    // ВАЖНО: Мы больше не подтягиваем реальные Имя/Фамилию из Google
+    // из-за законов о защите личных данных. 
+    // Поле имени всегда остается пустым, чтобы пользователь сам вписал Псевдоним.
+
+    // Но мы оставляем удобную функцию подтягивания аватарки из Google
+    const googlePhoto = user?.user_metadata?.avatar_url || user?.user_metadata?.picture;
+    const finalAvatar = user?.user_metadata?.avatar_id || googlePhoto;
+
+    if (finalAvatar) {
+      if (finalAvatar.startsWith('http')) {
+        setCustomAvatarUrl(finalAvatar)
         setSelectedAvatarId('custom')
       } else {
-        setSelectedAvatarId(user.user_metadata.avatar_id)
+        setSelectedAvatarId(finalAvatar)
       }
     }
   }, [user])
