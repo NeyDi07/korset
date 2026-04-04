@@ -109,7 +109,7 @@ export default function ProfileScreen() {
 
           {/* ── HEADER ── */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 22px 0' }}>
-            <h1 style={{ fontFamily: fontAdvent, fontSize: 24, fontWeight: 500, color: '#fff', margin: 0 }}>
+            <h1 style={{ fontFamily: fontAdvent, fontSize: 24, fontWeight: 500, color: '#fff', margin: 0, lineHeight: 1 }}>
               {lang === 'kz' ? 'Профиль' : 'Профиль'}
             </h1>
             <button onClick={() => navigate('/setup-profile')} style={{
@@ -129,12 +129,20 @@ export default function ProfileScreen() {
               width: 120, height: 120, borderRadius: '50%',
               border: '3.5px solid #7C3AED', padding: 4,
               boxShadow: '0 0 40px rgba(124,58,237,0.25), inset 0 0 20px rgba(124,58,237,0.1)',
-              marginBottom: 16
+              marginBottom: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box'
             }}>
               {user ? (
-                <KorsetAvatar size={108} style={{ borderRadius: '50%', border: '3px solid var(--bg)' }} />
+                user.user_metadata?.avatar_id && user.user_metadata.avatar_id.startsWith('http') ? (
+                  <img src={user.user_metadata.avatar_id} alt="Avatar" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+                ) : (
+                  <div style={{ width: '100%', height: '100%', borderRadius: '50%', background: 'linear-gradient(135deg, #7C3AED, #6D28D9)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <span style={{ fontSize: 40, color: '#fff', fontFamily: fontAdvent, fontWeight: 700 }}>
+                      {user.user_metadata?.full_name ? user.user_metadata.full_name.charAt(0).toUpperCase() : 'K'}
+                    </span>
+                  </div>
+                )
               ) : (
-                <div style={{ width: 108, height: 108, borderRadius: '50%', background: '#7C3AED', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: '100%', height: '100%', borderRadius: '50%', background: '#7C3AED', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                 </div>
               )}

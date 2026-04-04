@@ -152,10 +152,11 @@ async function logMissingProduct(ean, storeId) {
 // ── Аналитика: пишем scan_event ──────────────────────────────────────────────
 async function logScan({ ean, foundStatus, globalProductId, storeProductId, storeId, fitResult }) {
   try {
-    const { data: { session } } = await supabase.auth.getSession()
-    const userId = session?.user?.id || null
+    const { data: { user }, error: authErr } = await supabase.auth.getUser()
+    if (authErr) console.warn('Auth check in logScan:', authErr.message)
+    const userId = user?.id || null
 
-    await supabase.from('scan_events').insert({
+    const { error } = await supabase.from('scan_events').insert({
       ean,
       found_status:       foundStatus,
       global_product_id:  globalProductId  || null,
@@ -167,7 +168,10 @@ async function logScan({ ean, foundStatus, globalProductId, storeProductId, stor
       session_id:         getSessionId(),
       app_version:        '1.0',
     })
-  } catch {}
+    if (error) console.error('logScan insert error:', error.message)
+  } catch (err) {
+    console.error('logScan exception:', err)
+  }
 }
 
 // ── Нормализация: global_products → единый формат приложения ─────────────────
