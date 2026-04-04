@@ -99,7 +99,10 @@ export default function ProductScreen() {
   useEffect(() => {
     if (user && product) {
       supabase.from('user_favorites').select('id').eq('user_id', user.id).eq('product_id', product.id).maybeSingle()
-        .then(({ data }) => setIsFavorite(!!data))
+        .then(({ data, error }) => {
+          if (error) console.warn('Fav check error:', error.message)
+          setIsFavorite(!!data)
+        })
     } else {
       setIsFavorite(false)
     }
@@ -112,10 +115,20 @@ export default function ProductScreen() {
     }
     const newVal = !isFavorite
     setIsFavorite(newVal)
-    if (newVal) {
-      await supabase.from('user_favorites').insert({ user_id: user.id, product_id: product.id })
-    } else {
-      await supabase.from('user_favorites').delete().eq('user_id', user.id).eq('product_id', product.id)
+    try {
+      if (newVal) {
+        // Use upsert to prevent duplicate key errors
+        const { error } = await supabase.from('user_favorites')
+          .upsert({ user_id: user.id, product_id: product.id }, { onConflict: 'user_id,product_id' })
+        if (error) throw error
+      } else {
+        const { error } = await supabase.from('user_favorites')
+          .delete().eq('user_id', user.id).eq('product_id', product.id)
+        if (error) throw error
+      }
+    } catch (err) {
+      console.error('Favorite toggle error:', err.message)
+      setIsFavorite(!newVal) // revert on error
     }
   }
 
