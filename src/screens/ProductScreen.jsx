@@ -89,7 +89,7 @@ export default function ProductScreen() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { profile } = useProfile()
-  const { user } = useAuth()
+  const { user, internalUserId } = useAuth()
   const { lang, t } = useI18n()
   const [moreOpen, setMoreOpen] = useState(false)
   const [isFavorite, setIsFavorite] = useState(false)
@@ -97,8 +97,8 @@ export default function ProductScreen() {
   const product = useMemo(() => products.find((p) => p.id === id), [id])
 
   useEffect(() => {
-    if (user && product) {
-      supabase.from('user_favorites').select('id').eq('user_id', user.id).eq('product_id', product.id).maybeSingle()
+    if (internalUserId && product) {
+      supabase.from('user_favorites').select('id').eq('user_id', internalUserId).eq('global_product_id', product.id).maybeSingle()
         .then(({ data, error }) => {
           if (error) console.warn('Fav check error:', error.message)
           setIsFavorite(!!data)
@@ -106,24 +106,28 @@ export default function ProductScreen() {
     } else {
       setIsFavorite(false)
     }
-  }, [user, product])
+  }, [internalUserId, product])
 
   const toggleFavorite = async () => {
     if (!user) {
       navigate('/auth')
       return
     }
+    if (!internalUserId) return // user is loading internal id
+    
     const newVal = !isFavorite
     setIsFavorite(newVal)
     try {
       if (newVal) {
-        // Use upsert to prevent duplicate key errors
-        const { error } = await supabase.from('user_favorites')
-          .upsert({ user_id: user.id, product_id: product.id }, { onConflict: 'user_id,product_id' })
-        if (error) throw error
+        // First check if it exists:
+        const { data } = await supabase.from('user_favorites').select('id').eq('user_id', internalUserId).eq('global_product_id', product.id).maybeSingle()
+        if (!data) {
+          const { error } = await supabase.from('user_favorites').insert({ user_id: internalUserId, global_product_id: product.id, ean: product.ean || 'LOCAL' })
+          if (error) throw error
+        }
       } else {
         const { error } = await supabase.from('user_favorites')
-          .delete().eq('user_id', user.id).eq('product_id', product.id)
+          .delete().eq('user_id', internalUserId).eq('global_product_id', product.id)
         if (error) throw error
       }
     } catch (err) {
