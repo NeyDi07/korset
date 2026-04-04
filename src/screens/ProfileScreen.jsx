@@ -38,7 +38,7 @@ export default function ProfileScreen() {
   const { lang, t } = useI18n()
   const allergenInputRef = useRef(null)
   const { profile, updateProfile: setProfile } = useProfile()
-  const { user } = useAuth()
+  const { user, internalUserId } = useAuth()
   const [allergenInput, setAllergenInput] = useState('')
   const [prefOpen, setPrefOpen] = useState(false)
   const [favCount, setFavCount] = useState(0)

@@ -120,11 +120,11 @@ export default function HistoryScreen() {
   }, [user, internalUserId])
 
   // ── Remove from favorites ──
-  const removeFavorite = async (productId, e) => {
+  const removeFavorite = async (p, e) => {
     e.stopPropagation()
-    if (!user || !internalUserId) return
-    await supabase.from('user_favorites').delete().eq('user_id', internalUserId).eq('global_product_id', productId)
-    setFavorites(prev => prev.filter(f => f.id !== productId))
+    if (!user || !internalUserId || !p.ean) return
+    await supabase.from('user_favorites').delete().eq('user_id', internalUserId).eq('ean', p.ean)
+    setFavorites(prev => prev.filter(f => f.ean !== p.ean))
   }
 
   if (!user) {
@@ -245,7 +245,7 @@ export default function HistoryScreen() {
                 </div>
                 {/* Remove favorite button */}
                 {tab === 'favorites' && (
-                  <button onClick={(e) => removeFavorite(p.id, e)} style={{
+                  <button onClick={(e) => removeFavorite(p, e)} style={{
                     width: 32, height: 32, borderRadius: 8, background: 'rgba(239,68,68,0.1)',
                     border: 'none', color: '#F87171', display: 'flex', alignItems: 'center', justifyContent: 'center',
                     cursor: 'pointer', flexShrink: 0
