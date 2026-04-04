@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { useAuth } from './AuthContext.jsx'
 import { supabase } from '../utils/supabase.js'
-import { DEFAULT_NOTIFICATION_SETTINGS, normalizeNotificationSettings } from '../utils/notificationSettings.js'
+import { DEFAULT_NOTIFICATION_SETTINGS, loadNotificationSettings, saveNotificationSettings } from '../utils/notificationSettings.js'
 
 const ProfileContext = createContext(null)
 
@@ -10,22 +10,22 @@ const DEFAULT_PROFILE = {
   dietGoals: [],
   allergens: [],
   customAllergens: [],
-  priority: 'balanced', // 'balanced', 'price', 'quality'
-  notifications: { ...DEFAULT_NOTIFICATION_SETTINGS }
+  priority: 'balanced',
+  notifications: DEFAULT_NOTIFICATION_SETTINGS,
+}
+
+function normalizeProfile(raw) {
+  const profile = { ...DEFAULT_PROFILE, ...(raw || {}) }
+  profile.notifications = { ...DEFAULT_NOTIFICATION_SETTINGS, ...(raw?.notifications || {}), ...loadNotificationSettings() }
+  return profile
 }
 
 function loadProfileLocal() {
   try {
     const raw = localStorage.getItem('korset_profile')
-    if (!raw) return DEFAULT_PROFILE
-    const parsed = JSON.parse(raw)
-    return {
-      ...DEFAULT_PROFILE,
-      ...parsed,
-      notifications: normalizeNotificationSettings(parsed?.notifications),
-    }
+    return raw ? normalizeProfile(JSON.parse(raw)) : normalizeProfile(DEFAULT_PROFILE)
   } catch {
-    return DEFAULT_PROFILE
+    return normalizeProfile(DEFAULT_PROFILE)
   }
 }
 
@@ -33,38 +33,38 @@ export function ProfileProvider({ children }) {
   const { user } = useAuth()
   const [profile, setProfileState] = useState(loadProfileLocal)
 
-  // Загрузка настроек с сервера при входе в аккаунт
   useEffect(() => {
     if (!user) return
     supabase.from('users').select('preferences').eq('auth_id', user.id).maybeSingle()
       .then(({ data, error }) => {
         if (!error && data?.preferences) {
-          const mergedPrefs = { ...DEFAULT_PROFILE, ...data.preferences, notifications: normalizeNotificationSettings(data.preferences?.notifications) }
+          const mergedPrefs = normalizeProfile(data.preferences)
           setProfileState(mergedPrefs)
           localStorage.setItem('korset_profile', JSON.stringify(mergedPrefs))
+          saveNotificationSettings(mergedPrefs.notifications)
         }
       })
   }, [user])
 
-  // Обновление: пишем в стейт, localStorage, и если есть юзер — в Supabase
   const updateProfile = async (newProfile) => {
     let merged
     setProfileState(prev => {
-      merged = { ...prev, ...newProfile, notifications: normalizeNotificationSettings(newProfile?.notifications ?? prev?.notifications) }
+      merged = normalizeProfile({ ...prev, ...newProfile, notifications: { ...prev.notifications, ...(newProfile?.notifications || {}) } })
       localStorage.setItem('korset_profile', JSON.stringify(merged))
+      saveNotificationSettings(merged.notifications)
       return merged
     })
-    
+
     if (user && merged) {
       await supabase.from('users').update({ preferences: merged }).eq('auth_id', user.id)
     }
   }
 
-  // Слушаем изменения localStorage из других вкладок
   useEffect(() => {
     const onStorage = (e) => {
-      if (e.key === 'korset_profile') {
-        setProfileState(loadProfileLocal())
+      if (e.key === 'korset_profile') setProfileState(loadProfileLocal())
+      if (e.key === 'korset_notification_settings') {
+        setProfileState(prev => normalizeProfile({ ...prev, notifications: loadNotificationSettings() }))
       }
     }
     window.addEventListener('storage', onStorage)

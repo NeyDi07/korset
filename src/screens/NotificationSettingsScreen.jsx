@@ -1,409 +1,278 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useProfile } from '../contexts/ProfileContext.jsx'
-import { useI18n } from '../utils/i18n.js'
-import { useStore } from '../contexts/StoreContext.jsx'
 import { useAuth } from '../contexts/AuthContext.jsx'
-import { buildProfilePath } from '../utils/routes.js'
-import { normalizeNotificationSettings } from '../utils/notificationSettings.js'
+import {
+  browserNotificationStatus,
+  DEFAULT_NOTIFICATION_SETTINGS,
+  loadNotificationSettings,
+  registerPushServiceWorker,
+  saveNotificationSettings,
+  urlBase64ToUint8Array,
+} from '../utils/notificationSettings.js'
 
-function ArrowLeftIcon() {
+const fontDisplay = '"Bebas Neue", "Arial Narrow", sans-serif'
+const fontBody = 'Space Grotesk, system-ui, sans-serif'
+
+function Section({ title, children }) {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="m15 18-6-6 6-6" />
-    </svg>
-  )
-}
-
-function BellIcon({ active = false }) {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={active ? '#fff' : 'rgba(255,255,255,0.72)'} strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M15 17h5l-1.4-1.4a2 2 0 0 1-.6-1.4V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5" />
-      <path d="M10 20a2 2 0 0 0 4 0" />
-    </svg>
-  )
-}
-
-function SmallInfo({ children }) {
-  return <div style={{ color: 'rgba(255,255,255,0.48)', fontSize: 12.5, lineHeight: 1.45 }}>{children}</div>
-}
-
-function SectionTitle({ children }) {
-  return <div style={{ fontSize: 12, letterSpacing: 1.4, textTransform: 'uppercase', color: 'rgba(255,255,255,0.30)', fontWeight: 700, marginBottom: 10 }}>{children}</div>
-}
-
-function Card({ children, style }) {
-  return (
-    <div
-      style={{
-        background: 'rgba(255,255,255,0.045)',
-        border: '1px solid rgba(255,255,255,0.08)',
-        borderRadius: 22,
-        backdropFilter: 'blur(26px)',
-        WebkitBackdropFilter: 'blur(26px)',
-        padding: 18,
-        ...style,
-      }}
-    >
-      {children}
+    <div style={{ padding: '0 22px 18px' }}>
+      <div style={{ fontFamily: fontBody, fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.28)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 1.5 }}>{title}</div>
+      <div className="glass-card" style={{ padding: 0 }}>{children}</div>
     </div>
   )
 }
 
-function ToggleRow({ title, subtitle, checked, onChange, disabled = false }) {
+function Row({ label, description, right, danger = false, onClick }) {
   return (
-    <button
-      type="button"
-      onClick={() => !disabled && onChange(!checked)}
-      style={{
-        width: '100%',
-        border: 'none',
-        background: 'transparent',
-        color: 'inherit',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: 12,
-        padding: '12px 0',
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        opacity: disabled ? 0.52 : 1,
-      }}
-    >
-      <div style={{ textAlign: 'left' }}>
-        <div style={{ color: '#fff', fontSize: 15, fontWeight: 600 }}>{title}</div>
-        {subtitle ? <div style={{ color: 'rgba(255,255,255,0.48)', fontSize: 12.5, marginTop: 3, lineHeight: 1.45 }}>{subtitle}</div> : null}
+    <div onClick={onClick} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, padding: '15px 18px', cursor: onClick ? 'pointer' : 'default' }}>
+      <div style={{ minWidth: 0 }}>
+        <div style={{ fontFamily: fontBody, fontSize: 14, fontWeight: 600, color: danger ? '#FCA5A5' : '#fff' }}>{label}</div>
+        {description ? <div style={{ fontFamily: fontBody, fontSize: 12, lineHeight: 1.45, color: 'rgba(255,255,255,0.45)', marginTop: 4 }}>{description}</div> : null}
       </div>
-      <span
-        aria-hidden
-        style={{
-          width: 48,
-          height: 28,
-          borderRadius: 999,
-          position: 'relative',
-          flexShrink: 0,
-          background: checked ? 'linear-gradient(135deg,#7C3AED,#D946EF)' : 'rgba(255,255,255,0.10)',
-          border: `1px solid ${checked ? 'rgba(217,70,239,0.4)' : 'rgba(255,255,255,0.12)'}`,
-          transition: 'all .18s ease',
-          boxShadow: checked ? '0 8px 24px rgba(124,58,237,0.25)' : 'none',
-        }}
-      >
-        <span
-          style={{
-            position: 'absolute',
-            top: 3,
-            left: checked ? 23 : 3,
-            width: 20,
-            height: 20,
-            borderRadius: '50%',
-            background: '#fff',
-            transition: 'left .18s ease',
-          }}
-        />
-      </span>
-    </button>
+      <div style={{ flexShrink: 0 }}>{right}</div>
+    </div>
   )
 }
 
-function TimeField({ label, value, onChange, disabled = false }) {
+function Toggle({ checked, onChange, disabled = false }) {
   return (
-    <label style={{ display: 'grid', gap: 8, flex: 1 }}>
-      <span style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.52)' }}>{label}</span>
-      <input
-        type="time"
-        value={value}
-        disabled={disabled}
-        onChange={(e) => onChange(e.target.value)}
-        style={{
-          width: '100%',
-          minHeight: 48,
-          borderRadius: 14,
-          border: '1px solid rgba(255,255,255,0.08)',
-          background: 'rgba(255,255,255,0.04)',
-          color: '#fff',
-          padding: '0 14px',
-          outline: 'none',
-          fontSize: 14,
-        }}
-      />
-    </label>
+    <button
+      type="button"
+      disabled={disabled}
+      onClick={(e) => { e.stopPropagation(); if (!disabled) onChange(!checked) }}
+      style={{
+        width: 50,
+        height: 30,
+        borderRadius: 999,
+        border: '1px solid rgba(255,255,255,0.08)',
+        background: checked ? 'linear-gradient(135deg,#7C3AED,#EC4899)' : 'rgba(255,255,255,0.08)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: checked ? 'flex-end' : 'flex-start',
+        padding: 3,
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        opacity: disabled ? 0.5 : 1,
+      }}
+    >
+      <span style={{ width: 22, height: 22, borderRadius: '50%', background: '#fff', boxShadow: checked ? '0 0 20px rgba(168,85,247,0.35)' : 'none' }} />
+    </button>
   )
 }
 
 export default function NotificationSettingsScreen() {
   const navigate = useNavigate()
-  const { lang } = useI18n()
-  const { currentStore } = useStore()
-  const { user } = useAuth()
+  const { storeSlug } = useParams()
   const { profile, updateProfile } = useProfile()
-  const [permission, setPermission] = useState('unsupported')
+  const { user } = useAuth()
+  const deviceId = typeof window !== 'undefined' ? localStorage.getItem('korset_device_id') : null
+  const [settings, setSettings] = useState(() => ({
+    ...DEFAULT_NOTIFICATION_SETTINGS,
+    ...(profile?.notifications || {}),
+    ...loadNotificationSettings(),
+    ...browserNotificationStatus(),
+  }))
   const [busy, setBusy] = useState(false)
-  const settings = useMemo(() => normalizeNotificationSettings(profile.notifications), [profile.notifications])
+  const [statusText, setStatusText] = useState('')
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && 'Notification' in window) {
-      setPermission(window.Notification.permission)
-    } else {
-      setPermission('unsupported')
-    }
-  }, [])
+    const fromProfile = profile?.notifications || {}
+    const fromLocal = loadNotificationSettings()
+    setSettings(prev => ({ ...prev, ...DEFAULT_NOTIFICATION_SETTINGS, ...fromProfile, ...fromLocal, ...browserNotificationStatus() }))
+  }, [profile])
 
-  const copy = useMemo(() => ({
-    ru: {
-      title: 'Уведомления',
-      subtitle: 'Управляйте push-уведомлениями и тем, что Körset может присылать вам на устройство.',
-      browser: 'Доступ к уведомлениям',
-      browserGranted: 'Уведомления разрешены. Körset может отправлять push и тестовые уведомления в браузер.',
-      browserDefault: 'Разрешите уведомления, чтобы получать оповещения о сканах, избранном и обновлениях магазина.',
-      browserDenied: 'Уведомления запрещены в браузере. Их можно включить в настройках сайта на устройстве.',
-      browserUnsupported: 'Этот браузер сейчас не даёт использовать web-уведомления для Körset.',
-      enableBrowser: 'Разрешить уведомления',
-      testNotification: 'Отправить тестовое уведомление',
-      master: 'Включить уведомления',
-      masterSub: 'Главный переключатель для всех оповещений Körset.',
-      push: 'Push-уведомления',
-      pushSub: 'Показывать системные уведомления браузера.',
-      scan: 'Результаты сканирования',
-      scanSub: 'Напоминания и важные итоги по недавним сканам.',
-      favorites: 'Избранное и важные товары',
-      favoritesSub: 'Изменения по товарам, которые вы сохранили.',
-      promos: 'Акции и предложения магазина',
-      promosSub: 'Скидки, подборки и новости текущего магазина.',
-      restock: 'Появление альтернатив и наличия',
-      restockSub: 'Когда подходящий товар снова появился или нашлась альтернатива.',
-      weekly: 'Еженедельная сводка',
-      weeklySub: 'Короткий дайджест по активности и новым возможностям.',
-      email: 'Короткий дайджест на email',
-      emailSub: user?.email ? `Отправлять сводку на ${user.email}` : 'Доступно после входа в аккаунт.',
-      system: 'Системные сообщения',
-      systemSub: 'Важные обновления Körset и изменения в работе приложения.',
-      quiet: 'Тихие часы',
-      quietSub: 'Не беспокоить в выбранный интервал времени.',
-      from: 'С',
-      to: 'До',
-      statusGranted: 'Разрешено',
-      statusDefault: 'Не запрошено',
-      statusDenied: 'Запрещено',
-      statusUnsupported: 'Недоступно',
-      saved: 'Настройки сохраняются автоматически.',
-      toast: 'Тестовое уведомление отправлено.',
-    },
-    kz: {
-      title: 'Хабарландырулар',
-      subtitle: 'Push-хабарламаларды және Körset құрылғыңызға не жібере алатынын басқарыңыз.',
-      browser: 'Хабарландыруға рұқсат',
-      browserGranted: 'Хабарламаларға рұқсат берілген. Körset браузер арқылы хабарлама жібере алады.',
-      browserDefault: 'Скан, таңдаулылар және дүкен жаңартулары туралы хабар алу үшін рұқсат беріңіз.',
-      browserDenied: 'Браузер хабарламаларға тыйым салған. Оны сайт баптауларынан қосуға болады.',
-      browserUnsupported: 'Бұл браузер қазір Körset web-хабарламаларын қолдамайды.',
-      enableBrowser: 'Хабарламаларды қосу',
-      testNotification: 'Сынақ хабарламасын жіберу',
-      master: 'Хабарландыруларды қосу',
-      masterSub: 'Körset хабарламаларының негізгі тетігі.',
-      push: 'Push-хабарламалар',
-      pushSub: 'Браузердің жүйелік хабарламаларын көрсету.',
-      scan: 'Скан нәтижелері',
-      scanSub: 'Жақында скандалған тауарлар бойынша маңызды ескертпелер.',
-      favorites: 'Таңдаулылар мен маңызды тауарлар',
-      favoritesSub: 'Сақталған тауарлар бойынша өзгерістер.',
-      promos: 'Дүкен акциялары мен ұсыныстары',
-      promosSub: 'Ағымдағы дүкеннің жеңілдіктері мен жаңалықтары.',
-      restock: 'Балама және қолжетімділік',
-      restockSub: 'Қайта пайда болған тауарлар және жаңа баламалар.',
-      weekly: 'Апталық шолу',
-      weeklySub: 'Белсенділік пен жаңа мүмкіндіктер туралы қысқа шолу.',
-      email: 'Email-ге қысқа дайджест',
-      emailSub: user?.email ? `${user.email} поштасына қысқа шолу жіберу` : 'Аккаунтқа кіргеннен кейін қолжетімді.',
-      system: 'Жүйелік хабарламалар',
-      systemSub: 'Körset жұмысына қатысты маңызды жаңартулар.',
-      quiet: 'Тыныш уақыт',
-      quietSub: 'Таңдалған уақытта мазаламау.',
-      from: 'Басы',
-      to: 'Соңы',
-      statusGranted: 'Рұқсат бар',
-      statusDefault: 'Сұралмаған',
-      statusDenied: 'Тыйым салынған',
-      statusUnsupported: 'Қолжетімсіз',
-      saved: 'Баптаулар автоматты түрде сақталады.',
-      toast: 'Сынақ хабарламасы жіберілді.',
-    }
-  })[lang] || null, [lang, user?.email])
+  const permissionLabel = useMemo(() => {
+    if (settings.status === 'granted') return 'Разрешены'
+    if (settings.status === 'denied') return 'Запрещены'
+    if (settings.status === 'unsupported') return 'Не поддерживаются'
+    return 'Не запрошены'
+  }, [settings.status])
 
-  const saveNotifications = async (patch) => {
-    const next = normalizeNotificationSettings({ ...settings, ...patch })
+  async function persist(next) {
+    setSettings(next)
+    saveNotificationSettings(next)
     await updateProfile({ notifications: next })
   }
 
-  const requestPermission = async () => {
-    if (!(typeof window !== 'undefined' && 'Notification' in window)) return
-    setBusy(true)
+  async function updatePartial(patch) {
+    const next = { ...settings, ...patch }
+    await persist(next)
+  }
+
+  async function requestPermission() {
+    if (!settings.pushSupported) {
+      setStatusText('На этом устройстве web push не поддерживается.')
+      return
+    }
     try {
+      setBusy(true)
       const result = await Notification.requestPermission()
-      setPermission(result)
+      const next = { ...settings, status: result, enabled: result === 'granted', lastPermissionCheckAt: new Date().toISOString() }
+      await persist(next)
+      setStatusText(result === 'granted' ? 'Доступ к уведомлениям разрешён.' : 'Пользовательский доступ к уведомлениям не выдан.')
       if (result === 'granted') {
-        await saveNotifications({ pushEnabled: true, enabled: true })
+        await subscribeDevice(next)
       }
+    } catch (err) {
+      setStatusText('Не удалось запросить разрешение.')
+      console.error(err)
     } finally {
       setBusy(false)
     }
   }
 
-  const sendTestNotification = async () => {
-    if (!(typeof window !== 'undefined' && 'Notification' in window) || Notification.permission !== 'granted') return
-    const body = lang === 'kz'
-      ? 'Бұл Körset жүйесінен сынақ хабарламасы. Енді хабарландырулар жұмыс істеп тұр.'
-      : 'Это тестовое уведомление от Körset. Теперь уведомления включены и работают.'
-    const notification = new Notification(copy.title, { body, icon: '/favicon.png', badge: '/favicon.png', tag: 'korset-test' })
-    setTimeout(() => notification.close(), 5000)
+  async function subscribeDevice(baseSettings = settings) {
+    try {
+      setBusy(true)
+      const vapidPublicKey = import.meta.env.VITE_VAPID_PUBLIC_KEY
+      if (!vapidPublicKey) {
+        setStatusText('Не задан VITE_VAPID_PUBLIC_KEY.')
+        return
+      }
+
+      const registration = await registerPushServiceWorker()
+      let subscription = await registration.pushManager.getSubscription()
+      if (!subscription) {
+        subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(vapidPublicKey),
+        })
+      }
+
+      const response = await fetch('/api/push/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          subscription,
+          authUserId: user?.id || null,
+          deviceId,
+          storeSlug: storeSlug || null,
+          preferences: {
+            weekly: baseSettings.weekly,
+            favorites: baseSettings.favorites,
+            restock: baseSettings.restock,
+            promo: baseSettings.promo,
+            system: baseSettings.system,
+            quietHoursEnabled: baseSettings.quietHoursEnabled,
+            quietFrom: baseSettings.quietFrom,
+            quietTo: baseSettings.quietTo,
+          },
+        }),
+      })
+
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}))
+        throw new Error(payload.error || 'subscribe_failed')
+      }
+
+      const next = { ...baseSettings, enabled: true, status: 'granted', subscriptionActive: true }
+      await persist(next)
+      setStatusText('Устройство подписано на push-уведомления.')
+    } catch (err) {
+      console.error(err)
+      setStatusText('Не удалось подписать устройство на push-уведомления.')
+    } finally {
+      setBusy(false)
+    }
   }
 
-  const permissionLabel = {
-    granted: copy.statusGranted,
-    default: copy.statusDefault,
-    denied: copy.statusDenied,
-    unsupported: copy.statusUnsupported,
-  }[permission]
+  async function unsubscribeDevice() {
+    try {
+      setBusy(true)
+      const registration = await navigator.serviceWorker.getRegistration('/sw.js')
+      const subscription = await registration?.pushManager?.getSubscription?.()
+      if (subscription) {
+        await fetch('/api/push/unsubscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ endpoint: subscription.endpoint, authUserId: user?.id || null, deviceId }),
+        })
+        await subscription.unsubscribe()
+      }
+      const next = { ...settings, enabled: false, subscriptionActive: false }
+      await persist(next)
+      setStatusText('Подписка на push-уведомления отключена.')
+    } catch (err) {
+      console.error(err)
+      setStatusText('Не удалось отключить push-подписку.')
+    } finally {
+      setBusy(false)
+    }
+  }
 
-  const permissionText = {
-    granted: copy.browserGranted,
-    default: copy.browserDefault,
-    denied: copy.browserDenied,
-    unsupported: copy.browserUnsupported,
-  }[permission]
-
-  const permissionTone = {
-    granted: { bg: 'rgba(16,185,129,0.10)', border: 'rgba(16,185,129,0.22)', text: '#34D399' },
-    default: { bg: 'rgba(245,158,11,0.10)', border: 'rgba(245,158,11,0.22)', text: '#FBBF24' },
-    denied: { bg: 'rgba(239,68,68,0.10)', border: 'rgba(239,68,68,0.22)', text: '#F87171' },
-    unsupported: { bg: 'rgba(148,163,184,0.10)', border: 'rgba(148,163,184,0.22)', text: '#CBD5E1' },
-  }[permission]
+  async function sendTestPush() {
+    try {
+      setBusy(true)
+      const res = await fetch('/api/push/send-test', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ authUserId: user?.id || null, deviceId }) })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) throw new Error(data.error || 'send_test_failed')
+      setStatusText('Тестовое push-уведомление отправлено.')
+    } catch (err) {
+      console.error(err)
+      setStatusText('Не удалось отправить тестовое уведомление.')
+    } finally {
+      setBusy(false)
+    }
+  }
 
   return (
-    <div className="screen" style={{ minHeight: '100vh', overflowY: 'auto', paddingBottom: 120 }}>
-      <div style={{ padding: '16px 20px 0' }}>
-        <button
-          type="button"
-          onClick={() => navigate(buildProfilePath(currentStore?.slug || null))}
-          style={{
-            width: 46,
-            height: 46,
-            borderRadius: 16,
-            border: '1px solid rgba(255,255,255,0.08)',
-            background: 'rgba(255,255,255,0.04)',
-            color: '#fff',
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-          }}
-        >
-          <ArrowLeftIcon />
-        </button>
+    <div className="screen" style={{ paddingTop: 'max(16px, env(safe-area-inset-top))', paddingBottom: 'calc(110px + env(safe-area-inset-bottom))', overflowY: 'auto' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 22px 16px' }}>
+        <button onClick={() => navigate(-1)} style={{ width: 42, height: 42, borderRadius: 14, border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.04)', color: '#fff', cursor: 'pointer', display: 'grid', placeItems: 'center' }}>←</button>
+        <div style={{ fontFamily: fontDisplay, fontSize: 28, letterSpacing: 1, color: '#fff' }}>Уведомления</div>
+        <div style={{ width: 42 }} />
       </div>
 
-      <div style={{ padding: '22px 20px 18px' }}>
-        <div style={{ width: 64, height: 64, borderRadius: 20, background: 'linear-gradient(135deg, rgba(124,58,237,0.28), rgba(217,70,239,0.18))', border: '1px solid rgba(124,58,237,0.24)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16, boxShadow: '0 16px 40px rgba(124,58,237,0.18)' }}>
-          <BellIcon active />
-        </div>
-        <h1 style={{ margin: 0, color: '#fff', fontSize: 30, lineHeight: 1.05, fontWeight: 800 }}>{copy.title}</h1>
-        <div style={{ marginTop: 10, maxWidth: 520 }}>
-          <SmallInfo>{copy.subtitle}</SmallInfo>
+      <div style={{ padding: '0 22px 18px' }}>
+        <div className="glass-card" style={{ padding: 18 }}>
+          <div style={{ fontFamily: fontBody, fontSize: 14, lineHeight: 1.55, color: 'rgba(255,255,255,0.72)' }}>
+            В v1 оставляем только полезные push-уведомления: системные, по избранному, по наличию, по акциям и еженедельную сводку. Без навязчивого мусора, потому что люди и так живут под артобстрелом уведомлений.
+          </div>
         </div>
       </div>
 
-      <div style={{ padding: '0 20px 14px' }}>
-        <Card>
-          <SectionTitle>{copy.browser}</SectionTitle>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 10 }}>
-            <div style={{ color: '#fff', fontSize: 15, fontWeight: 700 }}>{copy.push}</div>
-            <div style={{ padding: '7px 10px', borderRadius: 999, border: `1px solid ${permissionTone.border}`, background: permissionTone.bg, color: permissionTone.text, fontSize: 12, fontWeight: 700 }}>{permissionLabel}</div>
-          </div>
-          <SmallInfo>{permissionText}</SmallInfo>
+      <Section title="Статус">
+        <Row label="Push-уведомления" description={`Доступ: ${permissionLabel}`} right={<Toggle checked={settings.enabled} disabled={busy || !settings.pushSupported} onChange={(checked) => checked ? requestPermission() : unsubscribeDevice()} />} />
+        <div style={{ height: 1, background: 'rgba(255,255,255,0.04)', margin: '0 18px' }} />
+        <Row label="Подписка устройства" description={settings.subscriptionActive ? 'Устройство подписано и готово получать push.' : 'Подписка ещё не создана.'} right={<span style={{ fontFamily: fontBody, fontSize: 12, color: settings.subscriptionActive ? '#86EFAC' : 'rgba(255,255,255,0.45)' }}>{settings.subscriptionActive ? 'Активна' : 'Нет'}</span>} />
+        {statusText ? (
+          <>
+            <div style={{ height: 1, background: 'rgba(255,255,255,0.04)', margin: '0 18px' }} />
+            <div style={{ padding: '12px 18px', fontFamily: fontBody, fontSize: 12, color: 'rgba(255,255,255,0.55)' }}>{statusText}</div>
+          </>
+        ) : null}
+      </Section>
 
-          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 16 }}>
-            {permission !== 'granted' ? (
-              <button
-                type="button"
-                onClick={requestPermission}
-                disabled={busy || permission === 'unsupported' || permission === 'denied'}
-                style={{
-                  minHeight: 44,
-                  padding: '0 16px',
-                  borderRadius: 14,
-                  border: '1px solid rgba(124,58,237,0.28)',
-                  background: 'linear-gradient(135deg,#7C3AED,#D946EF)',
-                  color: '#fff',
-                  fontWeight: 700,
-                  cursor: busy || permission === 'unsupported' || permission === 'denied' ? 'not-allowed' : 'pointer',
-                  opacity: busy || permission === 'unsupported' || permission === 'denied' ? 0.5 : 1,
-                }}
-              >
-                {copy.enableBrowser}
-              </button>
-            ) : null}
-            <button
-              type="button"
-              onClick={sendTestNotification}
-              disabled={permission !== 'granted'}
-              style={{
-                minHeight: 44,
-                padding: '0 16px',
-                borderRadius: 14,
-                border: '1px solid rgba(255,255,255,0.08)',
-                background: 'rgba(255,255,255,0.04)',
-                color: '#fff',
-                fontWeight: 700,
-                cursor: permission !== 'granted' ? 'not-allowed' : 'pointer',
-                opacity: permission !== 'granted' ? 0.52 : 1,
-              }}
-            >
-              {copy.testNotification}
-            </button>
-          </div>
-        </Card>
-      </div>
+      <Section title="Типы уведомлений">
+        <Row label="Системные" description="Критичные сервисные и продуктовые сообщения." right={<Toggle checked={settings.system} onChange={(value) => updatePartial({ system: value })} />} />
+        <div style={{ height: 1, background: 'rgba(255,255,255,0.04)', margin: '0 18px' }} />
+        <Row label="По избранному" description="Изменения по вашим сохранённым товарам." right={<Toggle checked={settings.favorites} onChange={(value) => updatePartial({ favorites: value })} />} />
+        <div style={{ height: 1, background: 'rgba(255,255,255,0.04)', margin: '0 18px' }} />
+        <Row label="Появилось в наличии" description="Когда нужный товар снова доступен." right={<Toggle checked={settings.restock} onChange={(value) => updatePartial({ restock: value })} />} />
+        <div style={{ height: 1, background: 'rgba(255,255,255,0.04)', margin: '0 18px' }} />
+        <Row label="Акции и скидки" description="Только по магазинам и товарам, где это действительно полезно." right={<Toggle checked={settings.promo} onChange={(value) => updatePartial({ promo: value })} />} />
+        <div style={{ height: 1, background: 'rgba(255,255,255,0.04)', margin: '0 18px' }} />
+        <Row label="Еженедельная сводка" description="Короткий weekly digest без мусора." right={<Toggle checked={settings.weekly} onChange={(value) => updatePartial({ weekly: value })} />} />
+      </Section>
 
-      <div style={{ padding: '0 20px 14px' }}>
-        <Card>
-          <SectionTitle>{lang === 'kz' ? 'Негізгі параметрлер' : 'Основные настройки'}</SectionTitle>
-          <ToggleRow title={copy.master} subtitle={copy.masterSub} checked={settings.enabled} onChange={(checked) => saveNotifications({ enabled: checked })} />
-          <div style={{ height: 1, background: 'rgba(255,255,255,0.05)' }} />
-          <ToggleRow title={copy.push} subtitle={copy.pushSub} checked={settings.pushEnabled && permission === 'granted'} disabled={!settings.enabled || permission !== 'granted'} onChange={(checked) => saveNotifications({ pushEnabled: checked })} />
-          <div style={{ height: 1, background: 'rgba(255,255,255,0.05)' }} />
-          <ToggleRow title={copy.system} subtitle={copy.systemSub} checked={settings.systemAlerts} disabled={!settings.enabled} onChange={(checked) => saveNotifications({ systemAlerts: checked })} />
-        </Card>
-      </div>
+      <Section title="Тихие часы">
+        <Row label="Включить тихие часы" description="В это время push не отправляются, кроме системных." right={<Toggle checked={settings.quietHoursEnabled} onChange={(value) => updatePartial({ quietHoursEnabled: value })} />} />
+        <div style={{ height: 1, background: 'rgba(255,255,255,0.04)', margin: '0 18px' }} />
+        <div style={{ display: 'flex', gap: 12, padding: '15px 18px' }}>
+          <label style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6, fontFamily: fontBody, fontSize: 12, color: 'rgba(255,255,255,0.55)' }}>
+            С
+            <input type="time" value={settings.quietFrom} onChange={(e) => updatePartial({ quietFrom: e.target.value })} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12, padding: '12px 14px', color: '#fff', fontFamily: fontBody }} />
+          </label>
+          <label style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6, fontFamily: fontBody, fontSize: 12, color: 'rgba(255,255,255,0.55)' }}>
+            До
+            <input type="time" value={settings.quietTo} onChange={(e) => updatePartial({ quietTo: e.target.value })} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12, padding: '12px 14px', color: '#fff', fontFamily: fontBody }} />
+          </label>
+        </div>
+      </Section>
 
-      <div style={{ padding: '0 20px 14px' }}>
-        <Card>
-          <SectionTitle>{lang === 'kz' ? 'Не жіберіледі' : 'Что присылать'}</SectionTitle>
-          <ToggleRow title={copy.scan} subtitle={copy.scanSub} checked={settings.scanAlerts} disabled={!settings.enabled} onChange={(checked) => saveNotifications({ scanAlerts: checked })} />
-          <div style={{ height: 1, background: 'rgba(255,255,255,0.05)' }} />
-          <ToggleRow title={copy.favorites} subtitle={copy.favoritesSub} checked={settings.favoritesAlerts} disabled={!settings.enabled} onChange={(checked) => saveNotifications({ favoritesAlerts: checked })} />
-          <div style={{ height: 1, background: 'rgba(255,255,255,0.05)' }} />
-          <ToggleRow title={copy.promos} subtitle={copy.promosSub} checked={settings.promoAlerts} disabled={!settings.enabled} onChange={(checked) => saveNotifications({ promoAlerts: checked })} />
-          <div style={{ height: 1, background: 'rgba(255,255,255,0.05)' }} />
-          <ToggleRow title={copy.restock} subtitle={copy.restockSub} checked={settings.restockAlerts} disabled={!settings.enabled} onChange={(checked) => saveNotifications({ restockAlerts: checked })} />
-          <div style={{ height: 1, background: 'rgba(255,255,255,0.05)' }} />
-          <ToggleRow title={copy.weekly} subtitle={copy.weeklySub} checked={settings.weeklyDigest} disabled={!settings.enabled} onChange={(checked) => saveNotifications({ weeklyDigest: checked })} />
-          <div style={{ height: 1, background: 'rgba(255,255,255,0.05)' }} />
-          <ToggleRow title={copy.email} subtitle={copy.emailSub} checked={settings.emailDigest} disabled={!settings.enabled || !user} onChange={(checked) => saveNotifications({ emailDigest: checked })} />
-        </Card>
-      </div>
-
-      <div style={{ padding: '0 20px 12px' }}>
-        <Card>
-          <SectionTitle>{copy.quiet}</SectionTitle>
-          <ToggleRow title={copy.quiet} subtitle={copy.quietSub} checked={settings.quietHoursEnabled} disabled={!settings.enabled} onChange={(checked) => saveNotifications({ quietHoursEnabled: checked })} />
-          <div style={{ display: 'flex', gap: 12, marginTop: 14, flexWrap: 'wrap' }}>
-            <TimeField label={copy.from} value={settings.quietHoursStart} disabled={!settings.enabled || !settings.quietHoursEnabled} onChange={(value) => saveNotifications({ quietHoursStart: value })} />
-            <TimeField label={copy.to} value={settings.quietHoursEnd} disabled={!settings.enabled || !settings.quietHoursEnabled} onChange={(value) => saveNotifications({ quietHoursEnd: value })} />
-          </div>
-        </Card>
-      </div>
-
-      <div style={{ padding: '0 20px' }}>
-        <SmallInfo>{copy.saved}</SmallInfo>
-      </div>
+      <Section title="Отладка">
+        <Row label="Отправить тестовое уведомление" description="Серверный тест для этого устройства." right={<button onClick={sendTestPush} disabled={busy || !settings.subscriptionActive} style={{ border: 'none', background: 'linear-gradient(135deg,#7C3AED,#EC4899)', color: '#fff', padding: '10px 14px', borderRadius: 12, fontFamily: fontBody, fontWeight: 700, cursor: busy ? 'wait' : 'pointer', opacity: busy || !settings.subscriptionActive ? 0.55 : 1 }}>Тест</button>} />
+      </Section>
     </div>
   )
 }
