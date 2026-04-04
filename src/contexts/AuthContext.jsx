@@ -31,6 +31,10 @@ export function AuthProvider({ children }) {
           const { data: inserted, error } = await supabase.from('users')
             .insert({ auth_id: authUser.id, device_id, name: authUser.user_metadata?.full_name || 'User' })
             .select('id').single()
+          
+          if (error) {
+            console.error('Failed to create users row:', error.message, error.details || error.hint)
+          }
           setInternalUserId(inserted?.id || null)
         }
       } catch (err) {
