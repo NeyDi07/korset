@@ -188,9 +188,17 @@ export default function AuthScreen() {
         .auth-input:focus { border-color: rgba(124,58,237,0.5) !important; }
       `}</style>
 
-      <div className="screen" style={{
-        background: 'var(--bg)', paddingTop: 0, paddingBottom: 40, minHeight: '100vh',
-        display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden'
+      <div className="screen auth-screen" style={{
+        background: 'var(--bg)',
+        paddingTop: 0,
+        paddingBottom: 'max(32px, env(safe-area-inset-bottom, 0px))',
+        minHeight: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        position: 'relative',
+        overflowX: 'hidden',
+        overflowY: 'auto',
+        WebkitOverflowScrolling: 'touch'
       }}>
 
         {/* Background orbs */}
@@ -212,18 +220,18 @@ export default function AuthScreen() {
           </button>
 
           {/* Logo + Title */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 70, paddingBottom: 32 }}>
-            <img src="/icon_logo.svg" alt="Körset" style={{ width: 64, height: 64, marginBottom: 20, borderRadius: 18 }} />
-            <h1 style={{ fontFamily: fontAdvent, fontSize: 28, fontWeight: 700, color: '#fff', margin: 0, letterSpacing: 0.5 }}>{title}</h1>
-            <p style={{ fontFamily: fontAdvent, fontSize: 14, color: 'rgba(255,255,255,0.4)', marginTop: 8, textAlign: 'center', lineHeight: 1.4 }}>{sub}</p>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 64, paddingBottom: 24 }}>
+            <img src="/icon_logo.svg" alt="Körset" style={{ width: 56, height: 56, marginBottom: 18, borderRadius: 16, flexShrink: 0 }} />
+            <h1 style={{ fontFamily: fontAdvent, fontSize: 'clamp(24px, 6vw, 28px)', fontWeight: 700, color: '#fff', margin: 0, letterSpacing: 0.5, textAlign: 'center' }}>{title}</h1>
+            <p style={{ fontFamily: fontAdvent, fontSize: 14, color: 'rgba(255,255,255,0.4)', marginTop: 8, textAlign: 'center', lineHeight: 1.4, maxWidth: 280 }}>{sub}</p>
           </div>
         </div>
 
         {/* ── FORM CARD ── */}
-        <div style={{ padding: '0 22px', position: 'relative', zIndex: 10, flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <div style={{ padding: '0 22px 28px', position: 'relative', zIndex: 10, flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
           <div style={{
             background: 'rgba(255,255,255,0.03)', backdropFilter: 'blur(24px)',
-            border: '1px solid rgba(255,255,255,0.07)', borderRadius: 20, padding: '28px 22px'
+            border: '1px solid rgba(255,255,255,0.07)', borderRadius: 20, padding: '24px 20px', marginBottom: 20
           }}>
 
             {/* Error */}
