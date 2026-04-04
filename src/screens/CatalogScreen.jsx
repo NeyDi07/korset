@@ -1,38 +1,21 @@
 import { useMemo, useState } from 'react'
-import { useI18n } from '../utils/i18n.js'
 import { useNavigate } from 'react-router-dom'
-import products from '../data/products.json'
+import { useI18n } from '../utils/i18n.js'
 import { checkProductFit, formatPrice } from '../utils/fitCheck.js'
 import { useProfile } from '../contexts/ProfileContext.jsx'
-
-const CATEGORY_ORDER = ['grocery', 'electronics', 'diy']
-
-const FILTER_IDS = ['all', 'fit', 'grocery', 'electronics', 'diy']
-const SORT_IDS = ['fit', 'cheap', 'pricey', 'rating']
-
-const NUTRISCORE_COLORS = {
-  A: '#1a7c1a', B: '#4a9a1a', C: '#d4b800', D: '#e07000', E: '#c0392b'
-}
+import { useStore } from '../contexts/StoreContext.jsx'
+import { getGlobalDemoProducts, getStoreCatalogProducts } from '../utils/storeCatalog.js'
+import { buildProductPath } from '../utils/routes.js'
 
 function ProductThumb({ product }) {
   const [imgOk, setImgOk] = useState(true)
   const src = product.images?.[0]
   if (src && imgOk) {
-    return (
-      <img src={src} alt={product.name} onError={() => setImgOk(false)}
-        style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 10 }} />
-    )
+    return <img src={src} alt={product.name} onError={() => setImgOk(false)} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 8 }} />
   }
-  const colors = { grocery: '#10B981', electronics: '#60A5FA', diy: '#FCD34D' }
-  const cat = product.category
   return (
-    <div style={{
-      width: '100%', height: '100%',
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      fontSize: 36, fontWeight: 800,
-      color: colors[cat] || '#A78BFA',
-    }}>
-      {product.name[0]}
+    <div style={{ width: '100%', height: '100%', display: 'grid', placeItems: 'center', fontSize: 28, fontWeight: 800, color: '#A78BFA' }}>
+      {product.name?.[0] || '•'}
     </div>
   )
 }
@@ -41,267 +24,125 @@ export default function CatalogScreen() {
   const navigate = useNavigate()
   const { t } = useI18n()
   const { profile } = useProfile()
+  const { currentStore } = useStore()
   const [q, setQ] = useState('')
-  const [activeFilter, setActiveFilter] = useState('all')
-  const [sortOpen, setSortOpen] = useState(false)
+  const [filter, setFilter] = useState('all')
   const [sort, setSort] = useState('fit')
 
-  const hasProfile = Boolean(
-    profile?.halal || profile?.halalOnly ||
-    profile?.allergens?.length || profile?.dietGoals?.length
-  )
+  const baseProducts = useMemo(() => {
+    return currentStore ? getStoreCatalogProducts(currentStore.slug) : getGlobalDemoProducts()
+  }, [currentStore])
+
+  const hasProfile = Boolean(profile?.halal || profile?.halalOnly || profile?.allergens?.length || profile?.dietGoals?.length)
+  const categoryOptions = useMemo(() => {
+    const dynamic = [...new Set(baseProducts.map((product) => product.category).filter(Boolean))]
+    return ['all', ...(hasProfile ? ['fit'] : []), ...dynamic]
+  }, [baseProducts, hasProfile])
 
   const list = useMemo(() => {
-    let arr = products.slice()
-
-    if (activeFilter === 'fit') {
-      if (hasProfile) arr = arr.filter(p => checkProductFit(p, profile).fits)
-    } else if (activeFilter !== 'all') {
-      arr = arr.filter(p => p.category === activeFilter)
+    let arr = [...baseProducts]
+    if (filter === 'fit') {
+      arr = arr.filter((product) => checkProductFit(product, profile).fits)
+    } else if (filter !== 'all') {
+      arr = arr.filter((product) => product.category === filter)
     }
 
     const query = q.trim().toLowerCase()
-    if (query) arr = arr.filter(p =>
-      `${p.name} ${(p.tags || []).join(' ')}`.toLowerCase().includes(query)
-    )
+    if (query) {
+      arr = arr.filter((product) =>
+        `${product.name} ${(product.brand || '')} ${(product.tags || []).join(' ')}`.toLowerCase().includes(query)
+      )
+    }
 
     arr.sort((a, b) => {
-      if (sort === 'cheap')  return a.priceKzt - b.priceKzt
-      if (sort === 'pricey') return b.priceKzt - a.priceKzt
+      if (sort === 'cheap') return (a.priceKzt || 0) - (b.priceKzt || 0)
+      if (sort === 'pricey') return (b.priceKzt || 0) - (a.priceKzt || 0)
       if (sort === 'rating') return (b.qualityScore || 0) - (a.qualityScore || 0)
-      if (hasProfile) {
-        const af = checkProductFit(a, profile).fits ? 0 : 1
-        const bf = checkProductFit(b, profile).fits ? 0 : 1
-        if (af !== bf) return af - bf
-      }
-      const ao = CATEGORY_ORDER.indexOf(a.category)
-      const bo = CATEGORY_ORDER.indexOf(b.category)
-      if (ao !== bo) return ao - bo
+      const aFit = checkProductFit(a, profile).fits ? 0 : 1
+      const bFit = checkProductFit(b, profile).fits ? 0 : 1
+      if (aFit !== bFit) return aFit - bFit
       return (b.qualityScore || 0) - (a.qualityScore || 0)
     })
 
     return arr
-  }, [q, activeFilter, sort, hasProfile])
+  }, [baseProducts, filter, profile, q, sort])
 
-
-  const filterOptions = FILTER_IDS.map(id => ({ id, label: t.catalog.filters[id] }))
-  const sortOptions = SORT_IDS.map(id => ({ id, label: t.catalog.sort[id] }))
-  const activeSort = sortOptions.find(s => s.id === sort)
+  const storeTitle = currentStore ? currentStore.name : 'Каталог Körset'
 
   return (
-    <div className="screen" onClick={() => setSortOpen(false)}>
-
-      {/* ── Хедер ── */}
+    <div className="screen">
       <div style={{ padding: '16px 20px 0' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
-          {/* Заголовок */}
-          <div>
-            <div style={{
-              fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 900,
-              color: '#fff', letterSpacing: '-0.5px', lineHeight: 1,
-            }}>
-              {t.catalog.title}
-            </div>
-            <div style={{ fontSize: 12, color: 'rgba(167,139,250,0.7)', marginTop: 3, fontWeight: 500 }}>
-              {products.length} {t.catalog.productsCount}
-            </div>
-          </div>
+        <div style={{ marginBottom: 16 }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 900, color: '#fff', lineHeight: 1 }}>{t.catalog.title}</div>
+          <div style={{ fontSize: 12, color: 'rgba(167,139,250,0.7)', marginTop: 6, fontWeight: 600 }}>{storeTitle} · {list.length} товаров</div>
+        </div>
 
-          {/* Сортировка */}
-          <div style={{ position: 'relative' }} onClick={e => e.stopPropagation()}>
-            <button onClick={() => setSortOpen(o => !o)} style={{
-              display: 'flex', alignItems: 'center', gap: 6,
-              padding: '8px 14px', borderRadius: 12,
-              background: 'rgba(124,58,237,0.15)',
-              border: '1px solid rgba(124,58,237,0.35)',
-              color: '#C4B5FD', fontSize: 12, fontWeight: 600,
-              cursor: 'pointer', fontFamily: 'var(--font-body)',
+        <div style={{ padding: '12px 14px', borderRadius: 16, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', marginBottom: 14 }}>
+          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t.catalog.searchPlaceholder} style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', color: '#fff', fontSize: 14 }} />
+        </div>
+
+        <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 4, marginBottom: 10 }}>
+          {categoryOptions.map((option) => (
+            <button key={option} onClick={() => setFilter(option)} style={{
+              padding: '8px 12px', borderRadius: 999, whiteSpace: 'nowrap', cursor: 'pointer',
+              background: filter === option ? 'rgba(124,58,237,0.18)' : 'rgba(255,255,255,0.04)',
+              border: `1px solid ${filter === option ? 'rgba(124,58,237,0.42)' : 'rgba(255,255,255,0.08)'}`,
+              color: filter === option ? '#C4B5FD' : 'rgba(220,220,240,0.7)', fontSize: 12, fontWeight: 600,
             }}>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <path d="M3 6h18M7 12h10M11 18h2"/>
-              </svg>
-              {activeSort?.label}
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
-                style={{ transform: sortOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>
-                <path d="M6 9l6 6 6-6"/>
-              </svg>
+              {option === 'all' ? t.catalog.filters.all : option === 'fit' ? t.catalog.filters.fit : option}
             </button>
-
-            {sortOpen && (
-              <div style={{
-                position: 'absolute', top: 'calc(100% + 6px)', right: 0, minWidth: 190,
-                background: '#151525', border: '1px solid rgba(255,255,255,0.1)',
-                borderRadius: 14, overflow: 'hidden',
-                boxShadow: '0 12px 32px rgba(0,0,0,0.5)', zIndex: 200,
-              }}>
-                {sortOptions.map((opt, i) => {
-                  if (opt.id === 'fit' && !hasProfile) return null
-                  const active = sort === opt.id
-                  return (
-                    <button key={opt.id} onClick={() => { setSort(opt.id); setSortOpen(false) }}
-                      style={{
-                        width: '100%', padding: '11px 14px',
-                        background: active ? 'rgba(124,58,237,0.15)' : 'transparent',
-                        border: 'none',
-                        borderBottom: i < sortOptions.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none',
-                        cursor: 'pointer', textAlign: 'left',
-                        fontSize: 13, fontFamily: 'var(--font-body)',
-                        color: active ? '#C4B5FD' : 'rgba(220,220,250,0.85)',
-                        fontWeight: active ? 700 : 400,
-                      }}>
-                      {opt.label}
-                    </button>
-                  )
-                })}
-              </div>
-            )}
-          </div>
+          ))}
         </div>
 
-        {/* Поиск */}
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: 10,
-          background: 'rgba(255,255,255,0.05)',
-          border: '1px solid rgba(255,255,255,0.09)',
-          borderRadius: 14, padding: '11px 14px', marginBottom: 14,
-        }}>
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(160,160,200,0.6)" strokeWidth="2">
-            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
-          </svg>
-          <input
-            style={{
-              background: 'transparent', border: 'none', outline: 'none',
-              color: '#fff', fontSize: 14, fontFamily: 'var(--font-body)', flex: 1,
-            }}
-            placeholder={t.catalog.search} value={q} onChange={e => setQ(e.target.value)}
-          />
-          {q && (
-            <button onClick={() => setQ('')} style={{
-              background: 'none', border: 'none',
-              color: 'rgba(160,160,200,0.6)', cursor: 'pointer', fontSize: 18, lineHeight: 1,
-            }}>×</button>
-          )}
-        </div>
-
-        {/* Фильтры */}
-        <div style={{ display: 'flex', gap: 8, overflowX: 'auto', scrollbarWidth: 'none', marginBottom: 18 }}>
-          {filterOptions.map(f => {
-            if (f.id === 'fit' && !hasProfile) return null
-            const active = activeFilter === f.id
-            return (
-              <button key={f.id} onClick={() => setActiveFilter(f.id)} style={{
-                flexShrink: 0, padding: '8px 18px', borderRadius: 24,
-                fontSize: 13, fontWeight: 600, cursor: 'pointer',
-                fontFamily: 'var(--font-body)',
-                background: active ? '#7C3AED' : 'rgba(255,255,255,0.06)',
-                border: active ? 'none' : '1px solid rgba(255,255,255,0.1)',
-                color: active ? '#fff' : 'rgba(200,200,240,0.75)',
-                boxShadow: active ? '0 2px 14px rgba(124,58,237,0.45)' : 'none',
-                transition: 'all 0.18s ease',
-              }}>
-                {f.label}
-              </button>
-            )
-          })}
+        <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+          {[
+            { id: 'fit', label: t.catalog.sort.fit },
+            { id: 'cheap', label: t.catalog.sort.cheap },
+            { id: 'pricey', label: t.catalog.sort.pricey },
+            { id: 'rating', label: t.catalog.sort.rating },
+          ].map((option) => (
+            <button key={option.id} onClick={() => setSort(option.id)} style={{
+              padding: '7px 10px', borderRadius: 12, cursor: 'pointer',
+              background: sort === option.id ? 'rgba(96,165,250,0.14)' : 'rgba(255,255,255,0.04)',
+              border: `1px solid ${sort === option.id ? 'rgba(96,165,250,0.32)' : 'rgba(255,255,255,0.08)'}`,
+              color: sort === option.id ? '#93C5FD' : 'rgba(220,220,240,0.7)', fontSize: 11, fontWeight: 600,
+            }}>
+              {option.label}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* ── Сетка ── */}
-      <div style={{ padding: '0 16px 100px' }}>
-        {list.length === 0 ? (
-          <div style={{ padding: '60px 0', textAlign: 'center', color: 'rgba(160,160,200,0.6)' }}>
-            <div style={{ fontSize: 40, marginBottom: 10 }}>🔍</div>
-            <p style={{ fontSize: 14 }}>{t.catalog.nothingFound}</p>
-          </div>
-        ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-            {list.map(product => {
-              const fitResult = hasProfile ? checkProductFit(product, profile) : null
-              const fits = fitResult?.fits ?? null
-              const nutriscore = product.nutriscore || product.nutriScore
-              const brand = typeof product.manufacturer === 'object'
-                ? product.manufacturer?.name
-                : product.manufacturer
-
-              return (
-                <div key={product.id} onClick={() => navigate(`/product/${product.id}`)}
-                  style={{
-                    borderRadius: 18,
-                    background: 'linear-gradient(160deg, #13132a 0%, #0d0d1f 100%)',
-                    border: `1px solid ${fits === true ? 'rgba(16,185,129,0.25)' : fits === false ? 'rgba(239,68,68,0.2)' : 'rgba(255,255,255,0.08)'}`,
-                    cursor: 'pointer', overflow: 'hidden',
-                    boxShadow: fits === true ? '0 4px 20px rgba(16,185,129,0.08)' : '0 4px 16px rgba(0,0,0,0.2)',
-                  }}>
-
-                  {/* Фото */}
-                  <div style={{ position: 'relative', padding: '10px 10px 0' }}>
-                    <div style={{
-                      height: 120, borderRadius: 12,
-                      background: 'rgba(255,255,255,0.05)',
-                      border: '1px solid rgba(255,255,255,0.08)',
-                      overflow: 'hidden',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    }}>
-                      <ProductThumb product={product} />
-                    </div>
-
-                    {/* Бейдж fit — правый верхний угол внутри паддинга */}
-                    {fits !== null && (
-                      <div style={{
-                        position: 'absolute', top: 18, right: 18,
-                        width: 36, height: 36, borderRadius: 11,
-                        background: fits ? '#10B981' : '#EF4444',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        boxShadow: fits ? '0 2px 8px rgba(16,185,129,0.5)' : '0 2px 8px rgba(239,68,68,0.4)',
-                      }}>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round">
-                          {fits
-                            ? <polyline points="20 6 9 17 4 12"/>
-                            : <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>
-                          }
-                        </svg>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Инфо */}
-                  <div style={{ padding: '10px 12px 14px' }}>
-                    {brand && (
-                      <div style={{ fontSize: 11, color: 'rgba(167,139,250,0.6)', marginBottom: 3, fontWeight: 600, letterSpacing: '0.3px' }}>
-                        {brand}
-                      </div>
-                    )}
-                    <div style={{
-                      fontSize: 13, fontWeight: 600, color: 'rgba(235,235,255,0.92)',
-                      lineHeight: 1.35, marginBottom: 10,
-                      display: '-webkit-box', WebkitLineClamp: 2,
-                      WebkitBoxOrient: 'vertical', overflow: 'hidden',
-                    }}>
-                      {product.name}
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <span style={{
-                        fontFamily: 'var(--font-display)', fontSize: 15,
-                        fontWeight: 800, color: '#A78BFA',
-                      }}>
-                        {formatPrice(product.priceKzt)}
-                      </span>
-                      {nutriscore && (
-                        <div style={{
-                          padding: '3px 8px', borderRadius: 7,
-                          background: NUTRISCORE_COLORS[nutriscore.toUpperCase()] || '#555',
-                          fontSize: 11, fontWeight: 800, color: '#fff', letterSpacing: '0.3px',
-                        }}>
-                          {nutriscore.toUpperCase()}
-                        </div>
-                      )}
-                    </div>
+      <div style={{ padding: '0 20px 100px', display: 'grid', gap: 10 }}>
+        {list.map((product) => {
+          const fit = checkProductFit(product, profile)
+          return (
+            <div key={product.ean} onClick={() => navigate(buildProductPath(currentStore?.slug || null, product.ean))} style={{
+              background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 18,
+              padding: 12, display: 'grid', gridTemplateColumns: '92px 1fr', gap: 12, cursor: 'pointer'
+            }}>
+              <div style={{ width: 92, height: 92, borderRadius: 16, background: 'rgba(255,255,255,0.03)', overflow: 'hidden' }}>
+                <ProductThumb product={product} />
+              </div>
+              <div style={{ minWidth: 0 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', gap: 12, marginBottom: 6 }}>
+                  <div style={{ fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700, color: '#fff', lineHeight: 1.35 }}>{product.name}</div>
+                  <div style={{ fontSize: 11, padding: '4px 8px', borderRadius: 999, background: fit.fits ? 'rgba(16,185,129,0.14)' : 'rgba(239,68,68,0.14)', color: fit.fits ? '#34D399' : '#F87171', flexShrink: 0 }}>
+                    {fit.fits ? 'Подходит' : 'Проверить'}
                   </div>
                 </div>
-              )
-            })}
-          </div>
-        )}
+                <div style={{ fontSize: 12, color: 'rgba(200,200,240,0.62)', marginBottom: 10 }}>{product.brand || 'Без бренда'} · {product.ean}</div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'end', gap: 12 }}>
+                  <div>
+                    <div style={{ fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 900, color: '#A78BFA' }}>{formatPrice(product.priceKzt)}</div>
+                    <div style={{ fontSize: 11, color: 'rgba(180,180,210,0.6)' }}>{product.shelf || 'Полка уточняется'}</div>
+                  </div>
+                  <div style={{ fontSize: 11, color: 'rgba(220,220,240,0.65)' }}>Score {(product.qualityScore || 0)}/100</div>
+                </div>
+              </div>
+            </div>
+          )
+        })}
       </div>
     </div>
   )

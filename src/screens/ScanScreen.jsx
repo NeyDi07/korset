@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { lookupProduct } from '../utils/productLookup.js'
-import { useStoreId } from '../contexts/StoreContext.jsx'
+import { useStore } from '../contexts/StoreContext.jsx'
+import { buildProductPath } from '../utils/routes.js'
 import { useI18n } from '../utils/i18n.js'
 
 // ─── Barcode Scanner ───────────────────────────────────────────────────────────
@@ -275,14 +276,17 @@ function NotFoundScreen({ ean, onRetry, onClose, t }) {
 export default function ScanScreen() {
   const navigate = useNavigate()
   const { t } = useI18n()
-  const storeId = useStoreId()
+  const { currentStore } = useStore()
+  const storeId = currentStore?.id || currentStore?.slug || null
   const [mode, setMode] = useState('idle')
   const [notFoundEan, setNotFoundEan] = useState(null)
 
   const handleDetected = async (ean) => {
     const result = await lookupProduct(ean, storeId)
-    if (result.type === 'local' || result.type === 'external') {
-      navigate(`/product/${encodeURIComponent(result.product.canonicalId || `ean:${ean}`)}`, { state: { product: result.product } })
+    if (result.type === 'local') {
+      navigate(buildProductPath(currentStore?.slug || null, result.product.ean || ean))
+    } else if (result.type === 'external') {
+      navigate(buildProductPath(currentStore?.slug || null, ean, true), { state: { product: result.product } })
     } else {
       setNotFoundEan(ean)
       setMode('not_found')
@@ -298,6 +302,14 @@ export default function ScanScreen() {
         <div className="screen-title" style={{ textAlign: 'center' }}>{t.scan.title}</div>
       </div>
       <div style={{ padding: '20px 20px 0', display: 'flex', flexDirection: 'column', gap: 14 }}>
+        <div style={{ padding: '12px 14px', borderRadius: 16, background: currentStore ? 'rgba(52,211,153,0.08)' : 'rgba(245,158,11,0.08)', border: `1px solid ${currentStore ? 'rgba(52,211,153,0.2)' : 'rgba(245,158,11,0.2)'}` }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: currentStore ? '#34D399' : '#F59E0B', marginBottom: 4 }}>
+            {currentStore ? `Режим магазина: ${currentStore.name}` : 'Глобальный режим для тестов'}
+          </div>
+          <div style={{ fontSize: 12, lineHeight: 1.55, color: 'rgba(220,220,240,0.72)' }}>
+            {currentStore ? 'Приоритет у товаров текущего магазина. Цена и полка показываются в магазинном контексте.' : 'Пока разрешён общий скан без выбора магазина. Перед боевым запуском это будет переведено в режим выбора магазина.'}
+          </div>
+        </div>
 
         {/* Кнопка сканирования */}
         <button onClick={() => setMode('scanning')} style={{
