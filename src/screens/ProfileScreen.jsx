@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import { setLang, useI18n } from '../utils/i18n.js'
 import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useAuth } from '../contexts/AuthContext.jsx'
-import { useStore } from '../contexts/StoreContext.jsx'
-import { buildHistoryPath } from '../utils/routes.js'
 import { supabase } from '../utils/supabase.js'
 import KorsetAvatar from '../components/KorsetAvatar.jsx'
 import { ALLERGENS } from '../data/allergens.js'
@@ -37,14 +35,35 @@ function DietIcon({ name, size = 18 }) {
 
 import { useUserData } from '../contexts/UserDataContext.jsx'
 
+
+const DEFAULT_AVATARS = {
+  av1: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Arman&backgroundColor=7C3AED&clotheColor=3B82F6',
+  av2: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Aisha&backgroundColor=EC4899&clotheColor=EC4899',
+  av3: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Daulet&backgroundColor=34D399&clotheColor=10B981',
+  av4: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Madina&backgroundColor=F59E0B&clotheColor=F97316',
+  av5: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Timur&backgroundColor=8B5CF6&clotheColor=6366F1',
+  av6: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Dana&backgroundColor=06B6D4&clotheColor=0EA5E9',
+  av7: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sultan&backgroundColor=EF4444&clotheColor=DC2626',
+  av8: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Aliya&backgroundColor=A78BFA&clotheColor=7C3AED',
+  av9: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Asel&backgroundColor=14B8A6&clotheColor=0F766E',
+}
+
+function resolveAvatarSrc(user) {
+  const avatarId = user?.user_metadata?.avatar_id
+  if (!avatarId) return null
+  if (typeof avatarId === 'string' && avatarId.startsWith('http')) return avatarId
+  return DEFAULT_AVATARS[avatarId] || null
+}
+
+
 export default function ProfileScreen() {
   const navigate = useNavigate()
-  const { currentStore } = useStore()
   const { lang, t } = useI18n()
   const allergenInputRef = useRef(null)
   const { profile, updateProfile: setProfile } = useProfile()
   const { user } = useAuth()
   const { favoritesCount, scanCount } = useUserData()
+  const avatarSrc = resolveAvatarSrc(user)
   
   const [allergenInput, setAllergenInput] = useState('')
   const [prefOpen, setPrefOpen] = useState(false)
@@ -104,8 +123,8 @@ export default function ProfileScreen() {
         <div style={{ position: 'relative', zIndex: 1 }}>
 
           {/* ── HEADER ── */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 22px 0' }}>
-            <h1 style={{ fontFamily: fontAdvent, fontSize: 24, fontWeight: 500, color: '#fff', margin: 0, lineHeight: 1 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 22px 0', minHeight: 44 }}>
+            <h1 style={{ fontFamily: fontAdvent, fontSize: 24, fontWeight: 500, color: '#fff', margin: 0, lineHeight: '44px' }}>
               {lang === 'kz' ? 'Профиль' : 'Профиль'}
             </h1>
             <button onClick={() => navigate('/setup-profile')} style={{
@@ -120,7 +139,7 @@ export default function ProfileScreen() {
           </div>
 
           {/* ── AVATAR + NAME ── */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '28px 22px 28px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '18px 22px 12px' }}>
             <div style={{
               width: 120, height: 120, borderRadius: '50%',
               border: '3.5px solid #7C3AED', padding: 4,
@@ -128,8 +147,8 @@ export default function ProfileScreen() {
               marginBottom: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box'
             }}>
               {user ? (
-                user.user_metadata?.avatar_id && user.user_metadata.avatar_id.startsWith('http') ? (
-                  <img src={user.user_metadata.avatar_id} alt="Avatar" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+                avatarSrc ? (
+                  <img src={avatarSrc} alt="Avatar" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
                 ) : (
                   <div style={{ width: '100%', height: '100%', borderRadius: '50%', background: 'linear-gradient(135deg, #7C3AED, #6D28D9)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <span style={{ fontSize: 40, color: '#fff', fontFamily: fontAdvent, fontWeight: 700 }}>
@@ -165,9 +184,9 @@ export default function ProfileScreen() {
           </div>
 
           {/* ── STATS — 3 GLASS CARDS ── */}
-          <div style={{ display: 'flex', justifyContent: 'center', gap: 12, padding: '30px 20px 28px' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 12, padding: '14px 20px 24px' }}>
             {/* Favorites */}
-            <div onClick={() => navigate(buildHistoryPath(currentStore?.slug || null, 'favorites'))} style={{ flex: 1, position: 'relative', paddingTop: 28, cursor: 'pointer' }}>
+            <div onClick={() => navigate('/history?tab=favorites')} style={{ flex: 1, position: 'relative', paddingTop: 28, cursor: 'pointer' }}>
               <div style={{
                 position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', zIndex: 2,
                 width: 56, height: 56, borderRadius: '50%',
@@ -203,7 +222,7 @@ export default function ProfileScreen() {
             </div>
 
             {/* Scans */}
-            <div onClick={() => navigate(buildHistoryPath(currentStore?.slug || null, 'history'))} style={{ flex: 1, position: 'relative', paddingTop: 28, cursor: 'pointer' }}>
+            <div onClick={() => navigate('/history?tab=history')} style={{ flex: 1, position: 'relative', paddingTop: 28, cursor: 'pointer' }}>
               <div style={{
                 position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', zIndex: 2,
                 width: 56, height: 56, borderRadius: '50%',
