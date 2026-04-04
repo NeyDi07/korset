@@ -15,7 +15,7 @@ const DEFAULT_PROFILE = {
 function loadProfileLocal() {
   try {
     const raw = localStorage.getItem('korset_profile')
-    return raw ? JSON.parse(raw) : DEFAULT_PROFILE
+    return raw ? { ...DEFAULT_PROFILE, ...JSON.parse(raw) } : DEFAULT_PROFILE
   } catch {
     return DEFAULT_PROFILE
   }
@@ -31,8 +31,9 @@ export function ProfileProvider({ children }) {
     supabase.from('users').select('preferences').eq('auth_id', user.id).maybeSingle()
       .then(({ data, error }) => {
         if (!error && data?.preferences) {
-          setProfileState(data.preferences)
-          localStorage.setItem('korset_profile', JSON.stringify(data.preferences))
+          const mergedPrefs = { ...DEFAULT_PROFILE, ...data.preferences }
+          setProfileState(mergedPrefs)
+          localStorage.setItem('korset_profile', JSON.stringify(mergedPrefs))
         }
       })
   }, [user])

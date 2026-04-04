@@ -113,21 +113,41 @@ export default function ProductScreen() {
       navigate('/auth')
       return
     }
-    if (!internalUserId) return // user is loading internal id
+
+    let finalUserId = internalUserId
+    // Fallback on the fly if state didn't catch up
+    if (!finalUserId) {
+      try {
+        const { data } = await supabase.from('users').select('id').eq('auth_id', user.id).maybeSingle()
+        if (data) {
+          finalUserId = data.id
+        } else {
+          // Attempt on the fly creation
+          let device_id = localStorage.getItem('korset_device_id') || 'dev_fallback'
+          const { data: inserted } = await supabase.from('users').insert({ auth_id: user.id, device_id, name: user.user_metadata?.full_name || 'User' }).select('id').single()
+          finalUserId = inserted?.id
+        }
+      } catch (err) {}
+    }
+
+    if (!finalUserId) {
+      alert("Не удалось загрузить ваш профиль. Попробуйте перезайти в аккаунт.")
+      return
+    }
     
     const newVal = !isFavorite
     setIsFavorite(newVal)
     try {
       if (newVal) {
         // First check if it exists:
-        const { data } = await supabase.from('user_favorites').select('id').eq('user_id', internalUserId).eq('global_product_id', product.id).maybeSingle()
+        const { data } = await supabase.from('user_favorites').select('id').eq('user_id', finalUserId).eq('global_product_id', product.id).maybeSingle()
         if (!data) {
-          const { error } = await supabase.from('user_favorites').insert({ user_id: internalUserId, global_product_id: product.id, ean: product.ean || 'LOCAL' })
+          const { error } = await supabase.from('user_favorites').insert({ user_id: finalUserId, global_product_id: product.id, ean: product.ean || 'LOCAL' })
           if (error) throw error
         }
       } else {
         const { error } = await supabase.from('user_favorites')
-          .delete().eq('user_id', internalUserId).eq('global_product_id', product.id)
+          .delete().eq('user_id', finalUserId).eq('global_product_id', product.id)
         if (error) throw error
       }
     } catch (err) {
