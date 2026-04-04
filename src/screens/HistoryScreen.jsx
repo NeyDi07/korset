@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../utils/supabase.js'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import { useI18n } from '../utils/i18n.js'
@@ -7,13 +7,14 @@ import productsData from '../data/products.json'
 
 export default function HistoryScreen() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { user } = useAuth()
   const { lang } = useI18n()
   
   const [history, setHistory] = useState([])
   const [favorites, setFavorites] = useState([])
   const [loading, setLoading] = useState(true)
-  const [tab, setTab] = useState('history') // history | favorites
+  const [tab, setTab] = useState(searchParams.get('tab') || 'history')
 
   useEffect(() => {
     if (!user) {

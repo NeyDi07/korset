@@ -1,184 +1,35 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { setLang, useI18n } from '../utils/i18n.js'
 import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import { supabase } from '../utils/supabase.js'
 import KorsetAvatar from '../components/KorsetAvatar.jsx'
+import { ALLERGENS } from '../data/allergens.js'
+import { DIET_GOALS } from '../data/dietGoals.js'
 
-const DIET_GOALS = [
-  { id: 'sugar_free',  label: { ru: 'Без сахара', kz: 'Қантсыз' }, icon: 'nosugar' },
-  { id: 'dairy_free',  label: { ru: 'Без лактозы', kz: 'Лактозасыз' }, icon: 'nodairy' },
-  { id: 'gluten_free', label: { ru: 'Без глютена', kz: 'Глютенсіз' }, icon: 'nogluten' },
-  { id: 'vegan',       label: { ru: 'Веган', kz: 'Веган' }, icon: 'vegan' },
-  { id: 'vegetarian',  label: { ru: 'Вегетариан', kz: 'Вегетариан' }, icon: 'veggie' },
-  { id: 'keto',        label: { ru: 'Кето', kz: 'Кето' }, icon: 'keto' },
-  { id: 'kid_friendly',label: { ru: 'Для детей', kz: 'Балаларға' }, icon: 'kids' },
-]
-
-const ALLERGENS = [
-  { id: 'milk', label: { ru: 'Молоко', kz: 'Сүт' }, icon: 'milk' },
-  { id: 'eggs', label: { ru: 'Яйца', kz: 'Жұмыртқа' }, icon: 'egg' },
-  { id: 'gluten', label: { ru: 'Глютен', kz: 'Глютен' }, icon: 'wheat' },
-  { id: 'nuts', label: { ru: 'Орехи', kz: 'Жаңғақ' }, icon: 'nuts' },
-  { id: 'peanuts', label: { ru: 'Арахис', kz: 'Жержаңғақ' }, icon: 'peanut' },
-  { id: 'soy', label: { ru: 'Соя', kz: 'Соя' }, icon: 'soy' },
-  { id: 'fish', label: { ru: 'Рыба', kz: 'Балық' }, icon: 'fish' },
-  { id: 'shellfish', label: { ru: 'Морепродукты', kz: 'Теңіз өнімдері' }, icon: 'shell' },
-  { id: 'sesame', label: { ru: 'Кунжут', kz: 'Күнжіт' }, icon: 'sesame' },
-  { id: 'honey', label: { ru: 'Мёд', kz: 'Бал' }, icon: 'honey' },
-]
-
-const PRIORITIES = [
-  { id: 'price',    label: { ru: 'Цена', kz: 'Баға' },     desc: { ru: 'Ең арзан', kz: 'Ең арзан' },   icon: 'price'   },
-  { id: 'balanced', label: { ru: 'Баланс', kz: 'Теңгерім' },   desc: { ru: 'Цена + качество', kz: 'Баға + сапа' }, icon: 'balance' },
-  { id: 'quality',  label: { ru: 'Качество', kz: 'Сапа' }, desc: { ru: 'Лучший состав', kz: 'Ең жақсы құрам' },   icon: 'quality' },
-]
-
-// Colored filled icons — no emoji
-function Icon({ name, size = 20 }) {
-  const w = size, h = size
-  switch (name) {
-    // DIET — colored, filled, instantly recognizable
-    case 'nosugar': return (
-      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
-        {/* Sugar = cube with slash */}
-        <rect x="4" y="9" width="16" height="11" rx="2" fill="#A78BFA" opacity="0.25"/>
-        <rect x="4" y="9" width="16" height="11" rx="2" stroke="#A78BFA" strokeWidth="1.8"/>
-        <path d="M8 9V7a4 4 0 0 1 8 0v2" stroke="#A78BFA" strokeWidth="1.8" strokeLinecap="round"/>
-        <line x1="3" y1="3" x2="21" y2="21" stroke="#F87171" strokeWidth="2.2" strokeLinecap="round"/>
-      </svg>
-    )
-    case 'nodairy': return (
-      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
-        <path d="M9 3h6l2 5v12a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V8l2-5z" fill="#60A5FA" opacity="0.2"/>
-        <path d="M9 3h6l2 5v12a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V8l2-5z" stroke="#60A5FA" strokeWidth="1.8" strokeLinejoin="round"/>
-        <path d="M7 8h10" stroke="#60A5FA" strokeWidth="1.8" strokeLinecap="round"/>
-        <line x1="3" y1="3" x2="21" y2="21" stroke="#F87171" strokeWidth="2.2" strokeLinecap="round"/>
-      </svg>
-    )
-    case 'nogluten': return (
-      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
-        <path d="M12 2v20" stroke="#FCD34D" strokeWidth="1.8" strokeLinecap="round"/>
-        <path d="M8 6c1.3.9 2.7 1 4 .5s2.7-.4 4 .5M8 10c1.3.9 2.7 1 4 .5s2.7-.4 4 .5M8 14c1.3.9 2.7 1 4 .5" stroke="#FCD34D" strokeWidth="1.8" strokeLinecap="round"/>
-        <line x1="3" y1="3" x2="21" y2="21" stroke="#F87171" strokeWidth="2.2" strokeLinecap="round"/>
-      </svg>
-    )
-    case 'vegan': return (
-      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
-        <path d="M21 3C9 3 4 12 4 20" stroke="#34D399" strokeWidth="1.8" strokeLinecap="round"/>
-        <path d="M4 20c3-7 9-12 17-11C21 13 18 19 4 20z" fill="#34D399" opacity="0.3" stroke="#34D399" strokeWidth="1.8" strokeLinejoin="round"/>
-      </svg>
-    )
-    case 'veggie': return (
-      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
-        {/* Carrot */}
-        <path d="M12 4c0 0 5 3 5 9s-5 9-5 9-5-3-5-9 5-9 5-9z" fill="#F97316" opacity="0.3" stroke="#F97316" strokeWidth="1.8" strokeLinejoin="round"/>
-        <path d="M10 4c-1-2-2-3-3-2M12 4c0-2 0-3.5 1-4M14 4c1-2 2-3 3-2" stroke="#34D399" strokeWidth="1.8" strokeLinecap="round"/>
-        <path d="M10 10h4M10 13h4" stroke="#E2724A" strokeWidth="1.4" strokeLinecap="round"/>
-      </svg>
-    )
-    case 'keto': return (
-      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
-        {/* Avocado */}
-        <path d="M12 3c4.5 0 7 3.5 7 8 0 5.5-3.5 10-7 11-3.5-1-7-5.5-7-11 0-4.5 2.5-8 7-8z" fill="#84CC16" opacity="0.25" stroke="#84CC16" strokeWidth="1.8"/>
-        <circle cx="12" cy="13.5" r="3" fill="#A16207" opacity="0.5" stroke="#A16207" strokeWidth="1.5"/>
-      </svg>
-    )
-    case 'lowcal': return (
-      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
-        {/* Scale */}
-        <path d="M12 3v18" stroke="#C084FC" strokeWidth="1.8" strokeLinecap="round"/>
-        <path d="M4 12h16" stroke="#C084FC" strokeWidth="1.8" strokeLinecap="round"/>
-        <path d="M5 12l-2 5h6l-2-5-2 0zM19 12l-2 5h6l-2-5-2 0z" fill="#C084FC" opacity="0.25" stroke="#C084FC" strokeWidth="1.6" strokeLinejoin="round"/>
-        <path d="M6 21h12" stroke="#C084FC" strokeWidth="1.8" strokeLinecap="round"/>
-      </svg>
-    )
-    // ALLERGENS — distinctive colored icons
-    case 'milk': return (
-      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
-        <path d="M9 3h6l2 5v12a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V8l2-5z" fill="#E2E8F0" opacity="0.15" stroke="#E2E8F0" strokeWidth="1.8" strokeLinejoin="round"/>
-        <path d="M7 8h10" stroke="#E2E8F0" strokeWidth="1.8" strokeLinecap="round"/>
-        <path d="M9 14c1.5 1.5 5.5 1.5 7 0" stroke="#94A3B8" strokeWidth="1.5" strokeLinecap="round"/>
-      </svg>
-    )
-    case 'wheat': return (
-      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
-        <path d="M12 2v20" stroke="#FCD34D" strokeWidth="1.8" strokeLinecap="round"/>
-        <ellipse cx="8.5" cy="7" rx="3" ry="1.8" fill="#FCD34D" opacity="0.4" stroke="#FCD34D" strokeWidth="1.2" transform="rotate(-30 8.5 7)"/>
-        <ellipse cx="15.5" cy="7" rx="3" ry="1.8" fill="#FCD34D" opacity="0.4" stroke="#FCD34D" strokeWidth="1.2" transform="rotate(30 15.5 7)"/>
-        <ellipse cx="8" cy="11" rx="3" ry="1.8" fill="#FCD34D" opacity="0.4" stroke="#FCD34D" strokeWidth="1.2" transform="rotate(-30 8 11)"/>
-        <ellipse cx="16" cy="11" rx="3" ry="1.8" fill="#FCD34D" opacity="0.4" stroke="#FCD34D" strokeWidth="1.2" transform="rotate(30 16 11)"/>
-        <ellipse cx="9" cy="15" rx="2.5" ry="1.6" fill="#FCD34D" opacity="0.4" stroke="#FCD34D" strokeWidth="1.2" transform="rotate(-30 9 15)"/>
-        <ellipse cx="15" cy="15" rx="2.5" ry="1.6" fill="#FCD34D" opacity="0.4" stroke="#FCD34D" strokeWidth="1.2" transform="rotate(30 15 15)"/>
-      </svg>
-    )
-    case 'nuts': return (
-      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
-        <path d="M12 3c5 0 8 3 8 7 0 5.5-4 10-8 11-4-1-8-5.5-8-11 0-4 3-7 8-7z" fill="#A16207" opacity="0.3" stroke="#A16207" strokeWidth="1.8"/>
-        <path d="M12 3v5" stroke="#92400E" strokeWidth="1.8" strokeLinecap="round"/>
-        <path d="M9 7h6" stroke="#92400E" strokeWidth="1.8" strokeLinecap="round"/>
-      </svg>
-    )
-    case 'peanut': return (
-      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
-        <path d="M9.5 3.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 0 0-7h-5z" fill="#D97706" opacity="0.3" stroke="#D97706" strokeWidth="1.8"/>
-        <path d="M9.5 13.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 0 0-7h-5z" fill="#D97706" opacity="0.3" stroke="#D97706" strokeWidth="1.8"/>
-        <path d="M10 10.5c.5.5 1 .8 2 .8s1.5-.3 2-.8M10 13.5c.5-.5 1-.8 2-.8s1.5.3 2 .8" stroke="#D97706" strokeWidth="1.4" strokeLinecap="round"/>
-      </svg>
-    )
-    case 'soy': return (
-      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
-        <ellipse cx="9" cy="8" rx="4" ry="6" fill="#84CC16" opacity="0.25" stroke="#84CC16" strokeWidth="1.6" transform="rotate(-15 9 8)"/>
-        <ellipse cx="15" cy="8" rx="4" ry="6" fill="#84CC16" opacity="0.25" stroke="#84CC16" strokeWidth="1.6" transform="rotate(15 15 8)"/>
-        <ellipse cx="12" cy="16" rx="3.5" ry="5" fill="#84CC16" opacity="0.35" stroke="#84CC16" strokeWidth="1.6"/>
-      </svg>
-    )
-    case 'egg': return (
-      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
-        <path d="M12 3C8.5 3 6 8 6 12.5a6 6 0 0 0 12 0C18 8 15.5 3 12 3z" fill="#FEF3C7" opacity="0.3" stroke="#FCD34D" strokeWidth="1.8"/>
-        <ellipse cx="12" cy="14" rx="2.5" ry="2" fill="#FDE68A" opacity="0.6" stroke="#F59E0B" strokeWidth="1.2"/>
-      </svg>
-    )
-    case 'fish': return (
-      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
-        <path d="M20 12c-3-3.5-7-5-12-3.5L4 12l4 3.5c5 2 9 1 12-3.5z" fill="#60A5FA" opacity="0.3" stroke="#60A5FA" strokeWidth="1.8" strokeLinejoin="round"/>
-        <circle cx="17.5" cy="9.5" r="1" fill="#60A5FA"/>
-        <path d="M4 12L2 8M4 12l-2 4" stroke="#60A5FA" strokeWidth="1.8" strokeLinecap="round"/>
-      </svg>
-    )
-    case 'shell': return (
-      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
-        {/* Shrimp */}
-        <path d="M16 4c2 1.5 3 4 2 7l-2 3-3 2-2 4" stroke="#F9A8D4" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-        <path d="M16 4c-2 0-4 1-5 3l-2 5 2 4" stroke="#F9A8D4" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-        <circle cx="16.5" cy="4.5" r="1.5" fill="#F9A8D4" opacity="0.7"/>
-        <path d="M11 20l2-2M9 19l3-2" stroke="#F9A8D4" strokeWidth="1.4" strokeLinecap="round"/>
-      </svg>
-    )
-    // PRIORITIES
-    case 'price': return (
-      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
-        <circle cx="12" cy="12" r="9" fill="#34D399" opacity="0.15" stroke="#34D399" strokeWidth="1.8"/>
-        <path d="M12 6v1.5M12 16.5V18" stroke="#34D399" strokeWidth="1.8" strokeLinecap="round"/>
-        <path d="M9.5 9.5c0-1.1.9-2 2.5-2s2.5.9 2.5 2c0 2.5-5 2.5-5 5 0 1.1.9 2 2.5 2s2.5-.9 2.5-2" stroke="#34D399" strokeWidth="1.8" strokeLinecap="round"/>
-      </svg>
-    )
-    case 'balance': return (
-      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
-        <path d="M12 3v18" stroke="#A78BFA" strokeWidth="1.8" strokeLinecap="round"/>
-        <path d="M4 7h16" stroke="#A78BFA" strokeWidth="1.8" strokeLinecap="round"/>
-        <path d="M5 7L2 13h6l-3-6zM19 7l3 6h-6l3-6z" fill="#A78BFA" opacity="0.25" stroke="#A78BFA" strokeWidth="1.6" strokeLinejoin="round"/>
-        <path d="M4 21h16" stroke="#A78BFA" strokeWidth="1.8" strokeLinecap="round"/>
-      </svg>
-    )
-    case 'quality': return (
-      <svg width={w} height={h} viewBox="0 0 24 24" fill="none">
-        <path d="M12 2l2.5 7.5H22l-6.5 4.7 2.5 7.5L12 17l-6 4.7 2.5-7.5L2 9.5h7.5L12 2z" fill="#FCD34D" opacity="0.3" stroke="#FCD34D" strokeWidth="1.8" strokeLinejoin="round"/>
-      </svg>
-    )
-    default: return null
+/* ─── DIET/ALLERGEN ICONS ─── */
+function DietIcon({ name, size = 18 }) {
+  const w = size, h = size, lc = 'round', lj = 'round'
+  const icons = {
+    nosugar: <svg width={w} height={h} viewBox="0 0 24 24" fill="none"><rect x="4" y="9" width="16" height="11" rx="2" fill="#A78BFA" opacity=".25"/><rect x="4" y="9" width="16" height="11" rx="2" stroke="#A78BFA" strokeWidth="1.8"/><path d="M8 9V7a4 4 0 018 0v2" stroke="#A78BFA" strokeWidth="1.8" strokeLinecap={lc}/><line x1="3" y1="3" x2="21" y2="21" stroke="#F87171" strokeWidth="2.2" strokeLinecap={lc}/></svg>,
+    nodairy: <svg width={w} height={h} viewBox="0 0 24 24" fill="none"><path d="M9 3h6l2 5v12a1 1 0 01-1 1H8a1 1 0 01-1-1V8l2-5z" fill="#60A5FA" opacity=".2"/><path d="M9 3h6l2 5v12a1 1 0 01-1 1H8a1 1 0 01-1-1V8l2-5z" stroke="#60A5FA" strokeWidth="1.8"/><line x1="3" y1="3" x2="21" y2="21" stroke="#F87171" strokeWidth="2.2" strokeLinecap={lc}/></svg>,
+    nogluten: <svg width={w} height={h} viewBox="0 0 24 24" fill="none"><path d="M12 2v20" stroke="#F59E0B" strokeWidth="1.8" strokeLinecap={lc}/><path d="M9 8c1 .7 2 1 3 .5M15 8c-1 .7-2 1-3 .5M9 12c1 .7 2 1 3 .5M15 12c-1 .7-2 1-3 .5" stroke="#F59E0B" strokeWidth="1.6" strokeLinecap={lc}/><line x1="3" y1="3" x2="21" y2="21" stroke="#F87171" strokeWidth="2.2" strokeLinecap={lc}/></svg>,
+    vegan: <svg width={w} height={h} viewBox="0 0 24 24" fill="none"><path d="M21 4C10 4 5 12 5 20" stroke="#34D399" strokeWidth="1.8" strokeLinecap={lc}/><path d="M5 20c3-7 8-12 16-11-1 4-4 10-16 11Z" stroke="#34D399" strokeWidth="1.8" fill="rgba(52,211,153,.18)"/></svg>,
+    veggie: <svg width={w} height={h} viewBox="0 0 24 24" fill="none"><path d="M12 4c4 2 5 5 5 8 0 5-5 8-5 8s-5-3-5-8c0-3 1-6 5-8Z" fill="rgba(249,115,22,.16)" stroke="#FB923C" strokeWidth="1.8"/><path d="M10 4c-1-2-2-3-3-2M12 4V1M14 4c1-2 2-3 3-2" stroke="#34D399" strokeWidth="1.7" strokeLinecap={lc}/></svg>,
+    keto: <svg width={w} height={h} viewBox="0 0 24 24" fill="none"><path d="M12 3c4.5 0 7 3.5 7 8 0 5.5-3.5 10-7 11-3.5-1-7-5.5-7-11 0-4.5 2.5-8 7-8z" fill="rgba(132,204,22,.14)" stroke="#84CC16" strokeWidth="1.8"/><circle cx="12" cy="13.5" r="3" fill="rgba(161,98,7,.42)" stroke="#A16207" strokeWidth="1.4"/></svg>,
+    kids: <svg width={w} height={h} viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="2.3" fill="rgba(96,165,250,.16)" stroke="#60A5FA" strokeWidth="1.6"/><circle cx="15.5" cy="9.5" r="1.8" fill="rgba(167,139,250,.16)" stroke="#A78BFA" strokeWidth="1.6"/><path d="M5.5 18c.7-2.5 2.5-4 4.5-4s3.8 1.5 4.5 4" stroke="#60A5FA" strokeWidth="1.7" strokeLinecap={lc}/><path d="M13.5 18c.4-1.6 1.5-2.7 3-2.7s2.7 1.1 3 2.7" stroke="#A78BFA" strokeWidth="1.7" strokeLinecap={lc}/></svg>,
+    milk: <svg width={w} height={h} viewBox="0 0 24 24" fill="none"><path d="M9 3h6l2 5v12H7V8l2-5Z" stroke="#60A5FA" strokeWidth="1.7" fill="rgba(96,165,250,.14)"/></svg>,
+    egg: <svg width={w} height={h} viewBox="0 0 24 24" fill="none"><path d="M12 3C8.8 3 6.5 8 6.5 12.3a5.5 5.5 0 1011 0C17.5 8 15.2 3 12 3Z" stroke="#FCD34D" strokeWidth="1.7" fill="rgba(252,211,77,.18)"/></svg>,
+    wheat: <svg width={w} height={h} viewBox="0 0 24 24" fill="none"><path d="M12 3v18" stroke="#F59E0B" strokeWidth="1.7" strokeLinecap={lc}/><path d="M9 8c1 .7 2 1 3 .5M15 8c-1 .7-2 1-3 .5M9 12c1 .7 2 1 3 .5M15 12c-1 .7-2 1-3 .5" stroke="#F59E0B" strokeWidth="1.6" strokeLinecap={lc}/></svg>,
+    nuts: <svg width={w} height={h} viewBox="0 0 24 24" fill="none"><path d="M12 4c4.2 0 6.8 2.7 6.8 6.3 0 4.8-3.4 8.8-6.8 9.7-3.4-.9-6.8-4.9-6.8-9.7C5.2 6.7 7.8 4 12 4Z" stroke="#D97706" strokeWidth="1.7" fill="rgba(217,119,6,.14)"/></svg>,
+    peanut: <svg width={w} height={h} viewBox="0 0 24 24" fill="none"><path d="M10 4.5a3.5 3.5 0 100 7h4a3.5 3.5 0 100-7h-4ZM10 12.5a3.5 3.5 0 100 7h4a3.5 3.5 0 100-7h-4Z" stroke="#F59E0B" strokeWidth="1.7" fill="rgba(245,158,11,.14)"/></svg>,
+    soy: <svg width={w} height={h} viewBox="0 0 24 24" fill="none"><ellipse cx="9" cy="10" rx="3.6" ry="5.2" transform="rotate(-18 9 10)" stroke="#84CC16" strokeWidth="1.7" fill="rgba(132,204,22,.14)"/><ellipse cx="15" cy="10" rx="3.6" ry="5.2" transform="rotate(18 15 10)" stroke="#84CC16" strokeWidth="1.7" fill="rgba(132,204,22,.1)"/></svg>,
+    fish: <svg width={w} height={h} viewBox="0 0 24 24" fill="none"><path d="M20 12c-3-3.4-7-4.8-12-3.4L4 12l4 3.4c5 1.6 9 .2 12-3.4Z" stroke="#60A5FA" strokeWidth="1.7" fill="rgba(96,165,250,.14)"/></svg>,
+    shell: <svg width={w} height={h} viewBox="0 0 24 24" fill="none"><path d="M15 5c2 1.4 3 3.8 2 6.6l-2 2.8-2.8 1.7-1.7 3.4" stroke="#F472B6" strokeWidth="1.7" strokeLinecap={lc}/><path d="M15 5c-2 0-3.8 1-5 2.8L8.3 12l1.5 3.2" stroke="#F472B6" strokeWidth="1.7" strokeLinecap={lc}/></svg>,
+    sesame: <svg width={w} height={h} viewBox="0 0 24 24" fill="none"><ellipse cx="8" cy="12" rx="2.2" ry="3.4" transform="rotate(-18 8 12)" stroke="#FDE68A" strokeWidth="1.6" fill="rgba(253,230,138,.18)"/><ellipse cx="16" cy="12" rx="2.2" ry="3.4" transform="rotate(18 16 12)" stroke="#FDE68A" strokeWidth="1.6" fill="rgba(253,230,138,.12)"/></svg>,
   }
+  return icons[name] || null
 }
 
 
@@ -189,6 +40,18 @@ export default function ProfileScreen() {
   const { profile, updateProfile: setProfile } = useProfile()
   const { user } = useAuth()
   const [allergenInput, setAllergenInput] = useState('')
+  const [prefOpen, setPrefOpen] = useState(false)
+  const [favCount, setFavCount] = useState(0)
+  const [scanCount, setScanCount] = useState(0)
+
+  // Load real counts from Supabase
+  useEffect(() => {
+    if (!user) { setFavCount(0); setScanCount(0); return }
+    supabase.from('user_favorites').select('id', { count: 'exact', head: true }).eq('user_id', user.id)
+      .then(({ count }) => setFavCount(count || 0))
+    supabase.from('scan_events').select('product_id', { count: 'exact', head: true }).eq('user_id', user.id)
+      .then(({ count }) => setScanCount(count || 0))
+  }, [user])
 
   const toggleDiet = id => setProfile(p => ({
     ...p, dietGoals: p.dietGoals.includes(id) ? p.dietGoals.filter(x => x !== id) : [...p.dietGoals, id]
@@ -204,193 +67,338 @@ export default function ProfileScreen() {
   }
   const removeCustom = val => setProfile(p => ({ ...p, customAllergens: p.customAllergens.filter(x => x !== val) }))
 
-  const activeCount = profile.dietGoals.length + profile.allergens.length + profile.customAllergens.length + (profile.halal ? 1 : 0)
+  const dietCount = profile.dietGoals.length + (profile.halal ? 1 : 0)
+  const allergenCount = profile.allergens.length + profile.customAllergens.length
+  const totalPref = dietCount + allergenCount
   const tr = (val) => typeof val === 'object' ? (val[lang] || val.ru) : val
 
+  const fontAdvent = "'Advent Pro', sans-serif"
+
   return (
-    <div className="screen" style={{ paddingTop: 0, paddingBottom: 100, overflowX: 'hidden', minHeight: '100vh', background: '#0F0F13' }}>
-      
-      {/* ── HEADER ── */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '50px 24px 20px' }}>
-        <button onClick={() => navigate(-1)} style={{ background: 'rgba(255,255,255,0.05)', border: 'none', width: 40, height: 40, borderRadius: '50%', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-        </button>
-        <div style={{ fontSize: 18, fontWeight: 700, color: '#fff' }}>{t.nav.profile}</div>
-        <button onClick={() => navigate('/setup-profile')} style={{ background: 'rgba(255,255,255,0.05)', border: 'none', width: 40, height: 40, borderRadius: '50%', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-        </button>
-      </div>
+    <>
+      <style>{`
+        @keyframes floatOrb1 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(30px,-20px) scale(1.1)} }
+        @keyframes floatOrb2 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-25px,15px) scale(0.9)} }
+        @keyframes floatOrb3 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(15px,25px) scale(1.05)} }
+        .glass-card {
+          background: rgba(255,255,255,0.05);
+          backdrop-filter: blur(28px);
+          -webkit-backdrop-filter: blur(28px);
+          border: 1px solid rgba(255,255,255,0.1);
+          border-radius: 24px;
+          position: relative;
+        }
+        .pref-chip { transition: all 0.2s ease; cursor: pointer; }
+        .pref-chip:active { transform: scale(0.95); }
+        .settings-item { transition: background 0.15s; }
+        .settings-item:active { background: rgba(255,255,255,0.03) !important; }
+      `}</style>
 
-      {/* ── USER INFO ── */}
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '10px 24px 24px' }}>
-        <div style={{ position: 'relative', marginBottom: 16 }}>
-          {user ? (
-            <div style={{ width: 100, height: 100, borderRadius: '50%', background: 'linear-gradient(135deg, #7C3AED, #EC4899)', padding: 3 }}>
-              <KorsetAvatar size={94} style={{ border: '4px solid #0F0F13' }} />
-            </div>
-          ) : (
-            <div style={{ width: 100, height: 100, borderRadius: '50%', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px dashed rgba(255,255,255,0.2)' }}>
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            </div>
-          )}
-        </div>
-        
-        {user ? (
-          <>
-            <h2 style={{ fontSize: 24, fontWeight: 800, color: '#fff', marginBottom: 4, fontFamily: 'var(--font-display)' }}>
-              {user.user_metadata?.full_name || 'Körset User'}
-            </h2>
-            <div style={{ fontSize: 13, color: 'var(--text-dim)' }}>{user.email || user.phone || 'Member'}</div>
-          </>
-        ) : (
-          <>
-            <h2 style={{ fontSize: 22, fontWeight: 700, color: '#fff', marginBottom: 4 }}>{t.profile.guest}</h2>
-            <button onClick={() => navigate('/auth')} style={{ marginTop: 10, background: 'none', border: 'none', color: '#7C3AED', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
-              {t.profile.login}
-            </button>
-          </>
-        )}
-      </div>
+      <div className="screen" style={{ paddingTop: 0, paddingBottom: 100, overflowX: 'hidden', minHeight: '100vh', background: 'var(--bg)', position: 'relative' }}>
 
-      {/* ── STATS ROW (NO HEALTH) ── */}
-      <div style={{ display: 'flex', gap: 12, padding: '0 24px 24px' }}>
-        <div style={{ flex: 1, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 20, padding: '16px 12px', textAlign: 'center', backdropFilter: 'blur(10px)' }}>
-          <div style={{ fontSize: 24, fontWeight: 800, color: '#fff', fontFamily: 'var(--font-display)' }}>0</div>
-          <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 4 }}>{t.profile.scans}</div>
-        </div>
-        <div style={{ flex: 1, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 20, padding: '16px 12px', textAlign: 'center', backdropFilter: 'blur(10px)' }}>
-          <div style={{ fontSize: 24, fontWeight: 800, color: '#fff', fontFamily: 'var(--font-display)' }}>0</div>
-          <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 4 }}>{t.profile.favorites}</div>
-        </div>
-      </div>
-
-      {/* ── MY DIET ── */}
-      <div style={{ padding: '0 24px 24px' }}>
-        <h3 style={{ fontSize: 18, fontWeight: 700, color: '#fff', marginBottom: 16 }}>{t.profile.diet}</h3>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-          
-          <div onClick={() => setProfile(p => ({ ...p, halal: !p.halal }))} style={{ background: profile.halal ? 'rgba(124,58,237,0.15)' : 'rgba(255,255,255,0.03)', border: `1px solid ${profile.halal ? '#7C3AED' : 'rgba(255,255,255,0.05)'}`, borderRadius: 20, padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, cursor: 'pointer', transition: 'all 0.2s', backdropFilter: 'blur(10px)' }}>
-            <div style={{ width: 40, height: 40, borderRadius: '50%', background: profile.halal ? '#7C3AED' : 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 18 }}>🌙</div>
-            <div style={{ fontSize: 13, fontWeight: 600, color: profile.halal ? '#fff' : 'rgba(255,255,255,0.5)' }}>{t.profile.halalLabel}</div>
-          </div>
-
-          {DIET_GOALS.map(d => {
-            const active = profile.dietGoals.includes(d.id);
-            return (
-              <div key={d.id} onClick={() => toggleDiet(d.id)} style={{ background: active ? 'rgba(124,58,237,0.15)' : 'rgba(255,255,255,0.03)', border: `1px solid ${active ? '#7C3AED' : 'rgba(255,255,255,0.05)'}`, borderRadius: 20, padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, cursor: 'pointer', transition: 'all 0.2s', backdropFilter: 'blur(10px)' }}>
-                <div style={{ width: 40, height: 40, borderRadius: '50%', background: active ? '#7C3AED' : 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
-                  <Icon name={d.icon} size={20} />
-                </div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: active ? '#fff' : 'rgba(255,255,255,0.5)' }}>{tr(d.label)}</div>
-              </div>
-            )
-          })}
-        </div>
-      </div>
-
-      {/* ── ALLERGENS ── */}
-      <div style={{ padding: '0 24px 24px' }}>
-        <h3 style={{ fontSize: 18, fontWeight: 700, color: '#fff', marginBottom: 16 }}>{t.profile.allergens}</h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 16 }}>
-          {ALLERGENS.map(a => {
-            const active = profile.allergens.includes(a.id)
-            return (
-              <div key={a.id} onClick={() => toggleAllergen(a.id)} style={{ background: active ? 'rgba(239,68,68,0.15)' : 'rgba(255,255,255,0.03)', border: `1px solid ${active ? '#EF4444' : 'rgba(255,255,255,0.05)'}`, borderRadius: 16, padding: '16px 8px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, cursor: 'pointer', transition: 'all 0.2s', backdropFilter: 'blur(10px)' }}>
-                <div style={{ width: 36, height: 36, borderRadius: '50%', background: active ? '#EF4444' : 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: active ? '#fff' : 'rgba(255,255,255,0.5)' }}>
-                  <Icon name={a.icon} size={18} />
-                </div>
-                <div style={{ fontSize: 11, fontWeight: 600, color: active ? '#fff' : 'rgba(255,255,255,0.5)', textAlign: 'center', lineHeight: 1.2 }}>{tr(a.label)}</div>
-              </div>
-            )
-          })}
+        {/* ── FLOATING ORBS (for glass effect) ── */}
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 0 }}>
+          <div style={{ position: 'absolute', top: 120, left: -40, width: 180, height: 180, borderRadius: '50%', background: 'rgba(124,58,237,0.12)', filter: 'blur(60px)', animation: 'floatOrb1 8s ease-in-out infinite' }} />
+          <div style={{ position: 'absolute', top: 300, right: -30, width: 140, height: 140, borderRadius: '50%', background: 'rgba(236,72,153,0.1)', filter: 'blur(50px)', animation: 'floatOrb2 10s ease-in-out infinite' }} />
+          <div style={{ position: 'absolute', top: 500, left: 60, width: 120, height: 120, borderRadius: '50%', background: 'rgba(52,211,153,0.08)', filter: 'blur(45px)', animation: 'floatOrb3 12s ease-in-out infinite' }} />
+          <div style={{ position: 'absolute', top: 50, right: 40, width: 100, height: 100, borderRadius: '50%', background: 'rgba(167,139,250,0.08)', filter: 'blur(40px)', animation: 'floatOrb2 9s ease-in-out infinite' }} />
         </div>
 
-        {/* Custom Input */}
-        <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 20, padding: '16px', backdropFilter: 'blur(10px)' }}>
-          <div style={{ fontSize: 12, color: 'var(--text-dim)', marginBottom: 12 }}>{t.profile.customHint}</div>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <input ref={allergenInputRef} value={allergenInput}
-              onChange={e => setAllergenInput(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && addCustom()}
-              placeholder={t.profile.customPlaceholder}
-              style={{ flex: 1, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, padding: '12px 14px', color: '#fff', fontSize: 13, outline: 'none' }}
-            />
-            <button onClick={addCustom} style={{ padding: '10px 16px', borderRadius: 12, background: '#7C3AED', border: 'none', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' }}>
-              {t.profile.add}
+        {/* All content above orbs */}
+        <div style={{ position: 'relative', zIndex: 1 }}>
+
+          {/* ── HEADER ── */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 22px 0' }}>
+            <h1 style={{ fontFamily: fontAdvent, fontSize: 24, fontWeight: 500, color: '#fff', margin: 0 }}>
+              {lang === 'kz' ? 'Профиль' : 'Профиль'}
+            </h1>
+            <button onClick={() => navigate('/setup-profile')} style={{
+              background: 'rgba(124,58,237,0.12)', border: '1px solid rgba(124,58,237,0.2)',
+              padding: '8px 16px', borderRadius: 12, color: '#A78BFA', fontSize: 12,
+              fontWeight: 600, fontFamily: fontAdvent, cursor: 'pointer',
+              display: 'flex', alignItems: 'center', gap: 6
+            }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              {lang === 'kz' ? 'Өзгерту' : 'Изменить'}
             </button>
           </div>
-          {profile.customAllergens.length > 0 && (
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 16 }}>
-              {profile.customAllergens.map(val => (
-                <span key={val} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 20, background: 'rgba(239,68,68,0.15)', color: '#FCA5A5', border: '1px solid rgba(239,68,68,0.3)', fontSize: 12, fontWeight: 600 }}>
-                  ⚠️ {val}
-                  <span onClick={() => removeCustom(val)} style={{ cursor: 'pointer', fontSize: 16, marginLeft: 4, lineHeight: 1 }}>×</span>
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
 
-      {/* ── PRIORITY ── */}
-      <div style={{ padding: '0 24px 24px' }}>
-        <h3 style={{ fontSize: 18, fontWeight: 700, color: '#fff', marginBottom: 16 }}>{t.profile.priority}</h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
-          {PRIORITIES.map(p => {
-            const active = profile.priority === p.id
-            return (
-              <div key={p.id} onClick={() => setProfile(prev => ({ ...prev, priority: p.id }))} style={{ background: active ? 'rgba(124,58,237,0.15)' : 'rgba(255,255,255,0.03)', border: `1px solid ${active ? '#7C3AED' : 'rgba(255,255,255,0.05)'}`, borderRadius: 20, padding: '16px 8px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, cursor: 'pointer', transition: 'all 0.2s', backdropFilter: 'blur(10px)' }}>
-                <div style={{ width: 40, height: 40, borderRadius: '50%', background: active ? '#7C3AED' : 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: active ? '#fff' : 'rgba(255,255,255,0.5)' }}>
-                  <Icon name={p.icon} size={22} />
+          {/* ── AVATAR + NAME ── */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '28px 22px 28px' }}>
+            <div style={{
+              width: 120, height: 120, borderRadius: '50%',
+              border: '3.5px solid #7C3AED', padding: 4,
+              boxShadow: '0 0 40px rgba(124,58,237,0.25), inset 0 0 20px rgba(124,58,237,0.1)',
+              marginBottom: 16
+            }}>
+              {user ? (
+                <KorsetAvatar size={108} style={{ borderRadius: '50%', border: '3px solid var(--bg)' }} />
+              ) : (
+                <div style={{ width: 108, height: 108, borderRadius: '50%', background: '#7C3AED', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                 </div>
-                <div style={{ textAlign: 'center' }}>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: active ? '#fff' : 'rgba(255,255,255,0.7)' }}>{tr(p.label)}</div>
-                  <div style={{ fontSize: 10, color: 'var(--text-dim)', marginTop: 4, lineHeight: 1.2 }}>{tr(p.desc)}</div>
+              )}
+            </div>
+            {user ? (
+              <>
+                <h2 style={{ fontFamily: fontAdvent, fontSize: 26, fontWeight: 700, color: '#fff', margin: '0 0 4px', textTransform: 'uppercase', letterSpacing: 1 }}>
+                  {user.user_metadata?.full_name || 'Körset User'}
+                </h2>
+                <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)', fontFamily: fontAdvent }}>{user.email || ''}</div>
+              </>
+            ) : (
+              <>
+                <h2 style={{ fontFamily: fontAdvent, fontSize: 28, fontWeight: 700, color: '#fff', margin: '0 0 12px', textTransform: 'uppercase', letterSpacing: 2 }}>
+                  {t.profile.guest}
+                </h2>
+                <button onClick={() => navigate('/auth')} style={{
+                  background: 'transparent', border: '1.5px solid rgba(255,255,255,0.2)',
+                  color: '#fff', fontSize: 13, fontFamily: fontAdvent, fontWeight: 500,
+                  padding: '10px 28px', borderRadius: 12, cursor: 'pointer', letterSpacing: 0.5
+                }}>{lang === 'kz' ? 'Аккаунтқа кіру' : 'Войти в аккаунт'}</button>
+              </>
+            )}
+          </div>
+
+          {/* ── STATS — 3 GLASS CARDS ── */}
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 12, padding: '30px 20px 28px' }}>
+            {/* Favorites */}
+            <div onClick={() => navigate('/history?tab=favorites')} style={{ flex: 1, position: 'relative', paddingTop: 28, cursor: 'pointer' }}>
+              <div style={{
+                position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', zIndex: 2,
+                width: 56, height: 56, borderRadius: '50%',
+                background: 'rgba(220,38,38,0.25)', border: '2px solid rgba(220,38,38,0.35)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                boxShadow: '0 4px 20px rgba(220,38,38,0.25)'
+              }}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="#F87171" stroke="#F87171" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 000-7.78Z"/></svg>
+              </div>
+              <div className="glass-card" style={{ padding: '44px 8px 16px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', minHeight: 110 }}>
+                <div style={{ fontFamily: fontAdvent, fontSize: 42, fontWeight: 600, color: '#fff', lineHeight: 1, flex: 1, display: 'flex', alignItems: 'center' }}>{favCount}</div>
+                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 8, fontFamily: fontAdvent, fontWeight: 500 }}>{t.profile.favorites}</div>
+              </div>
+            </div>
+
+            {/* Preferences */}
+            <div onClick={() => setPrefOpen(!prefOpen)} style={{ flex: 1, position: 'relative', paddingTop: 28, cursor: 'pointer' }}>
+              <div style={{
+                position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', zIndex: 2,
+                width: 56, height: 56, borderRadius: '50%',
+                background: 'rgba(124,58,237,0.25)', border: '2px solid rgba(124,58,237,0.35)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                boxShadow: '0 4px 20px rgba(124,58,237,0.25)'
+              }}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+              </div>
+              <div className="glass-card" style={{ padding: '44px 8px 16px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', minHeight: 110, border: prefOpen ? '1px solid rgba(124,58,237,0.3)' : undefined }}>
+                <div style={{ fontFamily: fontAdvent, fontSize: 42, fontWeight: 600, color: '#fff', lineHeight: 1, flex: 1, display: 'flex', alignItems: 'center' }}>{totalPref}</div>
+                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 8, fontFamily: fontAdvent, fontWeight: 500 }}>
+                  {lang === 'kz' ? 'Баптау' : 'Предпочтения'}
                 </div>
               </div>
-            )
-          })}
-        </div>
-      </div>
+            </div>
 
-      {/* ── SETTINGS MENU ── */}
-      <div style={{ padding: '0 24px 40px' }}>
-        <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: 24, padding: '8px 0', border: '1px solid rgba(255,255,255,0.05)', backdropFilter: 'blur(10px)' }}>
-          
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', cursor: 'pointer' }}>
-            <div style={{ fontSize: 14, fontWeight: 500, color: '#fff' }}>{t.profile.languageHeader}</div>
-            <div style={{ display: 'flex', gap: 8 }}>
-              <button onClick={() => setLang('ru')} style={{ background: lang === 'ru' ? '#7C3AED' : 'transparent', border: 'none', color: '#fff', padding: '6px 10px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>RU</button>
-              <button onClick={() => setLang('kz')} style={{ background: lang === 'kz' ? '#7C3AED' : 'transparent', border: 'none', color: '#fff', padding: '6px 10px', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>KZ</button>
+            {/* Scans */}
+            <div onClick={() => navigate('/history?tab=history')} style={{ flex: 1, position: 'relative', paddingTop: 28, cursor: 'pointer' }}>
+              <div style={{
+                position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', zIndex: 2,
+                width: 56, height: 56, borderRadius: '50%',
+                background: 'rgba(16,185,129,0.25)', border: '2px solid rgba(16,185,129,0.35)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                boxShadow: '0 4px 20px rgba(16,185,129,0.25)'
+              }}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#34D399" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 8V6a2 2 0 012-2h2"/><path d="M16 4h2a2 2 0 012 2v2"/><path d="M20 16v2a2 2 0 01-2 2h-2"/><path d="M8 20H6a2 2 0 01-2-2v-2"/><line x1="5" y1="12" x2="19" y2="12" strokeWidth="2.5"/></svg>
+              </div>
+              <div className="glass-card" style={{ padding: '44px 8px 16px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', minHeight: 110 }}>
+                <div style={{ fontFamily: fontAdvent, fontSize: 42, fontWeight: 600, color: '#fff', lineHeight: 1, flex: 1, display: 'flex', alignItems: 'center' }}>{scanCount}</div>
+                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 8, fontFamily: fontAdvent, fontWeight: 500 }}>{t.profile.scans}</div>
+              </div>
             </div>
           </div>
-          
-          <div style={{ height: 1, background: 'rgba(255,255,255,0.05)', margin: '0 20px' }} />
 
-          <div onClick={() => navigate('/setup-profile')} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', cursor: 'pointer' }}>
-            <div style={{ fontSize: 14, fontWeight: 500, color: '#fff' }}>{t.profile.editProfile}</div>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-          </div>
+          {/* ── PREFERENCES EXPANDABLE ── */}
+          <div style={{ padding: '0 22px 20px' }}>
 
-          <div style={{ height: 1, background: 'rgba(255,255,255,0.05)', margin: '0 20px' }} />
-          
-          <div onClick={() => { localStorage.removeItem('korset_onboarding_done'); window.location.reload() }} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', cursor: 'pointer' }}>
-            <div style={{ fontSize: 14, fontWeight: 500, color: '#fff' }}>{t.profile.restartOnboarding}</div>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-          </div>
+            {/* Expanded preferences */}
+            <div style={{
+              maxHeight: prefOpen ? 2000 : 0, overflow: 'hidden',
+              transition: 'max-height 0.5s cubic-bezier(.4,0,.2,1)',
+              marginTop: prefOpen ? 8 : 0
+            }}>
+              <div className="glass-card" style={{ padding: 20 }}>
+                {/* Diet */}
+                <div style={{ marginBottom: 20 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#34D399' }} />
+                    <span style={{ fontFamily: fontAdvent, fontSize: 13, fontWeight: 600, color: '#34D399', textTransform: 'uppercase', letterSpacing: 1 }}>{t.profile.diet}</span>
+                  </div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                    <div className="pref-chip" onClick={() => setProfile(p => ({ ...p, halal: !p.halal }))} style={{
+                      display: 'flex', alignItems: 'center', gap: 7, padding: '8px 14px', borderRadius: 14,
+                      background: profile.halal ? 'rgba(124,58,237,0.2)' : 'rgba(255,255,255,0.03)',
+                      border: `1px solid ${profile.halal ? 'rgba(124,58,237,0.4)' : 'rgba(255,255,255,0.06)'}`,
+                    }}>
+                      <span style={{ fontSize: 14 }}>🌙</span>
+                      <span style={{ fontFamily: fontAdvent, fontSize: 13, fontWeight: 500, color: profile.halal ? '#C4B5FD' : 'rgba(255,255,255,0.4)' }}>{t.profile.halalLabel}</span>
+                    </div>
+                    {DIET_GOALS.map(d => {
+                      const a = profile.dietGoals.includes(d.id)
+                      return (
+                        <div key={d.id} className="pref-chip" onClick={() => toggleDiet(d.id)} style={{
+                          display: 'flex', alignItems: 'center', gap: 7, padding: '8px 14px', borderRadius: 14,
+                          background: a ? 'rgba(124,58,237,0.2)' : 'rgba(255,255,255,0.03)',
+                          border: `1px solid ${a ? 'rgba(124,58,237,0.4)' : 'rgba(255,255,255,0.06)'}`,
+                        }}>
+                          <DietIcon name={d.icon} size={15} />
+                          <span style={{ fontFamily: fontAdvent, fontSize: 13, fontWeight: 500, color: a ? '#C4B5FD' : 'rgba(255,255,255,0.4)' }}>{tr(d.label)}</span>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
 
-          {user && (
-            <>
-              <div style={{ height: 1, background: 'rgba(255,255,255,0.05)', margin: '0 20px' }} />
-              <div onClick={() => supabase.auth.signOut()} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', cursor: 'pointer' }}>
-                <div style={{ fontSize: 14, fontWeight: 500, color: '#F87171' }}>{t.profile.logout}</div>
+                <div style={{ height: 1, background: 'rgba(255,255,255,0.06)', margin: '0 0 20px' }} />
+
+                {/* Allergens */}
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#F87171' }} />
+                    <span style={{ fontFamily: fontAdvent, fontSize: 13, fontWeight: 600, color: '#F87171', textTransform: 'uppercase', letterSpacing: 1 }}>{t.profile.allergens}</span>
+                  </div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 14 }}>
+                    {ALLERGENS.map(al => {
+                      const a = profile.allergens.includes(al.id)
+                      return (
+                        <div key={al.id} className="pref-chip" onClick={() => toggleAllergen(al.id)} style={{
+                          display: 'flex', alignItems: 'center', gap: 7, padding: '8px 12px', borderRadius: 14,
+                          background: a ? 'rgba(239,68,68,0.15)' : 'rgba(255,255,255,0.03)',
+                          border: `1px solid ${a ? 'rgba(239,68,68,0.3)' : 'rgba(255,255,255,0.06)'}`,
+                        }}>
+                          <DietIcon name={al.icon} size={14} />
+                          <span style={{ fontFamily: fontAdvent, fontSize: 12, fontWeight: 500, color: a ? '#FCA5A5' : 'rgba(255,255,255,0.4)' }}>{tr(al.label)}</span>
+                        </div>
+                      )
+                    })}
+                  </div>
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <input ref={allergenInputRef} value={allergenInput}
+                      onChange={e => setAllergenInput(e.target.value)}
+                      onKeyDown={e => e.key === 'Enter' && addCustom()}
+                      placeholder={t.profile.customPlaceholder}
+                      style={{ flex: 1, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12, padding: '10px 14px', color: '#fff', fontSize: 12, fontFamily: fontAdvent, outline: 'none' }}
+                    />
+                    <button onClick={addCustom} style={{ padding: '10px 14px', borderRadius: 12, background: '#7C3AED', border: 'none', color: '#fff', fontSize: 12, fontWeight: 600, fontFamily: fontAdvent, cursor: 'pointer' }}>{t.profile.add}</button>
+                  </div>
+                  {profile.customAllergens.length > 0 && (
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 10 }}>
+                      {profile.customAllergens.map(val => (
+                        <span key={val} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 10px', borderRadius: 12, background: 'rgba(239,68,68,0.1)', color: '#FCA5A5', border: '1px solid rgba(239,68,68,0.2)', fontSize: 11, fontFamily: fontAdvent }}>
+                          {val}
+                          <span onClick={() => removeCustom(val)} style={{ cursor: 'pointer', fontSize: 14, lineHeight: 1, opacity: 0.6 }}>×</span>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
-            </>
-          )}
+            </div>
+          </div>
+
+          {/* ── SETTINGS ── */}
+          {[
+            {
+              title: lang === 'kz' ? 'Негізгі' : 'Основное',
+              items: [
+                { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>, label: lang === 'kz' ? 'Жеке деректер' : 'Личные данные', onClick: () => navigate('/setup-profile') },
+                { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>, label: lang === 'kz' ? 'Хабарландырулар' : 'Уведомления' },
+                { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>, label: lang === 'kz' ? 'Құпиялылық' : 'Приватность' },
+              ]
+            },
+            {
+              title: lang === 'kz' ? 'Параметрлер' : 'Настройки',
+              items: [
+                {
+                  icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>,
+                  label: t.profile.languageHeader,
+                  right: (
+                    <div style={{ display: 'flex', background: 'rgba(255,255,255,0.04)', borderRadius: 10, padding: 3 }}>
+                      {['ru', 'kz'].map(l => (
+                        <button key={l} onClick={e => { e.stopPropagation(); setLang(l) }} style={{
+                          background: lang === l ? '#7C3AED' : 'transparent', border: 'none', color: '#fff',
+                          padding: '5px 14px', borderRadius: 8, fontSize: 12, fontWeight: 600, fontFamily: fontAdvent, cursor: 'pointer'
+                        }}>{l.toUpperCase()}</button>
+                      ))}
+                    </div>
+                  )
+                },
+                { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>, label: lang === 'kz' ? 'Тақырып' : 'Тема', right: <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.25)', fontFamily: fontAdvent, background: 'rgba(255,255,255,0.05)', padding: '3px 8px', borderRadius: 6 }}>Скоро</span> },
+              ]
+            },
+            {
+              title: lang === 'kz' ? 'Қолдау' : 'Поддержка',
+              items: [
+                { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>, label: lang === 'kz' ? 'Анықтама' : 'Справка' },
+                { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>, label: lang === 'kz' ? 'Қосымша туралы' : 'О приложении' },
+                { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>, label: lang === 'kz' ? 'Кері байланыс' : 'Обратная связь' },
+              ]
+            }
+          ].map((group, gi) => (
+            <div key={gi} style={{ padding: '0 22px 14px' }}>
+              <div style={{ fontFamily: fontAdvent, fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.2)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 1.5, paddingLeft: 4 }}>{group.title}</div>
+              <div className="glass-card" style={{ padding: 0 }}>
+                {group.items.map((item, i) => (
+                  <div key={i}>
+                    <div className="settings-item" onClick={item.onClick || undefined} style={{
+                      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                      padding: '14px 18px', cursor: item.onClick ? 'pointer' : 'default'
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                        <div style={{ width: 34, height: 34, borderRadius: 10, background: 'rgba(124,58,237,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{item.icon}</div>
+                        <span style={{ fontFamily: fontAdvent, fontSize: 14, fontWeight: 500, color: '#fff' }}>{item.label}</span>
+                      </div>
+                      {item.right || (item.onClick && <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="2" strokeLinecap="round"><path d="M9 18l6-6-6-6"/></svg>)}
+                    </div>
+                    {i < group.items.length - 1 && <div style={{ height: 1, background: 'rgba(255,255,255,0.03)', margin: '0 18px' }} />}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+
+          {/* ── ACTIONS ── */}
+          <div style={{ padding: '0 22px 14px' }}>
+            <div className="glass-card" style={{ padding: 0 }}>
+              <div className="settings-item" onClick={() => { localStorage.removeItem('korset_onboarding_done'); window.location.reload() }} style={{
+                display: 'flex', alignItems: 'center', gap: 14, padding: '14px 18px', cursor: 'pointer'
+              }}>
+                <div style={{ width: 34, height: 34, borderRadius: 10, background: 'rgba(124,58,237,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+                </div>
+                <span style={{ fontFamily: fontAdvent, fontSize: 14, fontWeight: 500, color: '#fff' }}>{t.profile.restartOnboarding}</span>
+              </div>
+              {user && (
+                <>
+                  <div style={{ height: 1, background: 'rgba(255,255,255,0.03)', margin: '0 18px' }} />
+                  <div className="settings-item" onClick={() => supabase.auth.signOut()} style={{
+                    display: 'flex', alignItems: 'center', gap: 14, padding: '14px 18px', cursor: 'pointer'
+                  }}>
+                    <div style={{ width: 34, height: 34, borderRadius: 10, background: 'rgba(220,38,38,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F87171" strokeWidth="2" strokeLinecap="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    </div>
+                    <span style={{ fontFamily: fontAdvent, fontSize: 14, fontWeight: 500, color: '#F87171' }}>{t.profile.logout}</span>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+
+          {/* ── FOOTER ── */}
+          <div style={{ textAlign: 'center', padding: '16px 22px 30px' }}>
+            <div style={{ fontFamily: fontAdvent, fontSize: 11, color: 'rgba(255,255,255,0.1)', fontWeight: 400 }}>Körset v0.1.0 • Kazakhstan 🇰🇿</div>
+          </div>
 
         </div>
       </div>
-
-    </div>
+    </>
   )
 }

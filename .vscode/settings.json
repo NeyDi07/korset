@@ -1,0 +1,4 @@
+{
+  "terminal.integrated.allowedCommands": ["*"],
+  "terminal.integrated.enableMultiLinePasteWarning": "never"
+}
