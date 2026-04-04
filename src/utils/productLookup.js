@@ -177,7 +177,11 @@ async function logScan({ ean, foundStatus, globalProductId, storeProductId, stor
       session_id:         getSessionId(),
       app_version:        '1.0',
     })
-    if (error) console.error('logScan insert error:', error.message)
+    if (!error) {
+       window.dispatchEvent(new CustomEvent('korset:scan_added'))
+    } else {
+       console.error('logScan insert error:', error.message)
+    }
   } catch (err) {
     console.error('logScan exception:', err)
   }

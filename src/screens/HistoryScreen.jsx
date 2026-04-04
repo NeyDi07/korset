@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../utils/supabase.js'
 import { useAuth } from '../contexts/AuthContext.jsx'
+import { useUserData } from '../contexts/UserDataContext.jsx'
 import { useI18n } from '../utils/i18n.js'
 import productsData from '../data/products.json'
 
@@ -118,15 +119,20 @@ export default function HistoryScreen() {
 
     loadData()
   }, [user, internalUserId])
+  const { checkIsFavorite, toggleFavorite } = useUserData()
 
   // ── Remove from favorites ──
   const removeFavorite = async (p, e) => {
     e.stopPropagation()
     if (!user || !internalUserId || !p.ean) return
-    await supabase.from('user_favorites').delete().eq('user_id', internalUserId).eq('ean', p.ean)
-    setFavorites(prev => prev.filter(f => f.ean !== p.ean))
+    try {
+      await toggleFavorite(p)
+      // Remove locally from UI list to reflect the action instantly
+      setFavorites(prev => prev.filter(f => f.ean !== p.ean))
+    } catch(err) {
+      // errors handled by context
+    }
   }
-
   if (!user) {
     return (
       <div className="screen" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24, textAlign: 'center' }}>

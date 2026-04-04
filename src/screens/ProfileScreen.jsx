@@ -33,25 +33,18 @@ function DietIcon({ name, size = 18 }) {
 }
 
 
+import { useUserData } from '../contexts/UserDataContext.jsx'
+
 export default function ProfileScreen() {
   const navigate = useNavigate()
   const { lang, t } = useI18n()
   const allergenInputRef = useRef(null)
   const { profile, updateProfile: setProfile } = useProfile()
-  const { user, internalUserId } = useAuth()
+  const { user } = useAuth()
+  const { favoritesCount, scanCount } = useUserData()
+  
   const [allergenInput, setAllergenInput] = useState('')
   const [prefOpen, setPrefOpen] = useState(false)
-  const [favCount, setFavCount] = useState(0)
-  const [scanCount, setScanCount] = useState(0)
-
-  // Load real counts from Supabase
-  useEffect(() => {
-    if (!user || !internalUserId) { setFavCount(0); setScanCount(0); return }
-    supabase.from('user_favorites').select('id', { count: 'exact', head: true }).eq('user_id', internalUserId)
-      .then(({ count }) => setFavCount(count || 0))
-    supabase.from('scan_events').select('ean', { count: 'exact', head: true }).eq('user_id', internalUserId)
-      .then(({ count }) => setScanCount(count || 0))
-  }, [user, internalUserId])
 
   const toggleDiet = id => setProfile(p => ({
     ...p, dietGoals: p.dietGoals.includes(id) ? p.dietGoals.filter(x => x !== id) : [...p.dietGoals, id]
@@ -182,7 +175,7 @@ export default function ProfileScreen() {
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="#F87171" stroke="#F87171" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 000-7.78Z"/></svg>
               </div>
               <div className="glass-card" style={{ padding: '44px 8px 16px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', minHeight: 110 }}>
-                <div style={{ fontFamily: fontAdvent, fontSize: 42, fontWeight: 600, color: '#fff', lineHeight: 1, flex: 1, display: 'flex', alignItems: 'center' }}>{favCount}</div>
+                <div style={{ fontFamily: fontAdvent, fontSize: 42, fontWeight: 600, color: '#fff', lineHeight: 1, flex: 1, display: 'flex', alignItems: 'center' }}>{favoritesCount}</div>
                 <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 8, fontFamily: fontAdvent, fontWeight: 500 }}>{t.profile.favorites}</div>
               </div>
             </div>
