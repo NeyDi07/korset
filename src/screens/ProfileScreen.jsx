@@ -46,12 +46,12 @@ export default function ProfileScreen() {
 
   // Load real counts from Supabase
   useEffect(() => {
-    if (!user) { setFavCount(0); setScanCount(0); return }
-    supabase.from('user_favorites').select('id', { count: 'exact', head: true }).eq('user_id', user.id)
+    if (!user || !internalUserId) { setFavCount(0); setScanCount(0); return }
+    supabase.from('user_favorites').select('id', { count: 'exact', head: true }).eq('user_id', internalUserId)
       .then(({ count }) => setFavCount(count || 0))
-    supabase.from('scan_events').select('product_id', { count: 'exact', head: true }).eq('user_id', user.id)
+    supabase.from('scan_events').select('ean', { count: 'exact', head: true }).eq('user_id', internalUserId)
       .then(({ count }) => setScanCount(count || 0))
-  }, [user])
+  }, [user, internalUserId])
 
   const toggleDiet = id => setProfile(p => ({
     ...p, dietGoals: p.dietGoals.includes(id) ? p.dietGoals.filter(x => x !== id) : [...p.dietGoals, id]

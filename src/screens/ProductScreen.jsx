@@ -135,21 +135,28 @@ export default function ProductScreen() {
       return
     }
     
+    // Optimistic UI update
     const newVal = !isFavorite
     setIsFavorite(newVal)
+    
     try {
       const validGlobalId = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(product.id) ? product.id : null;
 
       if (newVal) {
-        // First check if it exists by EAN:
-        const { data } = await supabase.from('user_favorites').select('id').eq('user_id', finalUserId).eq('ean', product.ean).maybeSingle()
-        if (!data) {
-          const { error } = await supabase.from('user_favorites').insert({ user_id: finalUserId, global_product_id: validGlobalId, ean: product.ean })
-          if (error) throw error
-        }
+        // Upsert by user_id and ean (which are the unique keys in the table)
+        const { error } = await supabase.from('user_favorites').upsert({
+          user_id: finalUserId,
+          global_product_id: validGlobalId,
+          ean: product.ean || 'UNKNOWN'
+        }, { onConflict: 'user_id, ean' })
+        
+        if (error) throw error
       } else {
         const { error } = await supabase.from('user_favorites')
-          .delete().eq('user_id', finalUserId).eq('ean', product.ean)
+          .delete()
+          .eq('user_id', finalUserId)
+          .eq('ean', product.ean)
+        
         if (error) throw error
       }
     } catch (err) {
