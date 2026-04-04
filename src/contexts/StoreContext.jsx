@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { getStoreBySlug } from '../data/stores.js'
+import { loadPrivacySettings, PRIVACY_EVENT } from '../utils/privacySettings.js'
 import {
   buildAIHomePath,
   buildCatalogPath,
@@ -14,7 +15,7 @@ import {
 } from '../utils/routes.js'
 
 const StoreContext = createContext(null)
-const STORE_KEY = 'korset_store_slug'
+export const STORE_KEY = 'korset_store_slug'
 
 function getStoreSlugFromPath(pathname) {
   const appMatch = pathname.match(/^\/s\/([^/]+)/)
@@ -27,16 +28,36 @@ function getStoreSlugFromPath(pathname) {
 export function StoreProvider({ children }) {
   const location = useLocation()
   const pathStoreSlug = getStoreSlugFromPath(location.pathname)
-  const [rememberedStoreSlug, setRememberedStoreSlug] = useState(() => localStorage.getItem(STORE_KEY) || null)
+  const [rememberStoreEnabled, setRememberStoreEnabled] = useState(() => loadPrivacySettings().rememberStoreEnabled)
+  const [rememberedStoreSlug, setRememberedStoreSlug] = useState(() => loadPrivacySettings().rememberStoreEnabled ? (localStorage.getItem(STORE_KEY) || null) : null)
+
+  useEffect(() => {
+    const syncPrivacy = () => {
+      const nextEnabled = loadPrivacySettings().rememberStoreEnabled
+      setRememberStoreEnabled(nextEnabled)
+      if (!nextEnabled) {
+        setRememberedStoreSlug(null)
+        localStorage.removeItem(STORE_KEY)
+      } else {
+        setRememberedStoreSlug(localStorage.getItem(STORE_KEY) || null)
+      }
+    }
+    window.addEventListener('storage', syncPrivacy)
+    window.addEventListener(PRIVACY_EVENT, syncPrivacy)
+    return () => {
+      window.removeEventListener('storage', syncPrivacy)
+      window.removeEventListener(PRIVACY_EVENT, syncPrivacy)
+    }
+  }, [])
 
   useEffect(() => {
     if (pathStoreSlug) {
       setRememberedStoreSlug(pathStoreSlug)
-      localStorage.setItem(STORE_KEY, pathStoreSlug)
+      if (rememberStoreEnabled) localStorage.setItem(STORE_KEY, pathStoreSlug)
     }
-  }, [pathStoreSlug])
+  }, [pathStoreSlug, rememberStoreEnabled])
 
-  const storeSlug = pathStoreSlug || rememberedStoreSlug || null
+  const storeSlug = pathStoreSlug || (rememberStoreEnabled ? rememberedStoreSlug : null) || null
   const currentStore = getStoreBySlug(storeSlug)
   const isStoreApp = /^\/s\/[^/]+/.test(location.pathname)
   const isStorePublic = /^\/stores\/[^/]+/.test(location.pathname)
@@ -51,7 +72,7 @@ export function StoreProvider({ children }) {
     isPublicMarketing,
     rememberStore: (slug) => {
       setRememberedStoreSlug(slug)
-      localStorage.setItem(STORE_KEY, slug)
+      if (rememberStoreEnabled) localStorage.setItem(STORE_KEY, slug)
     },
     clearRememberedStore: () => {
       setRememberedStoreSlug(null)
@@ -74,7 +95,7 @@ export function StoreProvider({ children }) {
       productAI: (ean, external = false) => buildProductAIPath(currentStore.slug, ean, external),
       productAlternatives: (ean) => buildProductAlternativesPath(currentStore.slug, ean),
     } : null,
-  }), [currentStore, isStoreApp, isStorePublic, isPublicMarketing])
+  }), [currentStore, isStoreApp, isStorePublic, isPublicMarketing, rememberStoreEnabled])
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>
 }

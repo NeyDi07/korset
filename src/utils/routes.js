@@ -23,10 +23,6 @@ export function buildHistoryPath(storeSlug = null, tab = null) {
   return tab ? `${base}?tab=${tab}` : base
 }
 
-
-export function buildNotificationsPath(storeSlug = null) {
-  return storeSlug ? `${buildStoreAppBase(storeSlug)}/notifications` : '/notifications'
-}
 export function buildAIHomePath(storeSlug = null) {
   return storeSlug ? `${buildStoreAppBase(storeSlug)}/ai` : '/ai'
 }
@@ -44,4 +40,12 @@ export function buildProductAIPath(storeSlug = null, ean, external = false) {
 
 export function buildProductAlternativesPath(storeSlug = null, ean) {
   return `${buildProductPath(storeSlug, ean, false)}/alternatives`
+}
+
+export function buildPrivacyPath(storeSlug = null) {
+  return storeSlug ? `${buildStoreAppBase(storeSlug)}/privacy` : '/privacy'
+}
+
+export function buildNotificationSettingsPath(storeSlug = null) {
+  return storeSlug ? `${buildStoreAppBase(storeSlug)}/notifications` : '/notifications'
 }
