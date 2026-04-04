@@ -16,6 +16,7 @@ import AuthScreen from './screens/AuthScreen.jsx'
 import SetupProfileScreen from './screens/SetupProfileScreen.jsx'
 import HistoryScreen from './screens/HistoryScreen.jsx'
 import NotificationSettingsScreen from './screens/NotificationSettingsScreen.jsx'
+import PrivacySettingsScreen from './screens/PrivacySettingsScreen.jsx'
 import ErrorBoundary from './components/ErrorBoundary.jsx'
 import { AuthProvider, useAuth } from './contexts/AuthContext.jsx'
 import { ProfileProvider } from './contexts/ProfileContext.jsx'
@@ -26,7 +27,7 @@ function AppInner() {
   const navigate = useNavigate()
   const { user } = useAuth()
   
-  const hideNav = pathname === '/' || pathname === '/qr-print' || pathname === '/auth' || pathname === '/setup-profile'
+  const hideNav = pathname === '/qr-print' || pathname === '/auth' || pathname === '/setup-profile'
   const [showOnboarding, setShowOnboarding] = useState(
     !localStorage.getItem('korset_onboarding_done') || !localStorage.getItem('korset_lang')
   )
@@ -52,6 +53,8 @@ function AppInner() {
         <Route path="/history"                  element={<HistoryScreen />} />
         <Route path="/notifications"            element={<NotificationSettingsScreen />} />
         <Route path="/s/:storeSlug/notifications" element={<NotificationSettingsScreen />} />
+        <Route path="/privacy"                  element={<PrivacySettingsScreen />} />
+        <Route path="/s/:storeSlug/privacy"    element={<PrivacySettingsScreen />} />
         <Route path="/auth"                     element={<AuthScreen />} />
         <Route path="/setup-profile"            element={<SetupProfileScreen />} />
         <Route path="/qr-print"                 element={<QRPrintScreen />} />

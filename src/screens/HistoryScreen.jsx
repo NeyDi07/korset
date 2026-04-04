@@ -8,6 +8,7 @@ import { useStore } from '../contexts/StoreContext.jsx'
 import { buildProductPath } from '../utils/routes.js'
 import { hydrateProductsFromFavoriteRows, hydrateProductsFromScanRows } from '../domain/product/resolver.js'
 import { buildHistoryOwnerKey, readLocalScanHistory, SCAN_HISTORY_STORAGE_KEY } from '../utils/localHistory.js'
+import { loadPrivacySettings, PRIVACY_EVENT } from '../utils/privacySettings.js'
 
 const fontAdvent = "'Advent Pro', sans-serif"
 
@@ -76,7 +77,7 @@ export default function HistoryScreen() {
     const loadData = async () => {
       setLoading(true)
       const ownerKey = buildHistoryOwnerKey(user)
-      const scopedLocalHistory = readLocalScanHistory(ownerKey)
+      const scopedLocalHistory = loadPrivacySettings().localHistoryEnabled ? readLocalScanHistory(ownerKey) : []
 
       try {
         const [histRes, favRes] = await Promise.all([
@@ -133,7 +134,7 @@ export default function HistoryScreen() {
 
   useEffect(() => {
     const syncLocalHistory = () => {
-      const scopedLocalHistory = readLocalScanHistory(buildHistoryOwnerKey(user))
+      const scopedLocalHistory = loadPrivacySettings().localHistoryEnabled ? readLocalScanHistory(buildHistoryOwnerKey(user)) : []
       setHistory((prev) => mergeHistoryItems(prev, scopedLocalHistory))
     }
 
@@ -143,10 +144,12 @@ export default function HistoryScreen() {
 
     window.addEventListener('storage', handleStorage)
     window.addEventListener('korset:scan_added', syncLocalHistory)
+    window.addEventListener(PRIVACY_EVENT, syncLocalHistory)
 
     return () => {
       window.removeEventListener('storage', handleStorage)
       window.removeEventListener('korset:scan_added', syncLocalHistory)
+      window.removeEventListener(PRIVACY_EVENT, syncLocalHistory)
     }
   }, [user])
 

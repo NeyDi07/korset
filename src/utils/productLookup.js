@@ -1,6 +1,8 @@
 import { getGlobalDemoProducts, getStoreCatalogProductByEan } from './storeCatalog.js'
 import { supabase } from './supabase.js'
 import { enrichProductAI } from '../services/ai.js'
+import { appendLocalScanHistory, getCurrentHistoryOwnerKey } from './localHistory.js'
+import { loadPrivacySettings } from './privacySettings.js'
 
 function getDeviceId() {
   let id = localStorage.getItem('korset_device_id')
@@ -18,6 +20,32 @@ function getSessionId() {
     sessionStorage.setItem('korset_session_id', id)
   }
   return id
+}
+
+
+function buildLocalHistoryEntry(product, foundStatus, storeId = null) {
+  if (!product?.ean) return null
+  return {
+    ean: product.ean,
+    name: product.name || `Товар ${product.ean}`,
+    brand: product.brand || null,
+    image: product.image || product.images?.[0] || null,
+    images: Array.isArray(product.images) ? product.images : (product.image ? [product.image] : []),
+    canonicalId: product.canonicalId || product.id || `ean:${product.ean}`,
+    source: product.source || foundStatus || 'scan',
+    scanDate: new Date().toISOString(),
+    storeId: storeId || product.storeId || null,
+  }
+}
+
+async function persistLocalScanHistory(product, foundStatus, storeId = null) {
+  const privacy = loadPrivacySettings()
+  if (!privacy.localHistoryEnabled) return
+  const entry = buildLocalHistoryEntry(product, foundStatus, storeId)
+  if (!entry) return
+  const ownerKey = await getCurrentHistoryOwnerKey()
+  appendLocalScanHistory(ownerKey, entry)
+  window.dispatchEvent(new CustomEvent('korset:scan_added'))
 }
 
 function findInDemoStore(ean, storeId) {
@@ -160,6 +188,8 @@ async function logMissingProduct(ean, storeId) {
 }
 
 async function logScan({ ean, foundStatus, globalProductId, storeProductId, storeId, fitResult }) {
+  const privacy = loadPrivacySettings()
+  if (!privacy.analyticsEnabled) return
   try {
     const {
       data: { user },
@@ -189,9 +219,7 @@ async function logScan({ ean, foundStatus, globalProductId, storeProductId, stor
       session_id: getSessionId(),
       app_version: '1.0',
     })
-    if (!error) {
-      window.dispatchEvent(new CustomEvent('korset:scan_added'))
-    } else {
+    if (error) {
       console.error('logScan insert error:', error.message)
     }
   } catch (err) {
@@ -327,12 +355,14 @@ function tryParse(val, fallback) {
 export async function lookupProduct(ean, storeId = null) {
   const demoStoreProduct = findInDemoStore(ean, storeId)
   if (demoStoreProduct) {
+    persistLocalScanHistory(demoStoreProduct, 'found_store', storeId)
     logScan({ ean, foundStatus: 'found_store', storeId })
     return { type: 'local', product: demoStoreProduct }
   }
 
   const storeProduct = await findInStoreProducts(ean, storeId)
   if (storeProduct) {
+    persistLocalScanHistory(storeProduct, 'found_store', storeId)
     logScan({
       ean,
       foundStatus: 'found_store',
@@ -345,18 +375,21 @@ export async function lookupProduct(ean, storeId = null) {
 
   const globalProduct = await findInGlobalProducts(ean)
   if (globalProduct) {
+    persistLocalScanHistory(globalProduct, 'found_global', storeId)
     logScan({ ean, foundStatus: 'found_global', globalProductId: globalProduct.id, storeId })
     return { type: 'local', product: globalProduct }
   }
 
   const local = getGlobalDemoProducts().find((p) => p.ean === ean)
   if (local) {
+    persistLocalScanHistory(local, 'found_global', storeId)
     logScan({ ean, foundStatus: 'found_global', storeId })
     return { type: 'local', product: local }
   }
 
   const cached = await findInCache(ean)
   if (cached) {
+    persistLocalScanHistory(cached, 'found_cache', storeId)
     logScan({ ean, foundStatus: 'found_cache', storeId })
     return { type: 'external', product: cached }
   }
@@ -365,6 +398,7 @@ export async function lookupProduct(ean, storeId = null) {
   if (off) {
     const enriched = await enrichWithAI(off)
     saveToCache(enriched)
+    persistLocalScanHistory(enriched, 'found_off', storeId)
     logScan({ ean, foundStatus: 'found_off', storeId })
     return { type: 'external', product: enriched }
   }

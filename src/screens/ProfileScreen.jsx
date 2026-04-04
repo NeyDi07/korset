@@ -4,6 +4,8 @@ import { setLang, useI18n } from '../utils/i18n.js'
 import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import { supabase } from '../utils/supabase.js'
+import { useStore } from '../contexts/StoreContext.jsx'
+import { buildNotificationSettingsPath, buildPrivacyPath } from '../utils/routes.js'
 import KorsetAvatar from '../components/KorsetAvatar.jsx'
 import { ALLERGENS } from '../data/allergens.js'
 import { DIET_GOALS } from '../data/dietGoals.js'
@@ -42,6 +44,7 @@ export default function ProfileScreen() {
   const { profile, updateProfile: setProfile } = useProfile()
   const { user } = useAuth()
   const { favoritesCount, scanCount } = useUserData()
+  const { currentStore } = useStore()
   
   const [allergenInput, setAllergenInput] = useState('')
   const [prefOpen, setPrefOpen] = useState(false)
@@ -311,8 +314,8 @@ export default function ProfileScreen() {
               title: lang === 'kz' ? 'Негізгі' : 'Основное',
               items: [
                 { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>, label: lang === 'kz' ? 'Жеке деректер' : 'Личные данные', onClick: () => navigate('/setup-profile') },
-                { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>, label: lang === 'kz' ? 'Хабарландырулар' : 'Уведомления', onClick: () => navigate('/notifications') },
-                { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>, label: lang === 'kz' ? 'Құпиялылық' : 'Приватность' },
+                { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>, label: lang === 'kz' ? 'Хабарландырулар' : 'Уведомления', onClick: () => navigate(buildNotificationSettingsPath(currentStore?.slug || null)) },
+                { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>, label: lang === 'kz' ? 'Құпиялылық' : 'Приватность', onClick: () => navigate(buildPrivacyPath(currentStore?.slug || null)) },
               ]
             },
             {

@@ -2,10 +2,12 @@ import { createContext, useContext, useState, useEffect } from 'react'
 import { supabase } from '../utils/supabase.js'
 import { useAuth } from './AuthContext.jsx'
 import { buildHistoryOwnerKey, readLocalScanHistory, SCAN_HISTORY_STORAGE_KEY } from '../utils/localHistory.js'
+import { loadPrivacySettings, PRIVACY_EVENT } from '../utils/privacySettings.js'
 
 const UserDataContext = createContext()
 
 function getLocalScanHistoryCount(user) {
+  if (!loadPrivacySettings().localHistoryEnabled) return 0
   return readLocalScanHistory(buildHistoryOwnerKey(user)).length
 }
 
@@ -125,10 +127,12 @@ export function UserDataProvider({ children }) {
     window.addEventListener('korset:scan_added', handleScanAdded)
     window.addEventListener('storage', handleStorage)
     window.addEventListener('focus', handleFocus)
+    window.addEventListener(PRIVACY_EVENT, handleFocus)
     return () => {
       window.removeEventListener('korset:scan_added', handleScanAdded)
       window.removeEventListener('storage', handleStorage)
       window.removeEventListener('focus', handleFocus)
+      window.removeEventListener(PRIVACY_EVENT, handleFocus)
     }
   }, [user])
 

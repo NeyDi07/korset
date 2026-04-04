@@ -424,72 +424,58 @@ export default function HomeScreen() {
           </div>
         </section>
 
-        {/* Features Bento Grid */}
+        {/* Features Vertical Stack (Mobile First) */}
         <section className="section-padding" style={{ background: 'rgba(27, 27, 31, 0.3)' }}>
-          <div className="bento-grid" style={{ gridAutoRows: 'minmax(280px, auto)' }}>
-            {/* Large Feature Card */}
-            <div className="glass group" style={{ gridColumn: 'span 8', gridRow: 'span 2', position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: 40, borderRadius: 20, minHeight: 600 }}>
-              <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
-                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBShSzafh8Df_ZqGKvghHaavHO8aejXH_OiYol4CxHlSFwB5qf2rooOnFSe_SWkn3zYWRgmr3KWo_dD5cjl2qt5t5s7aIYyTFSZCsExWoYxU2Bu7GYnCCCl4jHfOtjWTWKAZJmNyjyAQoA0QFq_QVY3vAP8kD01luHKd519esQhnX9wTAYbg1SR2ZelsWV8ed6wqC_oVAvmUgNCvDoc-A6ttfu4JIPiX5RhoGdSMPzPyg1W06PQolYBqTLmmwpsSGaQr07AWRbPtUE" alt="AI Scan" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.4, transition: 'transform 0.7s' }} className="group-img-hover" />
-                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(7,7,15,1), rgba(7,7,15,0.4), transparent)' }}></div>
-              </div>
-              <div style={{ position: 'relative', zIndex: 10 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--primary)"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                  <span className="font-label" style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--primary)' }}>Умный сканер добавок</span>
-                </div>
-                <h3 className="font-headline" style={{ fontSize: 40, fontWeight: 700, color: '#fff', marginBottom: 16 }}>Раскройте <span style={{ color: 'var(--primary)', fontStyle: 'italic' }}>состав</span> за секунду</h3>
-                <p className="font-label" style={{ color: 'var(--on-surface-variant)', lineHeight: 1.6, fontSize: 16, maxWidth: 440 }}>
-                  Наведите камеру на штрихкод, и алгоритм Körset мгновенно расшифрует состав, отсеяв маркетинговую шелуху и найдя скрытые консерванты, добавки и аллергены.
-                </p>
-              </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            {/* Карточка 1: E-добавки */}
+            <div className="glass" style={{ padding: '32px', borderRadius: 20, display: 'flex', flexDirection: 'column', gap: 24, borderLeft: '2px solid rgba(210, 187, 255, 0.5)' }}>
+               <div>
+                  <span className="font-label" style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--primary)' }}>Распознавание</span>
+                  <div className="font-headline" style={{ fontSize: 44, fontWeight: 700, color: '#fff', marginTop: 8 }}>E-Добавки</div>
+               </div>
+               <p className="font-label" style={{ fontSize: 14, color: 'var(--on-surface-variant)', lineHeight: 1.5, opacity: 0.9 }}>
+                  Körset выявляет все скрытые красители, консерванты и эмульгаторы, разбивая сложный химический состав на понятные компоненты.
+               </p>
             </div>
 
-            {/* Точность */}
-            <div className="glass p-8 neon-glow-primary" style={{ gridColumn: 'span 4', borderLeft: '2px solid var(--primary)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderRadius: 20 }}>
-              <div>
-                <span className="font-label" style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--primary)' }}>Точность</span>
-                <div className="font-headline" style={{ fontSize: 56, fontWeight: 700, color: '#fff', marginTop: 8 }}>98.4%</div>
-              </div>
-              <p className="font-label" style={{ fontSize: 13, color: 'var(--on-surface-variant)', lineHeight: 1.5, opacity: 0.8 }}>Подтверждено ИИ алгоритмами и базой ВОЗ (2024)</p>
+            {/* Карточка 2: Умный сканер */}
+            <div className="glass" style={{ padding: '32px', borderRadius: 20, display: 'flex', flexDirection: 'column', gap: 24, borderLeft: '2px solid rgba(255, 183, 132, 0.5)' }}>
+               <div>
+                  <svg width="24" height="24" viewBox="0 -960 960 960" fill="var(--tertiary)"><path d="M440-40v-400H200L520-920v400h240L440-40Z"/></svg>
+               </div>
+               <div>
+                  <h4 className="font-headline" style={{ fontSize: 24, fontWeight: 700, color: '#fff', marginBottom: 12 }}>Умный сканер</h4>
+                  <p className="font-label" style={{ fontSize: 14, color: 'var(--on-surface-variant)', lineHeight: 1.5, opacity: 0.9 }}>
+                    Наведите камеру смартфона на штрихкод товара, и вы за долю секунды получите подробный Fit-Check прямо у полки магазина.
+                  </p>
+               </div>
             </div>
 
-            {/* Мгновенный отклик */}
-            <div className="glass p-8 neon-glow-tertiary" style={{ gridColumn: 'span 4', borderLeft: '2px solid var(--tertiary)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderRadius: 20 }}>
-              <div>
-                <svg width="40" height="40" viewBox="0 -960 960 960" fill="var(--tertiary)"><path d="M440-40v-400H200L520-920v400h240L440-40Z"/></svg>
-              </div>
-              <div style={{ marginTop: 24 }}>
-                <h4 className="font-headline" style={{ fontSize: 22, fontWeight: 700, color: '#fff', marginBottom: 8 }}>Мгновенный отклик</h4>
-                <p className="font-label" style={{ fontSize: 13, color: 'var(--on-surface-variant)', lineHeight: 1.5, opacity: 0.8 }}>Результаты полного анализа менее чем за 0.5 секунды</p>
-              </div>
+            {/* Карточка 3: Персональные фильтры (Халал/Веган) */}
+            <div className="glass" style={{ padding: '32px', borderRadius: 20, display: 'flex', flexDirection: 'column', gap: 24 }}>
+               <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+                  <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'rgba(210, 187, 255, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                     <svg width="24" height="24" viewBox="0 -960 960 960" fill="var(--primary)"><path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-300v-60h80v200H600v-80h63q-35-46-86.5-73T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Zm-20-200v-160h-80v-80h160v240h-80Z"/></svg>
+                  </div>
+                  <h3 className="font-headline" style={{ fontSize: 26, fontWeight: 700, color: '#fff' }}>Ваш профиль</h3>
+               </div>
+               <p className="font-label" style={{ color: 'var(--on-surface-variant)', fontSize: 15, lineHeight: 1.6 }}>
+                 Настройте фильтры: Халал, Веган или диетические программы. Приложение заранее предупредит вас, если продукт вам не подходит.
+               </p>
             </div>
 
-            {/* История здоровья */}
-            <div className="glass p-10 border" style={{ gridColumn: 'span 6', borderColor: 'rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 16, borderRadius: 20 }}>
-              <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
-                <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'rgba(210, 187, 255, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <svg width="24" height="24" viewBox="0 -960 960 960" fill="var(--primary)"><path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-300v-60h80v200H600v-80h63q-35-46-86.5-73T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Zm-20-200v-160h-80v-80h160v240h-80Z"/></svg>
-                </div>
-                <h3 className="font-headline" style={{ fontSize: 26, fontWeight: 700, color: '#fff' }}>История питания</h3>
-              </div>
-              <p className="font-label" style={{ color: 'var(--on-surface-variant)', fontSize: 15, lineHeight: 1.6 }}>Ваша цифровая память о каждом отсканированном продукте. Наблюдайте за динамикой своего рациона в реальном времени.</p>
+            {/* Карточка 4: Защита аллергиков */}
+            <div className="glass" style={{ padding: '32px', borderRadius: 20, display: 'flex', flexDirection: 'column', gap: 24, borderLeft: '2px solid rgba(16, 185, 129, 0.5)' }}>
+               <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+                  <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'rgba(16, 185, 129, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                     <svg width="24" height="24" viewBox="0 -960 960 960" fill="#10B981"><path d="M480-160 256-384q-33-33-50.5-74t-17.5-86q0-92 64-156t156-64q46 0 86 17.5T564-696q21-22 51.5-43T684-776q-47-24-99-36t-105-12q-125 0-212.5 87.5T180-524q0 58 24 112t68 96l208 208v-52Z"/></svg>
+                  </div>
+                  <h3 className="font-headline" style={{ fontSize: 26, fontWeight: 700, color: '#fff' }}>Детектор аллергий</h3>
+               </div>
+               <p className="font-label" style={{ color: 'var(--on-surface-variant)', fontSize: 15, lineHeight: 1.6 }}>
+                 Мгновенное выявление критичных аллергенов (орехи, лактоза, глютен и др.). Сохраняйте проверенные безопасные продукты в историю.
+               </p>
             </div>
-
-            {/* Персональные фильтры (instead of Family/Groups) */}
-            <div className="glass p-10 neon-glow-emerald border-l-2" style={{ gridColumn: 'span 6', borderLeft: '2px solid #10b981', background: 'rgba(53, 52, 57, 0.4)', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 16, borderRadius: 20 }}>
-              <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
-                <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'rgba(16, 185, 129, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <svg width="24" height="24" viewBox="0 -960 960 960" fill="#10B981">
-                    <path d="M480-160 256-384q-33-33-50.5-74t-17.5-86q0-92 64-156t156-64q46 0 86 17.5T564-696q21-22 51.5-43T684-776q-47-24-99-36t-105-12q-125 0-212.5 87.5T180-524q0 58 24 112t68 96l208 208v-52ZM697-360l223-223-57-56-166 167-96-97-57 57 153 152Z"/>
-                  </svg>
-                </div>
-                <h3 className="font-headline" style={{ fontSize: 26, fontWeight: 700, color: '#fff' }}>Детектор аллергенов</h3>
-              </div>
-              <p className="font-label" style={{ color: 'var(--on-surface-variant)', fontSize: 15, lineHeight: 1.6 }}>Мгновенное предупреждение о критичных для вас аллергенах, Халал-статусе и наличии глютена в составе.</p>
-            </div>
-
-
           </div>
         </section>
 

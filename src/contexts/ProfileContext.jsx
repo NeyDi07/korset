@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { useAuth } from './AuthContext.jsx'
 import { supabase } from '../utils/supabase.js'
 import { DEFAULT_NOTIFICATION_SETTINGS, loadNotificationSettings, saveNotificationSettings } from '../utils/notificationSettings.js'
+import { DEFAULT_PRIVACY_SETTINGS, notifyPrivacyChanged, writePrivacySettings } from '../utils/privacySettings.js'
 
 const ProfileContext = createContext(null)
 
@@ -12,11 +13,13 @@ const DEFAULT_PROFILE = {
   customAllergens: [],
   priority: 'balanced',
   notifications: DEFAULT_NOTIFICATION_SETTINGS,
+  privacy: DEFAULT_PRIVACY_SETTINGS,
 }
 
 function normalizeProfile(raw) {
   const profile = { ...DEFAULT_PROFILE, ...(raw || {}) }
   profile.notifications = { ...DEFAULT_NOTIFICATION_SETTINGS, ...(raw?.notifications || {}), ...loadNotificationSettings() }
+  profile.privacy = { ...DEFAULT_PRIVACY_SETTINGS, ...(raw?.privacy || {}) }
   return profile
 }
 
@@ -49,9 +52,16 @@ export function ProfileProvider({ children }) {
   const updateProfile = async (newProfile) => {
     let merged
     setProfileState(prev => {
-      merged = normalizeProfile({ ...prev, ...newProfile, notifications: { ...prev.notifications, ...(newProfile?.notifications || {}) } })
+      merged = normalizeProfile({
+        ...prev,
+        ...newProfile,
+        notifications: { ...prev.notifications, ...(newProfile?.notifications || {}) },
+        privacy: { ...prev.privacy, ...(newProfile?.privacy || {}) },
+      })
       localStorage.setItem('korset_profile', JSON.stringify(merged))
       saveNotificationSettings(merged.notifications)
+      writePrivacySettings(merged.privacy)
+      notifyPrivacyChanged()
       return merged
     })
 
