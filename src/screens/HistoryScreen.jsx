@@ -10,6 +10,41 @@ import { hydrateProductsFromFavoriteRows, hydrateProductsFromScanRows } from '..
 import { buildHistoryOwnerKey, readLocalScanHistory, SCAN_HISTORY_STORAGE_KEY } from '../utils/localHistory.js'
 
 const fontAdvent = "'Advent Pro', sans-serif"
+
+function toDate(value) {
+  if (!value) return null
+  if (value instanceof Date) return Number.isNaN(value.getTime()) ? null : value
+  const parsed = new Date(value)
+  return Number.isNaN(parsed.getTime()) ? null : parsed
+}
+
+function getItemTime(item) {
+  const date = toDate(item?.scanDate || item?.favDate || item?.scanned_at || item?.scannedAt || item?.added_at)
+  return date ? date.getTime() : 0
+}
+
+function formatDate(value, lang) {
+  const date = toDate(value)
+  if (!date) return ''
+  try {
+    return date.toLocaleDateString(lang === 'kz' ? 'kk-KZ' : 'ru-RU')
+  } catch {
+    return date.toLocaleDateString()
+  }
+}
+
+function mergeHistoryItems(primary = [], secondary = []) {
+  const map = new Map()
+  for (const item of [...primary, ...secondary]) {
+    if (!item?.ean) continue
+    const existing = map.get(item.ean)
+    if (!existing || getItemTime(item) >= getItemTime(existing)) {
+      map.set(item.ean, item)
+    }
+  }
+  return Array.from(map.values()).sort((a, b) => getItemTime(b) - getItemTime(a))
+}
+
 export default function HistoryScreen() {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
@@ -40,6 +75,9 @@ export default function HistoryScreen() {
 
     const loadData = async () => {
       setLoading(true)
+      const ownerKey = buildHistoryOwnerKey(user)
+      const scopedLocalHistory = readLocalScanHistory(ownerKey)
+
       try {
         const [histRes, favRes] = await Promise.all([
           supabase
@@ -55,37 +93,18 @@ export default function HistoryScreen() {
             .order('added_at', { ascending: false }),
         ])
 
-        if (histRes.error) throw histRes.error
-        if (favRes.error) throw favRes.error
+        const historyRows = histRes.error ? [] : (histRes.data || [])
+        const favoriteRows = favRes.error ? [] : (favRes.data || [])
+
+        if (histRes.error) console.warn('HistoryScreen: scan_events read failed, using local cache', histRes.error)
+        if (favRes.error) console.warn('HistoryScreen: user_favorites read failed', favRes.error)
 
         const [hydratedHistory, hydratedFavorites] = await Promise.all([
-          hydrateProductsFromScanRows(histRes.data || []),
-          hydrateProductsFromFavoriteRows(favRes.data || []),
+          hydrateProductsFromScanRows(historyRows),
+          hydrateProductsFromFavoriteRows(favoriteRows),
         ])
 
-        const localHistory = (() => {
-          try {
-            const raw = JSON.parse(localStorage.getItem('korset_scan_history_cache') || '[]')
-            return Array.isArray(raw) ? raw : []
-          } catch {
-            return []
-          }
-        })()
-
-        const mergedHistoryMap = new Map()
-        for (const item of [...hydratedHistory, ...localHistory]) {
-          if (!item?.ean) continue
-          const existing = mergedHistoryMap.get(item.ean)
-          const itemTime = new Date(item.scanDate || item.scanned_at || item.scannedAt || 0).getTime() || 0
-          const existingTime = existing ? (new Date(existing.scanDate || existing.scanned_at || existing.scannedAt || 0).getTime() || 0) : -1
-          if (!existing || itemTime >= existingTime) mergedHistoryMap.set(item.ean, item)
-        }
-
-        const mergedHistory = Array.from(mergedHistoryMap.values()).sort((a, b) => {
-          const at = new Date(a.scanDate || a.scanned_at || a.scannedAt || 0).getTime() || 0
-          const bt = new Date(b.scanDate || b.scanned_at || b.scannedAt || 0).getTime() || 0
-          return bt - at
-        })
+        const mergedHistory = mergeHistoryItems(hydratedHistory, scopedLocalHistory)
 
         if (!cancelled) {
           setHistory(mergedHistory)
@@ -94,7 +113,7 @@ export default function HistoryScreen() {
       } catch (error) {
         console.error('HistoryScreen loadData failed', error)
         if (!cancelled) {
-          setHistory([])
+          setHistory(mergeHistoryItems([], scopedLocalHistory))
           setFavorites([])
         }
       } finally {
@@ -114,14 +133,17 @@ export default function HistoryScreen() {
 
   useEffect(() => {
     const syncLocalHistory = () => {
-      const scopedLocalHistory = readLocalHistory(user)
-      setHistory((prev) => mergeHistory(prev, scopedLocalHistory))
+      const scopedLocalHistory = readLocalScanHistory(buildHistoryOwnerKey(user))
+      setHistory((prev) => mergeHistoryItems(prev, scopedLocalHistory))
     }
+
     const handleStorage = (event) => {
       if (!event || event.key === SCAN_HISTORY_STORAGE_KEY) syncLocalHistory()
     }
+
     window.addEventListener('storage', handleStorage)
     window.addEventListener('korset:scan_added', syncLocalHistory)
+
     return () => {
       window.removeEventListener('storage', handleStorage)
       window.removeEventListener('korset:scan_added', syncLocalHistory)
@@ -260,8 +282,16 @@ export default function HistoryScreen() {
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 14, fontWeight: 600, fontFamily: fontAdvent, color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginBottom: 3 }}>{product.name}</div>
                   {product.brand && <div style={{ fontSize: 12, color: 'var(--text-dim)', fontFamily: fontAdvent }}>{product.brand}</div>}
-                  {tab === 'history' && product.scanDate && <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.2)', marginTop: 3, fontFamily: fontAdvent }}>{product.scanDate.toLocaleDateString()}</div>}
-                  {tab === 'favorites' && product.favDate && <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.2)', marginTop: 3, fontFamily: fontAdvent }}>{product.favDate.toLocaleDateString()}</div>}
+                  {tab === 'history' && (product.scanDate || product.scanned_at || product.scannedAt) && (
+                    <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.2)', marginTop: 3, fontFamily: fontAdvent }}>
+                      {formatDate(product.scanDate || product.scanned_at || product.scannedAt, lang)}
+                    </div>
+                  )}
+                  {tab === 'favorites' && (product.favDate || product.added_at) && (
+                    <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.2)', marginTop: 3, fontFamily: fontAdvent }}>
+                      {formatDate(product.favDate || product.added_at, lang)}
+                    </div>
+                  )}
                 </div>
 
                 {tab === 'favorites' ? (
