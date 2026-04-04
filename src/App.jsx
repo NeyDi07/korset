@@ -15,27 +15,24 @@ import OnboardingScreen from './screens/OnboardingScreen.jsx'
 import AuthScreen from './screens/AuthScreen.jsx'
 import SetupProfileScreen from './screens/SetupProfileScreen.jsx'
 import HistoryScreen from './screens/HistoryScreen.jsx'
-import ErrorBoundary from './components/ErrorBoundary.jsx'
-import StoresScreen from './screens/StoresScreen.jsx'
-import StorePublicScreen from './screens/StorePublicScreen.jsx'
 import NotificationSettingsScreen from './screens/NotificationSettingsScreen.jsx'
+import ErrorBoundary from './components/ErrorBoundary.jsx'
 import { AuthProvider, useAuth } from './contexts/AuthContext.jsx'
 import { ProfileProvider } from './contexts/ProfileContext.jsx'
 import { StoreProvider } from './contexts/StoreContext.jsx'
-import { UserDataProvider } from './contexts/UserDataContext.jsx'
 
 function AppInner() {
   const { pathname } = useLocation()
   const navigate = useNavigate()
   const { user } = useAuth()
-
-  const isPublicMarketing = pathname === '/' || pathname === '/stores' || /^\/stores\/[^/]+/.test(pathname)
-  const hideNav = isPublicMarketing || pathname === '/qr-print' || pathname === '/auth' || pathname === '/setup-profile'
+  
+  const hideNav = pathname === '/qr-print' || pathname === '/auth' || pathname === '/setup-profile'
   const [showOnboarding, setShowOnboarding] = useState(
     !localStorage.getItem('korset_onboarding_done') || !localStorage.getItem('korset_lang')
   )
 
   useEffect(() => {
+    // Если пользователь авторизован, но ещё не завершил настройку профиля
     if (user && user.user_metadata?.profile_setup_done !== true) {
       if (pathname !== '/setup-profile') {
         navigate('/setup-profile', { replace: true })
@@ -45,45 +42,32 @@ function AppInner() {
 
   return (
     <div className="app-frame">
-      {!isPublicMarketing && showOnboarding && <OnboardingScreen onDone={() => setShowOnboarding(false)} />}
+      {showOnboarding && <OnboardingScreen onDone={() => setShowOnboarding(false)} />}
       <Routes>
-        <Route path="/" element={<HomeScreen />} />
-        <Route path="/stores" element={<StoresScreen />} />
-        <Route path="/stores/:storeSlug" element={<StorePublicScreen />} />
-
-        <Route path="/s/:storeSlug" element={<HomeScreen />} />
-        <Route path="/s/:storeSlug/profile" element={<ProfileScreen />} />
-        <Route path="/s/:storeSlug/catalog" element={<CatalogScreen />} />
-        <Route path="/s/:storeSlug/scan" element={<ScanScreen />} />
-        <Route path="/s/:storeSlug/ai" element={<AIAssistantScreen />} />
-        <Route path="/s/:storeSlug/history" element={<HistoryScreen />} />
+        <Route path="/"                         element={<HomeScreen />} />
+        <Route path="/profile"                  element={<ProfileScreen />} />
+        <Route path="/catalog"                  element={<CatalogScreen />} />
+        <Route path="/scan"                     element={<ScanScreen />} />
+        <Route path="/ai"                       element={<AIAssistantScreen />} />
+        <Route path="/history"                  element={<HistoryScreen />} />
+        <Route path="/notifications"            element={<NotificationSettingsScreen />} />
         <Route path="/s/:storeSlug/notifications" element={<NotificationSettingsScreen />} />
-        <Route path="/s/:storeSlug/product/:ean" element={<ProductScreen />} />
-        <Route path="/s/:storeSlug/product/:ean/alternatives" element={<AlternativesScreen />} />
-        <Route path="/s/:storeSlug/product/:ean/ai" element={<AIScreen />} />
-        <Route path="/s/:storeSlug/product/ext/:ean" element={<ExternalProductScreen />} />
-        <Route path="/s/:storeSlug/product/ext/:ean/ai" element={<AIScreen />} />
-
-        <Route path="/profile" element={<ProfileScreen />} />
-        <Route path="/catalog" element={<CatalogScreen />} />
-        <Route path="/scan" element={<ScanScreen />} />
-        <Route path="/ai" element={<AIAssistantScreen />} />
-        <Route path="/history" element={<HistoryScreen />} />
-        <Route path="/notifications" element={<NotificationSettingsScreen />} />
-        <Route path="/auth" element={<AuthScreen />} />
-        <Route path="/setup-profile" element={<SetupProfileScreen />} />
-        <Route path="/qr-print" element={<QRPrintScreen />} />
-        <Route path="/product/ext/:ean" element={<ExternalProductScreen />} />
-        <Route path="/product/ext/:ean/ai" element={<AIScreen />} />
-        <Route path="/product/:ean" element={<ProductScreen />} />
-        <Route path="/product/:ean/alternatives" element={<AlternativesScreen />} />
-        <Route path="/product/:ean/ai" element={<AIScreen />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="/auth"                     element={<AuthScreen />} />
+        <Route path="/setup-profile"            element={<SetupProfileScreen />} />
+        <Route path="/qr-print"                 element={<QRPrintScreen />} />
+        <Route path="/product/ext/:ean"         element={<ExternalProductScreen />} />
+        <Route path="/product/ext/:ean/ai"      element={<AIScreen />} />
+        <Route path="/product/:id"              element={<ProductScreen />} />
+        <Route path="/product/:id/alternatives" element={<AlternativesScreen />} />
+        <Route path="/product/:id/ai"           element={<AIScreen />} />
+        <Route path="*"                         element={<Navigate to="/" replace />} />
       </Routes>
       {!hideNav && <BottomNav />}
     </div>
   )
 }
+
+import { UserDataProvider } from './contexts/UserDataContext.jsx'
 
 export default function App() {
   return (

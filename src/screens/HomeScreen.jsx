@@ -82,221 +82,332 @@ export default function HomeScreen() {
   return (
     <>
       <style>{`
-        .landing-bg {
-          background: #07070F;
+        .landing-page {
+          --primary: #d2bbff;
+          --primary-container: #7c3aed;
+          --secondary: #d2bbff;
+          --secondary-container: #523787;
+          --tertiary: #ffb784;
+          --tertiary-container: #a15100;
+          --bg: #07070F;
+          --surface: #131317;
+          --surface-variant: #353439;
+          --on-surface-variant: #ccc3d8;
+          --error: #ffb4ab;
+          
+          font-family: 'Manrope', sans-serif;
+          background-color: var(--bg);
+          color: #e4e1e7;
           min-height: 100vh;
-          position: relative;
           overflow-x: hidden;
-          overflow-y: auto;
-          font-family: 'Advent Pro', sans-serif;
         }
-        .glow-orb {
+        
+        .font-headline { font-family: 'Advent Pro', sans-serif; }
+        .font-label { font-family: 'Manrope', sans-serif; }
+        
+        .glass { 
+          background: rgba(53, 52, 57, 0.4); 
+          backdrop-filter: blur(20px); 
+          -webkit-backdrop-filter: blur(20px);
+        }
+        .ghost-border { 
+          border: 1px solid rgba(74, 68, 85, 0.15); 
+        }
+        
+        .top-nav {
+          position: fixed;
+          top: 0; left: 0; right: 0;
+          z-index: 50;
+          background: rgba(19, 19, 23, 0.4);
+          backdrop-filter: blur(24px);
+          -webkit-backdrop-filter: blur(24px);
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 16px 24px;
+        }
+
+        .hero-section {
+          position: relative;
+          padding: 120px 24px 80px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+        }
+        .hero-radial {
           position: absolute;
-          border-radius: 50%;
-          filter: blur(100px);
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 600px;
+          background: radial-gradient(circle at center, rgba(124,58,237,0.15) 0%, transparent 60%);
           z-index: 0;
-          opacity: 0.6;
           pointer-events: none;
         }
-        .orb-1 { width: 300px; height: 300px; background: rgba(124,58,237,0.3); top: -100px; left: -50px; }
-        .orb-2 { width: 250px; height: 250px; background: rgba(16,185,129,0.2); bottom: 100px; right: -50px; }
-        .orb-3 { width: 400px; height: 400px; background: rgba(239,68,68,0.15); top: 40%; left: 50%; transform: translateX(-50%); }
-        
-        .content-wrap {
+
+        .hero-content {
           position: relative;
-          z-index: 1;
+          z-index: 10;
+          width: 100%;
+          max-width: 1000px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
         }
-        
-        @keyframes float {
-          0% { transform: translateY(0px); }
-          50% { transform: translateY(-10px); }
-          100% { transform: translateY(0px); }
+
+        .floating-plates {
+          position: relative;
+          width: 100%;
+          height: 120px;
+          margin-bottom: 30px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
-        
-        .floating-card {
-          animation: float 4s ease-in-out infinite;
-          background: rgba(255,255,255,0.03);
-          backdrop-filter: blur(24px);
-          -webkit-backdrop-filter: blur(24px);
-          border: 1px solid rgba(255,255,255,0.08);
-          border-radius: 20px;
-          padding: 12px 16px;
-          display: inline-flex;
+        .plate {
+          position: absolute;
+          display: flex;
           align-items: center;
           gap: 10px;
-          box-shadow: 0 16px 40px rgba(0,0,0,0.2);
-          position: absolute;
+          padding: 12px 24px;
+          border-radius: 99px;
+          box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+        }
+        .plate-left {
+          left: 50%;
+          top: 0;
+          transform: translateX(-120%) rotate(-6deg);
+          z-index: 1;
+        }
+        .plate-center {
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 2;
+          padding: 16px 32px;
+          border: 1px solid rgba(210, 187, 255, 0.2);
+        }
+        .plate-right {
+          left: 50%;
+          bottom: 0;
+          transform: translateX(20%) rotate(6deg);
+          z-index: 1;
         }
 
-        .glass-panel {
-          background: rgba(255,255,255,0.03);
-          backdrop-filter: blur(24px);
-          -webkit-backdrop-filter: blur(24px);
-          border: 1px solid rgba(255,255,255,0.08);
-          border-radius: 24px;
-          padding: 24px;
-          box-shadow: 0 16px 40px rgba(0,0,0,0.2);
+        .hero-title {
+          font-size: clamp(40px, 8vw, 84px);
+          font-weight: 900;
+          line-height: 1.1;
+          letter-spacing: -0.02em;
+          margin-bottom: 32px;
+        }
+        .gradient-text {
+          background: linear-gradient(135deg, var(--primary), var(--primary-container));
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
         }
 
-        .cta-btn {
-          background: linear-gradient(135deg, #7C3AED, #6D28D9);
-          border: none;
-          color: white;
-          font-family: 'Advent Pro', sans-serif;
-          font-weight: 700;
-          font-size: 16px;
-          padding: 16px 24px;
+        .cta-btn-main {
+          background: linear-gradient(135deg, var(--primary), var(--primary-container));
+          color: #25005a;
+          padding: 20px 40px;
           border-radius: 16px;
+          font-weight: 800;
+          font-size: 18px;
+          border: none;
           cursor: pointer;
-          box-shadow: 0 8px 24px rgba(124,58,237,0.3);
-          transition: transform 0.2s, box-shadow 0.2s;
+          transition: filter 0.2s;
         }
-        .cta-btn:active {
-          transform: scale(0.98);
-          box-shadow: 0 4px 12px rgba(124,58,237,0.2);
+        .cta-btn-main:hover { filter: brightness(1.1); }
+        .cta-btn-sec {
+          background: rgba(53, 52, 57, 0.4);
+          color: #fff;
+          border: 1px solid rgba(74, 68, 85, 0.15);
+          padding: 20px 40px;
+          border-radius: 16px;
+          font-weight: 800;
+          font-size: 18px;
+          cursor: pointer;
+          transition: background 0.2s;
         }
+        .cta-btn-sec:hover { background: rgba(255,255,255,0.1); }
+
+        .section-padding { padding: 80px 24px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px; max-width: 1100px; margin: 0 auto; }
+        .bento-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; max-width: 1200px; margin: 0 auto; }
+        @media (max-width: 800px) {
+          .bento-grid { display: flex; flex-direction: column; }
+          .plate-left { transform: translateX(-90%) rotate(-6deg); padding: 8px 16px; font-size: 12px; }
+          .plate-right { transform: translateX(-10%) rotate(6deg); padding: 8px 16px; font-size: 12px; }
+          .plate-center { padding: 12px 24px; font-size: 14px; }
+        }
+
+        .icon-box {
+          width: 64px; height: 64px; border-radius: 16px;
+          display: flex; align-items: center; justify-content: center;
+          margin-bottom: 24px;
+        }
+
+        .bento-item {
+          border-radius: 24px;
+          padding: 32px;
+          display: flex;
+          flex-direction: column;
+        }
+        .col-8 { grid-column: span 8; }
+        .col-4 { grid-column: span 4; }
       `}</style>
-      
-      <div className="landing-bg">
-        <div className="glow-orb orb-1"></div>
-        <div className="glow-orb orb-2"></div>
-        <div className="glow-orb orb-3"></div>
 
-        <div className="content-wrap" style={{ padding: '0 24px', maxWidth: 600, margin: '0 auto' }}>
-          
-          {/* Header */}
-          <header style={{ padding: '24px 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <img src="/icon_logo.svg" alt="logo" style={{ width: 32, height: 32, borderRadius: 8 }} />
-              <span style={{ fontSize: 20, fontWeight: 800, color: '#fff', letterSpacing: 1 }}>KÖRSET</span>
-            </div>
-            <button onClick={() => navigate('/auth')} style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.2)', color: '#fff', padding: '8px 16px', borderRadius: 99, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: "'Advent Pro', sans-serif" }}>
-              Войти
+      <div className="landing-page">
+        {/* Top Header */}
+        <header className="top-nav">
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <img src="/icon_logo.svg" alt="logo" style={{ width: 36, height: 36, borderRadius: 10 }} />
+            <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: '-0.02em' }} className="font-headline">Körset</div>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            <button onClick={() => navigate('/auth')} style={{ 
+              width: 44, height: 44, borderRadius: '50%', background: 'rgba(53, 52, 57, 0.4)', 
+              display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', color: '#d2bbff'
+            }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             </button>
-          </header>
+          </div>
+        </header>
 
-          {/* Hero */}
-          <div style={{ textAlign: 'center', marginTop: 40, marginBottom: 60, position: 'relative' }}>
-            <h1 style={{ fontSize: 48, fontWeight: 800, color: '#fff', lineHeight: 1.1, margin: '0 0 16px', background: '-webkit-linear-gradient(135deg, #FFF, #C4B5FD)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-              Узнайте правду<br />о том, что вы едите.
+        {/* Hero */}
+        <section className="hero-section">
+          <div className="hero-radial"></div>
+          
+          <div className="hero-content">
+            <div className="floating-plates">
+              <div className="plate plate-left glass ghost-border">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="#d2bbff" stroke="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                <span className="font-label" style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Халал</span>
+              </div>
+              <div className="plate plate-center glass ghost-border" style={{ border: '1px solid rgba(210, 187, 255, 0.2)' }}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="#d2bbff" stroke="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                <span className="font-label" style={{ fontSize: 14, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Умный Анализ</span>
+              </div>
+              <div className="plate plate-right glass ghost-border">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="#ffb784" stroke="none"><path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/></svg>
+                <span className="font-label" style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Без глютена</span>
+              </div>
+            </div>
+
+            <h1 className="hero-title font-headline">
+              Узнайте <span className="gradient-text">правду</span> о<br/>том, что вы едите
             </h1>
-            <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.6)', lineHeight: 1.5, margin: '0 auto 32px', maxWidth: 320 }}>
-              Сканируйте штрихкоды. AI проверит состав на аллергены, Е-добавки и Халал за 1 секунду.
+            <p className="font-label" style={{ color: 'var(--on-surface-variant)', fontSize: 18, lineHeight: 1.6, maxWidth: 600, marginBottom: 40 }}>
+              Используйте силу искусственного интеллекта для мгновенного анализа состава продуктов. Ваше здоровье начинается с прозрачности.
             </p>
+
+            <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', justifyContent: 'center' }}>
+              <button className="cta-btn-main" onClick={() => navigate('/stores')}>
+                Выбрать магазин
+              </button>
+              {continueStore ? (
+                <button className="cta-btn-sec" onClick={() => navigate(`/s/${continueStore.slug}`)}>
+                  Продолжить
+                </button>
+              ) : (
+                <button className="cta-btn-sec" onClick={() => document.getElementById('b2b-section')?.scrollIntoView({ behavior: 'smooth' })}>
+                  О проекте
+                </button>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* How it works */}
+        <section className="section-padding">
+          <h2 className="font-headline" style={{ fontSize: 'clamp(32px, 5vw, 48px)', fontWeight: 800, textAlign: 'center', marginBottom: 60 }}>Как это работает</h2>
+          <div className="grid-3">
+            <div className="glass ghost-border" style={{ padding: 40, borderRadius: 24 }}>
+              <div className="icon-box" style={{ background: 'rgba(210, 187, 255, 0.2)', color: 'var(--primary)' }}>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              </div>
+              <h3 className="font-headline" style={{ fontSize: 24, fontWeight: 800, marginBottom: 12 }}>1. Сфотографируйте</h3>
+              <p className="font-label" style={{ color: 'var(--on-surface-variant)', lineHeight: 1.5 }}>Просто наведите камеру на этикетку с составом любого продукта в магазине.</p>
+            </div>
             
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
-               <button className="cta-btn" style={{ width: '100%', maxWidth: 280 }} onClick={() => navigate('/stores')}>
-                 Выбрать магазин и начать
-               </button>
-               {continueStore ? (
-                  <button onClick={() => navigate(`/s/${continueStore.slug}`)} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)', color: '#E9D5FF', fontWeight: 600, fontSize: 14, padding: '12px 24px', borderRadius: 14, cursor: 'pointer', fontFamily: "'Advent Pro', sans-serif" }}>
-                    Продолжить в {continueStore.name}
-                  </button>
-               ) : null}
-               <button onClick={() => document.getElementById('b2b-section')?.scrollIntoView({ behavior: 'smooth' })} style={{ background: 'transparent', border: 'none', color: '#C4B5FD', fontWeight: 600, fontSize: 14, padding: '10px', cursor: 'pointer', fontFamily: "'Advent Pro', sans-serif", marginTop: continueStore ? 0 : 8 }}>
-                 Для бизнеса (ритейл)
-               </button>
+            <div className="glass ghost-border" style={{ padding: 40, borderRadius: 24 }}>
+              <div className="icon-box" style={{ background: 'rgba(82, 55, 135, 0.3)', color: 'var(--secondary)' }}>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              </div>
+              <h3 className="font-headline" style={{ fontSize: 24, fontWeight: 800, marginBottom: 12 }}>2. Обработка AI</h3>
+              <p className="font-label" style={{ color: 'var(--on-surface-variant)', lineHeight: 1.5 }}>Наши алгоритмы мгновенно распознают добавки, консерванты и скрытые сахара.</p>
             </div>
 
-            {/* Floating Cards (Visuals) */}
-            <div style={{ position: 'relative', height: 160, marginTop: 40 }}>
-               <div className="floating-card" style={{ top: 10, left: 0, animationDelay: '0s' }}>
-                  <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'rgba(52,211,153,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#10B981' }}>✓</div>
-                  <span style={{ color: '#fff', fontWeight: 600, fontSize: 13 }}>Халал одобрен</span>
-               </div>
-               <div className="floating-card" style={{ top: 70, right: 0, animationDelay: '1s' }}>
-                  <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'rgba(124,58,237,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>🤖</div>
-                  <span style={{ color: '#fff', fontWeight: 600, fontSize: 13 }}>AI Анализ</span>
-               </div>
-               <div className="floating-card" style={{ top: 110, left: 30, animationDelay: '2s' }}>
-                  <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'rgba(239,68,68,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>🌾</div>
-                  <span style={{ color: '#fff', fontWeight: 600, fontSize: 13 }}>Без Глютена</span>
-               </div>
+            <div className="glass ghost-border" style={{ padding: 40, borderRadius: 24 }}>
+              <div className="icon-box" style={{ background: 'rgba(161, 81, 0, 0.2)', color: 'var(--tertiary)' }}>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15l2 2 4-4"/></svg>
+              </div>
+              <h3 className="font-headline" style={{ fontSize: 24, fontWeight: 800, marginBottom: 12 }}>3. Результат</h3>
+              <p className="font-label" style={{ color: 'var(--on-surface-variant)', lineHeight: 1.5 }}>Получите подробный отчет о соответствии продукта вашей диете и ценностям.</p>
             </div>
           </div>
+        </section>
 
-          {/* How it Works */}
-          <div style={{ marginBottom: 60 }}>
-             <h2 style={{ fontSize: 24, fontWeight: 700, color: '#fff', textAlign: 'center', marginBottom: 24, letterSpacing: -0.5 }}>Как это работает</h2>
-             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-               {[
-                 { num: 1, text: 'Выберите свой магазин или супермаркет из каталога', icon: '🛒' },
-                 { num: 2, text: 'Отсканируйте продукт прямо с полки с помощью камеры', icon: '📷' },
-                 { num: 3, text: 'Получите точный вердикт: подходит ли вам продукт', icon: '✨' },
-               ].map((step) => (
-                 <div key={step.num} className="glass-panel" style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '20px' }}>
-                    <div style={{ width: 44, height: 44, borderRadius: 14, background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>
-                      {step.icon}
-                    </div>
-                    <div style={{ flex: 1 }}>
-                       <div style={{ fontSize: 12, color: '#A78BFA', fontWeight: 700, marginBottom: 4, letterSpacing: 1 }}>ШАГ {step.num}</div>
-                       <div style={{ fontSize: 15, color: '#fff', fontWeight: 500, lineHeight: 1.4 }}>{step.text}</div>
-                    </div>
-                 </div>
-               ))}
-             </div>
-          </div>
-
-          {/* Features Bento */}
-          <div style={{ marginBottom: 60 }}>
-             <h2 style={{ fontSize: 24, fontWeight: 700, color: '#fff', textAlign: 'center', marginBottom: 24, letterSpacing: -0.5 }}>Возможности</h2>
-             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-                <div className="glass-panel" style={{ gridColumn: '1 / -1', padding: '24px', background: 'linear-gradient(135deg, rgba(124,58,237,0.1), rgba(124,58,237,0.03))' }}>
-                   <div style={{ fontSize: 32, marginBottom: 12 }}>🧠</div>
-                   <h3 style={{ fontSize: 18, color: '#fff', fontWeight: 700, margin: '0 0 8px' }}>Умный AI-алгоритм</h3>
-                   <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)', margin: 0, lineHeight: 1.5 }}>Нейросеть переведет сложный химический состав на понятный язык.</p>
+        {/* Bento Grid */}
+        <section className="section-padding" style={{ background: 'rgba(27, 27, 31, 0.3)' }}>
+          <div className="bento-grid">
+            
+            <div className="bento-item glass ghost-border col-8" style={{ minHeight: 360, justifyContent: 'space-between' }}>
+              <div style={{ maxWidth: 400 }}>
+                <span className="font-label" style={{ fontSize: 10, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--primary)', marginBottom: 16, display: 'block' }}>Защита</span>
+                <h3 className="font-headline" style={{ fontSize: 36, fontWeight: 800, marginBottom: 16 }}>Детектор аллергенов</h3>
+                <p className="font-label" style={{ color: 'var(--on-surface-variant)', fontSize: 16, lineHeight: 1.5 }}>Укажите свои предпочтения: орехи, лактоза или соя. Система предупредит вас мгновенно, если найдет их в составе.</p>
+              </div>
+              <div style={{ display: 'flex', gap: 12, marginTop: 32 }}>
+                <div style={{ background: 'var(--surface-variant)', padding: '8px 16px', borderRadius: 99, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{ color: 'var(--error)' }}>⚠️</span>
+                  <span className="font-label" style={{ fontSize: 12, fontWeight: 800, textTransform: 'uppercase' }}>Лактоза</span>
                 </div>
-
-                <div className="glass-panel" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: 12 }}>
-                   <div style={{ width: 40, height: 40, borderRadius: 12, background: 'rgba(239,68,68,0.15)', color: '#F87171', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                   </div>
-                   <div>
-                     <div style={{ color: '#fff', fontWeight: 700, fontSize: 15, marginBottom: 4 }}>Аллергены</div>
-                     <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12, lineHeight: 1.4 }}>Мгновенное предупреждение.</div>
-                   </div>
+                <div style={{ background: 'var(--surface-variant)', padding: '8px 16px', borderRadius: 99, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{ color: 'var(--error)' }}>⚠️</span>
+                  <span className="font-label" style={{ fontSize: 12, fontWeight: 800, textTransform: 'uppercase' }}>Глютен</span>
                 </div>
+              </div>
+            </div>
 
-                <div className="glass-panel" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: 12 }}>
-                   <div style={{ width: 40, height: 40, borderRadius: 12, background: 'rgba(16,185,129,0.15)', color: '#10B981', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                   </div>
-                   <div>
-                     <div style={{ color: '#fff', fontWeight: 700, fontSize: 15, marginBottom: 4 }}>Диеты</div>
-                     <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12, lineHeight: 1.4 }}>Халал, веганство и др.</div>
-                   </div>
-                </div>
-             </div>
+            <div className="bento-item glass ghost-border col-4" style={{ textAlign: 'center', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ width: 80, height: 80, borderRadius: '50%', background: 'rgba(210, 187, 255, 0.1)', border: '1px solid rgba(210, 187, 255, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24 }}>
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="var(--primary)" stroke="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <h3 className="font-headline" style={{ fontSize: 24, fontWeight: 800, marginBottom: 12 }}>Халал & Веган</h3>
+              <p className="font-label" style={{ color: 'var(--on-surface-variant)', fontSize: 14 }}>Проверка на соответствие религиозным и этическим стандартам питания.</p>
+            </div>
+
           </div>
+        </section>
 
-          {/* B2B Section */}
-          <div id="b2b-section" className="glass-panel" style={{ marginBottom: 60, textAlign: 'center', padding: '32px 24px', border: '1px solid rgba(124,58,237,0.3)', background: 'rgba(124,58,237,0.05)' }}>
-             <h2 style={{ fontSize: 22, fontWeight: 700, color: '#fff', marginBottom: 12, letterSpacing: -0.5 }}>Владельцам магазинов</h2>
-             <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)', lineHeight: 1.5, marginBottom: 24 }}>
-               Интегрируйте ваш каталог в Körset. Ваши покупатели скажут вам спасибо за честность и заботу о их здоровье. Мы поможем выбирать продукты быстрее и безопаснее.
-             </p>
-             <button style={{ background: '#fff', color: '#07070F', border: 'none', padding: '14px 24px', borderRadius: 14, fontWeight: 700, fontSize: 15, fontFamily: "'Advent Pro', sans-serif", cursor: 'pointer' }}>
-               Подключить магазин
-             </button>
+        {/* Footer */}
+        <footer style={{ padding: '60px 24px', background: '#0e0e12', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+          <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', flexWrap: 'wrap', gap: 40, justifyContent: 'space-between', alignItems: 'center' }}>
+            <div className="font-headline" style={{ fontSize: 28, fontWeight: 800 }}>Körset</div>
+            <div style={{ display: 'flex', gap: 48 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                <span className="font-label" style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.1em', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>Продукт</span>
+                <a href="#" className="font-label" style={{ color: '#fff', textDecoration: 'none', fontSize: 14 }}>Каталог</a>
+                <a href="#" className="font-label" style={{ color: '#fff', textDecoration: 'none', fontSize: 14 }}>О нас</a>
+              </div>
+            </div>
+            <div style={{ textAlign: 'right' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '8px 16px', background: 'var(--surface-variant)', borderRadius: 99, marginBottom: 8 }}>
+                <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--primary)' }}></div>
+                <span className="font-label" style={{ fontSize: 12, fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase' }}>Made in KZ 🇰🇿</span>
+              </div>
+              <div className="font-label" style={{ fontSize: 11, color: 'rgba(255,255,255,0.2)' }}>© 2024 Körset. All rights reserved.</div>
+            </div>
           </div>
+        </footer>
 
-          {/* Footer */}
-          <footer style={{ padding: '32px 0 60px', borderTop: '1px solid rgba(255,255,255,0.08)', textAlign: 'center' }}>
-             <div style={{ fontSize: 20, fontWeight: 800, color: '#fff', letterSpacing: 1, marginBottom: 8 }}>KÖRSET</div>
-             <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', marginBottom: 24 }}>AI-ассистент для умных покупок</div>
-             
-             <div style={{ display: 'flex', justifyContent: 'center', gap: 24, fontSize: 12, color: 'rgba(255,255,255,0.6)' }}>
-               <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>Privacy Policy</a>
-               <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>Terms of Service</a>
-               <span style={{ color: 'inherit' }}>Made in KZ 🇰🇿</span>
-             </div>
-          </footer>
-
-        </div>
       </div>
     </>
   )
 }
+
 
 
 function QuickCard({ title, sub, color, border, onClick }) {
