@@ -37,6 +37,7 @@ import { useUserData } from '../contexts/UserDataContext.jsx'
 
 export default function ProfileScreen() {
   const navigate = useNavigate()
+  const { currentStore } = useStore()
   const { lang, t } = useI18n()
   const allergenInputRef = useRef(null)
   const { profile, updateProfile: setProfile } = useProfile()
@@ -164,7 +165,7 @@ export default function ProfileScreen() {
           {/* ── STATS — 3 GLASS CARDS ── */}
           <div style={{ display: 'flex', justifyContent: 'center', gap: 12, padding: '30px 20px 28px' }}>
             {/* Favorites */}
-            <div onClick={() => navigate('/history?tab=favorites')} style={{ flex: 1, position: 'relative', paddingTop: 28, cursor: 'pointer' }}>
+            <div onClick={() => navigate(buildHistoryPath(currentStore?.slug || null, 'favorites'))} style={{ flex: 1, position: 'relative', paddingTop: 28, cursor: 'pointer' }}>
               <div style={{
                 position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', zIndex: 2,
                 width: 56, height: 56, borderRadius: '50%',
@@ -200,7 +201,7 @@ export default function ProfileScreen() {
             </div>
 
             {/* Scans */}
-            <div onClick={() => navigate('/history?tab=history')} style={{ flex: 1, position: 'relative', paddingTop: 28, cursor: 'pointer' }}>
+            <div onClick={() => navigate(buildHistoryPath(currentStore?.slug || null, 'history'))} style={{ flex: 1, position: 'relative', paddingTop: 28, cursor: 'pointer' }}>
               <div style={{
                 position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', zIndex: 2,
                 width: 56, height: 56, borderRadius: '50%',

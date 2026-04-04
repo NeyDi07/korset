@@ -4,6 +4,7 @@ import { supabase } from '../utils/supabase.js'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useI18n } from '../utils/i18n.js'
+import { useStore } from '../contexts/StoreContext.jsx'
 
 const DEFAULT_AVATARS = [
   { id: 'av1', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Arman&backgroundColor=7C3AED&clotheColor=3B82F6' },
@@ -67,6 +68,7 @@ const compressImage = (file) => {
 
 export default function SetupProfileScreen() {
   const navigate = useNavigate()
+  const { currentStore } = useStore()
   const { user } = useAuth()
   const { profile, updateProfile } = useProfile()
   const { lang } = useI18n()
@@ -204,7 +206,7 @@ export default function SetupProfileScreen() {
       await updateProfile({ halal, allergens })
       
       // 3. Отправляем в профиль
-      navigate('/profile', { replace: true })
+      navigate(currentStore ? `/s/${currentStore.slug}/profile` : '/profile', { replace: true })
     } catch (err) {
       alert(err.message)
     } finally {

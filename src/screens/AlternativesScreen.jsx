@@ -1,93 +1,76 @@
-
-import { useEffect, useMemo, useState } from 'react'
-import { useParams, useNavigate, useLocation } from 'react-router-dom'
-import { getAlternatives, formatPrice, CATEGORY_LABELS } from '../utils/fitCheck.js'
+import { useMemo, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useI18n } from '../utils/i18n.js'
-import { resolveProductByRef, getDemoProductForEntity } from '../domain/product/resolver.js'
-import { coerceProductEntity } from '../domain/product/normalizers.js'
-import { useStoreId } from '../contexts/StoreContext.jsx'
+import { useStore } from '../contexts/StoreContext.jsx'
+import { checkProductFit, formatPrice } from '../utils/fitCheck.js'
+import { getAnyKnownProductByRef, getGlobalDemoProducts, getStoreCatalogProducts } from '../utils/storeCatalog.js'
+import { buildProductAIPath, buildProductPath } from '../utils/routes.js'
 
 export default function AlternativesScreen() {
-  const { id } = useParams()
+  const { ean, storeSlug } = useParams()
   const navigate = useNavigate()
-  const location = useLocation()
   const { profile } = useProfile()
   const { t } = useI18n()
-  const storeId = useStoreId()
+  const { currentStore } = useStore()
+  const activeStoreSlug = storeSlug || currentStore?.slug || null
 
-  const [product, setProduct] = useState(location.state?.product ? coerceProductEntity(location.state.product) : null)
+  const product = useMemo(() => getAnyKnownProductByRef(ean, activeStoreSlug), [ean, activeStoreSlug])
+  const baseProducts = useMemo(() => activeStoreSlug ? getStoreCatalogProducts(activeStoreSlug) : getGlobalDemoProducts(), [activeStoreSlug])
 
-  useEffect(() => {
-    let cancelled = false
-    if (product) return undefined
-    resolveProductByRef({ canonicalId: id }, storeId).then((nextProduct) => {
-      if (!cancelled) setProduct(nextProduct)
-    })
-    return () => { cancelled = true }
-  }, [id, storeId, product])
+  const alternatives = useMemo(() => {
+    if (!product) return []
+    const preferredCategory = product.category
+    return baseProducts
+      .filter((item) => item.ean !== product.ean)
+      .filter((item) => item.category === preferredCategory)
+      .sort((a, b) => {
+        const aFit = checkProductFit(a, profile).fits ? 0 : 1
+        const bFit = checkProductFit(b, profile).fits ? 0 : 1
+        if (aFit !== bFit) return aFit - bFit
+        const priceDeltaA = Math.abs((a.priceKzt || 0) - (product.priceKzt || 0))
+        const priceDeltaB = Math.abs((b.priceKzt || 0) - (product.priceKzt || 0))
+        return priceDeltaA - priceDeltaB
+      })
+      .slice(0, 6)
+  }, [baseProducts, product, profile])
 
-  const demoBase = useMemo(() => getDemoProductForEntity(product), [product])
-  const alternatives = demoBase ? getAlternatives(demoBase, profile) : []
+  if (!product) {
+    return <div className="screen" style={{ display: 'grid', placeItems: 'center', color: 'var(--text-dim)' }}>{t.common.notFound}</div>
+  }
 
   return (
     <div className="screen">
-      <div className="header">
-        <button className="back-btn" onClick={() => navigate(-1)}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-          {t.common.back}
-        </button>
-        <div className="screen-title">{t.alternatives.title}</div>
-        <div className="screen-subtitle">{t.alternatives.subtitle}</div>
+      <div className="header" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <button onClick={() => navigate(-1)} style={{ width: 38, height: 38, borderRadius: 12, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: '#fff' }}>←</button>
+        <div className="screen-title" style={{ margin: 0 }}>{t.common.alternatives}</div>
       </div>
 
-      <div className="section">
-        {alternatives.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '48px 0', color: 'var(--text-dim)' }}>
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12, color: 'var(--text-dim)' }}>
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h.01"/><path d="M8 8a4 4 0 1 1 8 0c0 3-4 3-4 6"/></svg>
-            </div>
-            <p>{t.alternatives.empty}</p>
-            <p style={{ fontSize: 13, marginTop: 8, color: 'var(--text-dim)' }}>{t.alternatives.emptyHint}</p>
-          </div>
-        ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {alternatives.map((alt, i) => (
-              <div key={alt.id} className="alt-card" style={{ animationDelay: `${i * 0.1}s` }} onClick={() => navigate(`/product/${encodeURIComponent(`demo:${alt.id}`)}`)}>
-                <div className="alt-card-header">
-                  <AltThumb product={alt} />
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontFamily: 'var(--font-body)', fontWeight: 500, fontSize: 14, color: 'var(--text)', lineHeight: 1.35 }}>{alt.name}</div>
-                    <span className={`category-badge ${alt.category}`} style={{ marginTop: 4, display: 'inline-block' }}>{CATEGORY_LABELS[alt.category]}</span>
-                  </div>
-                </div>
-                <div className="alt-why">✓ {alt.whyFits}</div>
-                <div className="alt-footer">
-                  <div style={{ display: 'flex', align: 'center', gap: 10 }}>
-                    <span style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 700, color: 'var(--primary-bright)' }}>{formatPrice(alt.priceKzt)}</span>
-                    <span className="product-shelf">{alt.shelf}</span>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <span style={{ fontSize: 12, color: 'var(--text-dim)' }}>{alt.qualityScore}/100</span>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
-                  </div>
-                </div>
-                <div className="map-mock" style={{ marginTop: 10 }}>
-                  <span style={{ display: 'inline-flex', color: 'var(--text-dim)' }}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l-6 3V6l6-3 6 3 6-3v15l-6 3-6-3Z"/><path d="M9 3v15"/><path d="M15 6v15"/></svg>
-                  </span>
-                  <span>{t.product.findInStore} · {alt.shelf}</span>
-                  <span style={{ marginLeft: 'auto', fontSize: 11, opacity: 0.6 }}>{t.product.map}</span>
-                </div>
+      <div style={{ padding: '0 20px 24px', color: 'rgba(220,220,240,0.72)', fontSize: 13, lineHeight: 1.6 }}>
+        Подбираем похожие товары для <span style={{ color: '#fff', fontWeight: 700 }}>{product.name}</span>{activeStoreSlug ? ' в рамках текущего магазина.' : '.'}
+      </div>
+
+      <div style={{ padding: '0 20px 100px', display: 'grid', gap: 10 }}>
+        {alternatives.map((alt) => {
+          const fit = checkProductFit(alt, profile)
+          return (
+            <button key={alt.ean} onClick={() => navigate(buildProductPath(activeStoreSlug, alt.ean))} style={{
+              padding: 12, borderRadius: 18, cursor: 'pointer', textAlign: 'left',
+              background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
+              display: 'grid', gridTemplateColumns: '56px 1fr auto', gap: 12, alignItems: 'center'
+            }}>
+              <AltThumb product={alt} />
+              <div style={{ minWidth: 0 }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: '#fff', marginBottom: 4 }}>{alt.name}</div>
+                <div style={{ fontSize: 11, color: 'rgba(180,180,210,0.65)', marginBottom: 6 }}>{alt.brand || 'Без бренда'} · {alt.shelf || 'Полка уточняется'}</div>
+                <div style={{ fontSize: 11, color: fit.fits ? '#34D399' : '#F59E0B' }}>{fit.fits ? 'Подходит профилю' : 'Проверьте состав'}</div>
               </div>
-            ))}
-          </div>
-        )}
-      </div>
+              <div style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 800, color: '#A78BFA', whiteSpace: 'nowrap' }}>{formatPrice(alt.priceKzt)}</div>
+            </button>
+          )
+        })}
 
-      <div style={{ padding: '0 20px 24px' }}>
-        <button className="btn btn-ghost btn-full" onClick={() => product && navigate(`/product/${encodeURIComponent(product.canonicalId)}/ai`, { state: { product } })}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg>
+        <button className="btn btn-secondary btn-full" onClick={() => navigate(buildProductAIPath(activeStoreSlug, product.ean))}>
           {t.alternatives.askAI}
         </button>
       </div>
@@ -106,8 +89,12 @@ function AltThumb({ product }) {
   const src = getPrimaryImage(product)
   const [ok, setOk] = useState(true)
   return (
-    <div className="product-thumb" style={{ width: 44, height: 44, display: 'grid', placeItems: 'center' }}>
-      {src && ok ? <img src={src} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} onError={() => setOk(false)} /> : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--primary-bright)' }}><path d="M6 8h12l-1 12H7L6 8Z"/><path d="M9 8a3 3 0 0 1 6 0"/></svg>}
+    <div className="product-thumb" style={{ width: 56, height: 56, display: 'grid', placeItems: 'center', background: 'rgba(255,255,255,0.03)', borderRadius: 14 }}>
+      {src && ok ? (
+        <img src={src} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 6 }} onError={() => setOk(false)} />
+      ) : (
+        <span style={{ color: 'var(--primary-bright)', fontSize: 18 }}>📦</span>
+      )}
     </div>
   )
 }

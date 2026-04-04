@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { loadProfile, saveProfile } from '../utils/profile.js'
+import { useStore } from '../contexts/StoreContext.jsx'
 import { setLang, useI18n } from '../utils/i18n.js'
 
 const FEATURE_ROWS = [
@@ -286,6 +287,7 @@ function HeroPreview() {
 
 export default function OnboardingScreen({ onDone }) {
   const navigate = useNavigate()
+  const { currentStore } = useStore()
   const { lang, t } = useI18n()
   const profile = useMemo(() => loadProfile(), [])
 
@@ -347,7 +349,7 @@ export default function OnboardingScreen({ onDone }) {
     setLeaving(true)
     setTimeout(() => {
       onDone()
-      navigate('/scan')
+      navigate(currentStore ? `/s/${currentStore.slug}/scan` : '/scan')
     }, 260)
   }
 
