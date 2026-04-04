@@ -154,7 +154,12 @@ async function logScan({ ean, foundStatus, globalProductId, storeProductId, stor
   try {
     const { data: { user }, error: authErr } = await supabase.auth.getUser()
     if (authErr) console.warn('Auth check in logScan:', authErr.message)
-    const userId = user?.id || null
+    
+    let internalUserId = null
+    if (user) {
+      const { data } = await supabase.from('users').select('id').eq('auth_id', user.id).maybeSingle()
+      if (data) internalUserId = data.id
+    }
 
     const { error } = await supabase.from('scan_events').insert({
       ean,
@@ -162,7 +167,7 @@ async function logScan({ ean, foundStatus, globalProductId, storeProductId, stor
       global_product_id:  globalProductId  || null,
       store_product_id:   storeProductId   || null,
       store_id:           storeId          || null,
-      user_id:            userId,
+      user_id:            internalUserId,
       fit_result:         fitResult        ?? null,
       device_id:          getDeviceId(),
       session_id:         getSessionId(),

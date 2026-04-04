@@ -10,7 +10,7 @@ const fontAdvent = "'Advent Pro', sans-serif"
 export default function HistoryScreen() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { user } = useAuth()
+  const { user, internalUserId } = useAuth()
   const { lang } = useI18n()
 
   const [history, setHistory] = useState([])
@@ -19,8 +19,8 @@ export default function HistoryScreen() {
   const [tab, setTab] = useState(searchParams.get('tab') || 'history')
 
   useEffect(() => {
-    if (!user) {
-      setLoading(false)
+    if (!user || !internalUserId) {
+      if (!user) setLoading(false)
       return
     }
 
@@ -31,14 +31,14 @@ export default function HistoryScreen() {
       // scan_events uses global_product_id (UUID) and ean columns
       const { data: histData } = await supabase.from('scan_events')
         .select('ean, global_product_id, created_at')
-        .eq('user_id', user.id)
+        .eq('user_id', internalUserId)
         .order('created_at', { ascending: false })
         .limit(50)
 
       // ── Load Favorites ──
       const { data: favData } = await supabase.from('user_favorites')
-        .select('product_id, created_at')
-        .eq('user_id', user.id)
+        .select('global_product_id, ean, created_at')
+        .eq('user_id', internalUserId)
         .order('created_at', { ascending: false })
 
       // ── Resolve history products ──
@@ -84,29 +84,30 @@ export default function HistoryScreen() {
       // ── Resolve favorite products ──
       const favProducts = []
       for (const f of (favData || [])) {
-        let p = productsData.find(x => x.id === f.product_id)
+        const queryId = f.global_product_id || f.ean
+        
+        let p = productsData.find(x => x.id === queryId || x.ean === f.ean)
 
-        if (!p) {
+        if (!p && f.global_product_id) {
           const { data: gp } = await supabase.from('global_products')
             .select('id, name, brand, ean, category, images_json')
-            .eq('id', f.product_id).maybeSingle()
+            .eq('id', f.global_product_id).maybeSingle()
           if (gp) {
             const images = typeof gp.images_json === 'string' ? JSON.parse(gp.images_json || '[]') : (gp.images_json || [])
             p = { id: gp.id, name: gp.name, brand: gp.brand, ean: gp.ean, category: gp.category || 'grocery', images }
           }
         }
 
-        if (!p) {
-          // product_id might be an EAN for external products
+        if (!p && f.ean) {
           const { data: cached } = await supabase.from('external_product_cache')
             .select('product_name, brand, ean, image_url')
-            .eq('ean', f.product_id).maybeSingle()
+            .eq('ean', f.ean).maybeSingle()
           if (cached) {
-            p = { id: f.product_id, name: cached.product_name, brand: cached.brand, ean: cached.ean, category: 'grocery', images: cached.image_url ? [cached.image_url] : [] }
+            p = { id: f.ean, name: cached.product_name, brand: cached.brand, ean: cached.ean, category: 'grocery', images: cached.image_url ? [cached.image_url] : [] }
           }
         }
 
-        if (!p) p = { id: f.product_id, name: lang === 'kz' ? 'Белгісіз тауар' : 'Неизвестный товар', category: 'grocery' }
+        if (!p) p = { id: queryId, name: lang === 'kz' ? 'Белгісіз тауар' : 'Неизвестный товар', category: 'grocery' }
 
         favProducts.push({ ...p, favDate: f.created_at ? new Date(f.created_at) : null })
       }
@@ -116,13 +117,13 @@ export default function HistoryScreen() {
     }
 
     loadData()
-  }, [user])
+  }, [user, internalUserId])
 
   // ── Remove from favorites ──
   const removeFavorite = async (productId, e) => {
     e.stopPropagation()
-    if (!user) return
-    await supabase.from('user_favorites').delete().eq('user_id', user.id).eq('product_id', productId)
+    if (!user || !internalUserId) return
+    await supabase.from('user_favorites').delete().eq('user_id', internalUserId).eq('global_product_id', productId)
     setFavorites(prev => prev.filter(f => f.id !== productId))
   }
 

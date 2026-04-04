@@ -28,7 +28,7 @@ export function ProfileProvider({ children }) {
   // Загрузка настроек с сервера при входе в аккаунт
   useEffect(() => {
     if (!user) return
-    supabase.from('users').select('preferences').eq('id', user.id).maybeSingle()
+    supabase.from('users').select('preferences').eq('auth_id', user.id).maybeSingle()
       .then(({ data, error }) => {
         if (!error && data?.preferences) {
           setProfileState(data.preferences)
@@ -47,7 +47,7 @@ export function ProfileProvider({ children }) {
     })
     
     if (user && merged) {
-      await supabase.from('users').update({ preferences: merged }).eq('id', user.id)
+      await supabase.from('users').update({ preferences: merged }).eq('auth_id', user.id)
     }
   }
 
