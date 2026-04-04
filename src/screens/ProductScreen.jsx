@@ -6,6 +6,7 @@ import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import { supabase } from '../utils/supabase.js'
 import { useI18n } from '../utils/i18n.js'
+import { useUserData } from '../contexts/UserDataContext.jsx'
 
 function clamp(n, a, b) {
   return Math.max(a, Math.min(b, n))
@@ -92,78 +93,17 @@ export default function ProductScreen() {
   const { user, internalUserId } = useAuth()
   const { lang, t } = useI18n()
   const [moreOpen, setMoreOpen] = useState(false)
-  const [isFavorite, setIsFavorite] = useState(false)
+  const { checkIsFavorite, toggleFavorite } = useUserData()
   
   const product = useMemo(() => products.find((p) => p.id === id), [id])
+  const isFavorite = checkIsFavorite(product?.ean)
 
-  useEffect(() => {
-    if (internalUserId && product && product.ean) {
-      supabase.from('user_favorites').select('id').eq('user_id', internalUserId).eq('ean', product.ean).maybeSingle()
-        .then(({ data, error }) => {
-          if (error && error.code !== 'PGRST116') console.warn('Fav check error:', error.message)
-          setIsFavorite(!!data)
-        })
-    } else {
-      setIsFavorite(false)
-    }
-  }, [internalUserId, product])
-
-  const toggleFavorite = async () => {
+  const handleToggleFavorite = async () => {
     if (!user) {
       navigate('/auth')
       return
     }
-
-    let finalUserId = internalUserId
-    // Fallback on the fly if state didn't catch up
-    if (!finalUserId) {
-      try {
-        const { data } = await supabase.from('users').select('id').eq('auth_id', user.id).maybeSingle()
-        if (data) {
-          finalUserId = data.id
-        } else {
-          // Attempt on the fly creation
-          let device_id = localStorage.getItem('korset_device_id') || 'dev_fallback'
-          const { data: inserted } = await supabase.from('users').insert({ auth_id: user.id, device_id, name: user.user_metadata?.full_name || 'User' }).select('id').single()
-          finalUserId = inserted?.id
-        }
-      } catch (err) {}
-    }
-
-    if (!finalUserId) {
-      alert("Не удалось загрузить ваш профиль. Попробуйте перезайти в аккаунт.")
-      return
-    }
-    
-    // Optimistic UI update
-    const newVal = !isFavorite
-    setIsFavorite(newVal)
-    
-    try {
-      const validGlobalId = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(product.id) ? product.id : null;
-
-      if (newVal) {
-        // Upsert by user_id and ean (which are the unique keys in the table)
-        const { error } = await supabase.from('user_favorites').upsert({
-          user_id: finalUserId,
-          global_product_id: validGlobalId,
-          ean: product.ean || 'UNKNOWN'
-        }, { onConflict: 'user_id, ean' })
-        
-        if (error) throw error
-      } else {
-        const { error } = await supabase.from('user_favorites')
-          .delete()
-          .eq('user_id', finalUserId)
-          .eq('ean', product.ean)
-        
-        if (error) throw error
-      }
-    } catch (err) {
-      console.error('Favorite toggle error:', err.message)
-      alert("Ошибка базы данных: " + err.message + (err.details ? " | " + err.details : "") + (err.hint ? " | " + err.hint : ""))
-      setIsFavorite(!newVal) // revert on error
-    }
+    await toggleFavorite(product)
   }
 
   if (!product) {
@@ -219,7 +159,7 @@ export default function ProductScreen() {
           </button>
           <div className="screen-title" style={{ margin: 0 }}>{t.product.title}</div>
         </div>
-        <button onClick={toggleFavorite} style={{
+        <button onClick={handleToggleFavorite} style={{
             width: 38, height: 38, borderRadius: 12,
             border: '1px solid rgba(255,255,255,0.1)',
             background: isFavorite ? 'rgba(239,68,68,0.15)' : 'rgba(255,255,255,0.05)', cursor: 'pointer',

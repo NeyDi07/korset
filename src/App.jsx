@@ -64,16 +64,20 @@ function AppInner() {
   )
 }
 
+import { UserDataProvider } from './contexts/UserDataContext.jsx'
+
 export default function App() {
   return (
     <AuthProvider>
-      <StoreProvider>
-        <ProfileProvider>
-          <ErrorBoundary>
-            <AppInner />
-          </ErrorBoundary>
-        </ProfileProvider>
-      </StoreProvider>
+      <UserDataProvider>
+        <StoreProvider>
+          <ProfileProvider>
+            <ErrorBoundary>
+              <AppInner />
+            </ErrorBoundary>
+          </ProfileProvider>
+        </StoreProvider>
+      </UserDataProvider>
     </AuthProvider>
   )
 }
