@@ -6,11 +6,14 @@ import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useI18n } from '../utils/i18n.js'
 
 const DEFAULT_AVATARS = [
-  { id: 'av1', url: 'https://api.dicebear.com/7.x/micah/svg?seed=Felix&backgroundColor=7C3AED' },
-  { id: 'av2', url: 'https://api.dicebear.com/7.x/micah/svg?seed=Jack&backgroundColor=EC4899' },
-  { id: 'av3', url: 'https://api.dicebear.com/7.x/micah/svg?seed=Lily&backgroundColor=34D399' },
-  { id: 'av4', url: 'https://api.dicebear.com/7.x/micah/svg?seed=Leo&backgroundColor=FBBF24' },
-  { id: 'av5', url: 'https://api.dicebear.com/7.x/micah/svg?seed=Zoe&backgroundColor=8B5CF6' }
+  { id: 'av1', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Arman&backgroundColor=7C3AED&clotheColor=3B82F6' },
+  { id: 'av2', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Aisha&backgroundColor=EC4899&clotheColor=EC4899' },
+  { id: 'av3', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Daulet&backgroundColor=34D399&clotheColor=10B981' },
+  { id: 'av4', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Madina&backgroundColor=F59E0B&clotheColor=F97316' },
+  { id: 'av5', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Timur&backgroundColor=8B5CF6&clotheColor=6366F1' },
+  { id: 'av6', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Dana&backgroundColor=06B6D4&clotheColor=0EA5E9' },
+  { id: 'av7', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sultan&backgroundColor=EF4444&clotheColor=DC2626' },
+  { id: 'av8', url: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Aliya&backgroundColor=A78BFA&clotheColor=7C3AED' },
 ]
 
 const ALLERGEN_OPTIONS = [
@@ -122,6 +125,12 @@ export default function SetupProfileScreen() {
       if (!name.trim() || nameError) return;
     }
     if (step < 3) setStep(step + 1)
+  }
+
+  const handleNameKeyDown = (e) => {
+    if (e.key === 'Enter' && name.trim() && !nameError) {
+      handleNext()
+    }
   }
 
   const handleBack = () => {
@@ -242,57 +251,69 @@ export default function SetupProfileScreen() {
           
           {step === 1 && (
             <div style={{ animation: 'fadeUp 0.4s ease-out' }}>
-              <h1 style={{ fontSize: 32, fontWeight: 800, fontFamily: 'var(--font-display)', marginBottom: 8 }}>
-                {lang === 'kz' ? 'Сәлем!' : 'Давайте знакомиться'}
+              <div style={{ fontSize: 48, marginBottom: 16 }}>👋</div>
+              <h1 style={{ fontSize: 28, fontWeight: 800, fontFamily: 'var(--font-display)', marginBottom: 8, lineHeight: 1.2 }}>
+                {lang === 'kz' ? 'Сәлем!' : 'Привет!'}
               </h1>
-              <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 15, marginBottom: 40 }}>
-                {lang === 'kz' ? 'Біз сізді қалай атайық? Бұл атау басқаларға көрінбейді.' : 'Как нам к вам обращаться? Вы можете использовать псевдоним.'}
+              <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: 14, marginBottom: 36, lineHeight: 1.5 }}>
+                {lang === 'kz' ? 'Сізді қалай атайық?' : 'Как вас называть?'}
               </p>
 
-              <input 
-                type="text" 
-                placeholder={lang === 'kz' ? 'Лақап ат' : 'Ваше Имя / Псевдоним'} 
-                value={name} 
-                onChange={handleNameChange} 
-                autoFocus
-                style={{ 
-                  background: 'transparent', border: 'none', 
-                  borderBottom: nameError ? '2px solid #EF4444' : '2px solid rgba(255,255,255,0.2)', 
-                  padding: '16px 0', color: '#fff', fontSize: 24, fontWeight: 600, 
-                  width: '100%', outline: 'none', transition: 'border 0.2s',
-                  fontFamily: 'var(--font-display)'
-                }} 
-                onFocus={(e) => { if (!nameError) e.target.style.borderBottomColor = '#EC4899' }}
-                onBlur={(e) => { if (!nameError) e.target.style.borderBottomColor = 'rgba(255,255,255,0.2)' }}
-              />
+              <div style={{
+                background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
+                borderRadius: 20, padding: '20px', backdropFilter: 'blur(10px)'
+              }}>
+                <label style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 10, display: 'block' }}>
+                  {lang === 'kz' ? 'Лақап ат' : 'Имя или псевдоним'}
+                </label>
+                <input 
+                  type="text" 
+                  placeholder={lang === 'kz' ? 'Мысалы: Арман' : 'Например: Арман'} 
+                  value={name} 
+                  onChange={handleNameChange} 
+                  autoFocus
+                  onKeyDown={handleNameKeyDown}
+                  style={{ 
+                    background: 'transparent', border: 'none', 
+                    padding: '8px 0', color: '#fff', fontSize: 22, fontWeight: 700, 
+                    width: '100%', outline: 'none',
+                    fontFamily: 'var(--font-display)'
+                  }} 
+                />
+              </div>
               {nameError && (
-                <div style={{ color: '#EF4444', fontSize: 13, marginTop: 8, fontWeight: 500 }}>
+                <div style={{ color: '#EF4444', fontSize: 13, marginTop: 12, fontWeight: 500, paddingLeft: 4 }}>
                   {nameError}
                 </div>
               )}
+              <p style={{ color: 'rgba(255,255,255,0.25)', fontSize: 12, marginTop: 16, textAlign: 'center' }}>
+                {lang === 'kz' ? 'Бұл атау басқаларға көрінбейді' : 'Никто кроме вас не увидит это имя'}
+              </p>
             </div>
           )}
 
           {step === 2 && (
             <div style={{ animation: 'fadeUp 0.4s ease-out', flex: 1 }}>
-              <h1 style={{ fontSize: 32, fontWeight: 800, fontFamily: 'var(--font-display)', marginBottom: 8 }}>
+              <div style={{ fontSize: 48, marginBottom: 16 }}>🎭</div>
+              <h1 style={{ fontSize: 28, fontWeight: 800, fontFamily: 'var(--font-display)', marginBottom: 8, lineHeight: 1.2 }}>
                 {lang === 'kz' ? 'Аватар таңдаңыз' : 'Выберите аватар'}
               </h1>
-              <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 15, marginBottom: 40 }}>
-                {lang === 'kz' ? 'Өз фотоңызды жүктеңіз немесе дайын аватарды таңдаңыз.' : 'Загрузите свое фото или выберите готовый вариант.'}
+              <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: 14, marginBottom: 32, lineHeight: 1.5 }}>
+                {lang === 'kz' ? 'Өз фотоңызды жүктеңіз немесе дайын аватарды таңдаңыз' : 'Загрузите фото или выберите готовый'}
               </p>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14 }}>
                 
                 {/* Кнопка "Загрузить из галереи" (ВСЕГДА показывает камеру) */}
                 <div 
                   onClick={() => fileInputRef.current?.click()}
                   style={{ 
-                    aspectRatio: '1', borderRadius: 24, background: 'rgba(255,255,255,0.05)', 
+                    aspectRatio: '1', borderRadius: 20, background: 'rgba(255,255,255,0.04)', 
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     cursor: 'pointer', position: 'relative', overflow: 'hidden',
-                    border: '3px dashed rgba(255,255,255,0.3)',
-                    transition: 'all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                    border: '2px dashed rgba(255,255,255,0.2)',
+                    transition: 'all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                    backdropFilter: 'blur(10px)'
                   }}
                 >
                   <input 
@@ -313,18 +334,19 @@ export default function SetupProfileScreen() {
                   )}
                 </div>
 
-                {/* Если есть свое или гугл фото */}
+                {/* Если есть свое фото */}
                 {customAvatarUrl && (
                   <div 
                     onClick={() => setSelectedAvatarId('custom')}
                     style={{ 
-                      aspectRatio: '1', borderRadius: 24, background: 'rgba(255,255,255,0.05)', 
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      cursor: 'pointer', position: 'relative', overflow: 'hidden',
-                      border: selectedAvatarId === 'custom' ? '3px solid #7C3AED' : '3px solid rgba(255,255,255,0.1)',
-                      boxShadow: selectedAvatarId === 'custom' ? '0 10px 20px rgba(124,58,237,0.3)' : 'none',
-                      transform: selectedAvatarId === 'custom' ? 'scale(1.05)' : 'scale(1)',
-                      transition: 'all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                    aspectRatio: '1', borderRadius: 20, background: 'rgba(255,255,255,0.04)', 
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    cursor: 'pointer', position: 'relative', overflow: 'hidden',
+                    border: selectedAvatarId === 'custom' ? '2px solid #7C3AED' : '2px solid rgba(255,255,255,0.08)',
+                    boxShadow: selectedAvatarId === 'custom' ? '0 8px 24px rgba(124,58,237,0.25)' : 'none',
+                    transform: selectedAvatarId === 'custom' ? 'scale(1.05)' : 'scale(1)',
+                    transition: 'all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                    backdropFilter: 'blur(10px)'
                     }}
                   >
                     <img src={customAvatarUrl} alt="Your Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -336,22 +358,23 @@ export default function SetupProfileScreen() {
                   </div>
                 )}
 
-                {/* Готовые аватарки (DiceBear) */}
+                {/* Готовые аватарки (8 штук) */}
                 {DEFAULT_AVATARS.map(av => (
                   <div 
                     key={av.id} 
                     onClick={() => setSelectedAvatarId(av.id)}
                     style={{ 
-                      aspectRatio: '1', borderRadius: 24, background: 'rgba(255,255,255,0.05)', 
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      cursor: 'pointer', position: 'relative', overflow: 'hidden',
-                      border: selectedAvatarId === av.id ? '3px solid #fff' : '3px solid rgba(255,255,255,0.1)',
-                      boxShadow: selectedAvatarId === av.id ? '0 10px 20px rgba(0,0,0,0.3)' : 'none',
-                      transform: selectedAvatarId === av.id ? 'scale(1.05)' : 'scale(1)',
-                      transition: 'all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
-                    }}
-                  >
-                    <img src={av.url} alt="Avatar" style={{ width: '85%', height: '85%', objectFit: 'cover' }} />
+                    aspectRatio: '1', borderRadius: 20, background: 'rgba(255,255,255,0.04)', 
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    cursor: 'pointer', position: 'relative', overflow: 'hidden',
+                    border: selectedAvatarId === av.id ? '2px solid #7C3AED' : '2px solid rgba(255,255,255,0.08)',
+                    boxShadow: selectedAvatarId === av.id ? '0 8px 24px rgba(124,58,237,0.25)' : 'none',
+                    transform: selectedAvatarId === av.id ? 'scale(1.05)' : 'scale(1)',
+                    transition: 'all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                    backdropFilter: 'blur(10px)'
+                  }}
+                >
+                    <img src={av.url} alt="Avatar" style={{ width: '88%', height: '88%', objectFit: 'cover' }} />
                     
                     {/* Галочка выбора */}
                     {selectedAvatarId === av.id && (
@@ -363,31 +386,31 @@ export default function SetupProfileScreen() {
                 ))}
 
               </div>
-              <div style={{ textAlign: 'center', marginTop: 32 }}>
-                <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)' }}>
-                  {lang === 'kz' ? 'Бірінші ұяшықты басып фото жүктеңіз' : 'Нажмите на первый квадрат, чтобы загрузить фото из галереи'}
-                </span>
-              </div>
+              <p style={{ color: 'rgba(255,255,255,0.25)', fontSize: 12, marginTop: 20, textAlign: 'center' }}>
+                {lang === 'kz' ? 'Бірінші ұяшықты басып фото жүктеңіз' : 'Первая ячейка — загрузить своё фото'}
+              </p>
             </div>
           )}
 
           {step === 3 && (
             <div style={{ animation: 'fadeUp 0.4s ease-out', flex: 1 }}>
-              <h1 style={{ fontSize: 32, fontWeight: 800, fontFamily: 'var(--font-display)', marginBottom: 8 }}>
+              <div style={{ fontSize: 48, marginBottom: 16 }}>🥗</div>
+              <h1 style={{ fontSize: 28, fontWeight: 800, fontFamily: 'var(--font-display)', marginBottom: 8, lineHeight: 1.2 }}>
                 {lang === 'kz' ? 'Сіздің мақсатыңыз' : 'Ваши предпочтения'}
               </h1>
-              <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 15, marginBottom: 30 }}>
-                {lang === 'kz' ? 'Körset сізге ескерту үшін диетаңызды белгілеңіз.' : 'Мы будем предупреждать вас о запрещенных ингредиентах.'}
+              <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: 14, marginBottom: 28, lineHeight: 1.5 }}>
+                {lang === 'kz' ? 'Körset сізге ескерту үшін диетаңызды белгілеңіз' : 'Мы предупредим о нежелательных ингредиентах'}
               </p>
 
               {/* Халяль */}
               <div 
                 onClick={() => setHalal(!halal)}
                 style={{
-                  background: halal ? 'linear-gradient(135deg, rgba(52,211,153,0.2) 0%, rgba(16,185,129,0.2) 100%)' : 'rgba(255,255,255,0.05)',
-                  border: halal ? '1px solid #34D399' : '1px solid rgba(255,255,255,0.1)',
+                  background: halal ? 'rgba(52,211,153,0.1)' : 'rgba(255,255,255,0.04)',
+                  border: halal ? '1px solid rgba(52,211,153,0.3)' : '1px solid rgba(255,255,255,0.08)',
                   borderRadius: 20, padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                  cursor: 'pointer', transition: 'all 0.2s', marginBottom: 24
+                  cursor: 'pointer', transition: 'all 0.2s', marginBottom: 24,
+                  backdropFilter: 'blur(10px)'
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
