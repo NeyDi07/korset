@@ -4,7 +4,7 @@ import { supabase } from '../utils/supabase.js'
 import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import { useStore } from '../contexts/StoreContext.jsx'
-import { clearLocalScanHistory, buildHistoryOwnerKey, getLocalScanHistoryCount } from '../utils/localHistory.js'
+import { clearLocalScanHistory, buildHistoryOwnerKey, readLocalScanHistory } from '../utils/localHistory.js'
 import { DEFAULT_PRIVACY_SETTINGS, loadPrivacySettings, notifyPrivacyChanged } from '../utils/privacySettings.js'
 
 const fontDisplay = '"Bebas Neue", "Arial Narrow", sans-serif'
@@ -96,7 +96,9 @@ export default function PrivacySettingsScreen() {
     ...(profile?.privacy || {}),
   }), [profile])
 
-  const localHistoryCount = useMemo(() => getLocalScanHistoryCount(buildHistoryOwnerKey(user)), [user, profile])
+  const localHistoryCount = useMemo(() => {
+    return readLocalScanHistory(buildHistoryOwnerKey(user)).length
+  }, [user, profile])
 
   async function updatePrivacy(patch) {
     const next = { ...privacy, ...patch }
@@ -110,6 +112,7 @@ export default function PrivacySettingsScreen() {
       const ok = window.confirm('Отключить локальную историю и удалить уже сохранённые сканы на этом устройстве?')
       if (!ok) return
       clearLocalScanHistory(buildHistoryOwnerKey(user))
+      window.dispatchEvent(new CustomEvent('korset:scan_added'))
     }
     await updatePrivacy({ localHistoryEnabled: value })
   }
@@ -125,6 +128,7 @@ export default function PrivacySettingsScreen() {
     const ok = window.confirm('Удалить всю локальную историю сканов на этом устройстве?')
     if (!ok) return
     clearLocalScanHistory(buildHistoryOwnerKey(user))
+    window.dispatchEvent(new CustomEvent('korset:scan_added'))
     setStatusText('Локальная история на устройстве очищена.')
   }
 
@@ -159,10 +163,9 @@ export default function PrivacySettingsScreen() {
 
   return (
     <div className="screen" style={{ paddingTop: 'max(16px, env(safe-area-inset-top))', paddingBottom: 'calc(110px + env(safe-area-inset-bottom))', overflowY: 'auto' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 22px 16px' }}>
-        <button onClick={() => navigate(-1)} style={{ width: 42, height: 42, borderRadius: 14, border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.04)', color: '#fff', cursor: 'pointer', display: 'grid', placeItems: 'center' }}>←</button>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '0 22px 16px' }}>
+        <button onClick={() => navigate(-1)} aria-label="Назад" style={{ width: 44, height: 44, borderRadius: 14, border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.04)', color: '#fff', cursor: 'pointer', display: 'grid', placeItems: 'center', flexShrink: 0 }}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
         <div style={{ fontFamily: fontDisplay, fontSize: 28, letterSpacing: 1, color: '#fff' }}>Приватность</div>
-        <button onClick={() => navigate('/profile')} style={{ width: 42, height: 42, borderRadius: 14, border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.04)', color: '#fff', cursor: 'pointer', display: 'grid', placeItems: 'center' }}>×</button>
       </div>
 
       <div style={{ padding: '0 22px 18px' }}>

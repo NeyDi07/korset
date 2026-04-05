@@ -1,9 +1,7 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { supabase } from '../utils/supabase.js'
 import { useI18n } from '../utils/i18n.js'
-import { useAuth } from '../contexts/AuthContext.jsx'
-import { consumeAuthReturnTo, readAuthReturnTo, saveAuthReturnTo } from '../utils/authFlow.js'
 
 /* ─── Error i18n mapping ─── */
 const errMap = {
@@ -38,7 +36,6 @@ export default function AuthScreen() {
   const navigate = useNavigate()
   const location = useLocation()
   const { lang, t } = useI18n()
-  const { user, loading: authLoading } = useAuth()
 
   const [mode, setMode] = useState('login') // 'login' | 'register' | 'verify' | 'forgot'
 
@@ -49,20 +46,10 @@ export default function AuthScreen() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [otp, setOtp] = useState(['', '', '', '', '', ''])
 
-
-  useEffect(() => {
-    const stateReturnTo = location.state?.returnTo
-    if (stateReturnTo) saveAuthReturnTo(stateReturnTo)
-  }, [location.state])
-
-  useEffect(() => {
-    if (authLoading || !user) return
-    const target = consumeAuthReturnTo('/profile')
-    navigate(target, { replace: true })
-  }, [authLoading, user, navigate])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState(null)
+  const infoMessage = location.state?.message || null
   const [focusedField, setFocusedField] = useState(null)
 
   const otpRefs = useRef([])
@@ -91,15 +78,14 @@ export default function AuthScreen() {
         setMode('verify')
       } else if (mode === 'forgot') {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: `${window.location.origin}/auth`
+          redirectTo: window.location.origin
         })
         if (error) throw error
         setSuccess(lang === 'kz' ? 'Қалпына келтіру сілтемесі жіберілді' : 'Ссылка для сброса отправлена на почту')
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password })
         if (error) throw error
-        const target = consumeAuthReturnTo('/profile')
-        navigate(target, { replace: true })
+        navigate(-1)
       }
     } catch (err) {
       setError(localizeError(err.message, lang))
@@ -127,11 +113,9 @@ export default function AuthScreen() {
 
   const handleGoogleAuth = async () => {
     try {
-      const redirectTarget = location.state?.returnTo || readAuthReturnTo() || '/profile'
-      saveAuthReturnTo(redirectTarget)
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
-        options: { redirectTo: `${window.location.origin}/auth` }
+        options: { redirectTo: window.location.origin }
       })
       if (error) throw error
     } catch (err) {
@@ -251,6 +235,16 @@ export default function AuthScreen() {
             background: 'rgba(255,255,255,0.03)', backdropFilter: 'blur(24px)',
             border: '1px solid rgba(255,255,255,0.07)', borderRadius: 20, padding: '24px 20px', marginBottom: 20
           }}>
+
+            {infoMessage && !error && !success && (
+              <div style={{
+                background: 'rgba(124,58,237,0.08)', border: '1px solid rgba(124,58,237,0.2)',
+                color: '#DDD6FE', padding: '12px 16px', borderRadius: 12, fontSize: 13,
+                fontFamily: fontAdvent, marginBottom: 18, textAlign: 'center', lineHeight: 1.45
+              }}>
+                {infoMessage}
+              </div>
+            )}
 
             {/* Error */}
             {error && (
