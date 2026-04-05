@@ -54,8 +54,9 @@ body {
   font-family: var(--font-body);
   font-size: 15px;
   line-height: 1.5;
-  overflow: hidden;
-  overscroll-behavior-y: none;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: auto;
   -webkit-font-smoothing: antialiased;
   font-variant-numeric: lining-nums tabular-nums;
 }
@@ -66,6 +67,7 @@ body {
   min-height: 100dvh;
   min-height: 100svh;
   background: var(--bg);
+  overflow-x: clip;
 }
 
 .public-shell,
@@ -80,10 +82,9 @@ body {
     var(--bg);
 }
 
-.public-shell {
-  overflow-x: hidden;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+.public-shell,
+.retail-shell {
+  overflow: visible;
 }
 
 .public-shell__content,
@@ -92,12 +93,17 @@ body {
   min-height: 100vh;
   min-height: 100svh;
   min-height: 100dvh;
+  height: auto;
 }
 
 .app-shell {
   display: flex;
   justify-content: center;
   align-items: stretch;
+  min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
+  overflow: hidden;
 }
 
 .public-shell .screen {
@@ -126,6 +132,8 @@ body {
   flex-direction: column;
   border-left: 1px solid var(--border);
   border-right: 1px solid var(--border);
+  min-width: 0;
+  min-height: 0;
 }
 
 
@@ -142,7 +150,8 @@ body {
 
 /* ─── Screen ──────────────────────────────────────── */
 .screen {
-  flex: 1;
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
   padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
@@ -1118,5 +1127,26 @@ body {
   .app-frame {
     height: -webkit-fill-available;
     min-height: -webkit-fill-available;
+  }
+}
+
+
+.public-scroll-surface {
+  min-height: 100%;
+}
+
+.app-scroll-surface {
+  min-height: 0;
+}
+
+@media (max-width: 768px) {
+  .app-shell {
+    overflow: hidden;
+  }
+
+  .app-frame {
+    max-width: none;
+    border-left: none;
+    border-right: none;
   }
 }
