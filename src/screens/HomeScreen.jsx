@@ -365,15 +365,9 @@ export default function HomeScreen() {
               <button className="cta-btn-main" onClick={() => navigate('/stores')}>
                 Выбрать магазин
               </button>
-              {continueStore ? (
-                <button className="cta-btn-sec" onClick={() => navigate(`/s/${continueStore.slug}`)}>
-                  Продолжить
-                </button>
-              ) : (
-                <button className="cta-btn-sec" onClick={() => document.getElementById('b2b-section')?.scrollIntoView({ behavior: 'smooth' })}>
-                  О проекте
-                </button>
-              )}
+              <button className="cta-btn-sec" onClick={() => document.getElementById('b2b-section')?.scrollIntoView({ behavior: 'smooth' })}>
+                О проекте
+              </button>
             </div>
           </div>
         </section>
