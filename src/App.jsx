@@ -22,33 +22,21 @@ import PrivacySettingsScreen from './screens/PrivacySettingsScreen.jsx'
 import ErrorBoundary from './components/ErrorBoundary.jsx'
 import { AuthProvider, useAuth } from './contexts/AuthContext.jsx'
 import { ProfileProvider } from './contexts/ProfileContext.jsx'
-import { StoreProvider } from './contexts/StoreContext.jsx'
-
-function isPublicShellPath(pathname) {
-  if (pathname === '/' || pathname === '/stores' || pathname === '/auth' || pathname === '/setup-profile') return true
-  if (/^\/stores\/[^/]+$/.test(pathname)) return true
-  return false
-}
+import { StoreProvider, useStore } from './contexts/StoreContext.jsx'
 
 function AppInner() {
   const { pathname } = useLocation()
   const navigate = useNavigate()
   const { user } = useAuth()
-
-  const isPublicShell = isPublicShellPath(pathname)
-  const hideNav = isPublicShell || pathname === '/qr-print'
+  const { isStoreApp } = useStore()
+  
+  const hideNav = pathname === '/' || pathname === '/stores' || pathname === '/qr-print' || pathname === '/auth' || pathname === '/setup-profile'
   const [showOnboarding, setShowOnboarding] = useState(
     !localStorage.getItem('korset_onboarding_done') || !localStorage.getItem('korset_lang')
   )
 
   useEffect(() => {
-    document.body.dataset.shell = isPublicShell ? 'public' : 'app'
-    return () => {
-      delete document.body.dataset.shell
-    }
-  }, [isPublicShell])
-
-  useEffect(() => {
+    // Если пользователь авторизован, но ещё не завершил настройку профиля
     if (user && user.user_metadata?.profile_setup_done !== true) {
       if (pathname !== '/setup-profile') {
         navigate('/setup-profile', { replace: true })
@@ -56,9 +44,11 @@ function AppInner() {
     }
   }, [user, pathname, navigate])
 
+  const shouldShowOnboarding = showOnboarding && isStoreApp && pathname !== '/auth' && pathname !== '/setup-profile'
+
   return (
     <div className="app-frame">
-      {showOnboarding && <OnboardingScreen onDone={() => setShowOnboarding(false)} />}
+      {shouldShowOnboarding && <OnboardingScreen onDone={() => setShowOnboarding(false)} />}
       <Routes>
         <Route path="/"                         element={<HomeScreen />} />
         <Route path="/profile"                  element={<ProfileScreen />} />
@@ -89,9 +79,9 @@ function AppInner() {
         <Route path="/qr-print"                 element={<QRPrintScreen />} />
         <Route path="/product/ext/:ean"         element={<ExternalProductScreen />} />
         <Route path="/product/ext/:ean/ai"      element={<AIScreen />} />
-        <Route path="/product/:ean"             element={<ProductScreen />} />
+        <Route path="/product/:ean"              element={<ProductScreen />} />
         <Route path="/product/:ean/alternatives" element={<AlternativesScreen />} />
-        <Route path="/product/:ean/ai"          element={<AIScreen />} />
+        <Route path="/product/:ean/ai"           element={<AIScreen />} />
         <Route path="*"                         element={<Navigate to="/" replace />} />
       </Routes>
       {!hideNav && <BottomNav />}

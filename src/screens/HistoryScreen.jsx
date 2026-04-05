@@ -6,6 +6,7 @@ import { useUserData } from '../contexts/UserDataContext.jsx'
 import { useI18n } from '../utils/i18n.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { buildProductPath } from '../utils/routes.js'
+import { navigateToAuth } from '../utils/authFlow.js'
 import { hydrateProductsFromFavoriteRows, hydrateProductsFromScanRows } from '../domain/product/resolver.js'
 import { buildHistoryOwnerKey, readLocalScanHistory, SCAN_HISTORY_STORAGE_KEY } from '../utils/localHistory.js'
 import { loadPrivacySettings, PRIVACY_EVENT } from '../utils/privacySettings.js'
@@ -55,7 +56,6 @@ export default function HistoryScreen() {
   const { toggleFavorite, favoriteEans } = useUserData()
 
   const [history, setHistory] = useState([])
-  const [remoteHistory, setRemoteHistory] = useState([])
   const [favorites, setFavorites] = useState([])
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState(searchParams.get('tab') || 'history')
@@ -67,7 +67,6 @@ export default function HistoryScreen() {
 
   useEffect(() => {
     if (!user || !internalUserId) {
-      setRemoteHistory([])
       setHistory([])
       setFavorites([])
       setLoading(false)
@@ -107,15 +106,15 @@ export default function HistoryScreen() {
           hydrateProductsFromFavoriteRows(favoriteRows),
         ])
 
+        const mergedHistory = mergeHistoryItems(hydratedHistory, scopedLocalHistory)
+
         if (!cancelled) {
-          setRemoteHistory(hydratedHistory)
-          setHistory(mergeHistoryItems(hydratedHistory, scopedLocalHistory))
+          setHistory(mergedHistory)
           setFavorites(hydratedFavorites)
         }
       } catch (error) {
         console.error('HistoryScreen loadData failed', error)
         if (!cancelled) {
-          setRemoteHistory([])
           setHistory(mergeHistoryItems([], scopedLocalHistory))
           setFavorites([])
         }
@@ -135,11 +134,9 @@ export default function HistoryScreen() {
   }, [favoriteEans])
 
   useEffect(() => {
-    const syncLocalHistory = (event) => {
-      const ownerKey = buildHistoryOwnerKey(user)
-      if (event?.detail?.ownerKey && event.detail.ownerKey !== ownerKey) return
-      const scopedLocalHistory = loadPrivacySettings().localHistoryEnabled ? readLocalScanHistory(ownerKey) : []
-      setHistory(mergeHistoryItems(remoteHistory, scopedLocalHistory))
+    const syncLocalHistory = () => {
+      const scopedLocalHistory = loadPrivacySettings().localHistoryEnabled ? readLocalScanHistory(buildHistoryOwnerKey(user)) : []
+      setHistory((prev) => mergeHistoryItems(prev, scopedLocalHistory))
     }
 
     const handleStorage = (event) => {
@@ -155,7 +152,7 @@ export default function HistoryScreen() {
       window.removeEventListener('korset:scan_added', syncLocalHistory)
       window.removeEventListener(PRIVACY_EVENT, syncLocalHistory)
     }
-  }, [user, remoteHistory])
+  }, [user])
 
   const removeFavorite = async (product, event) => {
     event.stopPropagation()
@@ -197,7 +194,7 @@ export default function HistoryScreen() {
         <p style={{ fontSize: 13, color: 'var(--text-dim)', marginBottom: 24, lineHeight: 1.5, fontFamily: fontAdvent }}>
           {lang === 'kz' ? 'Сканерленген тауарлар мен таңдаулыларды көру үшін аккаунтқа кіріңіз' : 'Войдите, чтобы видеть отсканированные товары и избранное'}
         </p>
-        <button onClick={() => navigate('/auth')} style={{ background: '#7C3AED', color: '#fff', border: 'none', padding: '14px 28px', borderRadius: 14, fontSize: 15, fontWeight: 600, fontFamily: fontAdvent, cursor: 'pointer' }}>
+        <button onClick={() => navigateToAuth(navigate, location)} style={{ background: '#7C3AED', color: '#fff', border: 'none', padding: '14px 28px', borderRadius: 14, fontSize: 15, fontWeight: 600, fontFamily: fontAdvent, cursor: 'pointer' }}>
           {lang === 'kz' ? 'Аккаунтқа кіру' : 'Войти'}
         </button>
       </div>

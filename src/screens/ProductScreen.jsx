@@ -113,7 +113,7 @@ export default function ProductScreen() {
 
   const handleToggleFavorite = async () => {
     if (!user) {
-      navigate('/auth')
+      navigateToAuth(navigate, location)
       return
     }
     await toggleFavorite(product)
