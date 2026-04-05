@@ -7,7 +7,7 @@ export default function AppLayout() {
 
   return (
     <div className="app-shell">
-      <div className="app-frame">
+      <div className="app-frame app-scroll-surface">
         <Outlet />
         {!hideNav && <BottomNav />}
       </div>
