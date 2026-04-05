@@ -57,7 +57,7 @@ function AppInner() {
         <Route path="/stores"                   element={<StoresScreen />} />
         <Route path="/privacy"                  element={<PrivacySettingsScreen />} />
         <Route path="/stores/:storeSlug"        element={<StorePublicScreen />} />
-        <Route path="/s/:storeSlug"             element={<Navigate to="catalog" replace />} />
+        <Route path="/s/:storeSlug"             element={<HomeScreen />} />
         <Route path="/s/:storeSlug/catalog"     element={<CatalogScreen />} />
         <Route path="/s/:storeSlug/scan"        element={<ScanScreen />} />
         <Route path="/s/:storeSlug/ai"          element={<AIAssistantScreen />} />
@@ -67,18 +67,18 @@ function AppInner() {
         <Route path="/s/:storeSlug/privacy"    element={<PrivacySettingsScreen />} />
         <Route path="/s/:storeSlug/product/ext/:ean" element={<ExternalProductScreen />} />
         <Route path="/s/:storeSlug/product/ext/:ean/ai" element={<AIScreen />} />
-        <Route path="/s/:storeSlug/product/:id" element={<ProductScreen />} />
-        <Route path="/s/:storeSlug/product/:id/alternatives" element={<AlternativesScreen />} />
-        <Route path="/s/:storeSlug/product/:id/ai" element={<AIScreen />} />
+        <Route path="/s/:storeSlug/product/:ean" element={<ProductScreen />} />
+        <Route path="/s/:storeSlug/product/:ean/alternatives" element={<AlternativesScreen />} />
+        <Route path="/s/:storeSlug/product/:ean/ai" element={<AIScreen />} />
 
         <Route path="/auth"                     element={<AuthScreen />} />
         <Route path="/setup-profile"            element={<SetupProfileScreen />} />
         <Route path="/qr-print"                 element={<QRPrintScreen />} />
         <Route path="/product/ext/:ean"         element={<ExternalProductScreen />} />
         <Route path="/product/ext/:ean/ai"      element={<AIScreen />} />
-        <Route path="/product/:id"              element={<ProductScreen />} />
-        <Route path="/product/:id/alternatives" element={<AlternativesScreen />} />
-        <Route path="/product/:id/ai"           element={<AIScreen />} />
+        <Route path="/product/:ean"             element={<ProductScreen />} />
+        <Route path="/product/:ean/alternatives" element={<AlternativesScreen />} />
+        <Route path="/product/:ean/ai"          element={<AIScreen />} />
         <Route path="*"                         element={<Navigate to="/" replace />} />
       </Routes>
       {!hideNav && <BottomNav />}
