@@ -1,8 +1,48 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useI18n } from '../utils/i18n.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { getStores } from '../data/stores.js'
 import { buildStorePublicPath } from '../utils/routes.js'
+
+
+function StepCard({ number, icon, title, description }) {
+  const [interactive, setInteractive] = useState(false)
+
+  const activate = () => setInteractive(true)
+  const deactivate = () => setInteractive(false)
+
+  return (
+    <div
+      className={`step-card group${interactive ? ' is-active' : ''}`}
+      role="button"
+      tabIndex={0}
+      aria-label={title}
+      onMouseEnter={activate}
+      onMouseLeave={deactivate}
+      onMouseDown={activate}
+      onMouseUp={deactivate}
+      onTouchStart={activate}
+      onTouchEnd={deactivate}
+      onTouchCancel={deactivate}
+      onFocus={activate}
+      onBlur={deactivate}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          activate()
+          window.setTimeout(deactivate, 180)
+        }
+      }}
+    >
+      <div className="step-num">{number}</div>
+      <div style={{ marginBottom: 32 }}>
+        <span className="material-symbols-outlined" style={{ fontSize: 48, color: 'var(--primary)' }}>{icon}</span>
+      </div>
+      <h3 className="font-headline" style={{ fontSize: 24, fontWeight: 700, marginBottom: 16 }}>{title}</h3>
+      <p className="font-label" style={{ color: 'var(--on-surface-variant)', lineHeight: 1.6, fontSize: 15 }}>{description}</p>
+    </div>
+  )
+}
 
 export default function HomeScreen() {
   const navigate = useNavigate()
@@ -249,11 +289,8 @@ export default function HomeScreen() {
           cursor: pointer;
           transition: background 0.2s;
         }
-        @media (hover: hover) and (pointer: fine) {
-          .cta-btn-sec:hover { background: rgba(255,255,255,0.1); }
-        }
-        .cta-btn-sec:active,
-        .cta-btn-sec:focus-visible { background: rgba(255,255,255,0.08); transform: scale(0.98); outline: none; }
+        .cta-btn-sec:hover { background: rgba(255,255,255,0.1); }
+        .cta-btn-sec:active { background: rgba(255,255,255,0.08); transform: scale(0.98); }
 
         .neon-glow-primary { box-shadow: 0 0 40px -10px rgba(210, 187, 255, 0.4); }
         .neon-glow-tertiary { box-shadow: 0 0 40px -10px rgba(255, 183, 132, 0.4); }
@@ -268,22 +305,19 @@ export default function HomeScreen() {
           backdrop-filter: blur(20px);
           -webkit-backdrop-filter: blur(20px);
           border: 1px solid rgba(210, 187, 255, 0.1);
-          transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-          z-index: 1;
+          transition: transform 0.24s ease, box-shadow 0.24s ease, background 0.24s ease, border-color 0.24s ease;
+          cursor: pointer;
+          user-select: none;
           touch-action: manipulation;
           outline: none;
+          z-index: 1;
         }
-        @media (hover: hover) and (pointer: fine) {
-          .step-card:hover {
-            transform: scale(1.03);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-            border-color: rgba(210, 187, 255, 0.18);
-          }
-        }
-        .step-card:active,
+        .step-card:hover,
+        .step-card.is-active,
         .step-card:focus-visible {
-          transform: scale(1.02);
-          box-shadow: 0 16px 34px rgba(0,0,0,0.34);
+          transform: translateY(-6px) scale(1.02);
+          box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+          background: rgba(42, 41, 48, 0.62);
           border-color: rgba(210, 187, 255, 0.2);
         }
         .step-num {
@@ -299,12 +333,8 @@ export default function HomeScreen() {
           z-index: -1;
           pointer-events: none;
         }
-        @media (hover: hover) and (pointer: fine) {
-          .step-card:hover .step-num {
-            color: rgba(210, 187, 255, 0.08);
-          }
-        }
-        .step-card:active .step-num,
+        .step-card:hover .step-num,
+        .step-card.is-active .step-num,
         .step-card:focus-visible .step-num {
           color: rgba(210, 187, 255, 0.08);
         }
@@ -400,35 +430,26 @@ export default function HomeScreen() {
           </div>
 
           <div className="grid-3">
-            {/* Step 1 */}
-            <div className="step-card group" tabIndex={0}>
-              <div className="step-num">01</div>
-              <div style={{ marginBottom: 32 }}>
-                <span className="material-symbols-outlined" style={{ fontSize: 48, color: 'var(--primary)' }}>barcode_scanner</span>
-              </div>
-              <h3 className="font-headline" style={{ fontSize: 24, fontWeight: 700, marginBottom: 16 }}>Сканируйте штрихкод</h3>
-              <p className="font-label" style={{ color: 'var(--on-surface-variant)', lineHeight: 1.6, fontSize: 15 }}>Просто наведите камеру на штрихкод продукта, чтобы мгновенно получить его данные прямо в магазине.</p>
-            </div>
-            
-            {/* Step 2 */}
-            <div className="step-card group" tabIndex={0}>
-              <div className="step-num">02</div>
-              <div style={{ marginBottom: 32 }}>
-                <span className="material-symbols-outlined" style={{ fontSize: 48, color: 'var(--primary)' }}>psychology</span>
-              </div>
-              <h3 className="font-headline" style={{ fontSize: 24, fontWeight: 700, marginBottom: 16 }}>Анализ нейросетью</h3>
-              <p className="font-label" style={{ color: 'var(--on-surface-variant)', lineHeight: 1.6, fontSize: 15 }}>Наши алгоритмы Körset AI расшифруют состав, найдут добавки, консерванты и скрытые аллергены.</p>
-            </div>
+            <StepCard
+              number="01"
+              icon="barcode_scanner"
+              title="Сканируйте штрихкод"
+              description="Просто наведите камеру на штрихкод продукта, чтобы мгновенно получить его данные прямо в магазине."
+            />
 
-            {/* Step 3 */}
-            <div className="step-card group" tabIndex={0}>
-              <div className="step-num">03</div>
-              <div style={{ marginBottom: 32 }}>
-                <span className="material-symbols-outlined" style={{ fontSize: 48, color: 'var(--primary)' }}>fact_check</span>
-              </div>
-              <h3 className="font-headline" style={{ fontSize: 24, fontWeight: 700, marginBottom: 16 }}>Умный вердикт</h3>
-              <p className="font-label" style={{ color: 'var(--on-surface-variant)', lineHeight: 1.6, fontSize: 15 }}>Получите строгую оценку качества продукта и его соответствия вашим предпочтениям.</p>
-            </div>
+            <StepCard
+              number="02"
+              icon="psychology"
+              title="Анализ нейросетью"
+              description="Наши алгоритмы Körset AI расшифруют состав, найдут добавки, консерванты и скрытые аллергены."
+            />
+
+            <StepCard
+              number="03"
+              icon="fact_check"
+              title="Умный вердикт"
+              description="Получите строгую оценку качества продукта и его соответствия вашим предпочтениям."
+            />
           </div>
         </section>
 
