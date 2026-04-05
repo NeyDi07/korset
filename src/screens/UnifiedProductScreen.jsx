@@ -4,7 +4,6 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import { useUserData } from '../contexts/UserDataContext.jsx'
-import { navigateToAuth } from '../utils/authFlow.js'
 import { useStoreId } from '../contexts/StoreContext.jsx'
 import { useI18n } from '../utils/i18n.js'
 import { checkProductFit, formatPrice, CATEGORY_LABELS } from '../utils/fitCheck.js'
@@ -169,7 +168,7 @@ export default function UnifiedProductScreen({ mode = 'canonical' }) {
 
   const handleToggleFavorite = async () => {
     if (!user) {
-      navigateToAuth(navigate, location)
+      navigate('/auth', { state: buildAuthNavigateState(location, { reason: 'favorites_requires_auth', message: lang === 'kz' ? 'Таңдаулыларға қосу үшін аккаунтқа кіріңіз.' : 'Войдите, чтобы добавлять товары в избранное.' }) })
       return
     }
     if (!product) return

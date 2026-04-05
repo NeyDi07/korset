@@ -3,7 +3,7 @@ import { useI18n } from '../utils/i18n.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { getStores } from '../data/stores.js'
 import { buildStorePublicPath } from '../utils/routes.js'
-import { navigateToAuth } from '../utils/authFlow.js'
+import { buildAuthNavigateState } from '../utils/authFlow.js'
 
 export default function HomeScreen() {
   const navigate = useNavigate()
@@ -327,7 +327,7 @@ export default function HomeScreen() {
             <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: '-0.02em' }} className="font-headline">Körset</div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            <button onClick={() => navigateToAuth(navigate, location)} style={{ 
+            <button onClick={() => navigate('/auth', { state: buildAuthNavigateState(location) })} style={{ 
               width: 44, height: 44, borderRadius: '50%', background: 'rgba(53, 52, 57, 0.4)', 
               display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', color: '#d2bbff'
             }}>
