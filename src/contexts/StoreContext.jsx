@@ -6,6 +6,7 @@ import {
   buildAIHomePath,
   buildCatalogPath,
   buildHistoryPath,
+  buildStoreHomePath,
   buildProductAIPath,
   buildProductAlternativesPath,
   buildProductPath,
@@ -84,7 +85,7 @@ export function StoreProvider({ children }) {
       return `/s/${currentStore.slug}${subPath.startsWith('/') ? subPath : `/${subPath}`}`
     },
     routes: currentStore ? {
-      home: `/s/${currentStore.slug}`,
+      home: buildStoreHomePath(currentStore.slug),
       catalog: buildCatalogPath(currentStore.slug),
       scan: buildScanPath(currentStore.slug),
       ai: buildAIHomePath(currentStore.slug),
