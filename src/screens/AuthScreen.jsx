@@ -1,7 +1,9 @@
-import { useState, useRef } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { supabase } from '../utils/supabase.js'
 import { useI18n } from '../utils/i18n.js'
+import { useAuth } from '../contexts/AuthContext.jsx'
+import { getReturnTo, normalizeReturnTo } from '../utils/authFlow.js'
 
 /* ─── Error i18n mapping ─── */
 const errMap = {
@@ -36,6 +38,7 @@ export default function AuthScreen() {
   const navigate = useNavigate()
   const location = useLocation()
   const { lang, t } = useI18n()
+  const { user } = useAuth()
 
   const [mode, setMode] = useState('login') // 'login' | 'register' | 'verify' | 'forgot'
 
@@ -50,9 +53,16 @@ export default function AuthScreen() {
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState(null)
   const infoMessage = location.state?.message || null
+  const returnTo = getReturnTo(location, '/')
   const [focusedField, setFocusedField] = useState(null)
 
   const otpRefs = useRef([])
+
+  useEffect(() => {
+    if (user) {
+      navigate(returnTo, { replace: true })
+    }
+  }, [user, returnTo, navigate])
 
   const pwErrors = mode === 'register' ? validatePassword(password, lang) : []
   const pwMismatch = mode === 'register' && confirmPassword && password !== confirmPassword
@@ -85,7 +95,7 @@ export default function AuthScreen() {
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password })
         if (error) throw error
-        navigate(-1)
+        navigate(returnTo, { replace: true })
       }
     } catch (err) {
       setError(localizeError(err.message, lang))
@@ -113,9 +123,10 @@ export default function AuthScreen() {
 
   const handleGoogleAuth = async () => {
     try {
+      const redirectTo = `${window.location.origin}/auth?returnTo=${encodeURIComponent(returnTo)}`
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
-        options: { redirectTo: window.location.origin }
+        options: { redirectTo }
       })
       if (error) throw error
     } catch (err) {
@@ -213,7 +224,10 @@ export default function AuthScreen() {
         {/* ── HEADER ── */}
         <div style={{ position: 'relative', zIndex: 10, padding: '0 20px' }}>
           {/* Back button */}
-          <button onClick={() => navigate(-1)} style={{
+          <button onClick={() => {
+            if (location.key !== 'default') navigate(-1)
+            else navigate(normalizeReturnTo(returnTo, '/'), { replace: true })
+          }} style={{
             position: 'absolute', top: 16, left: 20, width: 40, height: 40, borderRadius: 12,
             background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)',
             color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'

@@ -9,7 +9,8 @@ import { useUserData } from '../contexts/UserDataContext.jsx'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { getAnyKnownProductByRef } from '../utils/storeCatalog.js'
 import { coerceProductEntity } from '../domain/product/normalizers.js'
-import { buildCatalogPath, buildProductAIPath, buildProductAlternativesPath } from '../utils/routes.js'
+import { buildCatalogPath, buildProductAIPath, buildProductAlternativesPath, buildProductPath } from '../utils/routes.js'
+import { buildAuthNavigateState } from '../utils/authFlow.js'
 
 function clamp(n, a, b) {
   return Math.max(a, Math.min(b, n))
@@ -113,7 +114,7 @@ export default function ProductScreen() {
 
   const handleToggleFavorite = async () => {
     if (!user) {
-      navigateToAuth(navigate, location)
+      navigate('/auth', { state: buildAuthNavigateState(location, { reason: 'favorites_requires_auth', message: lang === 'kz' ? 'Таңдаулыларға қосу үшін аккаунтқа кіріңіз.' : 'Войдите, чтобы добавлять товары в избранное.' }) })
       return
     }
     await toggleFavorite(product)

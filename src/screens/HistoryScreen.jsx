@@ -1,15 +1,15 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../utils/supabase.js'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import { useUserData } from '../contexts/UserDataContext.jsx'
 import { useI18n } from '../utils/i18n.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { buildProductPath } from '../utils/routes.js'
-import { navigateToAuth } from '../utils/authFlow.js'
 import { hydrateProductsFromFavoriteRows, hydrateProductsFromScanRows } from '../domain/product/resolver.js'
 import { buildHistoryOwnerKey, readLocalScanHistory, SCAN_HISTORY_STORAGE_KEY } from '../utils/localHistory.js'
 import { loadPrivacySettings, PRIVACY_EVENT } from '../utils/privacySettings.js'
+import { buildAuthNavigateState } from '../utils/authFlow.js'
 
 const fontAdvent = "'Advent Pro', sans-serif"
 
@@ -49,6 +49,7 @@ function mergeHistoryItems(primary = [], secondary = []) {
 
 export default function HistoryScreen() {
   const navigate = useNavigate()
+  const location = useLocation()
   const [searchParams, setSearchParams] = useSearchParams()
   const { user, internalUserId } = useAuth()
   const { lang } = useI18n()
@@ -194,7 +195,7 @@ export default function HistoryScreen() {
         <p style={{ fontSize: 13, color: 'var(--text-dim)', marginBottom: 24, lineHeight: 1.5, fontFamily: fontAdvent }}>
           {lang === 'kz' ? 'Сканерленген тауарлар мен таңдаулыларды көру үшін аккаунтқа кіріңіз' : 'Войдите, чтобы видеть отсканированные товары и избранное'}
         </p>
-        <button onClick={() => navigateToAuth(navigate, location)} style={{ background: '#7C3AED', color: '#fff', border: 'none', padding: '14px 28px', borderRadius: 14, fontSize: 15, fontWeight: 600, fontFamily: fontAdvent, cursor: 'pointer' }}>
+        <button onClick={() => navigate('/auth', { state: buildAuthNavigateState(location, { reason: 'history_required', message: lang === 'kz' ? 'Тарих пен таңдаулыларды көру үшін аккаунтқа кіріңіз.' : 'Войдите, чтобы видеть историю и избранное.' }) })} style={{ background: '#7C3AED', color: '#fff', border: 'none', padding: '14px 28px', borderRadius: 14, fontSize: 15, fontWeight: 600, fontFamily: fontAdvent, cursor: 'pointer' }}>
           {lang === 'kz' ? 'Аккаунтқа кіру' : 'Войти'}
         </button>
       </div>
