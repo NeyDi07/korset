@@ -1,3 +1,4 @@
+
 import { createContext, useContext, useEffect, useState } from 'react'
 import { useAuth } from './AuthContext.jsx'
 import { supabase } from '../utils/supabase.js'
@@ -49,15 +50,15 @@ export function ProfileProvider({ children }) {
       })
   }, [user])
 
-  const updateProfile = async (newProfile) => {
+  const updateProfile = async (nextValue) => {
     let merged
-    setProfileState(prev => {
-      const resolvedPatch = typeof newProfile === 'function' ? newProfile(prev) : newProfile
+    setProfileState((prev) => {
+      const resolved = typeof nextValue === 'function' ? nextValue(prev) : nextValue
       merged = normalizeProfile({
         ...prev,
-        ...resolvedPatch,
-        notifications: { ...prev.notifications, ...(resolvedPatch?.notifications || {}) },
-        privacy: { ...prev.privacy, ...(resolvedPatch?.privacy || {}) },
+        ...resolved,
+        notifications: { ...prev.notifications, ...(resolved?.notifications || {}) },
+        privacy: { ...prev.privacy, ...(resolved?.privacy || {}) },
       })
       localStorage.setItem('korset_profile', JSON.stringify(merged))
       saveNotificationSettings(merged.notifications)

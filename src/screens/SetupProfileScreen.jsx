@@ -2,20 +2,13 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../utils/supabase.js'
 import { useAuth } from '../contexts/AuthContext.jsx'
+import { getOrCreateDeviceId, writeCachedProfileAvatar, writeCachedProfileName } from '../utils/userIdentity.js'
 import { useI18n } from '../utils/i18n.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { AVATAR_PRESETS } from '../data/avatarPresets.js'
 import ProfileAvatar from '../components/ProfileAvatar.jsx'
 
 const stepCount = 2
-
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
-function isLockAbort(error) {
-  return /lock request is aborted/i.test(String(error?.message || error || ''))
-}
 
 const compressImage = (file) => new Promise((resolve, reject) => {
   const reader = new FileReader()
@@ -122,7 +115,7 @@ export default function SetupProfileScreen() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { currentStore } = useStore()
-  const { user, accountProfile, refreshAccountProfile } = useAuth()
+  const { user, displayName, avatarId, refreshAccountProfile } = useAuth()
   const { lang } = useI18n()
   const fileInputRef = useRef(null)
 
@@ -137,8 +130,8 @@ export default function SetupProfileScreen() {
 
   useEffect(() => {
     if (!user) return
-    const currentName = accountProfile?.name || user.user_metadata?.full_name || ''
-    const currentAvatar = user.user_metadata?.avatar_id || user.user_metadata?.avatar_url || user.user_metadata?.picture || AVATAR_PRESETS[0].id
+    const currentName = displayName || user.user_metadata?.full_name || ''
+    const currentAvatar = avatarId || user.user_metadata?.avatar_id || user.user_metadata?.avatar_url || user.user_metadata?.picture || AVATAR_PRESETS[0].id
     setName(currentName)
     if (typeof currentAvatar === 'string' && /^https?:/i.test(currentAvatar)) {
       setCustomAvatarUrl(currentAvatar)
@@ -146,7 +139,7 @@ export default function SetupProfileScreen() {
     } else {
       setSelectedAvatarId(currentAvatar || AVATAR_PRESETS[0].id)
     }
-  }, [user, accountProfile])
+  }, [user])
 
   const backTarget = currentStore ? `/s/${currentStore.slug}/profile` : '/profile'
   const canContinueName = name.trim().length >= 2 && !nameError
@@ -181,7 +174,15 @@ export default function SetupProfileScreen() {
     const value = event.target.value
     const regex = /^[a-zA-Zа-яА-ЯәіңғүұқөһӘІҢҒҮҰҚӨҺ0-9\s]*$/
     setName(value)
-    setNameError(regex.test(value) ? '' : texts.invalid)
+    if (!regex.test(value)) {
+      setNameError(texts.invalid)
+      return
+    }
+    if (value.trim().length > 0 && value.trim().length < 3) {
+      setNameError(lang === 'kz' ? 'Аты кемінде 3 таңбадан тұруы керек' : 'Имя должно быть минимум из 3 букв')
+      return
+    }
+    setNameError('')
   }
 
   const handleFileChange = async (event) => {
@@ -205,62 +206,37 @@ export default function SetupProfileScreen() {
   }
 
   const saveProfile = async () => {
-    if (!user || !name.trim() || nameError || !hasAvatar) return
+    const trimmedName = name.trim()
+    if (!user || !trimmedName || nameError || !hasAvatar) return
     setLoading(true)
     try {
       const avatarValue = selectedAvatarId === 'custom' ? customAvatarUrl : selectedAvatarId
+      const deviceId = getOrCreateDeviceId()
 
-      const updateAuthTask = supabase.auth.updateUser({
+      const { error: userRowError } = await supabase
+        .from('users')
+        .upsert({
+          auth_id: user.id,
+          device_id: deviceId,
+          name: trimmedName,
+        }, { onConflict: 'auth_id' })
+      if (userRowError) throw userRowError
+
+      const { error: authError } = await supabase.auth.updateUser({
         data: {
-          full_name: name.trim(),
+          full_name: trimmedName,
           avatar_id: avatarValue,
           profile_setup_done: true,
         },
       })
-
-      const upsertProfileTask = supabase
-        .from('users')
-        .upsert({
-          auth_id: user.id,
-          name: name.trim(),
-          updated_at: new Date().toISOString(),
-        }, { onConflict: 'auth_id' })
-
-      let authError = null
-      try {
-        const authResult = await updateAuthTask
-        authError = authResult?.error || null
-      } catch (error) {
-        authError = error
-      }
-
-      if (authError && isLockAbort(authError)) {
-        await sleep(120)
-        const retryResult = await supabase.auth.updateUser({
-          data: {
-            full_name: name.trim(),
-            avatar_id: avatarValue,
-            profile_setup_done: true,
-          },
-        })
-        authError = retryResult?.error || null
-      }
-
       if (authError) throw authError
 
-      const profileResult = await upsertProfileTask
-      if (profileResult?.error) throw profileResult.error
-
-      try {
-        await refreshAccountProfile()
-      } catch (refreshError) {
-        console.warn('refreshAccountProfile skipped', refreshError)
-      }
-
+      writeCachedProfileName(user.id, trimmedName)
+      writeCachedProfileAvatar(user.id, avatarValue)
+      await refreshAccountProfile(user)
       navigate(backTarget, { replace: true })
     } catch (error) {
-      console.error('saveProfile failed', error)
-      alert(error?.message || 'Не удалось сохранить профиль')
+      alert(error.message || 'Не удалось сохранить профиль')
     } finally {
       setLoading(false)
     }
@@ -281,10 +257,10 @@ export default function SetupProfileScreen() {
 
   if (editMode) {
     return (
-      <div className="screen" style={{ background: '#07070F', paddingTop: 0, paddingBottom: 'max(28px, env(safe-area-inset-bottom))', display: 'flex', flexDirection: 'column', minHeight: '100%' }}>
-        <div style={{ padding: 'max(20px, env(safe-area-inset-top)) 20px calc(108px + env(safe-area-inset-bottom))', flex: 1, overflowY: 'auto' }}>
+      <div className="screen" style={{ background: '#07070F', paddingTop: 0, paddingBottom: 'max(28px, env(safe-area-inset-bottom))' }}>
+        <div style={{ padding: 'max(20px, env(safe-area-inset-top)) 20px 28px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 22 }}>
-            <button onClick={goBack} aria-label="Назад" style={{ width: 44, height: 44, borderRadius: 14, border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.04)', color: '#fff', cursor: 'pointer', display: 'grid', placeItems: 'center', flexShrink: 0 }}>
+            <button onClick={goBack} style={{ width: 42, height: 42, borderRadius: 14, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
             </button>
             <h1 style={{ margin: 0, fontSize: 24, fontWeight: 700, color: '#fff', letterSpacing: '-0.02em' }}>{texts.editTitle}</h1>
@@ -313,8 +289,6 @@ export default function SetupProfileScreen() {
             />
           </SurfaceCard>
 
-        </div>
-        <div style={{ position: 'sticky', bottom: 0, padding: '14px 20px calc(16px + env(safe-area-inset-bottom))', background: 'linear-gradient(180deg, rgba(7,7,15,0) 0%, rgba(7,7,15,0.82) 18%, #07070F 48%)', zIndex: 20 }}>
           <button onClick={onPrimaryAction} disabled={loading || !canContinueName || !hasAvatar} style={{
             width: '100%', height: 56, borderRadius: 18, border: 'none', cursor: loading ? 'default' : 'pointer',
             background: loading || !canContinueName || !hasAvatar ? 'rgba(139,92,246,0.35)' : '#7C3AED',
@@ -328,10 +302,10 @@ export default function SetupProfileScreen() {
   }
 
   return (
-    <div className="screen" style={{ background: '#07070F', paddingTop: 0, paddingBottom: 'max(32px, env(safe-area-inset-bottom))', display: 'flex', flexDirection: 'column', minHeight: '100%' }}>
-      <div style={{ padding: 'max(20px, env(safe-area-inset-top)) 20px calc(118px + env(safe-area-inset-bottom))', flex: 1, overflowY: 'auto' }}>
+    <div className="screen" style={{ background: '#07070F', paddingTop: 0, paddingBottom: 'max(32px, env(safe-area-inset-bottom))' }}>
+      <div style={{ padding: 'max(20px, env(safe-area-inset-top)) 20px 24px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
-          <button onClick={goBack} aria-label="Назад" style={{ width: 44, height: 44, borderRadius: 14, border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.04)', color: '#fff', cursor: 'pointer', display: 'grid', placeItems: 'center', flexShrink: 0 }}>
+          <button onClick={goBack} style={{ width: 42, height: 42, borderRadius: 14, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
           </button>
           <div style={{ minWidth: 96, textAlign: 'center' }}>
@@ -372,8 +346,6 @@ export default function SetupProfileScreen() {
           </SurfaceCard>
         )}
 
-      </div>
-      <div style={{ position: 'sticky', bottom: 0, padding: '14px 20px calc(16px + env(safe-area-inset-bottom))', background: 'linear-gradient(180deg, rgba(7,7,15,0) 0%, rgba(7,7,15,0.82) 18%, #07070F 48%)', zIndex: 20 }}>
         <button onClick={onPrimaryAction} disabled={loading || (step === 1 ? !canContinueName : !hasAvatar)} style={{
           width: '100%', height: 56, borderRadius: 18, border: 'none', cursor: loading ? 'default' : 'pointer',
           background: loading || (step === 1 ? !canContinueName : !hasAvatar) ? 'rgba(139,92,246,0.35)' : '#7C3AED',

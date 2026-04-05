@@ -1,36 +1,18 @@
-import { createContext, useContext, useEffect, useState, useCallback } from 'react'
+
+import { createContext, useContext, useEffect, useState } from 'react'
 import { supabase } from '../utils/supabase.js'
+import {
+  getOrCreateDeviceId,
+  readCachedProfileAvatar,
+  readCachedProfileName,
+  writeCachedProfileAvatar,
+  writeCachedProfileName,
+} from '../utils/userIdentity.js'
 
-const AuthContext = createContext({
-  user: null,
-  session: null,
-  loading: true,
-  internalUserId: null,
-  accountProfile: null,
-  displayName: 'Körset User',
-  refreshAccountProfile: async () => {},
-  logout: async () => {},
-})
+const AuthContext = createContext({ user: null, session: null, loading: true })
 
-function getDeviceId() {
-  let deviceId = localStorage.getItem('korset_device_id')
-  if (!deviceId) {
-    deviceId = 'dev_' + Math.random().toString(36).slice(2) + Date.now().toString(36)
-    localStorage.setItem('korset_device_id', deviceId)
-  }
-  return deviceId
-}
-
-function withTimeout(promise, ms = 8000) {
-  return Promise.race([
-    promise,
-    new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms)),
-  ])
-}
-
-function isLockAbort(error) {
-  const message = String(error?.message || error || '')
-  return /lock request is aborted/i.test(message)
+function buildFallbackName(authUser) {
+  return authUser?.user_metadata?.full_name || authUser?.email?.split('@')?.[0] || 'Körset User'
 }
 
 export function AuthProvider({ children }) {
@@ -38,115 +20,121 @@ export function AuthProvider({ children }) {
   const [session, setSession] = useState(null)
   const [loading, setLoading] = useState(true)
   const [internalUserId, setInternalUserId] = useState(null)
-  const [accountProfile, setAccountProfile] = useState(null)
+  const [displayName, setDisplayName] = useState(null)
+  const [avatarId, setAvatarId] = useState(null)
 
-  const clearAccountState = useCallback(() => {
-    setSession(null)
-    setUser(null)
-    setInternalUserId(null)
-    setAccountProfile(null)
-  }, [])
-
-  const resolveInternalUser = useCallback(async (authUser) => {
+  const refreshAccountProfile = async (authUser = user) => {
     if (!authUser) {
-      clearAccountState()
-      return null
-    }
-
-    const deviceId = getDeviceId()
-
-    try {
-      const { data, error } = await withTimeout(
-        supabase
-          .from('users')
-          .select('id, name, lang, preferences')
-          .eq('auth_id', authUser.id)
-          .maybeSingle(),
-        8000,
-      )
-
-      if (error) throw error
-
-      if (data) {
-        setInternalUserId(data.id)
-        setAccountProfile(data)
-        return data
-      }
-
-      const fallbackName = authUser.user_metadata?.full_name || authUser.user_metadata?.name || authUser.email?.split('@')[0] || 'Körset User'
-      const { data: inserted, error: insertError } = await withTimeout(
-        supabase
-          .from('users')
-          .upsert({ auth_id: authUser.id, device_id: deviceId, name: fallbackName }, { onConflict: 'auth_id' })
-          .select('id, name, lang, preferences')
-          .single(),
-        8000,
-      )
-
-      if (insertError) throw insertError
-      setInternalUserId(inserted?.id || null)
-      setAccountProfile(inserted || null)
-      return inserted || null
-    } catch (err) {
-      console.error('Failed to resolve internal user', err)
       setInternalUserId(null)
-      setAccountProfile(null)
+      setDisplayName(null)
+      setAvatarId(null)
       return null
     }
-  }, [clearAccountState])
 
-  const refreshAccountProfile = useCallback(async () => {
-    if (!user) return null
-    return resolveInternalUser(user)
-  }, [user, resolveInternalUser])
+    const cachedName = readCachedProfileName(authUser.id)
+    const cachedAvatar = readCachedProfileAvatar(authUser.id)
+    const metadataName = authUser.user_metadata?.full_name || null
+    const metadataAvatar = authUser.user_metadata?.avatar_id || authUser.user_metadata?.avatar_url || authUser.user_metadata?.picture || null
 
-  const logout = useCallback(async () => {
+    setDisplayName(cachedName || metadataName || buildFallbackName(authUser))
+    setAvatarId(cachedAvatar || metadataAvatar || null)
+
     try {
-      const { error } = await withTimeout(supabase.auth.signOut(), 6000)
+      const { data, error } = await supabase
+        .from('users')
+        .select('id, name')
+        .eq('auth_id', authUser.id)
+        .maybeSingle()
+
       if (error) throw error
-    } catch (error) {
-      console.warn('signOut failed, forcing local logout', error)
-      if (!isLockAbort(error)) {
-        // even on non-lock errors we still drop local auth state so UI does not hang
+
+      let row = data
+      if (!row) {
+        const device_id = getOrCreateDeviceId()
+        const { data: inserted, error: insertError } = await supabase
+          .from('users')
+          .insert({
+            auth_id: authUser.id,
+            device_id,
+            name: cachedName || metadataName || buildFallbackName(authUser),
+          })
+          .select('id, name')
+          .single()
+
+        if (insertError) throw insertError
+        row = inserted
       }
-    } finally {
-      clearAccountState()
-      try {
-        localStorage.removeItem('korset_auth_return_to')
-        localStorage.removeItem('korset_auth_reason')
-      } catch {}
+
+      setInternalUserId(row?.id || null)
+      const resolvedName = row?.name || cachedName || metadataName || buildFallbackName(authUser)
+      setDisplayName(resolvedName)
+      writeCachedProfileName(authUser.id, resolvedName)
+
+      const resolvedAvatar = cachedAvatar || metadataAvatar || null
+      setAvatarId(resolvedAvatar)
+      if (resolvedAvatar) writeCachedProfileAvatar(authUser.id, resolvedAvatar)
+
+      return row
+    } catch (err) {
+      console.error('Failed to resolve internal user/profile', err)
+      setInternalUserId(null)
+      setDisplayName(cachedName || metadataName || buildFallbackName(authUser))
+      setAvatarId(cachedAvatar || metadataAvatar || null)
+      return null
     }
-  }, [clearAccountState])
+  }
+
+  const logout = async () => {
+    try {
+      await Promise.race([
+        supabase.auth.signOut(),
+        new Promise((resolve) => setTimeout(resolve, 2500)),
+      ])
+    } catch (error) {
+      console.warn('Logout warning', error)
+    } finally {
+      setSession(null)
+      setUser(null)
+      setInternalUserId(null)
+      setDisplayName(null)
+      setAvatarId(null)
+    }
+  }
 
   useEffect(() => {
-    let active = true
-
+    let mounted = true
     supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (!active) return
+      if (!mounted) return
       setSession(session)
       setUser(session?.user ?? null)
-      await resolveInternalUser(session?.user ?? null)
-      if (active) setLoading(false)
+      await refreshAccountProfile(session?.user ?? null)
+      if (mounted) setLoading(false)
     })
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (!active) return
-      setSession(session)
-      setUser(session?.user ?? null)
-      await resolveInternalUser(session?.user ?? null)
-      if (active) setLoading(false)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, nextSession) => {
+      setSession(nextSession)
+      setUser(nextSession?.user ?? null)
+      await refreshAccountProfile(nextSession?.user ?? null)
+      setLoading(false)
     })
 
     return () => {
-      active = false
+      mounted = false
       subscription.unsubscribe()
     }
-  }, [resolveInternalUser])
-
-  const displayName = accountProfile?.name || user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email?.split('@')[0] || 'Körset User'
+  }, [])
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, internalUserId, accountProfile, displayName, refreshAccountProfile, logout }}>
+    <AuthContext.Provider value={{
+      user,
+      internalUserId,
+      session,
+      loading,
+      displayName,
+      avatarId,
+      refreshAccountProfile,
+      logout,
+    }}>
       {children}
     </AuthContext.Provider>
   )
