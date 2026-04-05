@@ -61,6 +61,11 @@ export const dictionaries = {
       ],
       dbInfo: '3+ млн товаров в базе',
       dbSub: 'Open Food Facts · Обновляется автоматически',
+      galleryBtn: 'Загрузить из галереи',
+      galleryBtnSub: 'Фото штрихкода или состава',
+      galleryNoBarcode: 'Штрихкод не найден на фото. Попробуйте другое изображение.',
+      galleryError: 'Не удалось прочитать изображение',
+      galleryScanning: 'Читаем штрихкод с фото...',
     },
     product: {
       title: 'Карточка товара',
@@ -294,6 +299,11 @@ export const dictionaries = {
       ],
       dbInfo: '3+ млн тауар базада',
       dbSub: 'Open Food Facts · Автоматты жаңартылады',
+      galleryBtn: 'Галереядан жүктеу',
+      galleryBtnSub: 'Штрихкод немесе құрам фотосы',
+      galleryNoBarcode: 'Суреттен штрихкод табылмады. Басқа суретті көріңіз.',
+      galleryError: 'Суретті оқу мүмкін болмады',
+      galleryScanning: 'Суреттен штрихкод оқылуда...',
     },
     product: {
       title: 'Тауар картасы',

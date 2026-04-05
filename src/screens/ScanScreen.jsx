@@ -1,9 +1,84 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { lookupProduct } from '../utils/productLookup.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { buildProductPath } from '../utils/routes.js'
 import { useI18n } from '../utils/i18n.js'
+
+// ─── Иконка галереи ────────────────────────────────────────────────────────────
+function GalleryIcon({ size = 22, color = 'currentColor' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="18" height="18" rx="3" />
+      <circle cx="8.5" cy="8.5" r="1.5" />
+      <polyline points="21 15 16 10 5 21" />
+    </svg>
+  )
+}
+
+// ─── Хук: сканирование из файла ────────────────────────────────────────────────
+function useGalleryScanner(onDetected) {
+  const fileInputRef = useRef(null)
+  const [galleryState, setGalleryState] = useState('idle') // idle | scanning | error
+  const [galleryError, setGalleryError] = useState(null)
+
+  const openGallery = useCallback(() => {
+    setGalleryState('idle')
+    setGalleryError(null)
+    fileInputRef.current?.click()
+  }, [])
+
+  const handleFile = useCallback(async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    // сбрасываем input чтобы можно было выбрать тот же файл повторно
+    e.target.value = ''
+
+    setGalleryState('scanning')
+    setGalleryError(null)
+
+    const TEMP_ID = 'korset-gallery-decoder'
+    let tempDiv = document.getElementById(TEMP_ID)
+    if (!tempDiv) {
+      tempDiv = document.createElement('div')
+      tempDiv.id = TEMP_ID
+      tempDiv.style.cssText = 'position:fixed;visibility:hidden;width:1px;height:1px;overflow:hidden;pointer-events:none;'
+      document.body.appendChild(tempDiv)
+    }
+
+    try {
+      const { Html5Qrcode } = await import('html5-qrcode')
+      const scanner = new Html5Qrcode(TEMP_ID, { verbose: false })
+      const ean = await scanner.scanFile(file, false)
+      try { scanner.clear() } catch {}
+      setGalleryState('idle')
+      onDetected(ean)
+    } catch (err) {
+      try {
+        const { Html5Qrcode } = await import('html5-qrcode')
+        const s = new Html5Qrcode(TEMP_ID, { verbose: false })
+        try { s.clear() } catch {}
+      } catch {}
+      const msg = String(err?.message || err).toLowerCase()
+      const noCode = msg.includes('no multiformat') || msg.includes('not found') || msg.includes('no barcode')
+      setGalleryState('error')
+      setGalleryError(noCode ? 'noBarcode' : 'readError')
+      setTimeout(() => setGalleryState('idle'), 3500)
+    }
+  }, [onDetected])
+
+  const fileInput = (
+    <input
+      ref={fileInputRef}
+      type="file"
+      accept="image/*"
+      style={{ display: 'none' }}
+      onChange={handleFile}
+    />
+  )
+
+  return { openGallery, galleryState, galleryError, fileInput }
+}
 
 // ─── Barcode Scanner ───────────────────────────────────────────────────────────
 function BarcodeScanner({ onDetected, onClose, t }) {
@@ -17,6 +92,27 @@ function BarcodeScanner({ onDetected, onClose, t }) {
   const trackRef    = useRef(null)
   const errTimerRef = useRef(null)
   const ID = 'korset-barcode-reader'
+
+  // Функция остановки камеры перед галереей
+  const stopCamera = async () => {
+    try {
+      if (scannerRef.current) {
+        await scannerRef.current.stop()
+        scannerRef.current.clear()
+        scannerRef.current = null
+      }
+    } catch {}
+  }
+
+  const { openGallery, galleryState, galleryError, fileInput } = useGalleryScanner(async (ean) => {
+    setSearching(true)
+    onDetected(ean)
+  })
+
+  const handleGalleryClick = async () => {
+    await stopCamera()
+    openGallery()
+  }
 
   const doClose = async () => {
     if (busyRef.current) return
@@ -223,12 +319,38 @@ function BarcodeScanner({ onDetected, onClose, t }) {
       {status !== 'error' && !searching && (
         <div style={{
           padding: '14px 24px 40px', background: '#09090F',
-          borderTop: '1px solid rgba(139,92,246,0.2)', flexShrink: 0, textAlign: 'center',
+          borderTop: '1px solid rgba(139,92,246,0.2)', flexShrink: 0,
         }}>
-          <p style={{ color: status === 'ready' ? '#C4B5FD' : '#9898B8', fontSize: 15, fontWeight: 500, marginBottom: 4 }}>
-            {status === 'ready' ? t.scan.hint : t.scan.startCamera}
+          <p style={{ color: status === 'ready' ? '#C4B5FD' : '#9898B8', fontSize: 15, fontWeight: 500, marginBottom: 4, textAlign: 'center' }}>
+            {galleryState === 'scanning' ? t.scan.galleryScanning : status === 'ready' ? t.scan.hint : t.scan.startCamera}
           </p>
-          <p style={{ color: '#58587A', fontSize: 12 }}>{t.scan.formats}</p>
+          <p style={{ color: '#58587A', fontSize: 12, textAlign: 'center', marginBottom: 14 }}>{t.scan.formats}</p>
+
+          {/* Кнопка галереи */}
+          <button
+            onClick={handleGalleryClick}
+            disabled={galleryState === 'scanning'}
+            style={{
+              width: '100%', padding: '12px 16px', borderRadius: 14, cursor: 'pointer',
+              background: galleryState === 'error' ? 'rgba(239,68,68,0.1)' : 'rgba(255,255,255,0.06)',
+              border: `1px solid ${galleryState === 'error' ? 'rgba(239,68,68,0.3)' : 'rgba(255,255,255,0.12)'}`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+              transition: 'all 0.2s ease',
+              opacity: galleryState === 'scanning' ? 0.6 : 1,
+            }}
+          >
+            {galleryState === 'scanning' ? (
+              <div style={{ width: 18, height: 18, borderRadius: '50%', border: '2px solid rgba(167,139,250,0.3)', borderTop: '2px solid #A78BFA', animation: 'spin 0.8s linear infinite' }} />
+            ) : (
+              <GalleryIcon size={18} color={galleryState === 'error' ? '#F87171' : '#A78BFA'} />
+            )}
+            <span style={{ fontSize: 14, fontWeight: 600, color: galleryState === 'error' ? '#F87171' : 'rgba(220,220,255,0.85)' }}>
+              {galleryState === 'error'
+                ? (galleryError === 'noBarcode' ? t.scan.galleryNoBarcode : t.scan.galleryError)
+                : t.scan.galleryBtn}
+            </span>
+          </button>
+          {fileInput}
         </div>
       )}
 
@@ -293,6 +415,8 @@ export default function ScanScreen() {
     }
   }
 
+  const { openGallery, galleryState, galleryError, fileInput } = useGalleryScanner(handleDetected)
+
   if (mode === 'scanning') return <BarcodeScanner onDetected={handleDetected} onClose={() => setMode('idle')} t={t} />
   if (mode === 'not_found') return <NotFoundScreen ean={notFoundEan} onRetry={() => setMode('scanning')} onClose={() => setMode('idle')} t={t} />
 
@@ -311,40 +435,86 @@ export default function ScanScreen() {
           </div>
         </div>
 
-        {/* Кнопка сканирования */}
-        <button onClick={() => setMode('scanning')} style={{
-          width: '100%', padding: '32px 20px', borderRadius: 20,
-          background: 'linear-gradient(135deg, rgba(124,58,237,0.2) 0%, rgba(109,40,217,0.1) 100%)',
-          border: '1.5px solid rgba(139,92,246,0.35)', cursor: 'pointer',
-          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16,
-          boxShadow: '0 0 40px rgba(124,58,237,0.1)',
-        }}>
-          <div style={{ position: 'relative' }}>
-            <div style={{ position: 'absolute', inset: -20, background: 'radial-gradient(circle, rgba(124,58,237,0.2) 0%, transparent 70%)', pointerEvents: 'none' }} />
-            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" strokeLinecap="round" style={{ position: 'relative' }}>
-              <line x1="4"  y1="6" x2="4"  y2="18" stroke="#A78BFA" strokeWidth="1.8" />
-              <line x1="6.5" y1="6" x2="6.5" y2="18" stroke="#7C3AED" strokeWidth="0.8" />
-              <line x1="9"  y1="6" x2="9"  y2="18" stroke="#A78BFA" strokeWidth="1.5" />
-              <line x1="11" y1="6" x2="11" y2="18" stroke="#7C3AED" strokeWidth="0.8" />
-              <line x1="13.5" y1="6" x2="13.5" y2="18" stroke="#A78BFA" strokeWidth="2" />
-              <line x1="15.5" y1="6" x2="15.5" y2="18" stroke="#7C3AED" strokeWidth="0.8" />
-              <line x1="18" y1="6" x2="18" y2="18" stroke="#A78BFA" strokeWidth="1.5" />
-              <line x1="20" y1="6" x2="20" y2="18" stroke="#7C3AED" strokeWidth="0.8" />
-              <path d="M1 8V4a2 2 0 0 1 2-2h3"  stroke="#E9D5FF" strokeWidth="2" />
-              <path d="M23 8V4a2 2 0 0 0-2-2h-3" stroke="#E9D5FF" strokeWidth="2" />
-              <path d="M1 16v4a2 2 0 0 0 2 2h3"  stroke="#E9D5FF" strokeWidth="2" />
-              <path d="M23 16v4a2 2 0 0 1-2 2h-3" stroke="#E9D5FF" strokeWidth="2" />
-            </svg>
-          </div>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontFamily: 'var(--font-display)', fontSize: 19, fontWeight: 700, color: '#E9D5FF', marginBottom: 6 }}>
-              {t.scan.scanButton}
+        {/* Две кнопки: камера и галерея */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 10 }}>
+          {/* Кнопка сканирования камерой */}
+          <button onClick={() => setMode('scanning')} style={{
+            padding: '28px 20px', borderRadius: 20,
+            background: 'linear-gradient(135deg, rgba(124,58,237,0.2) 0%, rgba(109,40,217,0.1) 100%)',
+            border: '1.5px solid rgba(139,92,246,0.35)', cursor: 'pointer',
+            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14,
+            boxShadow: '0 0 40px rgba(124,58,237,0.1)',
+          }}>
+            <div style={{ position: 'relative' }}>
+              <div style={{ position: 'absolute', inset: -16, background: 'radial-gradient(circle, rgba(124,58,237,0.2) 0%, transparent 70%)', pointerEvents: 'none' }} />
+              <svg width="52" height="52" viewBox="0 0 24 24" fill="none" strokeLinecap="round" style={{ position: 'relative' }}>
+                <line x1="4"  y1="6" x2="4"  y2="18" stroke="#A78BFA" strokeWidth="1.8" />
+                <line x1="6.5" y1="6" x2="6.5" y2="18" stroke="#7C3AED" strokeWidth="0.8" />
+                <line x1="9"  y1="6" x2="9"  y2="18" stroke="#A78BFA" strokeWidth="1.5" />
+                <line x1="11" y1="6" x2="11" y2="18" stroke="#7C3AED" strokeWidth="0.8" />
+                <line x1="13.5" y1="6" x2="13.5" y2="18" stroke="#A78BFA" strokeWidth="2" />
+                <line x1="15.5" y1="6" x2="15.5" y2="18" stroke="#7C3AED" strokeWidth="0.8" />
+                <line x1="18" y1="6" x2="18" y2="18" stroke="#A78BFA" strokeWidth="1.5" />
+                <line x1="20" y1="6" x2="20" y2="18" stroke="#7C3AED" strokeWidth="0.8" />
+                <path d="M1 8V4a2 2 0 0 1 2-2h3"  stroke="#E9D5FF" strokeWidth="2" />
+                <path d="M23 8V4a2 2 0 0 0-2-2h-3" stroke="#E9D5FF" strokeWidth="2" />
+                <path d="M1 16v4a2 2 0 0 0 2 2h3"  stroke="#E9D5FF" strokeWidth="2" />
+                <path d="M23 16v4a2 2 0 0 1-2 2h-3" stroke="#E9D5FF" strokeWidth="2" />
+              </svg>
             </div>
-            <div style={{ fontSize: 13, color: 'rgba(167,139,250,0.7)' }}>
-              {t.scan.scanButtonSub}
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 700, color: '#E9D5FF', marginBottom: 4 }}>
+                {t.scan.scanButton}
+              </div>
+              <div style={{ fontSize: 12, color: 'rgba(167,139,250,0.7)' }}>
+                {t.scan.scanButtonSub}
+              </div>
             </div>
+          </button>
+
+          {/* Кнопка галереи */}
+          <button
+            onClick={openGallery}
+            disabled={galleryState === 'scanning'}
+            style={{
+              padding: '20px 14px', borderRadius: 20, cursor: 'pointer',
+              background: galleryState === 'error'
+                ? 'rgba(239,68,68,0.08)'
+                : 'rgba(255,255,255,0.04)',
+              border: `1.5px solid ${galleryState === 'error' ? 'rgba(239,68,68,0.3)' : 'rgba(255,255,255,0.1)'}`,
+              display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 10,
+              minWidth: 90, transition: 'all 0.2s ease',
+              opacity: galleryState === 'scanning' ? 0.7 : 1,
+            }}
+          >
+            {galleryState === 'scanning' ? (
+              <div style={{ width: 28, height: 28, borderRadius: '50%', border: '2.5px solid rgba(167,139,250,0.2)', borderTop: '2.5px solid #A78BFA', animation: 'gallSpin 0.8s linear infinite' }} />
+            ) : (
+              <GalleryIcon size={28} color={galleryState === 'error' ? '#F87171' : '#A78BFA'} />
+            )}
+            <span style={{
+              fontSize: 11, fontWeight: 600, lineHeight: 1.3, textAlign: 'center',
+              color: galleryState === 'error' ? '#F87171' : 'rgba(200,200,240,0.8)',
+            }}>
+              {galleryState === 'error'
+                ? (galleryError === 'noBarcode' ? 'Не найден' : 'Ошибка')
+                : t.scan.galleryBtn}
+            </span>
+          </button>
+        </div>
+
+        {/* Сообщение об ошибке галереи */}
+        {galleryState === 'error' && (
+          <div style={{
+            padding: '12px 16px', borderRadius: 14,
+            background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)',
+            fontSize: 13, color: '#FCA5A5', lineHeight: 1.5,
+          }}>
+            {galleryError === 'noBarcode' ? t.scan.galleryNoBarcode : t.scan.galleryError}
           </div>
-        </button>
+        )}
+
+        {fileInput}
 
         {/* Шаги */}
         <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 16, padding: '16px 18px' }}>
@@ -380,6 +550,7 @@ export default function ScanScreen() {
         </div>
 
       </div>
+      <style>{`@keyframes gallSpin{to{transform:rotate(360deg)}}`}</style>
     </div>
   )
 }
