@@ -39,60 +39,49 @@
 
 html {
   height: 100%;
-  min-height: 100%;
+  min-height: 100dvh;
+  min-height: 100svh;
   background: var(--bg);
   scroll-behavior: smooth;
 }
 
 body {
   min-height: 100%;
-  min-height: var(--app-vh, 100dvh);
+  min-height: 100dvh;
+  min-height: 100svh;
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-body);
   font-size: 15px;
   line-height: 1.5;
-  overflow-x: hidden;
-  overflow-y: auto;
-  overscroll-behavior-y: auto;
+  overflow: hidden;
+  overscroll-behavior-y: none;
   -webkit-font-smoothing: antialiased;
   font-variant-numeric: lining-nums tabular-nums;
 }
 
-body[data-shell='app'] {
-  overflow: hidden;
-  overscroll-behavior-y: none;
-}
-
-body[data-shell='public'] {
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-
 #root {
   min-height: 100%;
-  min-height: var(--app-vh, 100dvh);
+  min-height: 100dvh;
+  min-height: 100svh;
   display: flex;
   justify-content: center;
-  align-items: stretch;
+  align-items: center;
   background:
     radial-gradient(ellipse 80% 40% at 50% -10%, rgba(124, 58, 237, 0.18) 0%, transparent 60%),
     var(--bg);
-}
-
-body[data-shell='public'] #root {
-  display: block;
-  min-height: 100%;
-  min-height: var(--app-vh, 100dvh);
 }
 
 /* ─── App Frame ───────────────────────────────────── */
 .app-frame {
   width: 100%;
   max-width: 430px;
-  height: var(--app-vh, 100dvh);
-  min-height: var(--app-vh, 100dvh);
-  max-height: var(--app-vh, 100dvh);
+  height: 100vh;
+  height: 100svh;
+  height: 100dvh;
+  min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
   background: var(--surface);
   position: relative;
   overflow: hidden;
@@ -102,35 +91,17 @@ body[data-shell='public'] #root {
   border-right: 1px solid var(--border);
 }
 
-body[data-shell='public'] .app-frame {
-  max-width: none;
-  height: auto;
-  min-height: var(--app-vh, 100dvh);
-  max-height: none;
-  overflow: visible;
-  border: none;
-  background: transparent;
-}
-
 /* ─── Screen ──────────────────────────────────────── */
 .screen {
-  flex: 1 1 auto;
-  min-height: 0;
+  flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding-bottom: calc(88px + var(--app-safe-bottom, env(safe-area-inset-bottom, 0px)));
+  padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: contain;
 }
 .screen::-webkit-scrollbar { display: none; }
-
-body[data-shell='public'] .screen {
-  overflow: visible;
-  min-height: auto;
-  padding-bottom: 0;
-  overscroll-behavior-y: auto;
-}
 
 /* ─── Header ──────────────────────────────────────── */
 .header {
@@ -1102,77 +1073,38 @@ body[data-shell='public'] .screen {
 }
 
 
-/* ─── Cross-browser hardening ───────────────────── */
-button,
-input,
-select,
-textarea {
-  font: inherit;
-}
-
-button,
-a,
-[role='button'],
-[data-pressable='true'] {
-  touch-action: manipulation;
-}
-
-button:focus-visible,
-a:focus-visible,
-[role='button']:focus-visible,
-[data-pressable='true']:focus-visible {
-  outline: 2px solid var(--primary-bright);
-  outline-offset: 2px;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .btn-primary:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 10px 28px rgba(124, 58, 237, 0.24);
+/* ─── Mobile / Touch Full-Width Shell Fix ───────────────────────────── */
+@media (max-width: 768px), (pointer: coarse) {
+  html, body, #root {
+    width: 100%;
+    max-width: 100%;
   }
 
-  .btn-secondary:hover,
-  .btn-ghost:hover,
-  .card:hover,
-  .product-item:hover,
-  .preset-card:hover,
-  .alt-card:hover,
-  .chip:hover,
-  .scan-btn:hover,
-  .map-mock:hover {
-    transform: translateY(-1px);
-  }
-}
-
-@media (hover: none), (pointer: coarse) {
-  input,
-  select,
-  textarea {
-    font-size: 16px;
+  #root {
+    justify-content: stretch;
+    align-items: stretch;
   }
 
-  .btn-primary:active,
-  .btn-secondary:active,
-  .btn-ghost:active,
-  .card:active,
-  .product-item:active,
-  .preset-card:active,
-  .alt-card:active,
-  .chip:active,
-  .scan-btn:active,
-  .map-mock:active,
-  [data-pressable='true']:active {
-    transform: translateY(-1px) scale(0.99);
+  .app-frame {
+    width: 100%;
+    max-width: none;
+    min-width: 100%;
+    border-left: none;
+    border-right: none;
   }
 }
 
 @supports (-webkit-touch-callout: none) {
-  body {
-    min-height: -webkit-fill-available;
+  #root {
+    justify-content: stretch;
+    align-items: stretch;
   }
 
-  #root,
   .app-frame {
-    min-height: var(--app-vh, -webkit-fill-available);
+    width: 100%;
+    max-width: none;
+    min-width: 100%;
+    border-left: none;
+    border-right: none;
   }
 }
