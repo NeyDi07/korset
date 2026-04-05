@@ -52,11 +52,12 @@ export function ProfileProvider({ children }) {
   const updateProfile = async (newProfile) => {
     let merged
     setProfileState(prev => {
+      const resolvedPatch = typeof newProfile === 'function' ? newProfile(prev) : newProfile
       merged = normalizeProfile({
         ...prev,
-        ...newProfile,
-        notifications: { ...prev.notifications, ...(newProfile?.notifications || {}) },
-        privacy: { ...prev.privacy, ...(newProfile?.privacy || {}) },
+        ...resolvedPatch,
+        notifications: { ...prev.notifications, ...(resolvedPatch?.notifications || {}) },
+        privacy: { ...prev.privacy, ...(resolvedPatch?.privacy || {}) },
       })
       localStorage.setItem('korset_profile', JSON.stringify(merged))
       saveNotificationSettings(merged.notifications)

@@ -114,7 +114,7 @@ export default function SetupProfileScreen() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { currentStore } = useStore()
-  const { user } = useAuth()
+  const { user, accountProfile, refreshAccountProfile } = useAuth()
   const { lang } = useI18n()
   const fileInputRef = useRef(null)
 
@@ -129,7 +129,7 @@ export default function SetupProfileScreen() {
 
   useEffect(() => {
     if (!user) return
-    const currentName = user.user_metadata?.full_name || ''
+    const currentName = accountProfile?.name || user.user_metadata?.full_name || ''
     const currentAvatar = user.user_metadata?.avatar_id || user.user_metadata?.avatar_url || user.user_metadata?.picture || AVATAR_PRESETS[0].id
     setName(currentName)
     if (typeof currentAvatar === 'string' && /^https?:/i.test(currentAvatar)) {
@@ -138,7 +138,7 @@ export default function SetupProfileScreen() {
     } else {
       setSelectedAvatarId(currentAvatar || AVATAR_PRESETS[0].id)
     }
-  }, [user])
+  }, [user, accountProfile])
 
   const backTarget = currentStore ? `/s/${currentStore.slug}/profile` : '/profile'
   const canContinueName = name.trim().length >= 2 && !nameError
@@ -209,6 +209,13 @@ export default function SetupProfileScreen() {
         },
       })
       if (error) throw error
+
+      await supabase
+        .from('users')
+        .update({ name: name.trim(), updated_at: new Date().toISOString() })
+        .eq('auth_id', user.id)
+
+      await refreshAccountProfile()
       navigate(backTarget, { replace: true })
     } catch (error) {
       alert(error.message || 'Не удалось сохранить профиль')
@@ -232,10 +239,10 @@ export default function SetupProfileScreen() {
 
   if (editMode) {
     return (
-      <div className="screen" style={{ background: '#07070F', paddingTop: 0, paddingBottom: 0 }}>
-        <div style={{ padding: 'max(20px, env(safe-area-inset-top)) 20px max(140px, calc(env(safe-area-inset-bottom) + 132px))' }}>
+      <div className="screen" style={{ background: '#07070F', paddingTop: 0, paddingBottom: 'max(28px, env(safe-area-inset-bottom))' }}>
+        <div style={{ padding: 'max(20px, env(safe-area-inset-top)) 20px 28px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 22 }}>
-            <button onClick={goBack} style={{ width: 42, height: 42, borderRadius: 14, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', touchAction: 'manipulation' }}>
+            <button onClick={goBack} style={{ width: 42, height: 42, borderRadius: 14, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
             </button>
             <h1 style={{ margin: 0, fontSize: 24, fontWeight: 700, color: '#fff', letterSpacing: '-0.02em' }}>{texts.editTitle}</h1>
@@ -263,16 +270,9 @@ export default function SetupProfileScreen() {
               name={name}
             />
           </SurfaceCard>
-        </div>
 
-        <div style={{
-          position: 'sticky', bottom: 0, zIndex: 6,
-          padding: '14px 20px max(22px, calc(env(safe-area-inset-bottom) + 14px))',
-          background: 'linear-gradient(180deg, rgba(7,7,15,0) 0%, rgba(7,7,15,0.82) 18%, #07070F 48%)',
-          backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)'
-        }}>
           <button onClick={onPrimaryAction} disabled={loading || !canContinueName || !hasAvatar} style={{
-            width: '100%', height: 56, borderRadius: 18, border: 'none', cursor: loading ? 'default' : 'pointer', touchAction: 'manipulation',
+            width: '100%', height: 56, borderRadius: 18, border: 'none', cursor: loading ? 'default' : 'pointer',
             background: loading || !canContinueName || !hasAvatar ? 'rgba(139,92,246,0.35)' : '#7C3AED',
             color: '#fff', fontSize: 16, fontWeight: 700, boxShadow: loading ? 'none' : '0 18px 36px rgba(124,58,237,0.24)'
           }}>
@@ -284,10 +284,10 @@ export default function SetupProfileScreen() {
   }
 
   return (
-    <div className="screen" style={{ background: '#07070F', paddingTop: 0, paddingBottom: 0 }}>
-      <div style={{ padding: 'max(20px, env(safe-area-inset-top)) 20px max(144px, calc(env(safe-area-inset-bottom) + 136px))' }}>
+    <div className="screen" style={{ background: '#07070F', paddingTop: 0, paddingBottom: 'max(32px, env(safe-area-inset-bottom))' }}>
+      <div style={{ padding: 'max(20px, env(safe-area-inset-top)) 20px 24px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
-          <button onClick={goBack} style={{ width: 42, height: 42, borderRadius: 14, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', touchAction: 'manipulation' }}>
+          <button onClick={goBack} style={{ width: 42, height: 42, borderRadius: 14, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
           </button>
           <div style={{ minWidth: 96, textAlign: 'center' }}>
@@ -327,16 +327,9 @@ export default function SetupProfileScreen() {
             />
           </SurfaceCard>
         )}
-      </div>
 
-      <div style={{
-        position: 'sticky', bottom: 0, zIndex: 6,
-        padding: '14px 20px max(22px, calc(env(safe-area-inset-bottom) + 14px))',
-        background: 'linear-gradient(180deg, rgba(7,7,15,0) 0%, rgba(7,7,15,0.82) 18%, #07070F 48%)',
-        backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)'
-      }}>
         <button onClick={onPrimaryAction} disabled={loading || (step === 1 ? !canContinueName : !hasAvatar)} style={{
-          width: '100%', height: 56, borderRadius: 18, border: 'none', cursor: loading ? 'default' : 'pointer', touchAction: 'manipulation',
+          width: '100%', height: 56, borderRadius: 18, border: 'none', cursor: loading ? 'default' : 'pointer',
           background: loading || (step === 1 ? !canContinueName : !hasAvatar) ? 'rgba(139,92,246,0.35)' : '#7C3AED',
           color: '#fff', fontSize: 16, fontWeight: 700, boxShadow: loading ? 'none' : '0 18px 36px rgba(124,58,237,0.24)'
         }}>
