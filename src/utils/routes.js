@@ -2,8 +2,24 @@ export function buildStoreAppBase(storeSlug) {
   return `/s/${storeSlug}`
 }
 
+export function buildStoreHomePath(storeSlug = null) {
+  return storeSlug ? buildStoreAppBase(storeSlug) : '/'
+}
+
 export function buildStorePublicPath(storeSlug) {
   return `/stores/${storeSlug}`
+}
+
+export function buildRetailBasePath() {
+  return '/retail'
+}
+
+export function buildRetailLoginPath() {
+  return `${buildRetailBasePath()}/login`
+}
+
+export function buildRetailDashboardPath(storeSlug = null) {
+  return storeSlug ? `${buildRetailBasePath()}/${storeSlug}/dashboard` : buildRetailBasePath()
 }
 
 export function buildCatalogPath(storeSlug = null) {
