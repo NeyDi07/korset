@@ -349,7 +349,7 @@ export default function OnboardingScreen({ onDone }) {
     setLeaving(true)
     setTimeout(() => {
       onDone()
-      navigate(currentStore ? `/s/${currentStore.slug}/scan` : '/scan')
+      navigate(currentStore ? `/s/${currentStore.slug}` : '/')
     }, 260)
   }
 

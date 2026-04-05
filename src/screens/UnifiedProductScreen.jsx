@@ -104,7 +104,7 @@ function NutritionGrid({ nutrition, t }) {
 }
 
 export default function UnifiedProductScreen({ mode = 'canonical' }) {
-  const { id, ean } = useParams()
+  const { ean, id: legacyId } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
   const { profile } = useProfile()
