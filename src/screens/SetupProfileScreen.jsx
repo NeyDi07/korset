@@ -232,10 +232,10 @@ export default function SetupProfileScreen() {
 
   if (editMode) {
     return (
-      <div className="screen" style={{ background: '#07070F', paddingTop: 0, paddingBottom: 'max(28px, env(safe-area-inset-bottom))' }}>
-        <div style={{ padding: 'max(20px, env(safe-area-inset-top)) 20px 28px' }}>
+      <div className="screen" style={{ background: '#07070F', paddingTop: 0, paddingBottom: 0 }}>
+        <div style={{ padding: 'max(20px, env(safe-area-inset-top)) 20px max(140px, calc(env(safe-area-inset-bottom) + 132px))' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 22 }}>
-            <button onClick={goBack} style={{ width: 42, height: 42, borderRadius: 14, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+            <button onClick={goBack} style={{ width: 42, height: 42, borderRadius: 14, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', touchAction: 'manipulation' }}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
             </button>
             <h1 style={{ margin: 0, fontSize: 24, fontWeight: 700, color: '#fff', letterSpacing: '-0.02em' }}>{texts.editTitle}</h1>
@@ -263,9 +263,16 @@ export default function SetupProfileScreen() {
               name={name}
             />
           </SurfaceCard>
+        </div>
 
+        <div style={{
+          position: 'sticky', bottom: 0, zIndex: 6,
+          padding: '14px 20px max(22px, calc(env(safe-area-inset-bottom) + 14px))',
+          background: 'linear-gradient(180deg, rgba(7,7,15,0) 0%, rgba(7,7,15,0.82) 18%, #07070F 48%)',
+          backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)'
+        }}>
           <button onClick={onPrimaryAction} disabled={loading || !canContinueName || !hasAvatar} style={{
-            width: '100%', height: 56, borderRadius: 18, border: 'none', cursor: loading ? 'default' : 'pointer',
+            width: '100%', height: 56, borderRadius: 18, border: 'none', cursor: loading ? 'default' : 'pointer', touchAction: 'manipulation',
             background: loading || !canContinueName || !hasAvatar ? 'rgba(139,92,246,0.35)' : '#7C3AED',
             color: '#fff', fontSize: 16, fontWeight: 700, boxShadow: loading ? 'none' : '0 18px 36px rgba(124,58,237,0.24)'
           }}>
@@ -277,10 +284,10 @@ export default function SetupProfileScreen() {
   }
 
   return (
-    <div className="screen" style={{ background: '#07070F', paddingTop: 0, paddingBottom: 'max(32px, env(safe-area-inset-bottom))' }}>
-      <div style={{ padding: 'max(20px, env(safe-area-inset-top)) 20px 24px' }}>
+    <div className="screen" style={{ background: '#07070F', paddingTop: 0, paddingBottom: 0 }}>
+      <div style={{ padding: 'max(20px, env(safe-area-inset-top)) 20px max(144px, calc(env(safe-area-inset-bottom) + 136px))' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
-          <button onClick={goBack} style={{ width: 42, height: 42, borderRadius: 14, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+          <button onClick={goBack} style={{ width: 42, height: 42, borderRadius: 14, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', touchAction: 'manipulation' }}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
           </button>
           <div style={{ minWidth: 96, textAlign: 'center' }}>
@@ -320,9 +327,16 @@ export default function SetupProfileScreen() {
             />
           </SurfaceCard>
         )}
+      </div>
 
+      <div style={{
+        position: 'sticky', bottom: 0, zIndex: 6,
+        padding: '14px 20px max(22px, calc(env(safe-area-inset-bottom) + 14px))',
+        background: 'linear-gradient(180deg, rgba(7,7,15,0) 0%, rgba(7,7,15,0.82) 18%, #07070F 48%)',
+        backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)'
+      }}>
         <button onClick={onPrimaryAction} disabled={loading || (step === 1 ? !canContinueName : !hasAvatar)} style={{
-          width: '100%', height: 56, borderRadius: 18, border: 'none', cursor: loading ? 'default' : 'pointer',
+          width: '100%', height: 56, borderRadius: 18, border: 'none', cursor: loading ? 'default' : 'pointer', touchAction: 'manipulation',
           background: loading || (step === 1 ? !canContinueName : !hasAvatar) ? 'rgba(139,92,246,0.35)' : '#7C3AED',
           color: '#fff', fontSize: 16, fontWeight: 700, boxShadow: loading ? 'none' : '0 18px 36px rgba(124,58,237,0.24)'
         }}>
