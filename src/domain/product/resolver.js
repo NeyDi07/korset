@@ -206,7 +206,7 @@ async function logScan({ ean, foundStatus, product, storeId, fitResult }) {
   if (!privacy.analyticsEnabled) return
 
   try {
-    const internalUserId = await resolveCurrentInternalUserId()
+    const internalUserId = await resolveCurrentInternalUserId({ ensureRow: true })
     const globalProductId = product?.sourceMeta?.globalProductId || (isUuid(product?.id) ? product.id : null)
     const storeProductId = product?.sourceMeta?.storeProductId || null
     const { error } = await supabase.from('scan_events').insert({

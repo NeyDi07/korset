@@ -6,6 +6,13 @@ import { PRIVACY_EVENT } from '../utils/privacySettings.js'
 
 const UserDataContext = createContext()
 
+function withTimeout(promise, ms = 7000) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms)),
+  ])
+}
+
 function getScopedLocalScanCount(user) {
   return getLocalScanHistoryCount(buildHistoryOwnerKey(user))
 }
@@ -34,10 +41,10 @@ export function UserDataProvider({ children }) {
       setUserDataLoaded(false)
 
       try {
-        const [{ data: favs }, scanRes] = await Promise.all([
+        const [{ data: favs }, scanRes] = await withTimeout(Promise.all([
           supabase.from('user_favorites').select('ean').eq('user_id', internalUserId),
           supabase.from('scan_events').select('ean', { count: 'exact', head: true }).eq('user_id', internalUserId),
-        ])
+        ]), 7000)
 
         if (cancelled) return
 

@@ -9,11 +9,12 @@ import ProfileAvatar from '../components/ProfileAvatar.jsx'
 
 const stepCount = 2
 
-function withTimeout(promise, ms) {
-  return Promise.race([
-    promise,
-    new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms)),
-  ])
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+function isLockAbort(error) {
+  return /lock request is aborted/i.test(String(error?.message || error || ''))
 }
 
 const compressImage = (file) => new Promise((resolve, reject) => {
@@ -225,16 +226,33 @@ export default function SetupProfileScreen() {
           updated_at: new Date().toISOString(),
         }, { onConflict: 'auth_id' })
 
-      const [authResult, profileResult] = await Promise.all([
-        withTimeout(updateAuthTask, 8000),
-        withTimeout(upsertProfileTask, 8000),
-      ])
+      let authError = null
+      try {
+        const authResult = await updateAuthTask
+        authError = authResult?.error || null
+      } catch (error) {
+        authError = error
+      }
 
-      if (authResult?.error) throw authResult.error
+      if (authError && isLockAbort(authError)) {
+        await sleep(120)
+        const retryResult = await supabase.auth.updateUser({
+          data: {
+            full_name: name.trim(),
+            avatar_id: avatarValue,
+            profile_setup_done: true,
+          },
+        })
+        authError = retryResult?.error || null
+      }
+
+      if (authError) throw authError
+
+      const profileResult = await upsertProfileTask
       if (profileResult?.error) throw profileResult.error
 
       try {
-        await withTimeout(refreshAccountProfile(), 2500)
+        await refreshAccountProfile()
       } catch (refreshError) {
         console.warn('refreshAccountProfile skipped', refreshError)
       }

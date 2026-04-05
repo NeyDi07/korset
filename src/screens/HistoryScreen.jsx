@@ -35,6 +35,13 @@ function formatDate(value, lang) {
   }
 }
 
+function withTimeout(promise, ms = 7000) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms)),
+  ])
+}
+
 function mergeHistoryItems(primary = [], secondary = []) {
   const map = new Map()
   for (const item of [...primary, ...secondary]) {
@@ -82,7 +89,7 @@ export default function HistoryScreen() {
       const scopedLocalHistory = loadPrivacySettings().localHistoryEnabled ? readLocalScanHistory(ownerKey) : []
 
       try {
-        const [histRes, favRes] = await Promise.all([
+        const [histRes, favRes] = await withTimeout(Promise.all([
           supabase
             .from('scan_events')
             .select('ean, global_product_id, scanned_at')
@@ -94,18 +101,18 @@ export default function HistoryScreen() {
             .select('ean, global_product_id, added_at')
             .eq('user_id', internalUserId)
             .order('added_at', { ascending: false }),
-        ])
+        ]), 7000)
 
-        const historyRows = histRes.error ? [] : (histRes.data || [])
-        const favoriteRows = favRes.error ? [] : (favRes.data || [])
+        const historyRows = histRes?.error ? [] : (histRes?.data || [])
+        const favoriteRows = favRes?.error ? [] : (favRes?.data || [])
 
         if (histRes.error) console.warn('HistoryScreen: scan_events read failed, using local cache', histRes.error)
         if (favRes.error) console.warn('HistoryScreen: user_favorites read failed', favRes.error)
 
-        const [hydratedHistory, hydratedFavorites] = await Promise.all([
+        const [hydratedHistory, hydratedFavorites] = await withTimeout(Promise.all([
           hydrateProductsFromScanRows(historyRows),
-          hydrateProductsFromFavoriteRows(favoriteRows),
-        ])
+          hydrateProductsFromFavoriteRows(favoriteRows.length ? favoriteRows : [...favoriteEans].map((ean) => ({ ean, added_at: null }))),
+        ]), 7000)
 
         const mergedHistory = mergeHistoryItems(hydratedHistory, scopedLocalHistory)
 
@@ -128,7 +135,7 @@ export default function HistoryScreen() {
     return () => {
       cancelled = true
     }
-  }, [user, internalUserId])
+  }, [user, internalUserId, favoriteEans])
 
   useEffect(() => {
     setFavorites((prev) => prev.filter((item) => !item.ean || favoriteEans.has(item.ean)))

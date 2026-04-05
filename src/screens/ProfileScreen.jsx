@@ -3,7 +3,6 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { setLang, useI18n } from '../utils/i18n.js'
 import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useAuth } from '../contexts/AuthContext.jsx'
-import { supabase } from '../utils/supabase.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { buildNotificationSettingsPath, buildPrivacyPath, buildProfilePath } from '../utils/routes.js'
 import ProfileAvatar from '../components/ProfileAvatar.jsx'
@@ -43,7 +42,7 @@ export default function ProfileScreen() {
   const { lang, t } = useI18n()
   const allergenInputRef = useRef(null)
   const { profile, updateProfile: setProfile } = useProfile()
-  const { user, displayName } = useAuth()
+  const { user, displayName, logout } = useAuth()
   const { favoritesCount, scanCount } = useUserData()
   const { currentStore } = useStore()
   
@@ -73,7 +72,7 @@ export default function ProfileScreen() {
 
   const handleLogout = async () => {
     try {
-      await supabase.auth.signOut({ scope: 'local' })
+      await logout()
     } catch (error) {
       console.error('signOut failed', error)
     } finally {
