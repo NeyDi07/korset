@@ -16,7 +16,7 @@ export default function StoresScreen() {
       </div>
       <div style={{ padding: '20px', display: 'grid', gap: 12 }}>
         {stores.map((store) => (
-          <button key={store.slug} onClick={() => { rememberStore(store.slug); navigate(buildStorePublicPath(store.slug)) }} style={{
+          <button key={store.slug} onClick={() => { rememberStore(store.slug); navigate(`/s/${store.slug}`) }} style={{
             padding: '16px', borderRadius: 18, cursor: 'pointer', textAlign: 'left',
             background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
             display: 'flex', alignItems: 'center', gap: 14,
