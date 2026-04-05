@@ -4,6 +4,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import { useUserData } from '../contexts/UserDataContext.jsx'
+import { navigateToAuth } from '../utils/authFlow.js'
 import { useStoreId } from '../contexts/StoreContext.jsx'
 import { useI18n } from '../utils/i18n.js'
 import { checkProductFit, formatPrice, CATEGORY_LABELS } from '../utils/fitCheck.js'
@@ -104,7 +105,7 @@ function NutritionGrid({ nutrition, t }) {
 }
 
 export default function UnifiedProductScreen({ mode = 'canonical' }) {
-  const { ean, id: legacyId } = useParams()
+  const { id, ean } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
   const { profile } = useProfile()
@@ -168,7 +169,7 @@ export default function UnifiedProductScreen({ mode = 'canonical' }) {
 
   const handleToggleFavorite = async () => {
     if (!user) {
-      navigate('/auth')
+      navigateToAuth(navigate, location)
       return
     }
     if (!product) return

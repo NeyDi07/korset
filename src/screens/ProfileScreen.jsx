@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { setLang, useI18n } from '../utils/i18n.js'
 import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useAuth } from '../contexts/AuthContext.jsx'
@@ -7,6 +7,7 @@ import { supabase } from '../utils/supabase.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { buildNotificationSettingsPath, buildPrivacyPath } from '../utils/routes.js'
 import ProfileAvatar from '../components/ProfileAvatar.jsx'
+import { navigateToAuth } from '../utils/authFlow.js'
 import { ALLERGENS } from '../data/allergens.js'
 import { DIET_GOALS } from '../data/dietGoals.js'
 
@@ -39,6 +40,7 @@ import { useUserData } from '../contexts/UserDataContext.jsx'
 
 export default function ProfileScreen() {
   const navigate = useNavigate()
+  const location = useLocation()
   const { lang, t } = useI18n()
   const allergenInputRef = useRef(null)
   const { profile, updateProfile: setProfile } = useProfile()
@@ -147,7 +149,7 @@ export default function ProfileScreen() {
                 <h2 style={{ fontFamily: fontAdvent, fontSize: 28, fontWeight: 700, color: '#fff', margin: '0 0 12px', textTransform: 'uppercase', letterSpacing: 2 }}>
                   {t.profile.guest}
                 </h2>
-                <button onClick={() => navigate('/auth')} style={{
+                <button onClick={() => navigateToAuth(navigate, location)} style={{
                   background: 'transparent', border: '1.5px solid rgba(255,255,255,0.2)',
                   color: '#fff', fontSize: 13, fontFamily: fontAdvent, fontWeight: 500,
                   padding: '10px 28px', borderRadius: 12, cursor: 'pointer', letterSpacing: 0.5

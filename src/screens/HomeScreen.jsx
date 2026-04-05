@@ -1,13 +1,13 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useI18n } from '../utils/i18n.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { getStores } from '../data/stores.js'
 import { buildStorePublicPath } from '../utils/routes.js'
+import { navigateToAuth } from '../utils/authFlow.js'
 
 export default function HomeScreen() {
   const navigate = useNavigate()
-  const [pressedStep, setPressedStep] = useState(null)
+  const location = useLocation()
   const { t, lang } = useI18n()
   const { currentStore, isStoreApp, rememberStore, routes } = useStore()
 
@@ -267,25 +267,12 @@ export default function HomeScreen() {
           backdrop-filter: blur(20px);
           -webkit-backdrop-filter: blur(20px);
           border: 1px solid rgba(210, 187, 255, 0.1);
-          transition: transform 0.24s ease, box-shadow 0.24s ease, border-color 0.24s ease;
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
           z-index: 1;
-          touch-action: manipulation;
-          user-select: none;
         }
-        @media (hover: hover) and (pointer: fine) {
-          .step-card:hover {
-            transform: translateY(-8px) scale(1.015);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-            border-color: rgba(210, 187, 255, 0.24);
-          }
-        }
-        .step-card.is-pressed,
-        .step-card:active,
-        .step-card:focus-visible {
-          transform: translateY(-6px) scale(1.01);
-          box-shadow: 0 18px 36px rgba(0,0,0,0.34);
-          border-color: rgba(210, 187, 255, 0.22);
-          outline: none;
+        .step-card:hover {
+          transform: scale(1.03);
+          box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
         .step-num {
           position: absolute;
@@ -300,14 +287,7 @@ export default function HomeScreen() {
           z-index: -1;
           pointer-events: none;
         }
-        @media (hover: hover) and (pointer: fine) {
-          .step-card:hover .step-num {
-            color: rgba(210, 187, 255, 0.08);
-          }
-        }
-        .step-card.is-pressed .step-num,
-        .step-card:active .step-num,
-        .step-card:focus-visible .step-num {
+        .step-card:hover .step-num {
           color: rgba(210, 187, 255, 0.08);
         }
 
@@ -347,7 +327,7 @@ export default function HomeScreen() {
             <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: '-0.02em' }} className="font-headline">Körset</div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            <button onClick={() => navigate('/auth')} style={{ 
+            <button onClick={() => navigateToAuth(navigate, location)} style={{ 
               width: 44, height: 44, borderRadius: '50%', background: 'rgba(53, 52, 57, 0.4)', 
               display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', color: '#d2bbff'
             }}>
@@ -403,14 +383,7 @@ export default function HomeScreen() {
 
           <div className="grid-3">
             {/* Step 1 */}
-            <div
-              className={`step-card group ${pressedStep === 1 ? 'is-pressed' : ''}`}
-              data-pressable="true"
-              onPointerDown={() => setPressedStep(1)}
-              onPointerUp={() => setPressedStep(null)}
-              onPointerLeave={() => setPressedStep(null)}
-              onPointerCancel={() => setPressedStep(null)}
-            >
+            <div className="step-card group">
               <div className="step-num">01</div>
               <div style={{ marginBottom: 32 }}>
                 <span className="material-symbols-outlined" style={{ fontSize: 48, color: 'var(--primary)' }}>barcode_scanner</span>
@@ -420,14 +393,7 @@ export default function HomeScreen() {
             </div>
             
             {/* Step 2 */}
-            <div
-              className={`step-card group ${pressedStep === 2 ? 'is-pressed' : ''}`}
-              data-pressable="true"
-              onPointerDown={() => setPressedStep(2)}
-              onPointerUp={() => setPressedStep(null)}
-              onPointerLeave={() => setPressedStep(null)}
-              onPointerCancel={() => setPressedStep(null)}
-            >
+            <div className="step-card group">
               <div className="step-num">02</div>
               <div style={{ marginBottom: 32 }}>
                 <span className="material-symbols-outlined" style={{ fontSize: 48, color: 'var(--primary)' }}>psychology</span>
@@ -437,14 +403,7 @@ export default function HomeScreen() {
             </div>
 
             {/* Step 3 */}
-            <div
-              className={`step-card group ${pressedStep === 3 ? 'is-pressed' : ''}`}
-              data-pressable="true"
-              onPointerDown={() => setPressedStep(3)}
-              onPointerUp={() => setPressedStep(null)}
-              onPointerLeave={() => setPressedStep(null)}
-              onPointerCancel={() => setPressedStep(null)}
-            >
+            <div className="step-card group">
               <div className="step-num">03</div>
               <div style={{ marginBottom: 32 }}>
                 <span className="material-symbols-outlined" style={{ fontSize: 48, color: 'var(--primary)' }}>fact_check</span>

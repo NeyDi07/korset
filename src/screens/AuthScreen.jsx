@@ -1,7 +1,9 @@
-import { useState, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { supabase } from '../utils/supabase.js'
 import { useI18n } from '../utils/i18n.js'
+import { useAuth } from '../contexts/AuthContext.jsx'
+import { consumeAuthReturnTo, readAuthReturnTo, saveAuthReturnTo } from '../utils/authFlow.js'
 
 /* ─── Error i18n mapping ─── */
 const errMap = {
@@ -34,7 +36,9 @@ const fontAdvent = "'Advent Pro', sans-serif"
 
 export default function AuthScreen() {
   const navigate = useNavigate()
+  const location = useLocation()
   const { lang, t } = useI18n()
+  const { user, loading: authLoading } = useAuth()
 
   const [mode, setMode] = useState('login') // 'login' | 'register' | 'verify' | 'forgot'
 
@@ -45,6 +49,17 @@ export default function AuthScreen() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [otp, setOtp] = useState(['', '', '', '', '', ''])
 
+
+  useEffect(() => {
+    const stateReturnTo = location.state?.returnTo
+    if (stateReturnTo) saveAuthReturnTo(stateReturnTo)
+  }, [location.state])
+
+  useEffect(() => {
+    if (authLoading || !user) return
+    const target = consumeAuthReturnTo('/profile')
+    navigate(target, { replace: true })
+  }, [authLoading, user, navigate])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState(null)
@@ -76,14 +91,15 @@ export default function AuthScreen() {
         setMode('verify')
       } else if (mode === 'forgot') {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: window.location.origin
+          redirectTo: `${window.location.origin}/auth`
         })
         if (error) throw error
         setSuccess(lang === 'kz' ? 'Қалпына келтіру сілтемесі жіберілді' : 'Ссылка для сброса отправлена на почту')
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password })
         if (error) throw error
-        navigate(-1)
+        const target = consumeAuthReturnTo('/profile')
+        navigate(target, { replace: true })
       }
     } catch (err) {
       setError(localizeError(err.message, lang))
@@ -111,9 +127,11 @@ export default function AuthScreen() {
 
   const handleGoogleAuth = async () => {
     try {
+      const redirectTarget = location.state?.returnTo || readAuthReturnTo() || '/profile'
+      saveAuthReturnTo(redirectTarget)
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
-        options: { redirectTo: window.location.origin }
+        options: { redirectTo: `${window.location.origin}/auth` }
       })
       if (error) throw error
     } catch (err) {
