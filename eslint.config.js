@@ -1,0 +1,54 @@
+import js from '@eslint/js'
+import reactHooks from 'eslint-plugin-react-hooks'
+
+export default [
+  js.configs.recommended,
+  {
+    files: ['src/**/*.{js,jsx}'],
+    plugins: {
+      'react-hooks': reactHooks,
+    },
+    languageOptions: {
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+        ecmaFeatures: { jsx: true },
+      },
+      globals: {
+        window: 'readonly',
+        document: 'readonly',
+        navigator: 'readonly',
+        console: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+        setInterval: 'readonly',
+        clearInterval: 'readonly',
+        localStorage: 'readonly',
+        sessionStorage: 'readonly',
+        fetch: 'readonly',
+        URL: 'readonly',
+        URLSearchParams: 'readonly',
+        AbortController: 'readonly',
+        Promise: 'readonly',
+        process: 'readonly',
+        module: 'readonly',
+        require: 'readonly',
+        __dirname: 'readonly',
+        CustomEvent: 'readonly',
+        AudioContext: 'readonly',
+        webkitAudioContext: 'readonly',
+      },
+    },
+    rules: {
+      ...reactHooks.configs.recommended.rules,
+      'no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+      'no-console': 'off',
+      'no-undef': 'warn',
+      'react-hooks/set-state-in-effect': 'warn',
+      'react-hooks/no-deriving-state-in-effects': 'warn',
+    },
+  },
+  {
+    ignores: ['dist/**', 'node_modules/**', 'public/**'],
+  },
+]
