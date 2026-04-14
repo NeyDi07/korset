@@ -6,13 +6,11 @@
 
 ## ⚡ ШАБЛОН СТАРТА НОВОЙ СЕССИИ
 
-**Скопируй это в начало каждого нового чата:**
+**Минимальный промпт для нового чата:**
 
 ```
-Читай: KORSET_ULTIMATE_CONTEXT.md
-Последние изменения: CHANGELOG.md (последние 2-3 записи)
-Задача сегодня: [опиши задачу]
-Файлы которые будем трогать: [если знаешь заранее]
+Читай KORSET_ULTIMATE_CONTEXT.md, TODO_V1.md и последние 2 записи CHANGELOG.md.
+Задача: [опиши задачу одной строкой]
 ```
 
 ---
@@ -34,7 +32,10 @@
 | **Иконки** | **Только** `Material Symbols Outlined` (Google Fonts) |
 | **Роутинг** | react-router-dom v6 |
 | **i18n** | `useI18n` → `src/utils/i18n.js` (RU/KZ обязательно) |
-| **Deploy** | Vercel + GitHub |
+| **Deploy** | Vercel + GitHub (`Korset-App/korset`, публичный репо) |
+| **Качество кода** | ESLint + Prettier + Husky + lint-staged |
+| **Тесты** | Playwright (e2e, `tests/e2e/`) |
+| **Data fetching** | `@tanstack/react-query` (установлен, Фаза 1+) |
 
 ---
 
@@ -49,7 +50,8 @@
 /s/:storeSlug/history       → История
 /s/:storeSlug/profile       → Профиль
 /admin/rapid-scan           → Терминал оцифровки (RBAC: role=admin)
-/retail/:storeSlug/...      → Retail Cabinet (в разработке)
+/retail                     → RetailEntryScreen (авто-поиск магазина по owner_id)
+/retail/:storeSlug/...      → Retail Cabinet (dashboard, products, import, settings)
 ```
 
 ---
@@ -153,6 +155,11 @@ korset/
 - ✅ Smart Merge — SyncResolveModal при конфликте локал/облако
 - ✅ Privacy Policy (`/privacy-policy`, RU/KZ)
 - ✅ Retail Cabinet skeleton (Dashboard, Products, Import, Settings, RetailLayout + RetailBottomNav)
+- ✅ StoreContext → Supabase (localStorage cache, isStoreLoading)
+- ✅ RetailEntryScreen — `/retail` роут, авто-redirect по owner_id (PILOT: RBAC отключён)
+- ✅ HomeScreen лендинг — кнопка "Кабинет" в nav + B2B секция
+- ✅ Supabase: RLS policy `stores_read_active` активна, store-one засеян
+- ✅ ESLint + Prettier + Husky + Playwright настроены
 
 ---
 

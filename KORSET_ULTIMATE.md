@@ -433,4 +433,79 @@ Retail Cabinet был создан как быстрый скелет. Цель 
 
 ---
 
+## 18. ТЕКУЩЕЕ СОСТОЯНИЕ КОДА (апрель 2026, после Фазы 2.3)
+
+> Обновлять этот раздел в начале каждой новой сессии.
+
+### Статус фаз
+
+| Фаза | Статус |
+|---|---|
+| Фаза 0 — Фундамент данных | ✅ Завершена |
+| Фаза 1 — Retail Dashboard (аналитика) | ✅ Завершена |
+| Фаза 2.1 — Data Layer + реальные данные | ✅ Завершена |
+| Фаза 2.2 — Поиск + UX шапки | ✅ Завершена |
+| Фаза 2.3 — Встроенный сканер | ✅ Завершена |
+| Фаза 2.4 — Accordion-редактор (polish) | 🔲 НЕ НАЧАТА |
+| Фаза 3 — Retail Settings | 🔲 Не начата |
+| Фаза 4 — Финальная чистка | 🔲 Не начата |
+| Фаза 5 — Подготовка к пилоту | 🔲 Не начата |
+
+### Ключевые файлы (все фазы)
+
+| Файл | Что сделано |
+|---|---|
+| `src/screens/RetailDashboardScreen.jsx` | Полный рефакторинг: 5 useQuery, MetricCard 2×2, ProductRow top-5, MissedRow + фильтр-табы, Period toggle 7/30д |
+| `src/utils/retailAnalytics.js` | Все функции: getScansCount, getUniqueProductsScanned, getTotalProducts, getTopScannedProducts, getMissedOpportunities, getStoreCatalogProducts, updateProductPrice, updateProductStock |
+| `supabase_retail_analytics.sql` | RPC: `get_top_scanned_products` + `get_missed_opportunities` (SECURITY DEFINER) |
+| `src/screens/RetailProductsScreen.jsx` | React Query, PriceField (save-on-blur), StockToggle (optimistic), Highlight, поиск по бренду+EAN, RetailScannerModal |
+| `src/components/RetailScannerModal.jsx` | **НОВЫЙ.** Полноэкранный сканер: html5-qrcode lazy import, viewfinder, фонарик, камеры, beep |
+| `src/components/RetailBottomNav.jsx` | 3 таба: Dashboard / Products / Settings (Import убран) |
+| `src/screens/CatalogScreen.jsx` | React Query + fallback Supabase → local JSON |
+| `src/contexts/StoreContext.jsx` | `fetchStoreBySlug`: fallback на `getStoreBySlug()` из `data/stores.js` |
+| `src/screens/StoresScreen.jsx` | Fallback на `getStores()` при пустом ответе Supabase |
+| `supabase_sync_test_products.sql` | ⚠️ **SQL для ручного запуска.** 16 товаров + store-one. Идемпотентен. |
+
+### Архитектура данных RetailProductsScreen
+
+```text
+useQuery(['retail-products', storeId])
+  → getStoreCatalogProducts(storeId)          // retailAnalytics.js
+  → supabase.from('store_products')
+      .select('*, global_products(*)')
+      .eq('store_id', storeId)
+
+useMutation → updateProductPrice(id, price)   // optimistic setQueryData
+useMutation → updateProductStock(id, status)  // optimistic + rollback onError
+```
+
+### Поток сканера (2.3)
+
+```text
+Кнопка barcode_scanner
+  → setScannerOpen(true)
+  → <RetailScannerModal onScan={handleScan} />
+      → html5-qrcode → onScan(ean)
+  → handleScan(ean):
+      found  → setExpandedId(id) + toast green "Товар найден"
+      !found → toast red "Нет в каталоге: [EAN]"
+```
+
+### Важные паттерны для следующих сессий
+
+- **i18n**: все строки через `t.retail.products.*` из `src/utils/i18n.js`
+- **Иконки**: только `material-symbols-outlined` (Material Symbols)
+- **Стиль**: Dark Premium Glassmorphism — `rgba(255,255,255,0.03–0.12)` фоны, cyan `#38BDF8` акцент
+- **Мутации**: всегда optimistic UI + `onError` rollback + `onSettled` invalidate
+- **Fallback данных**: если Supabase пуст → локальные `data/stores.js`, `data/products.json`
+
+### Следующий шаг — Фаза 2.4 (Accordion-редактор polish)
+
+1. Добавить `updateProductShelf(id, shelf)` в `retailAnalytics.js`
+2. Shelf-поле в аккордеоне (input + save-on-blur, как PriceField)
+3. Readonly блок: бренд, категория, состав из `global_products`
+4. Улучшить CSS transition аккордеона (сейчас maxHeight: 320 → нужно динамическое значение)
+
+---
+
 *Конец мастер-документа Körset v4.0. Обновлён: апрель 2026.*

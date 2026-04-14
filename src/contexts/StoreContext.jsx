@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { supabase } from '../utils/supabase.js'
 import { loadPrivacySettings, PRIVACY_EVENT } from '../utils/privacySettings.js'
+import { getStoreBySlug } from '../data/stores.js'
 import {
   buildAIHomePath,
   buildCatalogPath,
@@ -43,7 +44,9 @@ function saveStoreToCache(slug, store) {
   if (!slug || !store) return
   try {
     localStorage.setItem(`${STORE_CACHE_PREFIX}${slug}`, JSON.stringify(store))
-  } catch {}
+  } catch {
+    /* noop */
+  }
 }
 
 function normalizeStore(data) {
@@ -63,22 +66,27 @@ async function fetchStoreBySlug(slug) {
     .eq('code', slug)
     .eq('is_active', true)
     .maybeSingle()
-  if (error || !data) return null
-  return normalizeStore(data)
+  if (!error && data) return normalizeStore(data)
+  const local = getStoreBySlug(slug)
+  return local ? normalizeStore({ ...local, code: local.slug, is_active: local.isActive }) : null
 }
 
 export function StoreProvider({ children }) {
   const location = useLocation()
   const pathStoreSlug = getStoreSlugFromPath(location.pathname)
-  const [rememberStoreEnabled, setRememberStoreEnabled] = useState(() => loadPrivacySettings().rememberStoreEnabled)
-  const [rememberedStoreSlug, setRememberedStoreSlug] = useState(
-    () => loadPrivacySettings().rememberStoreEnabled ? (localStorage.getItem(STORE_KEY) || null) : null
+  const [rememberStoreEnabled, setRememberStoreEnabled] = useState(
+    () => loadPrivacySettings().rememberStoreEnabled
+  )
+  const [rememberedStoreSlug, setRememberedStoreSlug] = useState(() =>
+    loadPrivacySettings().rememberStoreEnabled ? localStorage.getItem(STORE_KEY) || null : null
   )
 
   const storeSlug = pathStoreSlug || (rememberStoreEnabled ? rememberedStoreSlug : null) || null
 
   const [currentStore, setCurrentStore] = useState(() => loadStoreFromCache(storeSlug))
-  const [isStoreLoading, setIsStoreLoading] = useState(() => Boolean(storeSlug && !loadStoreFromCache(storeSlug)))
+  const [isStoreLoading, setIsStoreLoading] = useState(() =>
+    Boolean(storeSlug && !loadStoreFromCache(storeSlug))
+  )
 
   useEffect(() => {
     const syncPrivacy = () => {
@@ -132,42 +140,56 @@ export function StoreProvider({ children }) {
 
   const isStoreApp = /^\/s\/[^/]+/.test(location.pathname)
   const isStorePublic = /^\/stores\/[^/]+/.test(location.pathname)
-  const isPublicMarketing = location.pathname === '/' || location.pathname === '/stores' || isStorePublic
+  const isPublicMarketing =
+    location.pathname === '/' || location.pathname === '/stores' || isStorePublic
 
-  const value = useMemo(() => ({
-    storeSlug: currentStore?.slug || null,
-    storeId: currentStore?.id || null,
-    currentStore,
-    isStoreLoading,
-    isStoreApp,
-    isStorePublic,
-    isPublicMarketing,
-    rememberStore: (slug) => {
-      setRememberedStoreSlug(slug)
-      if (rememberStoreEnabled) localStorage.setItem(STORE_KEY, slug)
-    },
-    clearRememberedStore: () => {
-      setRememberedStoreSlug(null)
-      localStorage.removeItem(STORE_KEY)
-    },
-    appPath: (subPath = '') => {
-      if (!currentStore) return subPath || '/'
-      if (!subPath || subPath === '/') return `/s/${currentStore.slug}`
-      return `/s/${currentStore.slug}${subPath.startsWith('/') ? subPath : `/${subPath}`}`
-    },
-    routes: currentStore ? {
-      home: buildStoreHomePath(currentStore.slug),
-      catalog: buildCatalogPath(currentStore.slug),
-      scan: buildScanPath(currentStore.slug),
-      ai: buildAIHomePath(currentStore.slug),
-      history: buildHistoryPath(currentStore.slug),
-      profile: buildProfilePath(currentStore.slug),
-      publicPage: buildStorePublicPath(currentStore.slug),
-      product: (ean, external = false) => buildProductPath(currentStore.slug, ean, external),
-      productAI: (ean, external = false) => buildProductAIPath(currentStore.slug, ean, external),
-      productAlternatives: (ean) => buildProductAlternativesPath(currentStore.slug, ean),
-    } : null,
-  }), [currentStore, isStoreLoading, isStoreApp, isStorePublic, isPublicMarketing, rememberStoreEnabled])
+  const value = useMemo(
+    () => ({
+      storeSlug: currentStore?.slug || null,
+      storeId: currentStore?.id || null,
+      currentStore,
+      isStoreLoading,
+      isStoreApp,
+      isStorePublic,
+      isPublicMarketing,
+      rememberStore: (slug) => {
+        setRememberedStoreSlug(slug)
+        if (rememberStoreEnabled) localStorage.setItem(STORE_KEY, slug)
+      },
+      clearRememberedStore: () => {
+        setRememberedStoreSlug(null)
+        localStorage.removeItem(STORE_KEY)
+      },
+      appPath: (subPath = '') => {
+        if (!currentStore) return subPath || '/'
+        if (!subPath || subPath === '/') return `/s/${currentStore.slug}`
+        return `/s/${currentStore.slug}${subPath.startsWith('/') ? subPath : `/${subPath}`}`
+      },
+      routes: currentStore
+        ? {
+            home: buildStoreHomePath(currentStore.slug),
+            catalog: buildCatalogPath(currentStore.slug),
+            scan: buildScanPath(currentStore.slug),
+            ai: buildAIHomePath(currentStore.slug),
+            history: buildHistoryPath(currentStore.slug),
+            profile: buildProfilePath(currentStore.slug),
+            publicPage: buildStorePublicPath(currentStore.slug),
+            product: (ean, external = false) => buildProductPath(currentStore.slug, ean, external),
+            productAI: (ean, external = false) =>
+              buildProductAIPath(currentStore.slug, ean, external),
+            productAlternatives: (ean) => buildProductAlternativesPath(currentStore.slug, ean),
+          }
+        : null,
+    }),
+    [
+      currentStore,
+      isStoreLoading,
+      isStoreApp,
+      isStorePublic,
+      isPublicMarketing,
+      rememberStoreEnabled,
+    ]
+  )
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>
 }

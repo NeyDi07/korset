@@ -37,7 +37,7 @@
 
 - [x] **Миграция экранов** — `StoresScreen`, `StorePublicScreen` → Supabase/useStore()
 
-- [ ] ⚠️ **[НУЖНО ВРУЧНУЮ] SQL-патч в Supabase** — RLS fix + seed test store.
+- [x] ⚠️ **[НУЖНО ВРУЧНУЮ] SQL-патч в Supabase** — RLS fix + seed test store. *(выполнено пользователем)*
   ```sql
   DROP POLICY IF EXISTS "stores_read" ON stores;
   CREATE POLICY "stores_read_active" ON stores FOR SELECT USING (is_active = TRUE);
@@ -46,54 +46,91 @@
   ON CONFLICT (code) DO NOTHING;
   ```
 
+- [x] **DevTools** — ESLint + Prettier + Husky + lint-staged, `@tanstack/react-query`, Playwright — конфиг + 4 базовых e2e теста
+
 - [ ] ⚠️ **[Phase 2] Удалить `products.json` и `storeInventories.js`** — после миграции scan flow на Supabase.
 
 ---
 
-## � ФАЗА 1: Retail Dashboard — Глубокая аналитика *(2–3 часа)*
+## ✅ Сессия 4 — Landing Entry + DevTools
 
-- [ ] **[RetailDashboard] Реальные данные сканирований**
-  COUNT из `scan_events` за 7 / 30 дней, фильтр по `store_id`.
-  > 🤖 Модель: **Sonnet / Gemini Pro (High)**
-
-- [ ] **[RetailDashboard] Топ-5 сканируемых товаров**
-  GROUP BY `ean`, COUNT → JOIN `global_products` (название + фото).
-  > 🤖 Модель: **Sonnet / Gemini Pro (High)**
-
-- [ ] **[RetailDashboard] «Упущенная выгода» (killer-фича)**
-  Товары, которые покупатели сканировали, но в `store_products` они либо `stock_status='out_of_stock'`, либо вообще отсутствуют. Список с названием и фото — мотивирует пополнять запасы. Главный B2B-аргумент при питче.
-  > 🤖 Модель: **Sonnet (Thinking)** — нетривиальный LEFT JOIN с агрегацией.
-
-- [ ] **[RetailBottomNav] Убрать вкладку Import**
-  Import переезжает в скрытую admin-зону `/admin/`. Из retail-навигации убрать.
-  > 🤖 Модель: **Gemini Pro (Low)**
+- [x] `RetailEntryScreen.jsx` — роут `/retail`, автоматический поиск магазина по `owner_id`
+- [x] PILOT MODE: RBAC отключён, ищет первый активный магазин
+- [x] `HomeScreen.jsx` — кнопка "Кабинет" в nav + B2B секция
 
 ---
 
-## 🗂️ ФАЗА 2: Retail Products — Управление + Встроенный сканер *(3–4 часа)*
+## ✅ ФАЗА 1: Retail Dashboard — Глубокая аналитика *(ЗАВЕРШЕНО)*
 
-- [ ] **[RetailProducts] Данные из Supabase**
-  Список через `getStoreCatalogProducts(currentStore.slug)`, не хардкод.
-  > 🤖 Модель: **Sonnet**
+- [x] **[RetailDashboard] Реальные данные сканирований**
+  `getScansCount(storeId, days)` — COUNT из `scan_events` за 7/30 дней.
+  `getUniqueProductsScanned(storeId, days)` — уникальные EAN.
+  `getTotalProducts(storeId)` — COUNT из `store_products`.
+  Все через React Query + skeleton loading.
 
-- [ ] **[RetailProducts] Встроенный сканер в Sticky Header**
-  Кнопка камеры рядом с поиском → `html5-qrcode` в мини-режиме → при скане EAN: автоскролл к карточке + автораскрытие аккордеона.
-  > 🤖 Модель: **Sonnet** — интеграция сканера.
+- [x] **[RetailDashboard] Топ-5 сканируемых товаров**
+  RPC `get_top_scanned_products(p_store_id, p_days_back, p_limit)` → GROUP BY ean, COUNT → JOIN global_products.
+  `ProductRow` с рангом, фото, названием, счётчиком.
 
-- [ ] **[RetailProducts] Умный поиск**
-  Единый инпут: поиск по названию AND по штрихкоду одновременно.
-  > 🤖 Модель: **Gemini Pro (Low)**
+- [x] **[RetailDashboard] «Упущенная выгода» (killer-фича)**
+  RPC `get_missed_opportunities(p_store_id, p_days_back)` — LEFT JOIN scan_events + store_products.
+  Причина: `not_in_catalog` / `out_of_stock`. Фильтр-табы: Все / Нет в каталоге / Нет в наличии.
+  `MissedRow` с цветным бейджем причины.
 
-- [ ] **[RetailProducts] Accordion-редактор карточки**
-  - Цена (₸) → UPDATE `store_products.price`
-  - Premium Toggle наличие (iOS-like) → UPDATE `store_products.stock_status`
-  - Полка / расположение → UPDATE `store_products.shelf` (stub-ready визуально, но уже сохранять в Supabase)
-  - ⚠️ Редактировать только store-свойства. `global_products` (состав, фото) — readonly.
-  > 🤖 Модель: **Sonnet / Gemini Pro (High)**
+- [x] **[RetailBottomNav] Убрать вкладку Import**
+  3 таба: Dashboard / Products / Settings. Import убран из навигации.
 
-- [ ] **[RetailProducts] Оптимистичные обновления**
-  Instant UI feedback при изменении цены/наличия + rollback при ошибке Supabase.
-  > 🤖 Модель: **Sonnet**
+- [x] **[retailAnalytics.js] Все функции аналитики**
+  `getScansCount`, `getUniqueProductsScanned`, `getTotalProducts`, `getTopScannedProducts`, `getMissedOpportunities`, `getStoreCatalogProducts`, `updateProductPrice`, `updateProductStock`.
+
+- [x] **[supabase_retail_analytics.sql] RPC-функции**
+  `get_top_scanned_products` + `get_missed_opportunities`. SECURITY DEFINER.
+
+---
+
+## ✅ ФАЗА 2: Retail Products — Управление + Встроенный сканер *(ЗАВЕРШЕНО)*
+
+### ✅ 2.1 — Data Layer + реальные данные
+
+- [x] `getStoreCatalogProducts(storeId)` в `retailAnalytics.js` — JOIN store_products + global_products
+- [x] `useQuery(['retail-products', storeId])` + skeleton loading (6 строк)
+- [x] Оптимистичные обновления: `useMutation` для цены (setQueryData) и стока (rollback onError)
+- [x] `PriceField`: save-on-blur, состояния idle/saving/saved/error
+- [x] `StockToggle`: iOS-like toggle, optimistic + rollback
+- [x] `StockBadge`: in_stock / low_stock / out_of_stock с цветами
+- [x] i18n строки для всех retail-элементов
+
+### ✅ 2.2 — Поиск + UX шапки
+
+- [x] Material Symbols иконки в шапке (search, close, barcode_scanner, expand_more)
+- [x] Умный поиск: название + бренд + EAN одновременно
+- [x] `Highlight` компонент — подсветка совпадений cyan-цветом
+- [x] Счётчик `X / Y` при активном поиске
+- [x] Кнопка очистки поиска (×)
+
+### ✅ 2.3 — Встроенный сканер
+
+- [x] `html5-qrcode` уже установлен (v2.3.8)
+- [x] Кнопка камеры в шапке → полноэкранный модал `RetailScannerModal.jsx`
+- [x] Lazy import html5-qrcode, viewfinder-оверлей с анимацией линии
+- [x] Фонарик + переключение камер + обработка ошибок разрешений
+- [x] После скана: закрыть модал, найти товар по EAN → раскрыть аккордеон + toast
+- [x] Fallback: красный toast «Нет в каталоге» если EAN не найден
+
+### ✅ 2.4 — Accordion-редактор (polish)
+
+- [x] Shelf / расположение поле → `updateProductShelf(id, shelf)` → Supabase
+- [x] Readonly блок с данными из `global_products` (состав, фото, бренд, категория)
+- [x] Кнопка «Сохранить» с состояниями: idle / saving / saved / error (для shelf)
+- [x] Анимация раскрытия аккордеона через CSS height transition *(использован grid-template-rows 0fr/1fr)*
+
+### ✅ Синхронизация (дополнительно)
+
+- [x] `CatalogScreen.jsx`: React Query + fallback Supabase → local JSON
+- [x] `StoreContext.jsx`: `fetchStoreBySlug` fallback на `getStoreBySlug()`
+- [x] `StoresScreen.jsx`: fallback на `getStores()`
+- [x] `supabase_sync_test_products.sql`: 16 реальных товаров + store-one, идемпотентен
+  - ⚠️ **Нужно выполнить вручную в Supabase Dashboard → SQL Editor**
 
 ---
 

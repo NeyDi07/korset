@@ -8,6 +8,43 @@
 
 ## Апрель 2026
 
+### 2026-04-15 (Сессия 5 — Фаза 2.4: Accordion-редактор)
+
+**RetailProductsScreen (Управление каталогом):**
+
+- Добавлен компонент `ShelfField` для редактирования расположения товара на полке (`shelf_zone`). Оснащён save-on-blur с визуальными состояниями: idle / saving / saved / error (как у поля цены).
+- Добавлен `ReadonlyBlock` внутри аккордеона. Он отображает информацию из `global_products`: крупное фото товара, категорию, бренд, объём и состав (ingredients).
+- Интегрирована плавная анимация раскрытия карточки товара через CSS Grid (`grid-template-rows: 1fr / 0fr`), что позволило отказаться от фиксированной `max-height`.
+- Обновлён запрос `getStoreCatalogProducts` в `retailAnalytics.js` для подгрузки `ingredients_raw`, `ingredients_kz` и `quantity`.
+- Добавлены новые ключи локализации (RU/KZ) в `i18n.js` для полей полки, категории, бренда и состава.
+- База данных: проверена актуальная схема `KORSET_DB_SCHEMA_FULL.sql`, исправлена опечатка в определении таблицы `users` (было `мublic.users`). Поля `shelf_zone` и `shelf_position` уже присутствуют в `store_products`, дополнительных миграций не потребовалось.
+
+### 2026-04-14 (Сессия 4 — Landing Entry + DevTools)
+
+**RetailEntryScreen — вход в кабинет с лендинга:**
+- Создан `RetailEntryScreen.jsx` — роут `/retail` без slug. Находит магазин по `owner_id`, редиректит на `/retail/:slug/dashboard`. Если не найден — экран с контактом.
+- PILOT MODE: временно ищет первый активный магазин без проверки `owner_id` (RBAC отключён до привязки owner_id в БД).
+- `RetailLayout.jsx` — RBAC закомментирован для пилота (TODO: включить после привязки owner_id).
+- `App.jsx`: роут `/retail` добавлен; `/retail*` исключён из redirect на `setup-profile`.
+- `HomeScreen.jsx`: кнопка "Кабинет" в top nav + B2B секция "Вы владелец магазина?" перед footer.
+
+**Git / Deploy:**
+- Remote обновлён на `github.com/Korset-App/korset` (репо перенесён в организацию).
+- Репо сделан публичным для Vercel Hobby плана.
+- `netlify.toml` создан (резервный деплой).
+
+**DevTools настроены:**
+- ESLint (`eslint.config.js`) — проверка `src/`, правила react-hooks.
+- Prettier (`.prettierrc`) — единый стиль кода.
+- Husky + lint-staged — автопроверка перед `git commit`.
+- `@tanstack/react-query` установлен (готов к использованию в Фазе 1).
+- Playwright (`playwright.config.js`, `tests/e2e/landing.spec.js`) — 4 базовых e2e теста.
+- Скрипты: `npm run lint`, `npm run lint:fix`, `npm run format`, `npm run test`.
+
+**Workflows:**
+- `.windsurf/workflows/fullstack-developer.md` — добавлен скилл.
+- `.agent/workflows/cleanup.md` — наполнен реальными командами для очистки проекта.
+
 ### 2026-04-14 (Сессия 3 — Фаза 0: Фундамент данных)
 
 **StoreContext → Supabase:**

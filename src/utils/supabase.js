@@ -32,4 +32,5 @@ export const supabase = isReady
         delete: () => ({ error: 'not configured' }),
         eq: () => ({ data: null, error: 'not configured' }),
       }),
+      rpc: () => ({ data: null, error: 'not configured' }),
     }

@@ -103,6 +103,16 @@ body {
 }
 .screen::-webkit-scrollbar { display: none; }
 
+/* ─── Skeleton shimmer ────────────────────────────────────────────── */
+@keyframes retail-skel-pulse {
+  0%, 100% { opacity: 0.35; }
+  50%       { opacity: 0.7; }
+}
+.retail-skel {
+  background: rgba(255, 255, 255, 0.08);
+  animation: retail-skel-pulse 1.4s ease-in-out infinite;
+}
+
 /* ─── Header ──────────────────────────────────────── */
 .header {
   padding: 16px 20px 14px;
