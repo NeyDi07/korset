@@ -1,4 +1,5 @@
 import { supabase } from './supabase.js'
+import { loadPrivacySettings } from './privacySettings.js'
 
 export const SCAN_HISTORY_STORAGE_KEY = 'korset_scan_history_cache_v2'
 
@@ -114,4 +115,142 @@ export function clearLocalScanHistory(ownerKey = 'guest') {
   const foreign = list.filter((item) => item?.ownerKey !== ownerKey)
   writeRawHistory(foreign)
   emitLocalHistoryChanged(ownerKey)
+}
+
+// ─── Cloud sync ──────────────────────────────────────────────────────────────
+
+/** Resolves a Supabase Promise with a hard timeout to prevent UI hangs. */
+function withSyncTimeout(promise, ms = 8000) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error('sync_timeout')), ms)),
+  ])
+}
+
+/**
+ * Merges two history arrays by (storeId, ean) key — most recent entry wins.
+ * Used internally during cloud sync.
+ */
+function mergeHistoryLists(primary = [], secondary = []) {
+  const map = new Map()
+  for (const item of [...primary, ...secondary]) {
+    if (!item?.ean) continue
+    const key = getHistoryItemKey(item)
+    const existing = map.get(key)
+    if (!existing || new Date(item.scanDate).getTime() >= new Date(existing.scanDate).getTime()) {
+      map.set(key, item)
+    }
+  }
+  return Array.from(map.values()).sort((a, b) => new Date(b.scanDate) - new Date(a.scanDate))
+}
+
+/** Session guard: run sync at most once per browser session per user. */
+const SYNC_SESSION_KEY = 'korset_history_synced_uid'
+
+/**
+ * Syncs local scan history with Supabase scan_events.
+ *
+ * Steps:
+ *   1. Migrate guest scans to the logged-in user's ownerKey.
+ *   2. Upload local scans missing from cloud (if analyticsEnabled).
+ *   3. Download cloud scans missing locally (if localHistoryEnabled).
+ *
+ * Respects privacy settings. Runs at most once per session per user.
+ *
+ * @param {string} internalUserId - users.id FK (UUID)
+ * @param {Object} user           - Supabase auth user object (for ownerKey)
+ */
+export async function syncScanHistoryWithCloud(internalUserId, user) {
+  if (!internalUserId || !user) return
+
+  // Run once per session per user
+  if (sessionStorage.getItem(SYNC_SESSION_KEY) === internalUserId) return
+
+  const privacy = loadPrivacySettings()
+  const ownerKey = buildHistoryOwnerKey(user)
+  const guestOwnerKey = 'guest'
+
+  // ── Step 1: Migrate guest scans to logged-in user ──────────────────────────
+  const guestHistory = readLocalScanHistory(guestOwnerKey)
+  if (guestHistory.length > 0) {
+    const existingUserHistory = readLocalScanHistory(ownerKey)
+    const guestAsUser = guestHistory
+      .map((item) => normalizeHistoryEntry({ ...item, ownerKey }))
+      .filter(Boolean)
+    const merged = mergeHistoryLists(existingUserHistory, guestAsUser)
+    writeLocalScanHistory(ownerKey, merged)
+    clearLocalScanHistory(guestOwnerKey)
+  }
+
+  const localHistory = readLocalScanHistory(ownerKey)
+
+  // ── Step 2: Upload local scans missing from cloud ─────────────────────────
+  if (privacy.analyticsEnabled && localHistory.length > 0) {
+    try {
+      const { data: existingRows } = await withSyncTimeout(
+        supabase
+          .from('scan_events')
+          .select('ean')
+          .eq('user_id', internalUserId)
+          .limit(200)
+      )
+      const existingEans = new Set((existingRows || []).map((r) => String(r.ean)))
+      const toUpload = localHistory.filter((item) => !existingEans.has(String(item.ean)))
+
+      if (toUpload.length > 0) {
+        const rows = toUpload.map((item) => ({
+          ean: item.ean,
+          found_status: item.source || 'scan',
+          user_id: internalUserId,
+          store_id: item.storeId || null,
+          app_version: '1.0',
+        }))
+        await withSyncTimeout(supabase.from('scan_events').insert(rows))
+      }
+    } catch (err) {
+      console.warn('[localHistory] Failed to upload local scans to cloud:', err.message)
+    }
+  }
+
+  // ── Step 3: Download cloud scans missing locally ──────────────────────────
+  if (privacy.localHistoryEnabled) {
+    try {
+      const { data: cloudScans } = await withSyncTimeout(
+        supabase
+          .from('scan_events')
+          .select('ean, scanned_at, store_id')
+          .eq('user_id', internalUserId)
+          .order('scanned_at', { ascending: false })
+          .limit(50)
+      )
+
+      if (cloudScans?.length > 0) {
+        const currentLocal = readLocalScanHistory(ownerKey)
+        const localEans = new Set(currentLocal.map((h) => String(h.ean)))
+        const toAdd = cloudScans
+          .filter((scan) => !localEans.has(String(scan.ean)))
+          .map((scan) =>
+            normalizeHistoryEntry({
+              ownerKey,
+              ean: scan.ean,
+              scanDate: scan.scanned_at,
+              storeId: scan.store_id || null,
+              source: 'cloud_sync',
+            })
+          )
+          .filter(Boolean)
+
+        if (toAdd.length > 0) {
+          const updatedHistory = mergeHistoryLists(currentLocal, toAdd).slice(0, 50)
+          writeLocalScanHistory(ownerKey, updatedHistory)
+          emitLocalHistoryChanged(ownerKey)
+        }
+      }
+    } catch (err) {
+      console.warn('[localHistory] Failed to download cloud scans to local:', err.message)
+    }
+  }
+
+  // Mark session as synced
+  try { sessionStorage.setItem(SYNC_SESSION_KEY, internalUserId) } catch {}
 }

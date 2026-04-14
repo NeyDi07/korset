@@ -427,7 +427,13 @@ export default function OnboardingScreen({ onDone }) {
           )}
         </div>
 
-        <div style={{ display: 'flex', gap: 10, marginTop: 24, paddingBottom: 18 }}>
+        {step === 2 && (
+          <div style={{ marginTop: 28, padding: '0 12px', textAlign: 'center', fontSize: 11, lineHeight: 1.45, color: 'rgba(185,185,214,0.6)', fontWeight: 500 }}>
+            <span style={{ color: '#FCD34D' }}>⚠️</span> {t.onboarding.aiDisclaimer}
+          </div>
+        )}
+
+        <div style={{ display: 'flex', gap: 10, marginTop: step === 2 ? 14 : 24, paddingBottom: 18 }}>
           {step > 0 && (
             <button onClick={prevStep} style={{ flex: '0 0 110px', height: 52, borderRadius: 16, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.03)', color: '#EDE9FE', fontWeight: 700, cursor: 'pointer' }}>{t.onboarding.back}</button>
           )}

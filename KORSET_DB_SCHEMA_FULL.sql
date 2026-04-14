@@ -1,0 +1,214 @@
+-- WARNING: This schema is for context only and is not meant to be run.
+-- Table order and constraints may not be valid for execution.
+
+CREATE TABLE public.external_product_cache (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  ean text NOT NULL UNIQUE,
+  source text NOT NULL DEFAULT 'openfoodfacts'::text CHECK (source = ANY (ARRAY['openfoodfacts'::text, 'kazfood'::text, 'manual'::text])),
+  raw_payload jsonb NOT NULL DEFAULT '{}'::jsonb,
+  normalized_name text,
+  normalized_brand text,
+  normalized_ingredients text,
+  normalized_allergens_json jsonb DEFAULT '[]'::jsonb,
+  normalized_diet_tags_json jsonb DEFAULT '[]'::jsonb,
+  normalized_nutriments_json jsonb DEFAULT '{}'::jsonb,
+  image_url text,
+  nutriscore character,
+  scan_count integer NOT NULL DEFAULT 1,
+  promoted boolean NOT NULL DEFAULT false,
+  global_product_id uuid,
+  cached_at timestamp with time zone NOT NULL DEFAULT now(),
+  updated_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT external_product_cache_pkey PRIMARY KEY (id),
+  CONSTRAINT external_product_cache_global_product_id_fkey FOREIGN KEY (global_product_id) REFERENCES public.global_products(id)
+);
+CREATE TABLE public.global_products (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  ean text NOT NULL UNIQUE,
+  name text NOT NULL,
+  name_kz text,
+  brand text,
+  category text,
+  subcategory text,
+  quantity text,
+  image_url text,
+  images ARRAY DEFAULT '{}'::text[],
+  ingredients_raw text,
+  ingredients_kz text,
+  nutriments_json jsonb DEFAULT '{}'::jsonb,
+  allergens_json jsonb DEFAULT '[]'::jsonb,
+  diet_tags_json jsonb DEFAULT '[]'::jsonb,
+  halal_status text NOT NULL DEFAULT 'unknown'::text CHECK (halal_status = ANY (ARRAY['yes'::text, 'no'::text, 'unknown'::text])),
+  nutriscore character CHECK (nutriscore = ANY (ARRAY['A'::bpchar, 'B'::bpchar, 'C'::bpchar, 'D'::bpchar, 'E'::bpchar])),
+  data_quality_score smallint DEFAULT 0 CHECK (data_quality_score >= 0 AND data_quality_score <= 100),
+  source_primary text DEFAULT 'manual'::text CHECK (source_primary = ANY (ARRAY['manual'::text, 'openfoodfacts'::text, 'store_import'::text, 'ai_enriched'::text])),
+  source_confidence smallint DEFAULT 50 CHECK (source_confidence >= 0 AND source_confidence <= 100),
+  needs_review boolean NOT NULL DEFAULT false,
+  is_verified boolean NOT NULL DEFAULT false,
+  manufacturer text,
+  country_of_origin text,
+  specs_json jsonb DEFAULT '{}'::jsonb,
+  is_active boolean NOT NULL DEFAULT true,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  updated_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT global_products_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.missing_products (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  store_id uuid,
+  ean text NOT NULL,
+  scan_count integer NOT NULL DEFAULT 1,
+  first_seen_at timestamp with time zone NOT NULL DEFAULT now(),
+  last_seen_at timestamp with time zone NOT NULL DEFAULT now(),
+  resolved boolean NOT NULL DEFAULT false,
+  resolved_global_product_id uuid,
+  notes text,
+  CONSTRAINT missing_products_pkey PRIMARY KEY (id),
+  CONSTRAINT missing_products_store_id_fkey FOREIGN KEY (store_id) REFERENCES public.stores(id),
+  CONSTRAINT missing_products_resolved_global_product_id_fkey FOREIGN KEY (resolved_global_product_id) REFERENCES public.global_products(id)
+);
+CREATE TABLE public.notification_deliveries (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  event_id uuid,
+  endpoint text NOT NULL,
+  status text NOT NULL,
+  error_message text,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT notification_deliveries_pkey PRIMARY KEY (id),
+  CONSTRAINT notification_deliveries_event_id_fkey FOREIGN KEY (event_id) REFERENCES public.notification_events(id)
+);
+CREATE TABLE public.notification_events (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  type text NOT NULL,
+  title text NOT NULL,
+  body text NOT NULL,
+  status text NOT NULL DEFAULT 'pending'::text,
+  deliveries_total integer NOT NULL DEFAULT 0,
+  deliveries_success integer NOT NULL DEFAULT 0,
+  deliveries_failed integer NOT NULL DEFAULT 0,
+  meta jsonb NOT NULL DEFAULT '{}'::jsonb,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT notification_events_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.product_matches (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  store_product_id uuid NOT NULL,
+  global_product_id uuid NOT NULL,
+  match_method text NOT NULL CHECK (match_method = ANY (ARRAY['ean_exact'::text, 'name_fuzzy'::text, 'manual'::text, 'ai'::text])),
+  match_confidence smallint DEFAULT 100 CHECK (match_confidence >= 0 AND match_confidence <= 100),
+  is_verified boolean NOT NULL DEFAULT false,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT product_matches_pkey PRIMARY KEY (id),
+  CONSTRAINT product_matches_store_product_id_fkey FOREIGN KEY (store_product_id) REFERENCES public.store_products(id),
+  CONSTRAINT product_matches_global_product_id_fkey FOREIGN KEY (global_product_id) REFERENCES public.global_products(id)
+);
+CREATE TABLE public.product_reviews (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  global_product_id uuid NOT NULL,
+  user_id uuid NOT NULL,
+  rating smallint NOT NULL CHECK (rating >= 1 AND rating <= 5),
+  text text,
+  is_verified_purchase boolean NOT NULL DEFAULT false,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT product_reviews_pkey PRIMARY KEY (id),
+  CONSTRAINT product_reviews_global_product_id_fkey FOREIGN KEY (global_product_id) REFERENCES public.global_products(id),
+  CONSTRAINT product_reviews_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id)
+);
+CREATE TABLE public.push_subscriptions (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  endpoint text NOT NULL UNIQUE,
+  p256dh text NOT NULL,
+  auth text NOT NULL,
+  auth_user_id uuid,
+  device_id text,
+  store_slug text,
+  preferences jsonb NOT NULL DEFAULT '{}'::jsonb,
+  user_agent text,
+  is_active boolean NOT NULL DEFAULT true,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  updated_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT push_subscriptions_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.scan_events (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  ean text NOT NULL,
+  global_product_id uuid,
+  store_product_id uuid,
+  store_id uuid,
+  user_id uuid,
+  device_id text,
+  session_id text,
+  found_status text NOT NULL DEFAULT 'not_found'::text CHECK (found_status = ANY (ARRAY['found_store'::text, 'found_global'::text, 'found_cache'::text, 'found_off'::text, 'not_found'::text])),
+  fit_result boolean,
+  fit_reasons_json jsonb DEFAULT '[]'::jsonb,
+  opened_alternatives boolean DEFAULT false,
+  opened_ai boolean DEFAULT false,
+  app_version text,
+  scanned_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT scan_events_pkey PRIMARY KEY (id),
+  CONSTRAINT scan_events_global_product_id_fkey FOREIGN KEY (global_product_id) REFERENCES public.global_products(id),
+  CONSTRAINT scan_events_store_product_id_fkey FOREIGN KEY (store_product_id) REFERENCES public.store_products(id),
+  CONSTRAINT scan_events_store_id_fkey FOREIGN KEY (store_id) REFERENCES public.stores(id),
+  CONSTRAINT scan_events_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id)
+);
+CREATE TABLE public.store_products (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  store_id uuid NOT NULL,
+  global_product_id uuid,
+  ean text NOT NULL,
+  local_name text,
+  local_sku text,
+  price_kzt integer CHECK (price_kzt >= 0),
+  stock_status text DEFAULT 'in_stock'::text CHECK (stock_status = ANY (ARRAY['in_stock'::text, 'low_stock'::text, 'out_of_stock'::text])),
+  shelf_zone text,
+  shelf_position text,
+  is_promoted boolean NOT NULL DEFAULT false,
+  promoted_until timestamp with time zone,
+  last_seen_at timestamp with time zone DEFAULT now(),
+  is_active boolean NOT NULL DEFAULT true,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  updated_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT store_products_pkey PRIMARY KEY (id),
+  CONSTRAINT store_products_store_id_fkey FOREIGN KEY (store_id) REFERENCES public.stores(id),
+  CONSTRAINT store_products_global_product_id_fkey FOREIGN KEY (global_product_id) REFERENCES public.global_products(id)
+);
+CREATE TABLE public.stores (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  owner_id uuid,
+  code text UNIQUE,
+  name text NOT NULL,
+  city text NOT NULL DEFAULT 'Усть-Каменогорск'::text,
+  address text,
+  phone text,
+  email text,
+  type text DEFAULT 'supermarket'::text CHECK (type = ANY (ARRAY['supermarket'::text, 'minimarket'::text, 'halal'::text, 'specialty'::text, 'other'::text])),
+  plan text NOT NULL DEFAULT 'pilot'::text CHECK (plan = ANY (ARRAY['pilot'::text, 'basic'::text, 'pro'::text, 'enterprise'::text])),
+  plan_expires_at timestamp with time zone,
+  is_active boolean NOT NULL DEFAULT true,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  updated_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT stores_pkey PRIMARY KEY (id),
+  CONSTRAINT stores_owner_id_fkey FOREIGN KEY (owner_id) REFERENCES auth.users(id)
+);
+CREATE TABLE public.user_favorites (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  user_id uuid NOT NULL,
+  global_product_id uuid,
+  ean text NOT NULL,
+  added_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT user_favorites_pkey PRIMARY KEY (id),
+  CONSTRAINT user_favorites_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id),
+  CONSTRAINT user_favorites_global_product_id_fkey FOREIGN KEY (global_product_id) REFERENCES public.global_products(id)
+);
+CREATE TABLE public.users (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  auth_id uuid UNIQUE,
+  device_id text NOT NULL,
+  name text,
+  lang text NOT NULL DEFAULT 'ru'::text CHECK (lang = ANY (ARRAY['ru'::text, 'kz'::text])),
+  preferences jsonb NOT NULL DEFAULT '{}'::jsonb,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  updated_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT users_pkey PRIMARY KEY (id),
+  CONSTRAINT users_auth_id_fkey FOREIGN KEY (auth_id) REFERENCES auth.users(id)
+);

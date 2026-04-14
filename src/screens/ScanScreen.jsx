@@ -6,9 +6,18 @@ import { buildProductPath } from '../utils/routes.js'
 import { useI18n } from '../utils/i18n.js'
 
 // ─── Звук успешного сканирования (Web Audio API, без файлов) ──────────────────
+let globalAudioCtx = null
+
 function playSuccessBeep() {
   try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)()
+    if (!globalAudioCtx) {
+      globalAudioCtx = new (window.AudioContext || window.webkitAudioContext)()
+    }
+    const ctx = globalAudioCtx
+    if (ctx.state === 'suspended') {
+      ctx.resume().catch(() => {})
+    }
+
     const osc = ctx.createOscillator()
     const gain = ctx.createGain()
     osc.connect(gain)
@@ -24,43 +33,26 @@ function playSuccessBeep() {
   } catch {}
 }
 
+function cleanupAudioContext() {
+  try {
+    if (globalAudioCtx && globalAudioCtx.state !== 'closed') {
+      globalAudioCtx.close().catch(() => {})
+      globalAudioCtx = null
+    }
+  } catch {}
+}
+
 // ─── Иконки ────────────────────────────────────────────────────────────────────
 function IconGallery({ size = 22 }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
-      stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="3" width="18" height="18" rx="3"/>
-      <circle cx="8.5" cy="8.5" r="1.5"/>
-      <polyline points="21 15 16 10 5 21"/>
-    </svg>
-  )
+  return <span className="material-symbols-outlined" style={{ fontSize: size }}>image</span>
 }
 
 function IconSwitchCamera({ size = 22 }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
-      stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M20 7h-3.5l-1.5-2H9L7.5 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
-      <path d="M9 13l-2 2 2 2"/>
-      <path d="M15 13l2 2-2 2"/>
-      <path d="M7 15h10"/>
-    </svg>
-  )
+  return <span className="material-symbols-outlined" style={{ fontSize: size }}>cameraswitch</span>
 }
 
 function IconTorch({ on, size = 22 }) {
-  if (on) return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="#FDE68A">
-      <path fillRule="evenodd" clipRule="evenodd"
-        d="M13.232 2.287C13.54 2.387 13.75 2.675 13.75 3V9.25H19c.282 0 .54.158.668.41.128.251.104.553-.062.781L11.607 21.44c-.191.263-.53.373-.838.273-.31-.1-.519-.388-.519-.713V14.75H5c-.282 0-.54-.158-.668-.41-.128-.252-.103-.553.062-.781L12.393 2.56c.191-.263.53-.372.839-.272z"/>
-    </svg>
-  )
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
-      stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-      <path d="M13 10V3L5 14H11V21L19 10H13Z"/>
-    </svg>
-  )
+  return <span className="material-symbols-outlined" style={{ fontSize: size }}>{on ? 'flashlight_on' : 'flashlight_off'}</span>
 }
 
 // ─── Главный экран (камера открывается СРАЗУ) ─────────────────────────────────
@@ -207,6 +199,7 @@ export default function ScanScreen() {
       clearTimeout(nfTimer.current)
       clearTimeout(torchTimer.current)
       clearTimeout(focusTimer.current)
+      cleanupAudioContext()
     }
   }, []) // eslint-disable-line
 
@@ -422,7 +415,7 @@ export default function ScanScreen() {
           }}>
             <div style={{ fontSize: 52 }}>📷</div>
             <div>
-              <p style={{ color: '#F87171', fontSize: 16, fontWeight: 700, marginBottom: 8 }}>Нет доступа к камере</p>
+              <p style={{ color: '#F87171', fontSize: 16, fontWeight: 700, marginBottom: 8 }}>{t.scan.cameraAccessDeniedTitle}</p>
               <p style={{ color: '#6060A0', fontSize: 13, lineHeight: 1.7 }}>{t.scan.cameraPermission}</p>
             </div>
             <button onClick={openGallery} style={{
@@ -449,7 +442,7 @@ export default function ScanScreen() {
             whiteSpace: 'nowrap', backdropFilter: 'blur(8px)',
             pointerEvents: 'none',
           }}>
-            {currentStore ? `📍 ${currentStore.name}` : '🌐 Глобальный режим'}
+            {currentStore ? `📍 ${currentStore.name}` : t.scan.globalMode}
           </div>
         )}
 

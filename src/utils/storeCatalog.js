@@ -1,6 +1,7 @@
 import products from '../data/products.json'
 import { STORE_PRODUCT_MAP } from '../data/stores.js'
 import { getStoreInventory } from '../data/storeInventories.js'
+import { supabase } from './supabase.js'
 
 function cloneProduct(product) {
   return product ? JSON.parse(JSON.stringify(product)) : null
@@ -81,4 +82,53 @@ export function isStoreCatalogProduct(storeSlug, ean) {
 
 export function getAllKnownEansForProduct(product) {
   return getAllKnownEans(product)
+}
+
+export async function getStoreCatalogProductsFromDB(storeId) {
+  if (!storeId) return []
+  const { data, error } = await supabase
+    .from('store_products')
+    .select(`
+      *,
+      global_products (
+        id, ean, name, name_kz, brand, category, subcategory,
+        quantity, image_url, images, ingredients_raw, ingredients_kz,
+        allergens_json, diet_tags_json, halal_status,
+        nutriscore, data_quality_score
+      )
+    `)
+    .eq('store_id', storeId)
+    .eq('is_active', true)
+    .order('created_at', { ascending: false })
+  if (error || !data) return []
+  return data.map((sp) => ({
+    id: sp.id,
+    storeProductId: sp.id,
+    storeId: sp.store_id,
+    ean: sp.ean,
+    priceKzt: sp.price_kzt,
+    stockStatus: sp.stock_status,
+    shelfZone: sp.shelf_zone,
+    shelfPosition: sp.shelf_position,
+    isPromoted: sp.is_promoted,
+    localName: sp.local_name,
+    localSku: sp.local_sku,
+    name: sp.global_products?.name || sp.local_name || sp.ean,
+    nameKz: sp.global_products?.name_kz || null,
+    brand: sp.global_products?.brand || null,
+    category: sp.global_products?.category || null,
+    subcategory: sp.global_products?.subcategory || null,
+    quantity: sp.global_products?.quantity || null,
+    image: sp.global_products?.image_url || sp.global_products?.images?.[0] || null,
+    imageUrl: sp.global_products?.image_url || null,
+    ingredients: sp.global_products?.ingredients_raw || null,
+    ingredientsKz: sp.global_products?.ingredients_kz || null,
+    allergens: sp.global_products?.allergens_json || [],
+    dietTags: sp.global_products?.diet_tags_json || [],
+    halalStatus: sp.global_products?.halal_status || 'unknown',
+    nutriscore: sp.global_products?.nutriscore || null,
+    dataQualityScore: sp.global_products?.data_quality_score || 0,
+    isStoreProduct: true,
+    canonicalId: sp.ean,
+  }))
 }

@@ -1,8 +1,8 @@
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useI18n } from '../utils/i18n.js'
 import { useStore } from '../contexts/StoreContext.jsx'
+import { useAuth } from '../contexts/AuthContext.jsx'
 import { getStores } from '../data/stores.js'
-import { buildStorePublicPath } from '../utils/routes.js'
 import { buildAuthNavigateState } from '../utils/authFlow.js'
 
 export default function HomeScreen() {
@@ -10,13 +10,17 @@ export default function HomeScreen() {
   const location = useLocation()
   const { t, lang } = useI18n()
   const { currentStore, isStoreApp, rememberStore, routes } = useStore()
+  const { user } = useAuth()
 
   if (isStoreApp && currentStore && routes) {
     return (
       <div className="screen" style={{ paddingBottom: 100 }}>
         <div style={{ padding: '20px 24px 0' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 24 }}>
-            <img src={currentStore.logo} alt={currentStore.name} style={{ width: 56, height: 56, borderRadius: 18, objectFit: 'cover', background: 'rgba(255,255,255,0.05)' }} />
+            {(currentStore.logo_url || currentStore.logo)
+              ? <img src={currentStore.logo_url || currentStore.logo} alt={currentStore.name} style={{ width: 56, height: 56, borderRadius: 18, objectFit: 'cover', background: 'rgba(255,255,255,0.05)' }} />
+              : <div style={{ width: 56, height: 56, borderRadius: 18, background: 'linear-gradient(135deg, rgba(56,189,248,0.25), rgba(124,58,237,0.25))', border: '1px solid rgba(56,189,248,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, fontWeight: 800, color: '#fff', fontFamily: 'var(--font-display)', flexShrink: 0 }}>{currentStore.name?.[0]?.toUpperCase() || 'K'}</div>
+            }
             <div>
               <div style={{ fontSize: 12, color: 'rgba(167,139,250,0.7)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>
                 Körset Store Mode
@@ -326,9 +330,19 @@ export default function HomeScreen() {
             <img src="/icon_logo.svg" alt="logo" style={{ width: 36, height: 36, borderRadius: 10 }} />
             <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: '-0.02em' }} className="font-headline">Körset</div>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            <button onClick={() => navigate('/auth', { state: buildAuthNavigateState(location) })} style={{ 
-              width: 44, height: 44, borderRadius: '50%', background: 'rgba(53, 52, 57, 0.4)', 
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <button onClick={() => navigate('/retail')} style={{
+              padding: '9px 16px', borderRadius: 10, background: 'rgba(56,189,248,0.1)',
+              border: '1px solid rgba(56,189,248,0.25)', color: '#38BDF8', fontSize: 13,
+              fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6,
+              fontFamily: 'var(--font-display, Manrope, sans-serif)', letterSpacing: '0.01em',
+              whiteSpace: 'nowrap',
+            }}>
+              <span className="material-symbols-outlined" style={{ fontSize: 16 }}>storefront</span>
+              Кабинет
+            </button>
+            <button onClick={() => navigate(user ? '/retail' : '/auth', { state: user ? undefined : buildAuthNavigateState(location) })} style={{
+              width: 44, height: 44, borderRadius: '50%', background: 'rgba(53, 52, 57, 0.4)',
               display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', color: '#d2bbff'
             }}>
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -466,6 +480,43 @@ export default function HomeScreen() {
                  Мгновенное выявление критичных аллергенов (орехи, лактоза, глютен и др.). Сохраняйте проверенные безопасные продукты в историю.
                </p>
             </div>
+          </div>
+        </section>
+
+        {/* B2B Section */}
+        <section style={{ padding: '80px 24px', background: 'rgba(8,12,24,0.8)' }}>
+          <div style={{ maxWidth: 720, margin: '0 auto', borderRadius: 28, background: 'linear-gradient(135deg, rgba(56,189,248,0.07), rgba(124,58,237,0.1))', border: '1px solid rgba(56,189,248,0.15)', padding: '48px 40px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 20 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 4 }}>
+              <div style={{ width: 44, height: 44, borderRadius: 14, background: 'rgba(56,189,248,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span className="material-symbols-outlined" style={{ fontSize: 24, color: '#38BDF8' }}>storefront</span>
+              </div>
+              <div style={{ fontSize: 11, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.12em', color: 'rgba(56,189,248,0.7)', fontFamily: 'Manrope, sans-serif' }}>Для бизнеса</div>
+            </div>
+            <h2 style={{ fontFamily: "'Advent Pro', sans-serif", fontSize: 'clamp(26px, 5vw, 36px)', fontWeight: 700, color: '#fff', lineHeight: 1.2, margin: 0 }}>
+              Вы владелец магазина?<br />
+              <span style={{ background: 'linear-gradient(135deg, #38BDF8, #818CF8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Подключите Körset</span>
+            </h2>
+            <p style={{ fontSize: 15, color: 'rgba(200,200,240,0.7)', lineHeight: 1.65, margin: 0, maxWidth: 480 }}>
+              Retail Cabinet даёт вам аналитику сканирований, статистику вовлечённости покупателей и инструменты управления каталогом — всё в одном месте.
+            </p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 24, marginTop: 4 }}>
+              {[['analytics', 'Аналитика'], ['inventory_2', 'Каталог товаров'], ['qr_code_2', 'QR-интеграция']].map(([icon, label]) => (
+                <div key={icon} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span className="material-symbols-outlined" style={{ fontSize: 18, color: '#38BDF8' }}>{icon}</span>
+                  <span style={{ fontSize: 13, color: 'rgba(200,200,240,0.7)', fontFamily: 'Manrope, sans-serif' }}>{label}</span>
+                </div>
+              ))}
+            </div>
+            <button onClick={() => navigate('/retail')} style={{
+              marginTop: 8, padding: '16px 32px', borderRadius: 14, cursor: 'pointer',
+              background: 'linear-gradient(135deg, rgba(56,189,248,0.2), rgba(99,102,241,0.2))',
+              border: '1.5px solid rgba(56,189,248,0.4)', color: '#fff', fontSize: 15,
+              fontWeight: 700, fontFamily: "'Advent Pro', sans-serif", letterSpacing: '0.01em',
+              display: 'inline-flex', alignItems: 'center', gap: 8,
+            }}>
+              <span className="material-symbols-outlined" style={{ fontSize: 20 }}>login</span>
+              {user ? 'Открыть Retail Cabinet' : 'Войти в кабинет магазина'}
+            </button>
           </div>
         </section>
 
