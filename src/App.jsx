@@ -19,7 +19,14 @@ import SetupProfileScreen from './screens/SetupProfileScreen.jsx'
 import HistoryScreen from './screens/HistoryScreen.jsx'
 import NotificationSettingsScreen from './screens/NotificationSettingsScreen.jsx'
 import PrivacySettingsScreen from './screens/PrivacySettingsScreen.jsx'
+import PrivacyPolicyScreen from './screens/PrivacyPolicyScreen.jsx'
 import ErrorBoundary from './components/ErrorBoundary.jsx'
+import RetailLayout from './layouts/RetailLayout.jsx'
+import RetailDashboardScreen from './screens/RetailDashboardScreen.jsx'
+import RetailEntryScreen from './screens/RetailEntryScreen.jsx'
+import RetailProductsScreen from './screens/RetailProductsScreen.jsx'
+import RetailImportScreen from './screens/RetailImportScreen.jsx'
+import RetailSettingsScreen from './screens/RetailSettingsScreen.jsx'
 import { AuthProvider, useAuth } from './contexts/AuthContext.jsx'
 import { ProfileProvider } from './contexts/ProfileContext.jsx'
 import { StoreProvider, useStore } from './contexts/StoreContext.jsx'
@@ -30,7 +37,7 @@ function AppInner() {
   const { user } = useAuth()
   const { isStoreApp } = useStore()
   
-  const hideNav = pathname === '/' || pathname === '/stores' || pathname === '/qr-print' || pathname === '/auth' || pathname === '/setup-profile'
+  const hideNav = pathname === '/' || pathname === '/stores' || pathname === '/qr-print' || pathname === '/auth' || pathname === '/setup-profile' || pathname.startsWith('/retail')
   const [showOnboarding, setShowOnboarding] = useState(
     !localStorage.getItem('korset_onboarding_done') || !localStorage.getItem('korset_lang')
   )
@@ -38,7 +45,7 @@ function AppInner() {
   useEffect(() => {
     // Если пользователь авторизован, но ещё не завершил настройку профиля
     if (user && user.user_metadata?.profile_setup_done !== true) {
-      if (pathname !== '/setup-profile') {
+      if (pathname !== '/setup-profile' && !pathname.startsWith('/retail')) {
         navigate('/setup-profile', { replace: true })
       }
     }
@@ -51,14 +58,7 @@ function AppInner() {
       {shouldShowOnboarding && <OnboardingScreen onDone={() => setShowOnboarding(false)} />}
       <Routes>
         <Route path="/"                         element={<HomeScreen />} />
-        <Route path="/profile"                  element={<ProfileScreen />} />
-        <Route path="/catalog"                  element={<CatalogScreen />} />
-        <Route path="/scan"                     element={<ScanScreen />} />
-        <Route path="/ai"                       element={<AIAssistantScreen />} />
-        <Route path="/history"                  element={<HistoryScreen />} />
-        <Route path="/notifications"            element={<NotificationSettingsScreen />} />
         <Route path="/stores"                   element={<StoresScreen />} />
-        <Route path="/privacy"                  element={<PrivacySettingsScreen />} />
         <Route path="/stores/:storeSlug"        element={<StorePublicScreen />} />
         <Route path="/s/:storeSlug"             element={<HomeScreen />} />
         <Route path="/s/:storeSlug/catalog"     element={<CatalogScreen />} />
@@ -77,11 +77,30 @@ function AppInner() {
         <Route path="/auth"                     element={<AuthScreen />} />
         <Route path="/setup-profile"            element={<SetupProfileScreen />} />
         <Route path="/qr-print"                 element={<QRPrintScreen />} />
-        <Route path="/product/ext/:ean"         element={<ExternalProductScreen />} />
-        <Route path="/product/ext/:ean/ai"      element={<AIScreen />} />
-        <Route path="/product/:ean"              element={<ProductScreen />} />
-        <Route path="/product/:ean/alternatives" element={<AlternativesScreen />} />
-        <Route path="/product/:ean/ai"           element={<AIScreen />} />
+        <Route path="/privacy-policy"           element={<PrivacyPolicyScreen />} />
+
+        {/* Retail Cabinet Entry — finds store by owner_id */}
+        <Route path="/retail"                  element={<RetailEntryScreen />} />
+
+        {/* Retail Cabinet B2B Routes */}
+        <Route path="/retail/:storeSlug"        element={<RetailLayout />}>
+          <Route path="dashboard" element={<RetailDashboardScreen />} />
+          <Route path="products" element={<RetailProductsScreen />} />
+          <Route path="import" element={<RetailImportScreen />} />
+          <Route path="settings" element={<RetailSettingsScreen />} />
+          <Route index element={<Navigate to="dashboard" replace />} />
+        </Route>
+
+        {/* Legacy Global Routes -> Redirect to Store Selection */}
+        <Route path="/profile"                  element={<Navigate to="/stores" replace />} />
+        <Route path="/catalog"                  element={<Navigate to="/stores" replace />} />
+        <Route path="/scan"                     element={<Navigate to="/stores" replace />} />
+        <Route path="/ai"                       element={<Navigate to="/stores" replace />} />
+        <Route path="/history"                  element={<Navigate to="/stores" replace />} />
+        <Route path="/notifications"            element={<Navigate to="/stores" replace />} />
+        <Route path="/privacy"                  element={<Navigate to="/stores" replace />} />
+        <Route path="/product/*"                element={<Navigate to="/stores" replace />} />
+
         <Route path="*"                         element={<Navigate to="/" replace />} />
       </Routes>
       {!hideNav && <BottomNav />}
@@ -93,16 +112,16 @@ import { UserDataProvider } from './contexts/UserDataContext.jsx'
 
 export default function App() {
   return (
-    <AuthProvider>
-      <UserDataProvider>
-        <StoreProvider>
-          <ProfileProvider>
-            <ErrorBoundary>
+    <ErrorBoundary>
+      <AuthProvider>
+        <UserDataProvider>
+          <StoreProvider>
+            <ProfileProvider>
               <AppInner />
-            </ErrorBoundary>
-          </ProfileProvider>
-        </StoreProvider>
-      </UserDataProvider>
-    </AuthProvider>
+            </ProfileProvider>
+          </StoreProvider>
+        </UserDataProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   )
 }

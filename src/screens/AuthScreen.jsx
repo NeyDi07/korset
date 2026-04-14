@@ -481,8 +481,8 @@ export default function AuthScreen() {
             <div style={{ textAlign: 'center', marginTop: 20, padding: '0 10px' }}>
               <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.2)', fontFamily: fontAdvent, lineHeight: 1.5 }}>
                 {lang === 'kz'
-                  ? 'Тіркелу арқылы сіз Пайдалану шарттарымен және Құпиялылық саясатымен келісесіз'
-                  : 'Регистрируясь, вы принимаете Условия использования и Политику конфиденциальности'}
+                  ? <>Тіркелу арқылы сіз <span onClick={() => navigate('/privacy-policy')} style={{ color: 'rgba(255,255,255,0.4)', textDecoration: 'underline', cursor: 'pointer' }}>Құпиялылық саясатымен</span> келісесіз</>
+                  : <>Регистрируясь, вы принимаете <span onClick={() => navigate('/privacy-policy')} style={{ color: 'rgba(255,255,255,0.4)', textDecoration: 'underline', cursor: 'pointer' }}>Политику конфиденциальности</span></>}
               </p>
             </div>
           )}

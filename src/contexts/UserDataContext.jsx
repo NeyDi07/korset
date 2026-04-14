@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { supabase } from '../utils/supabase.js'
 import { useAuth } from './AuthContext.jsx'
-import { buildHistoryOwnerKey, getLocalScanHistoryCount, SCAN_HISTORY_STORAGE_KEY } from '../utils/localHistory.js'
+import { buildHistoryOwnerKey, getLocalScanHistoryCount, SCAN_HISTORY_STORAGE_KEY, syncScanHistoryWithCloud } from '../utils/localHistory.js'
 import { PRIVACY_EVENT } from '../utils/privacySettings.js'
 
 const UserDataContext = createContext()
@@ -58,6 +58,12 @@ export function UserDataProvider({ children }) {
       setFavoriteEans(favoriteList)
       setScanCount(Math.max(remoteCount, localCount))
       setUserDataLoaded(true)
+
+      // Fire-and-forget: sync scan history in background.
+      // Migrates guest scans, uploads to cloud, downloads cloud-only entries.
+      syncScanHistoryWithCloud(internalUserId, user).catch((err) => {
+        console.warn('[UserDataContext] History sync failed silently:', err)
+      })
     }
 
     loadIdentifiers().catch((err) => {

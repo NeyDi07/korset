@@ -1,12 +1,18 @@
-import { Navigate, useNavigate, useParams } from 'react-router-dom'
-import { getStoreBySlug } from '../data/stores.js'
+import { Navigate, useNavigate } from 'react-router-dom'
 import { useStore } from '../contexts/StoreContext.jsx'
 
 export default function StorePublicScreen() {
-  const { storeSlug } = useParams()
   const navigate = useNavigate()
-  const { rememberStore } = useStore()
-  const store = getStoreBySlug(storeSlug)
+  const { currentStore: store, isStoreLoading, rememberStore } = useStore()
+
+  if (isStoreLoading) {
+    return (
+      <div className="app-frame" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ width: 28, height: 28, border: '3px solid rgba(56,189,248,0.15)', borderTop: '3px solid #38BDF8', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+        <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
+      </div>
+    )
+  }
 
   if (!store) return <Navigate to="/stores" replace />
 
@@ -15,7 +21,10 @@ export default function StorePublicScreen() {
       <div style={{ padding: '28px 24px 0' }}>
         <button onClick={() => navigate('/stores')} style={{ width: 40, height: 40, borderRadius: 12, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: '#fff', marginBottom: 18 }}>←</button>
         <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 20 }}>
-          <img src={store.logo} alt={store.name} style={{ width: 72, height: 72, borderRadius: 22, objectFit: 'cover' }} />
+          {(store.logo_url || store.logo)
+            ? <img src={store.logo_url || store.logo} alt={store.name} style={{ width: 72, height: 72, borderRadius: 22, objectFit: 'cover' }} />
+            : <div style={{ width: 72, height: 72, borderRadius: 22, background: 'linear-gradient(135deg, rgba(56,189,248,0.25), rgba(124,58,237,0.25))', border: '1px solid rgba(56,189,248,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, fontWeight: 800, color: '#fff', fontFamily: 'var(--font-display)', flexShrink: 0 }}>{store.name?.[0]?.toUpperCase() || 'K'}</div>
+          }
           <div>
             <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(167,139,250,0.7)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 6 }}>Store page</div>
             <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 30, fontWeight: 900, color: '#fff', lineHeight: 1.1, margin: 0 }}>{store.name}</h1>

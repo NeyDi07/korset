@@ -108,7 +108,7 @@ export default function ProfileScreen() {
           {/* ── HEADER ── */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 22px 0' }}>
             <h1 style={{ fontFamily: fontAdvent, fontSize: 24, fontWeight: 500, color: '#fff', margin: 0, lineHeight: 1 }}>
-              {lang === 'kz' ? 'Профиль' : 'Профиль'}
+              {t.profile.title}
             </h1>
             {user && (<button onClick={() => navigate('/setup-profile?mode=edit')} style={{
               background: 'rgba(124,58,237,0.12)', border: '1px solid rgba(124,58,237,0.2)',
@@ -117,7 +117,7 @@ export default function ProfileScreen() {
               display: 'flex', alignItems: 'center', gap: 6
             }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-              {lang === 'kz' ? 'Өзгерту' : 'Изменить'}
+              {t.profile.editBtn}
             </button>)}
           </div>
 
@@ -149,11 +149,11 @@ export default function ProfileScreen() {
                 <h2 style={{ fontFamily: fontAdvent, fontSize: 28, fontWeight: 700, color: '#fff', margin: '0 0 12px', textTransform: 'uppercase', letterSpacing: 2 }}>
                   {t.profile.guest}
                 </h2>
-                <button onClick={() => navigate('/auth', { state: buildAuthNavigateState(location, { reason: 'profile_required', message: lang === 'kz' ? 'Профиль баптауларын пайдалану үшін аккаунтқа кіріңіз.' : 'Войдите в аккаунт, чтобы использовать настройки профиля.' }) })} style={{
+                <button onClick={() => navigate('/auth', { state: buildAuthNavigateState(location, { reason: 'profile_required', message: t.profile.authRequiredMsg }) })} style={{
                   background: 'transparent', border: '1.5px solid rgba(255,255,255,0.2)',
                   color: '#fff', fontSize: 13, fontFamily: fontAdvent, fontWeight: 500,
                   padding: '10px 28px', borderRadius: 12, cursor: 'pointer', letterSpacing: 0.5
-                }}>{lang === 'kz' ? 'Аккаунтқа кіру' : 'Войти в аккаунт'}</button>
+                }}>{t.profile.loginBtn}</button>
               </>
             )}
           </div>
@@ -191,7 +191,7 @@ export default function ProfileScreen() {
               <div className="glass-card" style={{ padding: '44px 8px 16px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', minHeight: 110, border: prefOpen ? '1px solid rgba(124,58,237,0.3)' : undefined }}>
                 <div style={{ fontFamily: fontAdvent, fontSize: 42, fontWeight: 600, color: '#fff', lineHeight: 1, flex: 1, display: 'flex', alignItems: 'center' }}>{totalPref}</div>
                 <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 8, fontFamily: fontAdvent, fontWeight: 500 }}>
-                  {lang === 'kz' ? 'Баптау' : 'Предпочтения'}
+                  {t.profile.preferencesTitle}
                 </div>
               </div>
             </div>
@@ -305,15 +305,15 @@ export default function ProfileScreen() {
           {/* ── SETTINGS ── */}
           {[
             {
-              title: lang === 'kz' ? 'Негізгі' : 'Основное',
+              title: t.profile.sectionMain,
               items: [
-                { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>, label: lang === 'kz' ? 'Жеке деректер' : 'Личные данные', onClick: () => user ? navigate('/setup-profile?mode=edit') : navigate('/auth', { state: buildAuthNavigateState(location, { reason: 'profile_required', message: lang === 'kz' ? 'Жеке деректерді көру және өзгерту үшін аккаунтқа кіріңіз.' : 'Сначала войдите в аккаунт, чтобы видеть и редактировать личные данные.' }) }) },
-                { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>, label: lang === 'kz' ? 'Хабарландырулар' : 'Уведомления', onClick: () => navigate(buildNotificationSettingsPath(currentStore?.slug || null)) },
-                { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>, label: lang === 'kz' ? 'Құпиялылық' : 'Приватность', onClick: () => navigate(buildPrivacyPath(currentStore?.slug || null)) },
+                { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>, label: t.profile.sectionPersonal, onClick: () => user ? navigate('/setup-profile?mode=edit') : navigate('/auth', { state: buildAuthNavigateState(location, { reason: 'profile_required', message: t.profile.authRequiredPDataMsg }) }) },
+                { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>, label: t.profile.sectionNotifications, onClick: () => navigate(buildNotificationSettingsPath(currentStore?.slug || null)) },
+                { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>, label: t.profile.sectionPrivacy, onClick: () => navigate(buildPrivacyPath(currentStore?.slug || null)) },
               ]
             },
             {
-              title: lang === 'kz' ? 'Параметрлер' : 'Настройки',
+              title: t.profile.sectionSettings,
               items: [
                 {
                   icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>,
@@ -329,15 +329,16 @@ export default function ProfileScreen() {
                     </div>
                   )
                 },
-                { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>, label: lang === 'kz' ? 'Тақырып' : 'Тема', right: <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.25)', fontFamily: fontAdvent, background: 'rgba(255,255,255,0.05)', padding: '3px 8px', borderRadius: 6 }}>Скоро</span> },
+                { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>, label: t.profile.theme, right: <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.25)', fontFamily: fontAdvent, background: 'rgba(255,255,255,0.05)', padding: '3px 8px', borderRadius: 6 }}>{t.profile.comingSoon}</span> },
               ]
             },
             {
-              title: lang === 'kz' ? 'Қолдау' : 'Поддержка',
+              title: t.profile.sectionSupport,
               items: [
-                { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>, label: lang === 'kz' ? 'Анықтама' : 'Справка' },
-                { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>, label: lang === 'kz' ? 'Қосымша туралы' : 'О приложении' },
-                { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>, label: lang === 'kz' ? 'Кері байланыс' : 'Обратная связь' },
+                { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>, label: t.profile.help },
+                { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>, label: t.profile.about },
+                { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>, label: t.profile.feedback },
+                { icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" strokeWidth="2" strokeLinecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>, label: t.profile.policy, onClick: () => navigate('/privacy-policy') },
               ]
             }
           ].map((group, gi) => (
@@ -366,6 +367,22 @@ export default function ProfileScreen() {
           {/* ── ACTIONS ── */}
           <div style={{ padding: '0 22px 14px' }}>
             <div className="glass-card" style={{ padding: 0 }}>
+              
+              {/* Temporary Button for Retail Cabinet */}
+              {user && (
+                <>
+                  <div className="settings-item" onClick={() => navigate(`/retail/${currentStore?.slug || 'store-one'}`)} style={{
+                    display: 'flex', alignItems: 'center', gap: 14, padding: '14px 18px', cursor: 'pointer'
+                  }}>
+                    <div style={{ width: 34, height: 34, borderRadius: 10, background: 'rgba(56,189,248,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" strokeWidth="2" strokeLinecap="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+                    </div>
+                    <span style={{ fontFamily: fontAdvent, fontSize: 14, fontWeight: 600, color: '#38BDF8' }}>Управление магазином (Beta)</span>
+                  </div>
+                  <div style={{ height: 1, background: 'rgba(255,255,255,0.03)', margin: '0 18px' }} />
+                </>
+              )}
+
               <div className="settings-item" onClick={() => { localStorage.removeItem('korset_onboarding_done'); window.location.reload() }} style={{
                 display: 'flex', alignItems: 'center', gap: 14, padding: '14px 18px', cursor: 'pointer'
               }}>

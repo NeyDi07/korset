@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import { getStoreBySlug } from '../data/stores.js'
+import { supabase } from '../utils/supabase.js'
 import { loadPrivacySettings, PRIVACY_EVENT } from '../utils/privacySettings.js'
 import {
   buildAIHomePath,
@@ -17,20 +17,68 @@ import {
 
 const StoreContext = createContext(null)
 export const STORE_KEY = 'korset_store_slug'
+const STORE_CACHE_PREFIX = 'korset_store_data_'
 
 function getStoreSlugFromPath(pathname) {
   const appMatch = pathname.match(/^\/s\/([^/]+)/)
   if (appMatch) return appMatch[1]
+  const retailMatch = pathname.match(/^\/retail\/([^/]+)/)
+  if (retailMatch) return retailMatch[1]
   const publicMatch = pathname.match(/^\/stores\/([^/]+)/)
   if (publicMatch) return publicMatch[1]
   return null
+}
+
+function loadStoreFromCache(slug) {
+  if (!slug) return null
+  try {
+    const raw = localStorage.getItem(`${STORE_CACHE_PREFIX}${slug}`)
+    return raw ? JSON.parse(raw) : null
+  } catch {
+    return null
+  }
+}
+
+function saveStoreToCache(slug, store) {
+  if (!slug || !store) return
+  try {
+    localStorage.setItem(`${STORE_CACHE_PREFIX}${slug}`, JSON.stringify(store))
+  } catch {}
+}
+
+function normalizeStore(data) {
+  if (!data) return null
+  return {
+    ...data,
+    slug: data.code,
+    isActive: data.is_active,
+  }
+}
+
+async function fetchStoreBySlug(slug) {
+  if (!slug) return null
+  const { data, error } = await supabase
+    .from('stores')
+    .select('*')
+    .eq('code', slug)
+    .eq('is_active', true)
+    .maybeSingle()
+  if (error || !data) return null
+  return normalizeStore(data)
 }
 
 export function StoreProvider({ children }) {
   const location = useLocation()
   const pathStoreSlug = getStoreSlugFromPath(location.pathname)
   const [rememberStoreEnabled, setRememberStoreEnabled] = useState(() => loadPrivacySettings().rememberStoreEnabled)
-  const [rememberedStoreSlug, setRememberedStoreSlug] = useState(() => loadPrivacySettings().rememberStoreEnabled ? (localStorage.getItem(STORE_KEY) || null) : null)
+  const [rememberedStoreSlug, setRememberedStoreSlug] = useState(
+    () => loadPrivacySettings().rememberStoreEnabled ? (localStorage.getItem(STORE_KEY) || null) : null
+  )
+
+  const storeSlug = pathStoreSlug || (rememberStoreEnabled ? rememberedStoreSlug : null) || null
+
+  const [currentStore, setCurrentStore] = useState(() => loadStoreFromCache(storeSlug))
+  const [isStoreLoading, setIsStoreLoading] = useState(() => Boolean(storeSlug && !loadStoreFromCache(storeSlug)))
 
   useEffect(() => {
     const syncPrivacy = () => {
@@ -58,8 +106,30 @@ export function StoreProvider({ children }) {
     }
   }, [pathStoreSlug, rememberStoreEnabled])
 
-  const storeSlug = pathStoreSlug || (rememberStoreEnabled ? rememberedStoreSlug : null) || null
-  const currentStore = getStoreBySlug(storeSlug)
+  useEffect(() => {
+    if (!storeSlug) {
+      setCurrentStore(null)
+      setIsStoreLoading(false)
+      return
+    }
+
+    const cached = loadStoreFromCache(storeSlug)
+    if (cached) {
+      setCurrentStore(cached)
+      setIsStoreLoading(false)
+    } else {
+      setIsStoreLoading(true)
+    }
+
+    fetchStoreBySlug(storeSlug).then((store) => {
+      if (store) {
+        setCurrentStore(store)
+        saveStoreToCache(storeSlug, store)
+      }
+      setIsStoreLoading(false)
+    })
+  }, [storeSlug])
+
   const isStoreApp = /^\/s\/[^/]+/.test(location.pathname)
   const isStorePublic = /^\/stores\/[^/]+/.test(location.pathname)
   const isPublicMarketing = location.pathname === '/' || location.pathname === '/stores' || isStorePublic
@@ -68,6 +138,7 @@ export function StoreProvider({ children }) {
     storeSlug: currentStore?.slug || null,
     storeId: currentStore?.id || null,
     currentStore,
+    isStoreLoading,
     isStoreApp,
     isStorePublic,
     isPublicMarketing,
@@ -96,7 +167,7 @@ export function StoreProvider({ children }) {
       productAI: (ean, external = false) => buildProductAIPath(currentStore.slug, ean, external),
       productAlternatives: (ean) => buildProductAlternativesPath(currentStore.slug, ean),
     } : null,
-  }), [currentStore, isStoreApp, isStorePublic, isPublicMarketing, rememberStoreEnabled])
+  }), [currentStore, isStoreLoading, isStoreApp, isStorePublic, isPublicMarketing, rememberStoreEnabled])
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>
 }
