@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { useI18n } from '../utils/i18n.js'
@@ -10,7 +10,7 @@ import {
   getStoreCatalogProducts,
   getStoreCatalogProductsFromDB,
 } from '../utils/storeCatalog.js'
-import { buildProductPath, buildScanPath } from '../utils/routes.js'
+import { buildProductPath, buildComparePath } from '../utils/routes.js'
 
 function ProductThumb({ product }) {
   const [imgOk, setImgOk] = useState(true)
@@ -40,14 +40,6 @@ function ProductThumb({ product }) {
       {product.name?.[0] || '•'}
     </div>
   )
-}
-
-function handleCompare(product, storeSlug, navigate, e) {
-  e.stopPropagation()
-  sessionStorage.setItem('korset_compare_a', JSON.stringify(product))
-  navigate(buildScanPath(storeSlug), {
-    state: { compareMode: true, eanA: product.ean, productA: product },
-  })
 }
 
 export default function CatalogScreen() {
@@ -109,6 +101,36 @@ export default function CatalogScreen() {
 
     return arr
   }, [baseProducts, filter, profile, q, sort])
+
+  const [comparePin, setComparePin] = useState(() => {
+    try {
+      const s = sessionStorage.getItem('korset_compare_a')
+      return s ? JSON.parse(s) : null
+    } catch {
+      /* noop */ return null
+    }
+  })
+
+  const handleCompare = useCallback(
+    (product, e) => {
+      e.stopPropagation()
+      const slug = currentStore?.slug || null
+      if (!comparePin) {
+        sessionStorage.setItem('korset_compare_a', JSON.stringify(product))
+        setComparePin(product)
+      } else if (comparePin.ean === product.ean) {
+        sessionStorage.removeItem('korset_compare_a')
+        setComparePin(null)
+      } else {
+        sessionStorage.removeItem('korset_compare_a')
+        setComparePin(null)
+        navigate(buildComparePath(slug, comparePin.ean, product.ean), {
+          state: { productA: comparePin, productB: product },
+        })
+      }
+    },
+    [comparePin, currentStore, navigate]
+  )
 
   const storeTitle = currentStore ? currentStore.name : 'Каталог Körset'
 
@@ -234,6 +256,72 @@ export default function CatalogScreen() {
         </div>
       </div>
 
+      {/* Compare mode banner */}
+      {comparePin && (
+        <div
+          style={{
+            margin: '0 20px 10px',
+            padding: '12px 14px',
+            borderRadius: 16,
+            background: 'rgba(124,58,237,0.15)',
+            border: '1.5px solid rgba(139,92,246,0.5)',
+            backdropFilter: 'blur(12px)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 12,
+            animation: 'compareBarIn 0.25s ease',
+          }}
+        >
+          <span
+            className="material-symbols-outlined"
+            style={{ fontSize: 20, color: '#A78BFA', flexShrink: 0 }}
+          >
+            compare_arrows
+          </span>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div
+              style={{
+                fontSize: 10,
+                fontWeight: 800,
+                color: '#A78BFA',
+                letterSpacing: '0.05em',
+                textTransform: 'uppercase',
+                marginBottom: 2,
+              }}
+            >
+              {t.compare?.modeBanner || 'Режим сравнения'}
+            </div>
+            <div
+              style={{
+                fontSize: 13,
+                fontWeight: 700,
+                color: '#E9D5FF',
+                lineHeight: 1.3,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {comparePin.name}
+            </div>
+            <div style={{ fontSize: 11, color: 'rgba(196,181,253,0.7)', marginTop: 1 }}>
+              Выберите второй товар для сравнения
+            </div>
+          </div>
+          <button
+            onClick={() => {
+              sessionStorage.removeItem('korset_compare_a')
+              setComparePin(null)
+            }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: 20, color: '#A78BFA' }}>
+              close
+            </span>
+          </button>
+        </div>
+      )}
+
       <div
         style={{
           padding: '0 20px 100px',
@@ -325,14 +413,19 @@ export default function CatalogScreen() {
                     {formatPrice(product.priceKzt)}
                   </div>
                   <button
-                    onClick={(e) => handleCompare(product, currentStore?.slug || null, navigate, e)}
+                    onClick={(e) => handleCompare(product, e)}
                     style={{
                       width: 28,
                       height: 28,
                       borderRadius: 8,
                       cursor: 'pointer',
-                      background: 'rgba(124,58,237,0.15)',
-                      border: '1px solid rgba(139,92,246,0.3)',
+                      background:
+                        comparePin?.ean === product.ean
+                          ? 'rgba(124,58,237,0.4)'
+                          : comparePin
+                            ? 'rgba(52,211,153,0.15)'
+                            : 'rgba(124,58,237,0.15)',
+                      border: `1px solid ${comparePin?.ean === product.ean ? 'rgba(139,92,246,0.8)' : comparePin ? 'rgba(52,211,153,0.5)' : 'rgba(139,92,246,0.3)'}`,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -340,9 +433,21 @@ export default function CatalogScreen() {
                   >
                     <span
                       className="material-symbols-outlined"
-                      style={{ fontSize: 14, color: '#A78BFA' }}
+                      style={{
+                        fontSize: 14,
+                        color:
+                          comparePin?.ean === product.ean
+                            ? '#C4B5FD'
+                            : comparePin
+                              ? '#34D399'
+                              : '#A78BFA',
+                      }}
                     >
-                      compare_arrows
+                      {comparePin?.ean === product.ean
+                        ? 'close'
+                        : comparePin
+                          ? 'add'
+                          : 'compare_arrows'}
                     </span>
                   </button>
                 </div>
@@ -452,9 +557,7 @@ export default function CatalogScreen() {
                       Score {product.qualityScore || 0}/100
                     </div>
                     <button
-                      onClick={(e) =>
-                        handleCompare(product, currentStore?.slug || null, navigate, e)
-                      }
+                      onClick={(e) => handleCompare(product, e)}
                       style={{
                         display: 'flex',
                         alignItems: 'center',
@@ -462,17 +565,35 @@ export default function CatalogScreen() {
                         padding: '4px 8px',
                         borderRadius: 8,
                         cursor: 'pointer',
-                        background: 'rgba(124,58,237,0.12)',
-                        border: '1px solid rgba(139,92,246,0.25)',
-                        color: '#A78BFA',
+                        background:
+                          comparePin?.ean === product.ean
+                            ? 'rgba(124,58,237,0.35)'
+                            : comparePin
+                              ? 'rgba(52,211,153,0.12)'
+                              : 'rgba(124,58,237,0.12)',
+                        border: `1px solid ${comparePin?.ean === product.ean ? 'rgba(139,92,246,0.7)' : comparePin ? 'rgba(52,211,153,0.4)' : 'rgba(139,92,246,0.25)'}`,
+                        color:
+                          comparePin?.ean === product.ean
+                            ? '#C4B5FD'
+                            : comparePin
+                              ? '#34D399'
+                              : '#A78BFA',
                         fontSize: 10,
                         fontWeight: 700,
                       }}
                     >
                       <span className="material-symbols-outlined" style={{ fontSize: 12 }}>
-                        compare_arrows
+                        {comparePin?.ean === product.ean
+                          ? 'close'
+                          : comparePin
+                            ? 'add'
+                            : 'compare_arrows'}
                       </span>
-                      {t.compare?.compareMode || 'Сравнить'}
+                      {comparePin?.ean === product.ean
+                        ? 'Отменить'
+                        : comparePin
+                          ? t.compare?.btnLabel || 'Сравнить'
+                          : t.compare?.compareMode || 'Сравнить'}
                     </button>
                   </div>
                 </div>
@@ -481,6 +602,12 @@ export default function CatalogScreen() {
           )
         })}
       </div>
+      <style>{`
+        @keyframes compareBarIn {
+          from { opacity: 0; transform: translateY(-8px) }
+          to   { opacity: 1; transform: translateY(0) }
+        }
+      `}</style>
     </div>
   )
 }
