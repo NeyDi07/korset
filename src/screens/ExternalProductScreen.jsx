@@ -4,7 +4,7 @@ import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { buildProductAIPath, buildScanPath } from '../utils/routes.js'
 import { useI18n } from '../utils/i18n.js'
-import { ALLERGEN_NAMES, OFF_ALLERGEN_MAP } from '../data/allergens.js'
+import { ALLERGEN_NAMES, OFF_ALLERGEN_MAP } from '../constants/allergens.js'
 import { coerceProductEntity } from '../domain/product/normalizers.js'
 
 const ALLERGEN_MAP = OFF_ALLERGEN_MAP
@@ -42,7 +42,8 @@ function toExternalProductShape(raw, lang) {
       quantity: canonical.quantity || '',
       ingredients: canonical.ingredients || '',
       allergens: canonical.allergens || [],
-      isHalal: canonical.halalStatus === 'yes' ? true : canonical.halalStatus === 'no' ? false : null,
+      isHalal:
+        canonical.halalStatus === 'yes' ? true : canonical.halalStatus === 'no' ? false : null,
       nutriscore: canonical.nutriscore || null,
       nutrition: canonical.nutritionPer100 || {},
       source: canonical.source,
@@ -86,33 +87,62 @@ function checkFit(product, profile, t) {
 
   const profileAllergens = profile.allergens || []
   const found = allergens.filter((item) => profileAllergens.includes(item))
-  found.forEach((item) => reasons.push({ type: 'fail', text: `${t.product.containsAllergen} ${ALLERGEN_NAMES[item] || item}` }))
+  found.forEach((item) =>
+    reasons.push({
+      type: 'fail',
+      text: `${t.product.containsAllergen} ${ALLERGEN_NAMES[item] || item}`,
+    })
+  )
 
   const customAllergens = profile.customAllergens || []
   customAllergens.forEach((item) => {
-    if (ingredients.includes(item.toLowerCase())) reasons.push({ type: 'fail', text: `${t.product.contains} ${item}` })
+    if (ingredients.includes(item.toLowerCase()))
+      reasons.push({ type: 'fail', text: `${t.product.contains} ${item}` })
   })
 
   const goals = profile.dietGoals || []
   if (goals.includes('sugar_free') || profile.sugarFree) {
     const sugarWords = ['сахар', 'sugar', 'sucre', 'zucker', 'глюкоз', 'фруктоз', 'сироп']
-    if (sugarWords.some((word) => ingredients.includes(word))) reasons.push({ type: 'fail', text: t.product.containsSugar })
+    if (sugarWords.some((word) => ingredients.includes(word)))
+      reasons.push({ type: 'fail', text: t.product.containsSugar })
   }
 
   if (goals.includes('dairy_free')) {
-    const dairyWords = ['молок', 'сливк', 'масло слив', 'сметан', 'сыр', 'milk', 'cream', 'butter', 'cheese', 'whey', 'casein', 'лактоз']
-    if (allergens.includes('milk') || dairyWords.some((word) => ingredients.includes(word))) reasons.push({ type: 'fail', text: t.product.containsDairy })
+    const dairyWords = [
+      'молок',
+      'сливк',
+      'масло слив',
+      'сметан',
+      'сыр',
+      'milk',
+      'cream',
+      'butter',
+      'cheese',
+      'whey',
+      'casein',
+      'лактоз',
+    ]
+    if (allergens.includes('milk') || dairyWords.some((word) => ingredients.includes(word)))
+      reasons.push({ type: 'fail', text: t.product.containsDairy })
   }
 
   if (goals.includes('gluten_free')) {
-    if (allergens.includes('gluten') || allergens.includes('wheat') || ['пшениц', 'wheat', 'gluten', 'ячмен', 'рожь'].some((word) => ingredients.includes(word))) {
+    if (
+      allergens.includes('gluten') ||
+      allergens.includes('wheat') ||
+      ['пшениц', 'wheat', 'gluten', 'ячмен', 'рожь'].some((word) => ingredients.includes(word))
+    ) {
       reasons.push({ type: 'fail', text: t.product.containsGluten })
     }
   }
 
   if (goals.includes('vegan')) {
     const meatWords = ['говядин', 'свинин', 'курин', 'мясо', 'beef', 'pork', 'chicken', 'meat']
-    if (allergens.includes('milk') || allergens.includes('eggs') || meatWords.some((word) => ingredients.includes(word))) {
+    if (
+      allergens.includes('milk') ||
+      allergens.includes('eggs') ||
+      meatWords.some((word) => ingredients.includes(word))
+    ) {
       reasons.push({ type: 'fail', text: t.product.notForVegans })
     }
   }
@@ -121,8 +151,10 @@ function checkFit(product, profile, t) {
 
   if (fits) {
     const positive = []
-    if (halalOn && product.isHalal === true) positive.push({ type: 'pass', text: t.product.halalConfirmed })
-    if (profileAllergens.length > 0 && allergens.length === 0) positive.push({ type: 'pass', text: t.product.noAllergens })
+    if (halalOn && product.isHalal === true)
+      positive.push({ type: 'pass', text: t.product.halalConfirmed })
+    if (profileAllergens.length > 0 && allergens.length === 0)
+      positive.push({ type: 'pass', text: t.product.noAllergens })
     if (positive.length === 0) positive.push({ type: 'pass', text: t.product.matchesPrefs })
     return { fits, reasons: [...reasons, ...positive].slice(0, 3) }
   }
@@ -151,7 +183,14 @@ function NutriGrid({ nutrition, t }) {
         <div key={label} className="nutri-item">
           <div className="nutri-label">{label}</div>
           <div className="nutri-value">
-            {value == null ? <span className="nutri-num">—</span> : <><span className="nutri-num">{formatNutri(value)}</span><span className="nutri-unit">{unit}</span></>}
+            {value == null ? (
+              <span className="nutri-num">—</span>
+            ) : (
+              <>
+                <span className="nutri-num">{formatNutri(value)}</span>
+                <span className="nutri-unit">{unit}</span>
+              </>
+            )}
           </div>
         </div>
       ))}
@@ -165,9 +204,23 @@ function NutriscoreBadge({ grade }) {
   const c = NUTRISCORE_COLORS[g]
   if (!c) return null
   return (
-    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '4px 12px', borderRadius: 999, background: c.bg, border: `1px solid ${c.border}` }}>
+    <div
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 6,
+        padding: '4px 12px',
+        borderRadius: 999,
+        background: c.bg,
+        border: `1px solid ${c.border}`,
+      }}
+    >
       <span style={{ fontSize: 11, color: 'var(--text-dim)', fontWeight: 600 }}>Nutri-Score</span>
-      <span style={{ fontSize: 16, fontWeight: 900, fontFamily: 'var(--font-display)', color: c.text }}>{g.toUpperCase()}</span>
+      <span
+        style={{ fontSize: 16, fontWeight: 900, fontFamily: 'var(--font-display)', color: c.text }}
+      >
+        {g.toUpperCase()}
+      </span>
     </div>
   )
 }
@@ -175,9 +228,24 @@ function NutriscoreBadge({ grade }) {
 function ProductHeroImage({ src, name }) {
   const [ok, setOk] = useState(true)
   if (!src || !ok) {
-    return <div className="product-hero-placeholder" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 56 }}>📦</div>
+    return (
+      <div
+        className="product-hero-placeholder"
+        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 56 }}
+      >
+        📦
+      </div>
+    )
   }
-  return <img src={src} alt={name} className="product-hero-img" loading="lazy" onError={() => setOk(false)} />
+  return (
+    <img
+      src={src}
+      alt={name}
+      className="product-hero-img"
+      loading="lazy"
+      onError={() => setOk(false)}
+    />
+  )
 }
 
 export default function ExternalProductScreen() {
@@ -207,7 +275,9 @@ export default function ExternalProductScreen() {
 
     async function fetchProduct() {
       try {
-        const res = await fetch(`/api/off?ean=${encodeURIComponent(ean)}`, { signal: AbortSignal.timeout(10000) })
+        const res = await fetch(`/api/off?ean=${encodeURIComponent(ean)}`, {
+          signal: AbortSignal.timeout(10000),
+        })
         if (!res.ok) {
           if (!cancelled) setStatus('error')
           return
@@ -244,8 +314,26 @@ export default function ExternalProductScreen() {
 
   if (status === 'loading') {
     return (
-      <div className="screen" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16 }}>
-        <div style={{ width: 48, height: 48, borderRadius: '50%', border: '3px solid var(--primary-dim)', borderTopColor: 'var(--primary)', animation: 'spin 0.8s linear infinite' }} />
+      <div
+        className="screen"
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 16,
+        }}
+      >
+        <div
+          style={{
+            width: 48,
+            height: 48,
+            borderRadius: '50%',
+            border: '3px solid var(--primary-dim)',
+            borderTopColor: 'var(--primary)',
+            animation: 'spin 0.8s linear infinite',
+          }}
+        />
         <p style={{ color: 'var(--text-dim)', fontSize: 14 }}>{t.product.searchingDb}</p>
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
@@ -254,15 +342,47 @@ export default function ExternalProductScreen() {
 
   if (status === 'notfound' || status === 'error' || !product || !fitResult) {
     return (
-      <div className="screen" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, padding: '0 32px', textAlign: 'center' }}>
+      <div
+        className="screen"
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 16,
+          padding: '0 32px',
+          textAlign: 'center',
+        }}
+      >
         <div style={{ fontSize: 56 }}>🔍</div>
-        <div style={{ fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 700, color: 'var(--text)' }}>{t.scan.notFoundTitle}</div>
+        <div
+          style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: 20,
+            fontWeight: 700,
+            color: 'var(--text)',
+          }}
+        >
+          {t.scan.notFoundTitle}
+        </div>
         <p style={{ color: 'var(--text-dim)', fontSize: 14, lineHeight: 1.6 }}>
           {status === 'error' ? t.product.noConnection : t.product.notFoundInDb}
         </p>
-        <p style={{ color: 'var(--text-dim)', fontSize: 12, fontFamily: 'monospace', opacity: 0.6 }}>EAN: {ean}</p>
-        <button className="btn btn-primary btn-full" style={{ marginTop: 8 }} onClick={() => navigate(buildScanPath(activeStoreSlug))}>{t.common.scanAgain}</button>
-        <button className="btn btn-secondary btn-full" onClick={() => navigate(-1)}>{t.common.back}</button>
+        <p
+          style={{ color: 'var(--text-dim)', fontSize: 12, fontFamily: 'monospace', opacity: 0.6 }}
+        >
+          EAN: {ean}
+        </p>
+        <button
+          className="btn btn-primary btn-full"
+          style={{ marginTop: 8 }}
+          onClick={() => navigate(buildScanPath(activeStoreSlug))}
+        >
+          {t.common.scanAgain}
+        </button>
+        <button className="btn btn-secondary btn-full" onClick={() => navigate(-1)}>
+          {t.common.back}
+        </button>
       </div>
     )
   }
@@ -275,16 +395,44 @@ export default function ExternalProductScreen() {
     <div className="screen">
       <div className="header">
         <button className="back-btn" onClick={() => navigate(-1)}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 5l-7 7 7 7" /></svg>
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path d="M19 12H5M12 5l-7 7 7 7" />
+          </svg>
           {t.common.back}
         </button>
-        <div className="header-row"><div className="screen-title">{t.product.title}</div></div>
+        <div className="header-row">
+          <div className="screen-title">{t.product.title}</div>
+        </div>
       </div>
 
       <div className="section">
         <div className="card" style={{ marginBottom: 0 }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.02em', color: 'var(--text)', opacity: 0.9 }}>{t.product.foodCategory}</span>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: 10,
+            }}
+          >
+            <span
+              style={{
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: '0.02em',
+                color: 'var(--text)',
+                opacity: 0.9,
+              }}
+            >
+              {t.product.foodCategory}
+            </span>
             <NutriscoreBadge grade={product.nutriscore} />
           </div>
 
@@ -292,40 +440,157 @@ export default function ExternalProductScreen() {
             <ProductHeroImage src={product.image} name={product.name} />
           </div>
 
-          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 800, lineHeight: 1.25, marginBottom: 6, color: 'var(--text)' }}>{product.name}</h2>
-          {(product.brand || product.quantity) && <div style={{ fontSize: 14, color: 'var(--text-sub)', marginBottom: 10 }}>{[product.brand, product.quantity].filter(Boolean).join(' · ')}</div>}
+          <h2
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 18,
+              fontWeight: 800,
+              lineHeight: 1.25,
+              marginBottom: 6,
+              color: 'var(--text)',
+            }}
+          >
+            {product.name}
+          </h2>
+          {(product.brand || product.quantity) && (
+            <div style={{ fontSize: 14, color: 'var(--text-sub)', marginBottom: 10 }}>
+              {[product.brand, product.quantity].filter(Boolean).join(' · ')}
+            </div>
+          )}
 
-          <div style={{ marginBottom: 12, padding: '10px 12px', borderRadius: 12, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: 'var(--text-sub)', fontSize: 12, lineHeight: 1.5 }}>
+          <div
+            style={{
+              marginBottom: 12,
+              padding: '10px 12px',
+              borderRadius: 12,
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              color: 'var(--text-sub)',
+              fontSize: 12,
+              lineHeight: 1.5,
+            }}
+          >
             Глобальная карточка товара. Цена и полка магазина пока недоступны.
           </div>
 
           <div style={{ display: 'flex', gap: 10, marginBottom: 14 }}>
-            <button className="btn btn-primary btn-full" onClick={() => navigate(buildProductAIPath(activeStoreSlug, ean, true), { state: { product } })}>{t.common.askAI}</button>
+            <button
+              className="btn btn-primary btn-full"
+              onClick={() =>
+                navigate(buildProductAIPath(activeStoreSlug, ean, true), { state: { product } })
+              }
+            >
+              {t.common.askAI}
+            </button>
           </div>
 
-          <div style={{
-            borderRadius: 18,
-            padding: '18px 20px',
-            display: 'flex', alignItems: 'center', gap: 16,
-            background: fits ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)',
-            border: `1.5px solid ${fits ? 'rgba(16,185,129,0.35)' : 'rgba(239,68,68,0.35)'}`,
-            marginBottom: 16,
-          }}>
-            <div style={{ width: 44, height: 44, borderRadius: 14, flexShrink: 0, background: fits ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              {fits ? <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2.5" strokeLinecap="round"><path d="M20 6L9 17l-5-5"/></svg> : <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="2.5" strokeLinecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>}
+          <div
+            style={{
+              borderRadius: 18,
+              padding: '18px 20px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 16,
+              background: fits ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)',
+              border: `1.5px solid ${fits ? 'rgba(16,185,129,0.35)' : 'rgba(239,68,68,0.35)'}`,
+              marginBottom: 16,
+            }}
+          >
+            <div
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: 14,
+                flexShrink: 0,
+                background: fits ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              {fits ? (
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#10B981"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                >
+                  <path d="M20 6L9 17l-5-5" />
+                </svg>
+              ) : (
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#EF4444"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                >
+                  <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+              )}
             </div>
             <div>
-              <div style={{ fontSize: 17, fontWeight: 700, color: fits ? '#10B981' : '#EF4444', fontFamily: 'var(--font-display)' }}>{fits ? t.product.fits : t.product.notFits}</div>
-              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginTop: 2 }}>{fits ? t.product.fitsDesc : t.product.notFitsDesc}</div>
+              <div
+                style={{
+                  fontSize: 17,
+                  fontWeight: 700,
+                  color: fits ? '#10B981' : '#EF4444',
+                  fontFamily: 'var(--font-display)',
+                }}
+              >
+                {fits ? t.product.fits : t.product.notFits}
+              </div>
+              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginTop: 2 }}>
+                {fits ? t.product.fitsDesc : t.product.notFitsDesc}
+              </div>
             </div>
           </div>
 
           {reasons.length > 0 && (
-            <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
+            <div
+              style={{
+                marginTop: 12,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 8,
+                marginBottom: 16,
+              }}
+            >
               {reasons.map((reason, index) => (
-                <div key={index} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '11px 14px', borderRadius: 14, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                  <div style={{ width: 8, height: 8, borderRadius: '50%', flexShrink: 0, background: reason.type === 'pass' ? '#10B981' : reason.type === 'warn' ? '#F59E0B' : '#EF4444' }} />
-                  <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.8)', lineHeight: 1.4 }}>{reason.text}</span>
+                <div
+                  key={index}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 12,
+                    padding: '11px 14px',
+                    borderRadius: 14,
+                    background: 'rgba(255,255,255,0.04)',
+                    border: '1px solid rgba(255,255,255,0.07)',
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: '50%',
+                      flexShrink: 0,
+                      background:
+                        reason.type === 'pass'
+                          ? '#10B981'
+                          : reason.type === 'warn'
+                            ? '#F59E0B'
+                            : '#EF4444',
+                    }}
+                  />
+                  <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.8)', lineHeight: 1.4 }}>
+                    {reason.text}
+                  </span>
                 </div>
               ))}
             </div>
@@ -333,41 +598,68 @@ export default function ExternalProductScreen() {
 
           {hasNutr && (
             <>
-              <div className="section-title" style={{ marginBottom: 8 }}>{t.product.nutrition} <span style={{ color: 'var(--text-dim)', fontSize: 12, fontWeight: 500 }}>{t.product.nutritionPer100}</span></div>
+              <div className="section-title" style={{ marginBottom: 8 }}>
+                {t.product.nutrition}{' '}
+                <span style={{ color: 'var(--text-dim)', fontSize: 12, fontWeight: 500 }}>
+                  {t.product.nutritionPer100}
+                </span>
+              </div>
               <NutriGrid nutrition={nutr} t={t} />
             </>
           )}
 
           {showMore && (
             <div style={{ marginTop: 14 }}>
-              <button className="more-btn" type="button" onClick={() => setMoreOpen((prev) => !prev)}>
+              <button
+                className="more-btn"
+                type="button"
+                onClick={() => setMoreOpen((prev) => !prev)}
+              >
                 {moreOpen ? t.product.hide : t.product.more}
-                <span style={{ marginLeft: 8, opacity: 0.9 }} aria-hidden="true">{moreOpen ? '▴' : '▾'}</span>
+                <span style={{ marginLeft: 8, opacity: 0.9 }} aria-hidden="true">
+                  {moreOpen ? '▴' : '▾'}
+                </span>
               </button>
               {moreOpen && (
                 <div style={{ marginTop: 10 }}>
                   {product.ingredients && (
                     <div style={{ marginBottom: 10 }}>
-                      <div style={{ fontSize: 12, color: 'var(--text-dim)', marginBottom: 6 }}>{t.product.ingredients}</div>
-                      <div style={{ fontSize: 13, color: 'var(--text-sub)', lineHeight: 1.55 }}>{product.ingredients}</div>
+                      <div style={{ fontSize: 12, color: 'var(--text-dim)', marginBottom: 6 }}>
+                        {t.product.ingredients}
+                      </div>
+                      <div style={{ fontSize: 13, color: 'var(--text-sub)', lineHeight: 1.55 }}>
+                        {product.ingredients}
+                      </div>
                     </div>
                   )}
                   {product.allergens?.length > 0 && (
                     <div style={{ marginBottom: 10 }}>
-                      <div style={{ fontSize: 12, color: 'var(--text-dim)', marginBottom: 6 }}>{t.product.allergens}</div>
-                      <div style={{ fontSize: 13, color: 'var(--text-sub)', lineHeight: 1.55 }}>{product.allergens.map((item) => ALLERGEN_NAMES[item] || item).join(', ')}</div>
+                      <div style={{ fontSize: 12, color: 'var(--text-dim)', marginBottom: 6 }}>
+                        {t.product.allergens}
+                      </div>
+                      <div style={{ fontSize: 13, color: 'var(--text-sub)', lineHeight: 1.55 }}>
+                        {product.allergens.map((item) => ALLERGEN_NAMES[item] || item).join(', ')}
+                      </div>
                     </div>
                   )}
                   {nutr?.sugar != null && (
                     <div style={{ marginBottom: 10 }}>
-                      <div style={{ fontSize: 12, color: 'var(--text-dim)', marginBottom: 6 }}>{t.product.sugarOf}</div>
-                      <div style={{ fontSize: 13, color: 'var(--text-sub)' }}>{formatNutri(nutr.sugar)} г</div>
+                      <div style={{ fontSize: 12, color: 'var(--text-dim)', marginBottom: 6 }}>
+                        {t.product.sugarOf}
+                      </div>
+                      <div style={{ fontSize: 13, color: 'var(--text-sub)' }}>
+                        {formatNutri(nutr.sugar)} г
+                      </div>
                     </div>
                   )}
                   {nutr?.fiber != null && (
                     <div>
-                      <div style={{ fontSize: 12, color: 'var(--text-dim)', marginBottom: 6 }}>{t.product.fiber}</div>
-                      <div style={{ fontSize: 13, color: 'var(--text-sub)' }}>{formatNutri(nutr.fiber)} г</div>
+                      <div style={{ fontSize: 12, color: 'var(--text-dim)', marginBottom: 6 }}>
+                        {t.product.fiber}
+                      </div>
+                      <div style={{ fontSize: 13, color: 'var(--text-sub)' }}>
+                        {formatNutri(nutr.fiber)} г
+                      </div>
                     </div>
                   )}
                 </div>
