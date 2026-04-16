@@ -1,736 +1,242 @@
 [
   {
-    "id": "p001",
-    "ean": "4600000102452",
-    "name": "Snickers 50г",
-    "category": "grocery",
-    "group": "chocolate_bar",
-    "halal": false,
-    "allergens": [
-      "milk",
-      "nuts",
-      "gluten"
-    ],
-    "dietTags": [
-      "contains_dairy",
-      "contains_gluten",
-      "contains_sugar"
-    ],
-    "qualityScore": 82,
-    "tags": [
-      "шоколад",
-      "батончик",
-      "сникерс"
-    ],
-    "description": "Классический шоколадный батончик с арахисом, карамелью и нугой. Отлично утоляет голод.",
-    "specs": {
-      "weight": "50г",
-      "calories": "245 ккал/шт",
-      "bestBefore": "12 месяцев",
-      "storage": "В сухом прохладном месте, до +25°C",
-      "country": "Нидерланды"
-    },
-    "nutritionPer100": {
-      "kcal": 488,
-      "protein": 8.0,
-      "fat": 24.0,
-      "carbs": 63.0
-    },
-    "nutritionBase": "на 100 г",
-    "ingredients": "Молочный шоколад 34% (сахар, масло какао, сухое цельное молоко, какао тёртое), арахис 16%, карамель 13% (сахар, глюкозный сироп, сливочное масло, молоко), нуга (сахар, патока, яичный белок), сахар.",
-    "manufacturer": {
-      "name": "Mars",
-      "country": "Нидерланды"
-    },
-    "images": [
-      "/products/1.png"
-    ],
-    "halalStatus": "no",
-    "alternateEans": [
-      "5900951311505",
-      "5000159461122"
-    ]
+    "id": "p001", "ean": "4008400404127",
+    "name": "Шоколад молочный Alpen Gold 85г",
+    "category": "grocery", "group": "chocolate",
+    "halal": false, "halalStatus": "unknown",
+    "allergens": ["milk", "soy"],
+    "dietTags": ["contains_sugar", "contains_dairy"],
+    "qualityScore": 60,
+    "tags": ["шоколад", "сладости"],
+    "ingredients_raw": "сахар, какао тертое, масло какао, сыворотка сухая молочная, молоко сухое цельное, жир молочный, эмульгаторы (лецитин соевый, Е476), ароматизатор. Может содержать следы арахиса, других орехов и пшеницы.",
+    "nutriments": { "sugars_100g": 58, "proteins_100g": 5.3 }
   },
   {
-    "id": "p002",
-    "ean": "4600000102453",
-    "name": "Snickers 80г",
-    "category": "grocery",
-    "group": "chocolate_bar",
-    "halal": false,
-    "allergens": [
-      "milk",
-      "nuts",
-      "gluten"
-    ],
-    "dietTags": [
-      "contains_dairy",
-      "contains_gluten",
-      "contains_sugar"
-    ],
-    "qualityScore": 82,
-    "tags": [
-      "шоколад",
-      "батончик",
-      "сникерс"
-    ],
-    "description": "Увеличенный Snickers для тех, кому мало. Больше арахиса и карамели.",
-    "specs": {
-      "weight": "80г",
-      "calories": "390 ккал/шт",
-      "bestBefore": "12 месяцев",
-      "storage": "В сухом прохладном месте, до +25°C",
-      "country": "Нидерланды"
-    },
-    "nutritionPer100": {
-      "kcal": 488,
-      "protein": 8.0,
-      "fat": 24.0,
-      "carbs": 63.0
-    },
-    "nutritionBase": "на 100 г",
-    "ingredients": "Молочный шоколад 34%, арахис 16%, карамель 13%, нуга, сахар.",
-    "manufacturer": {
-      "name": "Mars",
-      "country": "Нидерланды"
-    },
-    "images": [
-      "/products/1_2.png"
-    ],
-    "halalStatus": "no",
-    "alternateEans": [
-      "5000159559065",
-      "5000159407410"
-    ]
-  },
-  {
-    "id": "p003",
-    "ean": "4600000103012",
-    "name": "Батончик Step 50г",
-    "category": "grocery",
-    "group": "chocolate_bar",
-    "halal": true,
-    "allergens": [
-      "milk",
-      "gluten"
-    ],
-    "dietTags": [
-      "contains_dairy",
-      "contains_gluten",
-      "contains_sugar"
-    ],
-    "qualityScore": 62,
-    "tags": [
-      "шоколад",
-      "батончик",
-      "степ"
-    ],
-    "description": "Доступный шоколадный батончик казахстанского производства с халал-сертификатом.",
-    "specs": {
-      "weight": "50г",
-      "calories": "235 ккал/шт",
-      "bestBefore": "9 месяцев",
-      "storage": "При температуре от +5°C до +20°C",
-      "country": "Казахстан"
-    },
-    "nutritionPer100": {
-      "kcal": 470,
-      "protein": 6.0,
-      "fat": 20.0,
-      "carbs": 65.0
-    },
-    "nutritionBase": "на 100 г",
-    "ingredients": "Шоколадная глазурь (сахар, растительный жир, какао-порошок), нуга (сахар, патока), карамель, молоко сухое, соль.",
-    "manufacturer": {
-      "name": "Конфил",
-      "country": "Казахстан"
-    },
-    "images": [
-      "/products/2.png"
-    ],
-    "halalStatus": "yes"
-  },
-  {
-    "id": "p004",
-    "ean": "5000112546324",
-    "name": "Coca-Cola 0.5л",
-    "category": "grocery",
-    "group": "cola",
-    "halal": true,
-    "allergens": [],
-    "dietTags": [
-      "contains_sugar"
-    ],
-    "qualityScore": 70,
-    "tags": [
-      "кола",
-      "напиток",
-      "газировка"
-    ],
-    "description": "Классическая газированная Coca-Cola с неизменным вкусом с 1886 года.",
-    "specs": {
-      "volume": "0.5л",
-      "sugar": "53г на бутылку",
-      "caffeine": "47мг",
-      "bestBefore": "9 месяцев",
-      "storage": "При температуре от 0°C до +25°C, избегать прямых солнечных лучей",
-      "country": "Казахстан"
-    },
-    "nutritionPer100": {
-      "kcal": 42,
-      "protein": 0.0,
-      "fat": 0.0,
-      "carbs": 10.6
-    },
-    "nutritionBase": "на 100 мл",
-    "ingredients": "Вода питьевая, сахар, углекислый газ, краситель карамельный E150d, регулятор кислотности ортофосфорная кислота, натуральные ароматизаторы.",
-    "manufacturer": {
-      "name": "Coca-Cola",
-      "country": "Казахстан"
-    },
-    "images": [
-      "/products/3.png"
-    ],
-    "halalStatus": "yes"
-  },
-  {
-    "id": "p005",
-    "ean": "5000112546325",
-    "name": "Coca-Cola 1л",
-    "category": "grocery",
-    "group": "cola",
-    "halal": true,
-    "allergens": [],
-    "dietTags": [
-      "contains_sugar"
-    ],
-    "qualityScore": 70,
-    "tags": [
-      "кола",
-      "напиток",
-      "газировка"
-    ],
-    "description": "Большая Coca-Cola для компании или дома.",
-    "specs": {
-      "volume": "1л",
-      "sugar": "106г на бутылку",
-      "caffeine": "94мг",
-      "bestBefore": "9 месяцев",
-      "storage": "При температуре от 0°C до +25°C",
-      "country": "Казахстан"
-    },
-    "nutritionPer100": {
-      "kcal": 42,
-      "protein": 0.0,
-      "fat": 0.0,
-      "carbs": 10.6
-    },
-    "nutritionBase": "на 100 мл",
-    "ingredients": "Вода питьевая, сахар, углекислый газ, краситель E150d, ортофосфорная кислота, натуральные ароматизаторы.",
-    "manufacturer": {
-      "name": "Coca-Cola",
-      "country": "Казахстан"
-    },
-    "images": [
-      "/products/3_1.png"
-    ],
-    "halalStatus": "yes"
-  },
-  {
-    "id": "p006",
-    "ean": "5000112546326",
-    "name": "Coca-Cola Zero 0.5л",
-    "category": "grocery",
-    "group": "cola_zero",
-    "halal": true,
-    "allergens": [],
-    "dietTags": [
-      "sugar_free"
-    ],
-    "qualityScore": 68,
-    "tags": [
-      "кола",
-      "без сахара",
-      "зеро",
-      "диета"
-    ],
-    "description": "Coca-Cola без сахара и калорий — тот же вкус, ноль сахара.",
-    "specs": {
-      "volume": "0.5л",
-      "sugar": "0г",
-      "caffeine": "46мг",
-      "bestBefore": "9 месяцев",
-      "storage": "При температуре от 0°C до +25°C",
-      "country": "Казахстан"
-    },
-    "nutritionPer100": {
-      "kcal": 0,
-      "protein": 0.0,
-      "fat": 0.0,
-      "carbs": 0.0
-    },
-    "nutritionBase": "на 100 мл",
-    "ingredients": "Вода питьевая, углекислый газ, краситель E150d, регуляторы кислотности, подсластители (аспартам, ацесульфам К), натуральные ароматизаторы.",
-    "manufacturer": {
-      "name": "Coca-Cola",
-      "country": "Казахстан"
-    },
-    "images": [
-      "/products/3_2.png"
-    ],
-    "halalStatus": "yes"
-  },
-  {
-    "id": "p007",
-    "ean": "4890008100309",
-    "name": "Pepsi 0.5л",
-    "category": "grocery",
-    "group": "cola",
-    "halal": true,
-    "allergens": [],
-    "dietTags": [
-      "contains_sugar"
-    ],
-    "qualityScore": 68,
-    "tags": [
-      "пепси",
-      "напиток",
-      "газировка"
-    ],
-    "description": "Газированный напиток Pepsi с фирменным сладким вкусом.",
-    "specs": {
-      "volume": "0.5л",
-      "sugar": "55г на бутылку",
-      "caffeine": "38мг",
-      "bestBefore": "6 месяцев",
-      "storage": "В прохладном тёмном месте",
-      "country": "Казахстан"
-    },
-    "nutritionPer100": {
-      "kcal": 43,
-      "protein": 0.0,
-      "fat": 0.0,
-      "carbs": 11.0
-    },
-    "nutritionBase": "на 100 мл",
-    "ingredients": "Вода, сахар, углекислый газ, краситель E150d, регулятор кислотности E338, ароматизатор.",
-    "manufacturer": {
-      "name": "PepsiCo",
-      "country": "Казахстан"
-    },
-    "images": [
-      "/products/4.png"
-    ],
-    "halalStatus": "yes"
-  },
-  {
-    "id": "p008",
-    "ean": "4870200003011",
-    "name": "Cool Cola 1л",
-    "category": "grocery",
-    "group": "cola",
-    "halal": true,
-    "allergens": [],
-    "dietTags": [
-      "contains_sugar"
-    ],
-    "qualityScore": 52,
-    "tags": [
-      "кола",
-      "напиток",
-      "бюджет"
-    ],
-    "description": "Бюджетная альтернатива. Подходит для мероприятий и большой компании.",
-    "specs": {
-      "volume": "1л",
-      "sugar": "102г на бутылку",
-      "bestBefore": "6 месяцев",
-      "storage": "В прохладном месте",
-      "country": "Казахстан"
-    },
-    "nutritionPer100": {
-      "kcal": 41,
-      "protein": 0.0,
-      "fat": 0.0,
-      "carbs": 10.2
-    },
-    "nutritionBase": "на 100 мл",
-    "ingredients": "Вода питьевая, сахар, углекислый газ, краситель, ортофосфорная кислота, ароматизатор.",
-    "manufacturer": {
-      "name": "Wimm-Bill-Dann",
-      "country": "Казахстан"
-    },
-    "images": [
-      "/products/11.png"
-    ],
-    "halalStatus": "yes"
-  },
-  {
-    "id": "p009",
-    "ean": "4870200003012",
-    "name": "Tassay 0.5л",
-    "category": "grocery",
-    "group": "water",
-    "halal": true,
-    "allergens": [],
-    "dietTags": [
-      "sugar_free",
-      "gluten_free",
-      "vegan",
-      "dairy_free"
-    ],
-    "qualityScore": 88,
-    "tags": [
-      "вода",
-      "тассай",
-      "без сахара"
-    ],
-    "description": "Природная питьевая вода из горных источников Казахстана. Добывается в экологически чистом районе.",
-    "specs": {
-      "volume": "0.5л",
-      "type": "Негазированная",
-      "mineralization": "200–500 мг/л",
-      "pH": "7.0–7.5",
-      "bestBefore": "24 месяца",
-      "storage": "В тёмном месте при температуре от +5°C до +20°C, вдали от химических веществ",
-      "country": "Казахстан"
-    },
-    "nutritionPer100": {
-      "kcal": 0,
-      "protein": 0.0,
-      "fat": 0.0,
-      "carbs": 0.0
-    },
-    "nutritionBase": "на 100 мл",
-    "ingredients": "Природная питьевая вода.",
-    "manufacturer": {
-      "name": "Tassay",
-      "country": "Казахстан"
-    },
-    "images": [
-      "/products/5.png"
-    ],
-    "halalStatus": "yes"
-  },
-  {
-    "id": "p010",
-    "ean": "4870200003013",
-    "name": "Tassay 1л",
-    "category": "grocery",
-    "group": "water",
-    "halal": true,
-    "allergens": [],
-    "dietTags": [
-      "sugar_free",
-      "gluten_free",
-      "vegan",
-      "dairy_free"
-    ],
-    "qualityScore": 88,
-    "tags": [
-      "вода",
-      "тассай",
-      "без сахара"
-    ],
-    "description": "Tassay 1 литр — выгодный формат для ежедневного использования.",
-    "specs": {
-      "volume": "1л",
-      "type": "Негазированная",
-      "mineralization": "200–500 мг/л",
-      "pH": "7.0–7.5",
-      "bestBefore": "24 месяца",
-      "storage": "В тёмном месте при температуре от +5°C до +20°C",
-      "country": "Казахстан"
-    },
-    "nutritionPer100": {
-      "kcal": 0,
-      "protein": 0.0,
-      "fat": 0.0,
-      "carbs": 0.0
-    },
-    "nutritionBase": "на 100 мл",
-    "ingredients": "Природная питьевая вода.",
-    "manufacturer": {
-      "name": "Tassay",
-      "country": "Казахстан"
-    },
-    "images": [
-      "/products/5_1.png"
-    ],
-    "halalStatus": "yes"
-  },
-  {
-    "id": "p011",
-    "ean": "4870200003014",
-    "name": "Samal 0.5л",
-    "category": "grocery",
-    "group": "water",
-    "halal": true,
-    "allergens": [],
-    "dietTags": [
-      "sugar_free",
-      "gluten_free",
-      "vegan",
-      "dairy_free"
-    ],
-    "qualityScore": 72,
-    "tags": [
-      "вода",
-      "самал",
-      "без сахара"
-    ],
-    "description": "Питьевая вода Samal — популярная местная марка.",
-    "specs": {
-      "volume": "0.5л",
-      "type": "Негазированная",
-      "bestBefore": "12 месяцев",
-      "storage": "При температуре до +25°C",
-      "country": "Казахстан"
-    },
-    "nutritionPer100": {
-      "kcal": 0,
-      "protein": 0.0,
-      "fat": 0.0,
-      "carbs": 0.0
-    },
-    "nutritionBase": "на 100 мл",
-    "ingredients": "Питьевая вода.",
-    "manufacturer": {
-      "name": "Samal",
-      "country": "Казахстан"
-    },
-    "images": [
-      "/products/6.png"
-    ],
-    "halalStatus": "yes"
-  },
-  {
-    "id": "p012",
-    "ean": "4870200003015",
-    "name": "Samal 1л",
-    "category": "grocery",
-    "group": "water",
-    "halal": true,
-    "allergens": [],
-    "dietTags": [
-      "sugar_free",
-      "gluten_free",
-      "vegan",
-      "dairy_free"
-    ],
-    "qualityScore": 72,
-    "tags": [
-      "вода",
-      "самал",
-      "без сахара"
-    ],
-    "description": "Samal 1 литр — экономичный вариант для дома.",
-    "specs": {
-      "volume": "1л",
-      "type": "Негазированная",
-      "bestBefore": "12 месяцев",
-      "storage": "При температуре до +25°C",
-      "country": "Казахстан"
-    },
-    "nutritionPer100": {
-      "kcal": 0,
-      "protein": 0.0,
-      "fat": 0.0,
-      "carbs": 0.0
-    },
-    "nutritionBase": "на 100 мл",
-    "ingredients": "Питьевая вода.",
-    "manufacturer": {
-      "name": "Samal",
-      "country": "Казахстан"
-    },
-    "images": [
-      "/products/6_1.png"
-    ],
-    "halalStatus": "yes"
-  },
-  {
-    "id": "p013",
-    "ean": "4870200003020",
-    "name": "Рис Цесна 700г",
-    "category": "grocery",
-    "group": "rice",
-    "halal": true,
-    "allergens": [],
-    "dietTags": [
-      "sugar_free",
-      "gluten_free",
-      "vegan",
-      "dairy_free"
-    ],
-    "qualityScore": 82,
-    "tags": [
-      "рис",
-      "цесна",
-      "крупа",
-      "гарнир"
-    ],
-    "description": "Длиннозёрный шлифованный рис казахстанского производства. Рассыпчатый, идеален для плова.",
-    "specs": {
-      "weight": "700г",
-      "type": "Длиннозёрный, шлифованный",
-      "cookTime": "20 минут",
-      "bestBefore": "24 месяца",
-      "storage": "В сухом месте при влажности не более 75%, в закрытой упаковке",
-      "country": "Казахстан"
-    },
-    "nutritionPer100": {
-      "kcal": 344,
-      "protein": 7.0,
-      "fat": 1.0,
-      "carbs": 76.0
-    },
-    "nutritionBase": "на 100 г (сухой)",
-    "ingredients": "Рис длиннозёрный шлифованный.",
-    "manufacturer": {
-      "name": "Цесна",
-      "country": "Казахстан"
-    },
-    "images": [
-      "/products/7.png"
-    ],
-    "halalStatus": "yes"
-  },
-  {
-    "id": "p014",
-    "ean": "4870200003021",
-    "name": "Рис Makfa 800г",
-    "category": "grocery",
-    "group": "rice",
-    "halal": true,
-    "allergens": [],
-    "dietTags": [
-      "sugar_free",
-      "gluten_free",
-      "vegan",
-      "dairy_free"
-    ],
-    "qualityScore": 78,
-    "tags": [
-      "рис",
-      "makfa",
-      "крупа",
-      "гарнир"
-    ],
-    "description": "Пропаренный рис Makfa — не слипается при варке. Сохраняет форму и витамины.",
-    "specs": {
-      "weight": "800г",
-      "type": "Пропаренный длиннозёрный",
-      "cookTime": "25 минут",
-      "bestBefore": "36 месяцев",
-      "storage": "В сухом прохладном месте, в герметичной упаковке",
-      "country": "Россия"
-    },
-    "nutritionPer100": {
-      "kcal": 340,
-      "protein": 7.0,
-      "fat": 1.0,
-      "carbs": 75.0
-    },
-    "nutritionBase": "на 100 г (сухой)",
-    "ingredients": "Рис пропаренный.",
-    "manufacturer": {
-      "name": "Makfa",
-      "country": "Россия"
-    },
-    "images": [
-      "/products/7_1.png"
-    ],
-    "halalStatus": "yes"
-  },
-  {
-    "id": "p015",
-    "ean": "4870200003022",
-    "name": "Тушёнка Кублей говядина 338г",
-    "category": "grocery",
-    "group": "canned_meat",
-    "halal": true,
-    "allergens": [],
-    "dietTags": [
-      "gluten_free",
-      "dairy_free"
-    ],
-    "qualityScore": 77,
-    "tags": [
-      "халал",
-      "консервы",
-      "говядина",
-      "мясо"
-    ],
-    "description": "Консервированная говядина с халал-сертификатом. Готова к употреблению, можно разогреть.",
-    "specs": {
-      "weight": "338г",
-      "meatContent": "≥54%",
-      "bestBefore": "5 лет",
-      "storage": "При температуре от 0°C до +25°C. После вскрытия хранить в холодильнике не более 48 часов",
-      "country": "Казахстан"
-    },
-    "nutritionPer100": {
-      "kcal": 240,
-      "protein": 14.0,
-      "fat": 18.0,
-      "carbs": 1.0
-    },
-    "nutritionBase": "на 100 г",
-    "ingredients": "Говядина, жир говяжий, лук репчатый, соль поваренная, перец чёрный молотый, лавровый лист. Халал.",
-    "manufacturer": {
-      "name": "Halal Meat KZ",
-      "country": "Казахстан"
-    },
-    "images": [
-      "/products/8.png"
-    ],
-    "halalStatus": "yes"
-  },
-  {
-    "id": "p016",
-    "ean": "4870200003023",
-    "name": "Колбаса Мама Может 400г",
-    "category": "grocery",
-    "group": "sausage",
-    "halal": false,
-    "allergens": [
-      "gluten",
-      "milk"
-    ],
-    "dietTags": [
-      "contains_gluten",
-      "contains_dairy"
-    ],
+    "id": "p002", "ean": "4600680010360",
+    "name": "Печенье Юбилейное Традиционное 112г",
+    "category": "grocery", "group": "cookies",
+    "halal": false, "halalStatus": "unknown",
+    "allergens": ["gluten", "eggs"],
+    "dietTags": ["contains_sugar", "contains_gluten"],
     "qualityScore": 55,
-    "tags": [
-      "колбаса",
-      "мясо",
-      "варёная"
-    ],
-    "description": "Варёная колбаса. Без халал-маркировки. Содержит свинину.",
-    "specs": {
-      "weight": "400г",
-      "meatContent": "≥60%",
-      "bestBefore": "30 суток",
-      "storage": "В холодильнике от 0°C до +6°C. После вскрытия — не более 3 суток",
-      "country": "Казахстан"
-    },
-    "nutritionPer100": {
-      "kcal": 257,
-      "protein": 12.0,
-      "fat": 22.0,
-      "carbs": 3.0
-    },
-    "nutritionBase": "на 100 г",
-    "ingredients": "Свинина, говядина, крахмал картофельный, соль, специи, усилитель вкуса E621.",
-    "manufacturer": {
-      "name": "Мясокомбинат",
-      "country": "Казахстан"
-    },
-    "images": [
-      "/products/12.png"
-    ],
-    "halalStatus": "no"
+    "tags": ["печенье", "к чаю"],
+    "ingredients_raw": "мука пшеничная, сахар, масло растительное, вода питьевая, крахмал кукурузный, меланж яичный, сироп инвертный (сахар, вода, регулятор кислотности (кислота лимонная)), разрыхлители, соль. Может содержать следы кунжута и молока.",
+    "nutriments": { "sugars_100g": 22, "proteins_100g": 7.5 }
+  },
+  {
+    "id": "p003", "ean": "4600000102452",
+    "name": "Батончик Snickers 50г",
+    "category": "grocery", "group": "chocolate_bar",
+    "halal": false, "halalStatus": "no",
+    "allergens": ["peanuts", "milk", "eggs", "soy"],
+    "dietTags": ["contains_sugar", "contains_dairy"],
+    "qualityScore": 40,
+    "tags": ["сникерс", "батончик"],
+    "ingredients_raw": "молочный шоколад (сахар, масло какао, какао тертое, лактоза, сухое цельное молоко, сухая молочная сыворотка, молочный жир, эмульгатор (соевый лецитин), ароматизатор (ванилин)), карамель, арахис, нуга (сахар, глюкозный сироп, пальмовое масло, соль, сухой яичный белок). Может содержать незначительное количество фундука, миндаля, кешью.",
+    "nutriments": { "sugars_100g": 49.5, "proteins_100g": 8.6 }
+  },
+  {
+    "id": "p004", "ean": "5000112546326",
+    "name": "Напиток Coca-Cola Zero 0.5л",
+    "category": "grocery", "group": "cola_zero",
+    "halal": true, "halalStatus": "yes",
+    "allergens": [],
+    "dietTags": ["sugar_free", "vegan"],
+    "qualityScore": 68,
+    "tags": ["кола", "без сахара"],
+    "ingredients_raw": "вода очищенная, краситель сахарный колер IV (E150d), регуляторы кислотности (ортофосфорная кислота, цитраты натрия), подсластители (натриевая соль цикламовой кислоты, ацесульфам калия, аспартам), натуральные ароматизаторы, кофеин. Содержит источник фенилаланина.",
+    "nutriments": { "sugars_100g": 0, "proteins_100g": 0 }
+  },
+  {
+    "id": "p005", "ean": "4005800431326",
+    "name": "Сок Яблочный Добрый 1л",
+    "category": "grocery", "group": "juice",
+    "halal": true, "halalStatus": "yes",
+    "allergens": [],
+    "dietTags": ["contains_sugar", "vegan"],
+    "qualityScore": 80,
+    "tags": ["сок", "яблоко"],
+    "ingredients_raw": "яблочный сок. Изготовлен из концентрированного сока. Содержит сахара природного (естественного) происхождения.",
+    "nutriments": { "sugars_100g": 11, "proteins_100g": 0.5 }
+  },
+  {
+    "id": "p006", "ean": "4810200003011",
+    "name": "Крабовые палочки Vici 200г",
+    "category": "grocery", "group": "seafood",
+    "halal": false, "halalStatus": "no",
+    "allergens": ["fish", "eggs", "gluten", "crustaceans"],
+    "dietTags": ["contains_gluten"],
+    "qualityScore": 50,
+    "tags": ["морепродукты", "краб", "сурими"],
+    "ingredients_raw": "фарш рыбный сурими, вода, крахмал пшеничный, масло растительное, белок яичный, соль, сахар, экстракт краба (содержит ракообразных), красители (кармины, экстракт паприки).",
+    "nutriments": { "sugars_100g": 3.5, "proteins_100g": 6 }
+  },
+  {
+    "id": "p007", "ean": "8005800431350",
+    "name": "Майонез Провансаль 67%",
+    "category": "grocery", "group": "sauce",
+    "halal": false, "halalStatus": "unknown",
+    "allergens": ["eggs", "mustard"],
+    "dietTags": [],
+    "qualityScore": 40,
+    "tags": ["майонез", "соус"],
+    "ingredients_raw": "масло подсолнечное рафинированное дезодорированное, вода, яичный желток, сахар, уксус столовый, соль, горчичное масло.",
+    "nutriments": { "sugars_100g": 2.5, "proteins_100g": 0.5 }
+  },
+  {
+    "id": "p008", "ean": "4607000001001",
+    "name": "Хлебцы Dr.Korner Гречневые",
+    "category": "grocery", "group": "bread",
+    "halal": true, "halalStatus": "yes",
+    "allergens": [],
+    "dietTags": ["vegan", "sugar_free", "gluten_free"],
+    "qualityScore": 90,
+    "tags": ["хлебцы", "зож"],
+    "ingredients_raw": "крупа гречневая ядрица, витаминно-минеральный комплекс.",
+    "nutriments": { "sugars_100g": 1, "proteins_100g": 10 }
+  },
+  {
+    "id": "p009", "ean": "4607000001002",
+    "name": "Овсяной напиток Ne Moloko Klasik 1л",
+    "category": "grocery", "group": "plant_milk",
+    "halal": true, "halalStatus": "yes",
+    "allergens": ["gluten"],
+    "dietTags": ["vegan", "dairy_free"],
+    "qualityScore": 85,
+    "tags": ["немолоко", "напиток"],
+    "ingredients_raw": "вода, овсяная мука, рапсовое масло, карбонат кальция, соль, витамин В2.",
+    "nutriments": { "sugars_100g": 6.5, "proteins_100g": 1.0 }
+  },
+  {
+    "id": "p010", "ean": "4607000001003",
+    "name": "Пиво Балтика 0 Безалкогольное 0.45л",
+    "category": "grocery", "group": "beer",
+    "halal": false, "halalStatus": "no",
+    "allergens": ["gluten"],
+    "dietTags": ["contains_gluten"],
+    "qualityScore": 50,
+    "tags": ["пиво", "напиток"],
+    "ingredients_raw": "вода питьевая очищенная, солод ячменный светлый, солодовый экстракт, хмелепродукты.",
+    "nutriments": { "sugars_100g": 3.5, "proteins_100g": 0.5 }
+  },
+  {
+    "id": "p011", "ean": "4607000001004",
+    "name": "Тунец кусочками консервированный",
+    "category": "grocery", "group": "canned_food",
+    "halal": true, "halalStatus": "yes",
+    "allergens": ["fish"],
+    "dietTags": ["sugar_free", "dairy_free", "gluten_free"],
+    "qualityScore": 88,
+    "tags": ["рыба", "тунец"],
+    "ingredients_raw": "тунец (филе кусочками), вода питьевая, соль.",
+    "nutriments": { "sugars_100g": 0, "proteins_100g": 24 }
+  },
+  {
+    "id": "p012", "ean": "4607000001005",
+    "name": "Мороженое Пломбир ванильный",
+    "category": "grocery", "group": "ice_cream",
+    "halal": false, "halalStatus": "unknown",
+    "allergens": ["milk"],
+    "dietTags": ["contains_dairy", "contains_sugar"],
+    "qualityScore": 65,
+    "tags": ["мороженое", "пломбир"],
+    "ingredients_raw": "сливки, молоко коровье цельное, сахар, сгущенное молоко, вода, стабилизатор-эмульгатор, ароматизатор ванилин.",
+    "nutriments": { "sugars_100g": 15, "proteins_100g": 3.5 }
+  },
+  {
+    "id": "p013", "ean": "4607000001006",
+    "name": "Вино красное сухое 0.75л",
+    "category": "grocery", "group": "wine",
+    "halal": false, "halalStatus": "no",
+    "allergens": ["sulfites"],
+    "dietTags": [],
+    "qualityScore": 50,
+    "tags": ["вино", "алкоголь"],
+    "ingredients_raw": "виноград сортов Каберне Совиньон, пищевая добавка диоксид серы (консервант).",
+    "nutriments": { "sugars_100g": 0.2, "proteins_100g": 0 }
+  },
+  {
+    "id": "p014", "ean": "4607000001007",
+    "name": "Соус Терияки",
+    "category": "grocery", "group": "sauce",
+    "halal": false, "halalStatus": "unknown",
+    "allergens": ["soy", "gluten", "sesame"],
+    "dietTags": ["contains_sugar"],
+    "qualityScore": 60,
+    "tags": ["соус", "терияки"],
+    "ingredients_raw": "вода, соевый соус (вода, соевые бобы, пшеница, соль), сахар, уксус, имбирь, кунжутное семя, чеснок, загуститель (крахмал кукурузный).",
+    "nutriments": { "sugars_100g": 30, "proteins_100g": 4.5 }
+  },
+  {
+    "id": "p015", "ean": "4607000001008",
+    "name": "Колбаса Докторская ГОСТ",
+    "category": "grocery", "group": "sausage",
+    "halal": false, "halalStatus": "no",
+    "allergens": ["milk"],
+    "dietTags": ["contains_dairy"],
+    "qualityScore": 65,
+    "tags": ["колбаса", "мясо"],
+    "ingredients_raw": "свинина, говядина, вода, яйца куриные или меланж яичный, молоко сухое коровье цельное, соль, пряности (мускатный орех), фиксатор окраски (нитрит натрия). Может содержать следы горчицы, сельдерея.",
+    "nutriments": { "sugars_100g": 0.5, "proteins_100g": 12 }
+  },
+  {
+    "id": "p016", "ean": "4607000001009",
+    "name": "Смесь ореховая коктейльная 150г",
+    "category": "grocery", "group": "snacks",
+    "halal": true, "halalStatus": "yes",
+    "allergens": ["tree_nuts", "peanuts"],
+    "dietTags": ["vegan", "sugar_free"],
+    "qualityScore": 85,
+    "tags": ["орехи", "перекус"],
+    "ingredients_raw": "ядра кешью жареные, ядра миндаля жареные, арахис жареный, ядра фундука. Может содержать частицы арахиса и других орехов.",
+    "nutriments": { "sugars_100g": 4.5, "proteins_100g": 22 }
+  },
+  {
+    "id": "p017", "ean": "4607000001010",
+    "name": "Коктейль из морепродуктов в масле",
+    "category": "grocery", "group": "seafood",
+    "halal": true, "halalStatus": "unknown",
+    "allergens": ["mollusks", "crustaceans"],
+    "dietTags": ["sugar_free", "gluten_free"],
+    "qualityScore": 70,
+    "tags": ["морепродукты", "пресервы"],
+    "ingredients_raw": "отварные морепродукты (кальмар соломка, мидии мясо, креветки очищенные), масло подсолнечное рафинированное, соль, регуляторы кислотности.",
+    "nutriments": { "sugars_100g": 0, "proteins_100g": 14 }
+  },
+  {
+    "id": "p018", "ean": "4607000001011",
+    "name": "Пюре ФрутоНяня Яблоко 90г",
+    "category": "grocery", "group": "baby_food",
+    "halal": true, "halalStatus": "yes",
+    "allergens": [],
+    "dietTags": ["vegan", "gluten_free", "dairy_free"],
+    "qualityScore": 95,
+    "tags": ["пюре", "детское питание"],
+    "ingredients_raw": "пюре из яблок.",
+    "nutriments": { "sugars_100g": 9, "proteins_100g": 0.3 }
+  },
+  {
+    "id": "p019", "ean": "4607000001012",
+    "name": "Сыр Гауда 45%",
+    "category": "grocery", "group": "cheese",
+    "halal": false, "halalStatus": "unknown",
+    "allergens": ["milk"],
+    "dietTags": ["contains_dairy", "sugar_free"],
+    "qualityScore": 75,
+    "tags": ["сыр", "гауда", "молочка"],
+    "ingredients_raw": "молоко нормализованное пастеризованное, бактериальная закваска мезофильных молочнокислых микроорганизмов, молокосвертывающий ферментный препарат животного происхождения, соль поваренная пищевая.",
+    "nutriments": { "sugars_100g": 0.1, "proteins_100g": 25 }
+  },
+  {
+    "id": "p020", "ean": "4607000001013",
+    "name": "Котлеты куриные (полуфабрикат)",
+    "category": "grocery", "group": "meat",
+    "halal": true, "halalStatus": "yes",
+    "allergens": ["gluten", "eggs"],
+    "dietTags": ["contains_gluten"],
+    "qualityScore": 65,
+    "tags": ["котлеты", "курица", "мясо"],
+    "ingredients_raw": "мясо кур, вода питьевая, сухари панировочиые (мука пшеничная хлебопекарная, вода, соль, дрожжи хлебопекарные), клетчатка пшеничная, меланж яичный сухой, соль, черный перец.",
+    "nutriments": { "sugars_100g": 0.5, "proteins_100g": 14 }
   }
 ]
