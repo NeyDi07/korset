@@ -272,6 +272,18 @@ export const dictionaries = {
       printAll: 'Распечатать все',
       qrCodes: 'QR-кодов',
     },
+    footer: {
+      about: 'О нас',
+      contacts: 'Контакты',
+      policy: 'Политика конфиденциальности',
+      description:
+        'Умная платформа для проверки продуктов. Состав, аллергены, КБЖУ и халал-статус — всё в одном скане.',
+      copyright: '© 2025 Körset. Все права защищены.',
+      madeInKz: 'Made in Kazakhstan',
+      systemOk: 'Система работает нормально',
+      company: 'Компания',
+      legal: 'Правовая информация',
+    },
     retail: {
       nav: { dashboard: 'Дашборд', products: 'Товары', import: 'Импорт', settings: 'Настройки' },
       authRequired: 'Вход в Retail Cabinet',
@@ -603,6 +615,18 @@ export const dictionaries = {
       ],
       printAll: 'Барлығын басып шығару',
       qrCodes: 'QR-код',
+    },
+    footer: {
+      about: 'Біз туралы',
+      contacts: 'Байланыс',
+      policy: 'Құпиялылық саясаты',
+      description:
+        'Тауарды тексеруге арналған зерде платформасы. Құрамы, аллергендер, КБЖУ және халал мәртебесі — бір сканерлеуде.',
+      copyright: '© 2025 Körset. Барлық құқықтар қорғалған.',
+      madeInKz: 'Қазақстанда жасалған',
+      systemOk: 'Жүйе қалыпты жұмыс істейді',
+      company: 'Компания',
+      legal: 'Құқықтық ақпарат',
     },
     retail: {
       nav: {

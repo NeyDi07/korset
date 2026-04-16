@@ -1,4 +1,4 @@
-﻿-- WARNING: This schema is for context only and is not meant to be run.
+-- WARNING: This schema is for context only and is not meant to be run.
 -- Table order and constraints may not be valid for execution.
 
 CREATE TABLE public.external_product_cache (
@@ -179,11 +179,14 @@ CREATE TABLE public.stores (
   name text NOT NULL,
   city text NOT NULL DEFAULT 'Усть-Каменогорск'::text,
   address text,
+  description text,
   phone text,
   email text,
   type text DEFAULT 'supermarket'::text CHECK (type = ANY (ARRAY['supermarket'::text, 'minimarket'::text, 'halal'::text, 'specialty'::text, 'other'::text])),
   plan text NOT NULL DEFAULT 'pilot'::text CHECK (plan = ANY (ARRAY['pilot'::text, 'basic'::text, 'pro'::text, 'enterprise'::text])),
   plan_expires_at timestamp with time zone,
+  notify_oos_enabled boolean NOT NULL DEFAULT true,
+  notify_daily_enabled boolean NOT NULL DEFAULT false,
   is_active boolean NOT NULL DEFAULT true,
   created_at timestamp with time zone NOT NULL DEFAULT now(),
   updated_at timestamp with time zone NOT NULL DEFAULT now(),

@@ -1,23 +1,69 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useI18n } from '../utils/i18n.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 import QRCode from 'react-qr-code'
 
 export default function RetailSettingsScreen() {
   const { lang } = useI18n()
-  const { currentStore } = useStore()
+  const { currentStore, updateStoreSettings } = useStore()
   const isKz = lang === 'kz'
 
   const [settings, setSettings] = useState({
-    name: 'Магазин "Продукты у дома"',
-    address: 'ул. Абая 15, Алматы',
-    notifyMissing: true,
-    notifyDaily: false,
+    name: currentStore?.name || '',
+    address: currentStore?.address || '',
+    notifyMissing: currentStore?.notify_oos_enabled ?? true,
+    notifyDaily: currentStore?.notify_daily_enabled ?? false,
   })
   const [showQR, setShowQR] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
+  const [saveStatus, setSaveStatus] = useState(null) // 'ok' | 'error'
+  // Track which toggle is currently saving ('missing' | 'daily' | null)
+  const [savingToggle, setSavingToggle] = useState(null)
   const qrRef = useRef(null)
 
-  const handleChange = (key, val) => setSettings((p) => ({ ...p, [key]: val }))
+  // Sync ALL fields (including toggles) when store data arrives from Supabase
+  useEffect(() => {
+    if (currentStore) {
+      setSettings((prev) => ({
+        ...prev,
+        name: currentStore.name || prev.name,
+        address: currentStore.address || prev.address,
+        notifyMissing: currentStore.notify_oos_enabled ?? prev.notifyMissing,
+        notifyDaily: currentStore.notify_daily_enabled ?? prev.notifyDaily,
+      }))
+    }
+  }, [currentStore?.id])
+
+  const handleChange = (key, val) => {
+    setSettings((p) => ({ ...p, [key]: val }))
+    setSaveStatus(null)
+  }
+
+  // Auto-save toggle to Supabase immediately on click
+  const handleToggle = async (key, dbField) => {
+    const newVal = !settings[key]
+    // Optimistic update — feels instant
+    setSettings((p) => ({ ...p, [key]: newVal }))
+    setSavingToggle(key)
+    const { error } = await updateStoreSettings({ [dbField]: newVal })
+    setSavingToggle(null)
+    if (error) {
+      // Revert on failure
+      setSettings((p) => ({ ...p, [key]: !newVal }))
+    }
+  }
+
+  const handleSave = async () => {
+    setIsSaving(true)
+    setSaveStatus(null)
+    const { error } = await updateStoreSettings({
+      name: settings.name,
+      address: settings.address,
+    })
+    setIsSaving(false)
+    setSaveStatus(error ? 'error' : 'ok')
+    setTimeout(() => setSaveStatus(null), 3000)
+  }
 
   // Generate store invite URL for QR code
   const storeInviteUrl = currentStore?.code
@@ -146,6 +192,84 @@ export default function RetailSettingsScreen() {
             />
           </div>
         </div>
+
+        {/* Save Button */}
+        <button
+          onClick={handleSave}
+          disabled={isSaving}
+          style={{
+            marginTop: 12,
+            width: '100%',
+            padding: '13px 16px',
+            borderRadius: 12,
+            background: isSaving ? 'rgba(124,58,237,0.3)' : 'rgba(124,58,237,0.85)',
+            border: 'none',
+            color: '#fff',
+            fontSize: 15,
+            fontWeight: 700,
+            cursor: isSaving ? 'default' : 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 8,
+            transition: 'background 0.2s',
+          }}
+        >
+          {isSaving ? (
+            <>
+              <span
+                className="material-symbols-outlined"
+                style={{ fontSize: 18, animation: 'spin 1s linear infinite' }}
+              >
+                progress_activity
+              </span>
+              {isKz ? 'Сақталуда...' : 'Сохраняем...'}
+            </>
+          ) : (
+            <>
+              <span className="material-symbols-outlined" style={{ fontSize: 18 }}>
+                save
+              </span>
+              {isKz ? 'Сақтау' : 'Сохранить настройки'}
+            </>
+          )}
+        </button>
+
+        {/* Save status feedback */}
+        {saveStatus === 'ok' && (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              color: '#4ADE80',
+              fontSize: 13,
+              marginTop: 8,
+            }}
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: 16 }}>
+              check_circle
+            </span>
+            {isKz ? 'Сәтті сақталды' : 'Сохранено успешно'}
+          </div>
+        )}
+        {saveStatus === 'error' && (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              color: '#F87171',
+              fontSize: 13,
+              marginTop: 8,
+            }}
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: 16 }}>
+              error
+            </span>
+            {isKz ? 'Қате орын алды' : 'Ошибка сохранения. Попробуйте ещё раз.'}
+          </div>
+        )}
       </div>
 
       {/* QR Code for Store Invite */}
@@ -403,16 +527,17 @@ export default function RetailSettingsScreen() {
               </div>
             </div>
             <div
-              onClick={() => handleChange('notifyMissing', !settings.notifyMissing)}
+              onClick={() => handleToggle('notifyMissing', 'notify_oos_enabled')}
               style={{
                 width: 50,
                 height: 28,
                 borderRadius: 14,
-                cursor: 'pointer',
+                cursor: savingToggle === 'notifyMissing' ? 'default' : 'pointer',
                 flexShrink: 0,
+                opacity: savingToggle === 'notifyMissing' ? 0.6 : 1,
                 background: settings.notifyMissing ? '#38BDF8' : 'rgba(255,255,255,0.1)',
                 position: 'relative',
-                transition: 'background 0.3s',
+                transition: 'background 0.3s, opacity 0.2s',
               }}
             >
               <div
@@ -450,16 +575,17 @@ export default function RetailSettingsScreen() {
               </div>
             </div>
             <div
-              onClick={() => handleChange('notifyDaily', !settings.notifyDaily)}
+              onClick={() => handleToggle('notifyDaily', 'notify_daily_enabled')}
               style={{
                 width: 50,
                 height: 28,
                 borderRadius: 14,
-                cursor: 'pointer',
+                cursor: savingToggle === 'notifyDaily' ? 'default' : 'pointer',
                 flexShrink: 0,
+                opacity: savingToggle === 'notifyDaily' ? 0.6 : 1,
                 background: settings.notifyDaily ? '#38BDF8' : 'rgba(255,255,255,0.1)',
                 position: 'relative',
-                transition: 'background 0.3s',
+                transition: 'background 0.3s, opacity 0.2s',
               }}
             >
               <div

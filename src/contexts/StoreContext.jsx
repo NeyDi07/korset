@@ -143,6 +143,18 @@ export function StoreProvider({ children }) {
   const isPublicMarketing =
     location.pathname === '/' || location.pathname === '/stores' || isStorePublic
 
+  // Phase 3: Update store settings in Supabase + refresh local state
+  const updateStoreSettings = async (payload) => {
+    if (!currentStore?.id) return { error: 'No store loaded' }
+    const { error } = await supabase.from('stores').update(payload).eq('id', currentStore.id)
+    if (error) return { error: error.message }
+    // Refresh local state and cache
+    const updated = { ...currentStore, ...payload }
+    setCurrentStore(updated)
+    saveStoreToCache(updated.slug || updated.code, updated)
+    return { error: null }
+  }
+
   const value = useMemo(
     () => ({
       storeSlug: currentStore?.slug || null,
@@ -152,6 +164,7 @@ export function StoreProvider({ children }) {
       isStoreApp,
       isStorePublic,
       isPublicMarketing,
+      updateStoreSettings,
       rememberStore: (slug) => {
         setRememberedStoreSlug(slug)
         if (rememberStoreEnabled) localStorage.setItem(STORE_KEY, slug)
@@ -188,6 +201,7 @@ export function StoreProvider({ children }) {
       isStorePublic,
       isPublicMarketing,
       rememberStoreEnabled,
+      updateStoreSettings,
     ]
   )
 

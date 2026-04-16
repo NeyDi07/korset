@@ -2,14 +2,13 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useI18n } from '../utils/i18n.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { useAuth } from '../contexts/AuthContext.jsx'
-import { getStores } from '../data/stores.js'
 import { buildAuthNavigateState } from '../utils/authFlow.js'
 
 export default function HomeScreen() {
   const navigate = useNavigate()
   const location = useLocation()
   const { t, lang } = useI18n()
-  const { currentStore, isStoreApp, rememberStore, routes } = useStore()
+  const { currentStore, isStoreApp, routes } = useStore()
   const { user } = useAuth()
 
   if (isStoreApp && currentStore && routes) {
@@ -434,9 +433,6 @@ export default function HomeScreen() {
     )
   }
 
-  const stores = getStores()
-  const continueStore = currentStore && !isStoreApp ? currentStore : null
-
   return (
     <>
       <style>{`
@@ -452,13 +448,21 @@ export default function HomeScreen() {
           --surface-variant: #353439;
           --on-surface-variant: #ccc3d8;
           --error: #ffb4ab;
-          
+
+          position: fixed;
+          inset: 0;
+          z-index: 200;
+          overflow-y: auto;
+          overflow-x: hidden;
           font-family: 'Manrope', sans-serif;
           background-color: var(--bg);
           color: #e4e1e7;
-          min-height: 100vh;
-          overflow-x: hidden;
+          scrollbar-width: thin;
+          scrollbar-color: rgba(124,58,237,0.3) transparent;
         }
+        .landing-page::-webkit-scrollbar { width: 6px; }
+        .landing-page::-webkit-scrollbar-track { background: transparent; }
+        .landing-page::-webkit-scrollbar-thumb { background: rgba(124,58,237,0.3); border-radius: 3px; }
         
         .font-headline { font-family: 'Advent Pro', sans-serif; }
         .font-label { font-family: 'Manrope', sans-serif; }
@@ -473,21 +477,51 @@ export default function HomeScreen() {
         }
         
         .top-nav {
-          position: fixed;
-          top: 0; left: 0; right: 0;
+          position: sticky;
+          top: 0;
           z-index: 50;
-          background: rgba(19, 19, 23, 0.4);
+          background: rgba(19, 19, 23, 0.5);
           backdrop-filter: blur(24px);
           -webkit-backdrop-filter: blur(24px);
+          border-bottom: 1px solid rgba(255,255,255,0.04);
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 16px 24px;
+          padding: 14px 24px;
+        }
+        .top-nav__logo {
+          height: 30px;
+          object-fit: contain;
+          filter: brightness(1.1);
+        }
+        .top-nav__icon {
+          height: 28px;
+          width: 28px;
+          object-fit: contain;
+        }
+        .top-nav__btn {
+          width: 38px;
+          height: 38px;
+          border-radius: 10px;
+          background: rgba(53, 52, 57, 0.35);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border: 1px solid rgba(255,255,255,0.06);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          color: rgba(210,187,255,0.7);
+          transition: background 0.2s, color 0.2s;
+        }
+        .top-nav__btn:hover {
+          background: rgba(53,52,57,0.55);
+          color: #d2bbff;
         }
 
         .hero-section {
           position: relative;
-          padding: 120px 24px 60px;
+          padding: 48px 24px 60px;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -673,66 +707,172 @@ export default function HomeScreen() {
         }
         .col-8 { grid-column: span 8; }
         .col-4 { grid-column: span 4; }
+
+        @keyframes footerPulse {
+          0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34,197,94,0.4); }
+          50% { opacity: 0.8; box-shadow: 0 0 0 6px rgba(34,197,94,0); }
+        }
+
+        .landing-footer {
+          position: relative;
+          padding: 64px 24px 24px;
+          background: rgba(8, 8, 16, 0.85);
+          backdrop-filter: blur(40px);
+          -webkit-backdrop-filter: blur(40px);
+          border-top: 1px solid rgba(124, 58, 237, 0.12);
+          overflow: hidden;
+        }
+        @media (max-width: 700px) {
+          .landing-footer { padding: 48px 20px 20px; }
+        }
+        .landing-footer__glow {
+          position: absolute;
+          top: -120px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 700px;
+          height: 300px;
+          background: radial-gradient(ellipse, rgba(124, 58, 237, 0.07) 0%, rgba(56, 189, 248, 0.03) 40%, transparent 70%);
+          pointer-events: none;
+        }
+        .landing-footer__inner {
+          position: relative;
+          z-index: 1;
+          max-width: 1100px;
+          margin: 0 auto 40px;
+          display: grid;
+          grid-template-columns: 1.6fr 1fr;
+          gap: 48px;
+        }
+        @media (max-width: 700px) {
+          .landing-footer__inner {
+            grid-template-columns: 1fr;
+            gap: 32px;
+            margin-bottom: 32px;
+          }
+        }
+        .landing-footer__logo {
+          width: 100%;
+          max-width: 180px;
+          height: auto;
+          object-fit: contain;
+          margin-bottom: 20px;
+          opacity: 0.85;
+        }
+        .landing-footer__desc {
+          font-size: 14px;
+          line-height: 1.7;
+          color: rgba(255, 255, 255, 0.45);
+          max-width: 420px;
+          margin: 0 0 20px;
+        }
+        .landing-footer__status {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        .landing-footer__status-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: #22c55e;
+          animation: footerPulse 2s infinite;
+        }
+        .landing-footer__status span {
+          font-size: 12px;
+          color: rgba(255, 255, 255, 0.35);
+          font-weight: 500;
+        }
+        .landing-footer__nav {
+          display: flex;
+          gap: 48px;
+          flex-wrap: wrap;
+        }
+        @media (max-width: 700px) {
+          .landing-footer__nav { gap: 24px 40px; }
+        }
+        .landing-footer__nav-group {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+        .landing-footer__nav-title {
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: rgba(255, 255, 255, 0.3);
+          margin: 0 0 4px;
+          font-family: 'Manrope', sans-serif;
+        }
+        .landing-footer__link {
+          background: none;
+          border: none;
+          padding: 0;
+          color: rgba(255, 255, 255, 0.6);
+          font-size: 14px;
+          cursor: pointer;
+          text-align: left;
+          transition: color 0.2s;
+          font-family: 'Manrope', sans-serif;
+        }
+        .landing-footer__link:hover { color: #A78BFA; }
+        .landing-footer__bottom {
+          position: relative;
+          z-index: 1;
+          max-width: 1100px;
+          margin: 0 auto;
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: space-between;
+          align-items: center;
+          padding-top: 24px;
+          border-top: 1px solid rgba(255, 255, 255, 0.04);
+          gap: 16px;
+        }
+        .landing-footer__copyright {
+          font-size: 13px;
+          color: rgba(255, 255, 255, 0.25);
+        }
+        .landing-footer__kz-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 6px 14px;
+          background: rgba(124, 58, 237, 0.08);
+          border: 1px solid rgba(124, 58, 237, 0.15);
+          border-radius: 99px;
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.05em;
+          text-transform: uppercase;
+          color: rgba(167, 139, 250, 0.7);
+        }
       `}</style>
 
       <div className="landing-page">
-        {/* Top Header */}
+        {/* Top Header — Dark Premium */}
         <header className="top-nav">
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <img src="/logo.png" alt="Körset" style={{ height: 36, objectFit: 'contain' }} />
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <button
-              onClick={() => navigate('/retail')}
-              style={{
-                width: 44,
-                height: 44,
-                borderRadius: '50%',
-                background: 'rgba(53, 52, 57, 0.4)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                border: 'none',
-                cursor: 'pointer',
-                color: '#d2bbff',
-              }}
-            >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <button className="top-nav__btn" onClick={() => navigate('/retail')}>
               <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
                 storefront
               </span>
             </button>
             <button
+              className="top-nav__btn"
               onClick={() =>
                 navigate(user ? '/retail' : '/auth', {
                   state: user ? undefined : buildAuthNavigateState(location),
                 })
               }
-              style={{
-                width: 44,
-                height: 44,
-                borderRadius: '50%',
-                background: 'rgba(53, 52, 57, 0.4)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                border: 'none',
-                cursor: 'pointer',
-                color: '#d2bbff',
-              }}
             >
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-              </svg>
+              <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
+                person
+              </span>
             </button>
           </div>
+          <img src="/korset_logo.svg" alt="Körset" className="top-nav__logo" />
         </header>
 
         {/* Hero */}
@@ -1365,320 +1505,61 @@ export default function HomeScreen() {
           </div>
         </section>
 
-        {/* Footer */}
-        <footer
-          style={{
-            padding: '60px 24px 30px',
-            background: 'linear-gradient(180deg, #0a0a0f 0%, #050508 100%)',
-            borderTop: '1px solid rgba(124,58,237,0.15)',
-          }}
-        >
-          <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-            {/* Main Footer Content */}
-            <div
-              style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                justifyContent: 'space-between',
-                gap: '48px 32px',
-                marginBottom: 48,
-              }}
-            >
-              {/* Brand Column */}
-              <div style={{ flex: '1 1 100%', minWidth: 280 }}>
-                <div style={{ marginBottom: 16, width: '100%', maxWidth: 600 }}>
-                  <img
-                    src="/logo.png"
-                    alt="Körset"
-                    style={{ width: '100%', height: 'auto', objectFit: 'contain', maxHeight: 70 }}
-                  />
-                </div>
-                <p
-                  style={{
-                    fontSize: 14,
-                    lineHeight: 1.6,
-                    color: 'rgba(255,255,255,0.5)',
-                    marginBottom: 16,
-                    maxWidth: 400,
-                  }}
-                >
-                  Умная платформа для проверки продуктов. Состав, аллергены, КБЖУ и халал-статус —
-                  всё в одном скане.
-                </p>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <div
-                    style={{
-                      width: 8,
-                      height: 8,
-                      borderRadius: '50%',
-                      background: '#22c55e',
-                      animation: 'pulse 2s infinite',
-                    }}
-                  />
-                  <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', fontWeight: 500 }}>
-                    Система работает нормально
-                  </span>
-                </div>
-              </div>
+        {/* Footer — Glassmorphism Dark Premium */}
+        <footer className="landing-footer">
+          <div className="landing-footer__glow" />
 
-              {/* Links Row */}
-              <div
-                style={{ display: 'flex', flexWrap: 'wrap', gap: '32px 64px', flex: '2 1 600px' }}
-              >
-                {/* Product Column */}
-                <div style={{ flex: '1 1 140px', minWidth: 140 }}>
-                  <h4
-                    style={{
-                      fontSize: 12,
-                      fontWeight: 700,
-                      letterSpacing: '0.1em',
-                      textTransform: 'uppercase',
-                      color: 'rgba(255,255,255,0.4)',
-                      marginBottom: 16,
-                    }}
-                  >
-                    Продукт
-                  </h4>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                    <button
-                      onClick={() => navigate('/catalog')}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        padding: 0,
-                        color: 'rgba(255,255,255,0.7)',
-                        fontSize: 14,
-                        cursor: 'pointer',
-                        textAlign: 'left',
-                        transition: 'color 0.2s',
-                      }}
-                      onMouseEnter={(e) => (e.target.style.color = '#a78bfa')}
-                      onMouseLeave={(e) => (e.target.style.color = 'rgba(255,255,255,0.7)')}
-                    >
-                      Каталог
-                    </button>
-                    <button
-                      onClick={() => navigate('/scan')}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        padding: 0,
-                        color: 'rgba(255,255,255,0.7)',
-                        fontSize: 14,
-                        cursor: 'pointer',
-                        textAlign: 'left',
-                      }}
-                      onMouseEnter={(e) => (e.target.style.color = '#a78bfa')}
-                      onMouseLeave={(e) => (e.target.style.color = 'rgba(255,255,255,0.7)')}
-                    >
-                      Сканер
-                    </button>
-                    <button
-                      onClick={() => navigate('/ai')}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        padding: 0,
-                        color: 'rgba(255,255,255,0.7)',
-                        fontSize: 14,
-                        cursor: 'pointer',
-                        textAlign: 'left',
-                      }}
-                      onMouseEnter={(e) => (e.target.style.color = '#a78bfa')}
-                      onMouseLeave={(e) => (e.target.style.color = 'rgba(255,255,255,0.7)')}
-                    >
-                      AI Анализ
-                    </button>
-                  </div>
-                </div>
-
-                {/* Company Column */}
-                <div>
-                  <h4
-                    style={{
-                      fontSize: 12,
-                      fontWeight: 700,
-                      letterSpacing: '0.1em',
-                      textTransform: 'uppercase',
-                      color: 'rgba(255,255,255,0.4)',
-                      marginBottom: 16,
-                    }}
-                  >
-                    Компания
-                  </h4>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                    <button
-                      onClick={() => navigate('/about')}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        padding: 0,
-                        color: 'rgba(255,255,255,0.7)',
-                        fontSize: 14,
-                        cursor: 'pointer',
-                        textAlign: 'left',
-                      }}
-                      onMouseEnter={(e) => (e.target.style.color = '#a78bfa')}
-                      onMouseLeave={(e) => (e.target.style.color = 'rgba(255,255,255,0.7)')}
-                    >
-                      О нас
-                    </button>
-                    <button
-                      onClick={() => navigate('/contacts')}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        padding: 0,
-                        color: 'rgba(255,255,255,0.7)',
-                        fontSize: 14,
-                        cursor: 'pointer',
-                        textAlign: 'left',
-                      }}
-                      onMouseEnter={(e) => (e.target.style.color = '#a78bfa')}
-                      onMouseLeave={(e) => (e.target.style.color = 'rgba(255,255,255,0.7)')}
-                    >
-                      Контакты
-                    </button>
-                    <button
-                      onClick={() => navigate('/business')}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        padding: 0,
-                        color: 'rgba(255,255,255,0.7)',
-                        fontSize: 14,
-                        cursor: 'pointer',
-                        textAlign: 'left',
-                      }}
-                      onMouseEnter={(e) => (e.target.style.color = '#a78bfa')}
-                      onMouseLeave={(e) => (e.target.style.color = 'rgba(255,255,255,0.7)')}
-                    >
-                      Для бизнеса
-                    </button>
-                  </div>
-                </div>
-
-                {/* Support & Legal Column */}
-                <div>
-                  <h4
-                    style={{
-                      fontSize: 12,
-                      fontWeight: 700,
-                      letterSpacing: '0.1em',
-                      textTransform: 'uppercase',
-                      color: 'rgba(255,255,255,0.4)',
-                      marginBottom: 16,
-                    }}
-                  >
-                    Поддержка
-                  </h4>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                    <button
-                      onClick={() => navigate('/profile/help')}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        padding: 0,
-                        color: 'rgba(255,255,255,0.7)',
-                        fontSize: 14,
-                        cursor: 'pointer',
-                        textAlign: 'left',
-                      }}
-                      onMouseEnter={(e) => (e.target.style.color = '#a78bfa')}
-                      onMouseLeave={(e) => (e.target.style.color = 'rgba(255,255,255,0.7)')}
-                    >
-                      Справка
-                    </button>
-                    <button
-                      onClick={() => navigate('/profile/privacy')}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        padding: 0,
-                        color: 'rgba(255,255,255,0.7)',
-                        fontSize: 14,
-                        cursor: 'pointer',
-                        textAlign: 'left',
-                      }}
-                      onMouseEnter={(e) => (e.target.style.color = '#a78bfa')}
-                      onMouseLeave={(e) => (e.target.style.color = 'rgba(255,255,255,0.7)')}
-                    >
-                      Приватность
-                    </button>
-                  </div>
-                </div>
+          <div className="landing-footer__inner">
+            {/* Brand Column */}
+            <div>
+              <img src="/korset_logo.svg" alt="Körset" className="landing-footer__logo" />
+              <p className="landing-footer__desc">{t.footer.description}</p>
+              <div className="landing-footer__status">
+                <div className="landing-footer__status-dot" />
+                <span>{t.footer.systemOk}</span>
               </div>
             </div>
 
-            {/* Bottom Bar */}
-            <div
-              style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                paddingTop: 24,
-                borderTop: '1px solid rgba(255,255,255,0.05)',
-                gap: 16,
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)' }}>
-                  © 2024 Körset. Все права защищены.
-                </span>
+            {/* Nav Columns */}
+            <div className="landing-footer__nav">
+              <div className="landing-footer__nav-group">
+                <h4 className="landing-footer__nav-title">{t.footer.company}</h4>
+                <button className="landing-footer__link" onClick={() => navigate('/stores')}>
+                  {t.footer.about}
+                </button>
+                <button className="landing-footer__link" onClick={() => navigate('/stores')}>
+                  {t.footer.contacts}
+                </button>
+                <button className="landing-footer__link" onClick={() => navigate('/retail')}>
+                  {lang === 'kz' ? 'Бизнеске' : 'Для бизнеса'}
+                </button>
               </div>
 
-              <div
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 8,
-                  padding: '6px 14px',
-                  background: 'rgba(124,58,237,0.1)',
-                  border: '1px solid rgba(124,58,237,0.2)',
-                  borderRadius: 99,
-                }}
-              >
-                <span style={{ fontSize: 14 }}>🇰🇿</span>
-                <span
-                  style={{
-                    fontSize: 11,
-                    fontWeight: 700,
-                    letterSpacing: '0.05em',
-                    textTransform: 'uppercase',
-                    color: 'rgba(167,139,250,0.8)',
-                  }}
+              <div className="landing-footer__nav-group">
+                <h4 className="landing-footer__nav-title">{t.footer.legal}</h4>
+                <button
+                  className="landing-footer__link"
+                  onClick={() => navigate('/privacy-policy')}
                 >
-                  Made in Kazakhstan
-                </span>
+                  {t.footer.policy}
+                </button>
+                <button className="landing-footer__link" onClick={() => navigate('/stores')}>
+                  {lang === 'kz' ? 'Қосымша туралы' : 'О приложении'}
+                </button>
               </div>
+            </div>
+          </div>
+
+          {/* Bottom Bar */}
+          <div className="landing-footer__bottom">
+            <span className="landing-footer__copyright">{t.footer.copyright}</span>
+            <div className="landing-footer__kz-badge">
+              <span style={{ fontSize: 14 }}>🇰🇿</span>
+              {t.footer.madeInKz}
             </div>
           </div>
         </footer>
       </div>
     </>
-  )
-}
-
-function QuickCard({ title, sub, color, border, onClick }) {
-  return (
-    <button
-      onClick={onClick}
-      style={{
-        padding: '16px',
-        borderRadius: 18,
-        cursor: 'pointer',
-        background: color,
-        border: `1px solid ${border}`,
-        textAlign: 'left',
-      }}
-    >
-      <div
-        style={{ fontSize: 14, fontWeight: 700, color: '#fff', fontFamily: 'var(--font-display)' }}
-      >
-        {title}
-      </div>
-      <div style={{ fontSize: 11, color: 'rgba(167,139,250,0.6)', marginTop: 4 }}>{sub}</div>
-    </button>
   )
 }
