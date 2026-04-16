@@ -14,7 +14,6 @@ import {
   buildProductAIPath,
   buildProductAlternativesPath,
   buildProductPath,
-  buildScanPath,
 } from '../utils/routes.js'
 import { buildAuthNavigateState } from '../utils/authFlow.js'
 
@@ -656,9 +655,7 @@ export default function ProductScreen() {
         <button
           onClick={() => {
             sessionStorage.setItem('korset_compare_a', JSON.stringify(product))
-            navigate(buildScanPath(activeStoreSlug), {
-              state: { compareMode: true, eanA: product.ean, productA: product },
-            })
+            navigate(buildCatalogPath(activeStoreSlug))
           }}
           style={{
             width: '100%',
