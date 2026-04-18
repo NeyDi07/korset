@@ -63,9 +63,16 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 | Фокус | Статус |
 |-------|--------|
 | **Data Moat** (data_quality_score, TTL, каскад источников, КЗ-базы) | 🔬 ИССЛЕДОВАНО → `docs/vault/knowledge/kz-product-databases.md` |
+| **Импорт продуктов** (OFF JSONL + EAN-DB + Kaspi) | 🔄 Этапы 1-2 в процессе |
 | **Импорт прайс-листа** (RetailImportScreen пустой — P0 блокер) | 🔜 |
 | **БД-фиксы** (UNIQUE, CASCADE, триггеры, GIN) | 🔜 |
 | **Метрики в тенге** | 🔜 |
+
+**Каталог баг FIX:** `StoreContext.jsx` + `storeCatalog.js` — jsonb поля (allergens_json и др.) приходят как строки из Supabase, нужен `parseJson()`. Без этого `u.filter is not a function`.
+
+**Продукты в БД:** ~1943. Из них: ~1485 из OFF JSONL (скрипт `import-off-jsonl.cjs`), ~458 предыдущие (OFF API + manual + EAN-DB).
+
+**OFF JSONL скрипт:** `scripts/import-off-jsonl.cjs` — полная валидация (nutriscore A-E, nova 1-4, halal yes/no/unknown, EAN digits only, URL http only, sanitize text 1000 chars). Построчная вставка (5 concurrent). 0 ошибок при 1500 импорте.
 
 Офлайн-режим: ✅ ГОТОВО (6 слоёв, 85/100)
 
