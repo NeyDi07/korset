@@ -2,6 +2,7 @@ import products from '../data/products.json'
 import { STORE_PRODUCT_MAP } from '../data/stores.js'
 import { getStoreInventory } from '../data/storeInventories.js'
 import { supabase } from './supabase.js'
+import { parseJson } from '../domain/product/model.js'
 
 function cloneProduct(product) {
   return product ? JSON.parse(JSON.stringify(product)) : null
@@ -138,17 +139,17 @@ export async function getStoreCatalogProductsFromDB(storeId) {
     group: sp.global_products?.group || null,
     image: sp.global_products?.image_url || sp.global_products?.images?.[0] || null,
     imageUrl: sp.global_products?.image_url || null,
-    images: sp.global_products?.images || [],
+    images: parseJson(sp.global_products?.images, []),
     description: sp.global_products?.description || null,
     ingredients: sp.global_products?.ingredients_raw || null,
     ingredientsKz: sp.global_products?.ingredients_kz || null,
-    allergens: sp.global_products?.allergens_json || [],
-    dietTags: sp.global_products?.diet_tags_json || [],
-    tags: sp.global_products?.tags_json || [],
-    additivesTags: sp.global_products?.additives_tags_json || [],
-    traces: sp.global_products?.traces_json || [],
-    categoriesTags: sp.global_products?.categories_tags_json || [],
-    nutritionPer100: sp.global_products?.nutriments_json || null,
+    allergens: parseJson(sp.global_products?.allergens_json, []),
+    dietTags: parseJson(sp.global_products?.diet_tags_json, []),
+    tags: parseJson(sp.global_products?.tags_json, []),
+    additivesTags: parseJson(sp.global_products?.additives_tags_json, []),
+    traces: parseJson(sp.global_products?.traces_json, []),
+    categoriesTags: parseJson(sp.global_products?.categories_tags_json, []),
+    nutritionPer100: parseJson(sp.global_products?.nutriments_json, null),
     alcohol100g: sp.global_products?.alcohol_100g ?? null,
     saturatedFat100g: sp.global_products?.saturated_fat_100g ?? null,
     novaGroup: sp.global_products?.nova_group ?? null,
@@ -157,7 +158,7 @@ export async function getStoreCatalogProductsFromDB(storeId) {
     manufacturer: sp.global_products?.manufacturer
       ? { name: sp.global_products.manufacturer, country: sp.global_products.country_of_origin }
       : null,
-    specs: sp.global_products?.specs_json || null,
+    specs: parseJson(sp.global_products?.specs_json, null),
     halalStatus: sp.global_products?.halal_status || 'unknown',
     nutriscore: sp.global_products?.nutriscore || null,
     qualityScore: sp.global_products?.data_quality_score ?? 0,

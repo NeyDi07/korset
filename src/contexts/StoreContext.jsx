@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { supabase } from '../utils/supabase.js'
+import { parseJson } from '../domain/product/model.js'
 import { loadPrivacySettings, PRIVACY_EVENT } from '../utils/privacySettings.js'
 import { getStoreBySlug } from '../data/stores.js'
 import { saveCatalogToIndexedDB } from '../utils/offlineDB.js'
@@ -175,22 +176,22 @@ export function StoreProvider({ children }) {
               description: gp.description,
               ingredients: gp.ingredients_raw,
               ingredientsKz: gp.ingredients_kz,
-              allergens: gp.allergens_json || [],
-              dietTags: gp.diet_tags_json || [],
-              tags: gp.tags_json || [],
-              additivesTags: gp.additives_tags_json || [],
-              traces: gp.traces_json || [],
-              categoriesTags: gp.categories_tags_json || [],
+              allergens: parseJson(gp.allergens_json, []),
+              dietTags: parseJson(gp.diet_tags_json, []),
+              tags: parseJson(gp.tags_json, []),
+              additivesTags: parseJson(gp.additives_tags_json, []),
+              traces: parseJson(gp.traces_json, []),
+              categoriesTags: parseJson(gp.categories_tags_json, []),
               halalStatus: gp.halal_status || 'unknown',
               nutriscore: gp.nutriscore,
-              nutritionPer100: gp.nutriments_json || {},
+              nutritionPer100: parseJson(gp.nutriments_json, {}),
               alcohol100g: gp.alcohol_100g ?? null,
               saturatedFat100g: gp.saturated_fat_100g ?? null,
               novaGroup: gp.nova_group ?? null,
               imageIngredientsUrl: gp.image_ingredients_url || null,
               imageNutritionUrl: gp.image_nutrition_url || null,
               image: gp.image_url,
-              images: gp.images || [],
+              images: parseJson(gp.images, []),
               manufacturer: gp.manufacturer
                 ? { name: gp.manufacturer, country: gp.country_of_origin }
                 : null,
