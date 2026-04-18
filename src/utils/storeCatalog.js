@@ -12,6 +12,7 @@ function getAllKnownEans(product) {
   const eans = [
     product?.ean,
     ...(Array.isArray(product?.alternateEans) ? product.alternateEans : []),
+    ...(Array.isArray(product?.alternate_eans) ? product.alternate_eans : []),
   ]
   return [...new Set(eans.filter(Boolean).map(String))]
 }
@@ -104,13 +105,13 @@ export async function getStoreCatalogProductsFromDB(storeId) {
       global_products (
         id, ean, name, name_kz, brand, category, subcategory,
         quantity, image_url, images, ingredients_raw, ingredients_kz,
-        description, allergens_json, diet_tags_json, halal_status,
-        additives_tags_json, traces_json, categories_tags_json, tags_json,
-        nutriments_json, alcohol_100g, saturated_fat_100g, nova_group,
-        image_ingredients_url, image_nutrition_url,
-        manufacturer, country_of_origin, specs_json,
-        nutriscore, data_quality_score, source_primary, source_confidence,
-        is_verified, needs_review, group
+         description, allergens_json, diet_tags_json, halal_status,
+         additives_tags_json, traces_json, categories_tags_json, tags_json,
+         nutriments_json, alcohol_100g, saturated_fat_100g, nova_group,
+         image_ingredients_url, image_nutrition_url,
+         manufacturer, country_of_origin, specs_json,
+         nutriscore, data_quality_score, source_primary, source_confidence,
+         is_verified, needs_review, group, alternate_eans
       )
     `
     )
@@ -168,5 +169,6 @@ export async function getStoreCatalogProductsFromDB(storeId) {
     needsReview: sp.global_products?.needs_review || false,
     isStoreProduct: true,
     canonicalId: sp.ean,
+    alternateEans: parseJson(sp.global_products?.alternate_eans, []),
   }))
 }
