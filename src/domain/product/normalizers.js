@@ -60,6 +60,7 @@ export function normalizeGlobalProduct(row, storeOverlay = null) {
     source: storeOverlay ? 'store' : 'global',
     id: row.id,
     ean: row.ean,
+    alternateEans: normalizeStringArray(parseJson(row.alternate_eans, [])),
     name: row.name,
     nameKz: row.name_kz || null,
     brand: row.brand,

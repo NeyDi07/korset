@@ -155,7 +155,7 @@ export function StoreProvider({ children }) {
     supabase
       .from('store_products')
       .select(
-        'ean, price_kzt, shelf_zone, stock_status, local_name, is_active, global_products!inner(ean, name, name_kz, brand, category, subcategory, quantity, description, ingredients_raw, ingredients_kz, allergens_json, diet_tags_json, tags_json, additives_tags_json, traces_json, categories_tags_json, halal_status, nutriscore, nutriments_json, alcohol_100g, saturated_fat_100g, nova_group, image_ingredients_url, image_nutrition_url, image_url, images, manufacturer, country_of_origin, specs_json, data_quality_score, source_primary, source_confidence, is_verified, needs_review, group)'
+        'ean, price_kzt, shelf_zone, stock_status, local_name, is_active, global_products!inner(ean, name, name_kz, brand, category, subcategory, quantity, description, ingredients_raw, ingredients_kz, allergens_json, diet_tags_json, tags_json, additives_tags_json, traces_json, categories_tags_json, halal_status, nutriscore, nutriments_json, alcohol_100g, saturated_fat_100g, nova_group, image_ingredients_url, image_nutrition_url, image_url, images, manufacturer, country_of_origin, specs_json, data_quality_score, source_primary, source_confidence, is_verified, needs_review, group, alternate_eans)'
       )
       .eq('store_id', currentStore.id)
       .eq('is_active', true)
@@ -207,6 +207,7 @@ export function StoreProvider({ children }) {
               storeProductId: row.id,
               globalProductId: gp.id,
               source: 'cache',
+              alternateEans: parseJson(gp.alternate_eans, []),
             }
           })
           saveCatalogToIndexedDB(products, currentStore.id).catch(() => {})

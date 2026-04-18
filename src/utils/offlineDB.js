@@ -86,6 +86,7 @@ export async function saveCatalogToIndexedDB(products, storeId) {
       globalProductId: product.globalProductId || product.global_product_id || null,
       storeProductId: product.storeProductId || product.store_product_id || null,
       source: product.source || 'cache',
+      alternateEans: product.alternateEans || product.alternate_eans || [],
     })
   }
   await tx.done

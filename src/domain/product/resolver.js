@@ -59,23 +59,46 @@ async function findStoreProduct(ean, storeId) {
     if (storeId) query = query.eq('store_id', storeId)
 
     const { data, error } = await query.maybeSingle()
-    if (error || !data?.global_product_id) return null
+    if (data?.global_product_id) {
+      const { data: globalRow, error: globalError } = await supabase
+        .from('global_products')
+        .select('*')
+        .eq('id', data.global_product_id)
+        .eq('is_active', true)
+        .maybeSingle()
 
-    const { data: globalRow, error: globalError } = await supabase
-      .from('global_products')
-      .select('*')
-      .eq('id', data.global_product_id)
+      if (globalRow) {
+        return normalizeGlobalProduct(globalRow, {
+          storeProductId: data.id,
+          priceKzt: data.price_kzt || null,
+          shelf: [data.shelf_zone, data.shelf_position].filter(Boolean).join(' / ') || null,
+          stockStatus: data.stock_status || null,
+        })
+      }
+    }
+
+    const { data: altStoreData } = await supabase
+      .from('store_products')
+      .select(
+        'id, ean, price_kzt, shelf_zone, shelf_position, stock_status, global_product_id, global_products!inner(*)'
+      )
+      .eq('store_id', storeId || '')
       .eq('is_active', true)
+      .contains('global_products.alternate_eans', [ean])
       .maybeSingle()
 
-    if (globalError || !globalRow) return null
+    if (altStoreData?.global_products) {
+      return normalizeGlobalProduct(altStoreData.global_products, {
+        storeProductId: altStoreData.id,
+        priceKzt: altStoreData.price_kzt || null,
+        shelf:
+          [altStoreData.shelf_zone, altStoreData.shelf_position].filter(Boolean).join(' / ') ||
+          null,
+        stockStatus: altStoreData.stock_status || null,
+      })
+    }
 
-    return normalizeGlobalProduct(globalRow, {
-      storeProductId: data.id,
-      priceKzt: data.price_kzt || null,
-      shelf: [data.shelf_zone, data.shelf_position].filter(Boolean).join(' / ') || null,
-      stockStatus: data.stock_status || null,
-    })
+    return null
   } catch {
     return null
   }
@@ -90,8 +113,17 @@ async function findGlobalProductByEan(ean) {
       .eq('is_active', true)
       .maybeSingle()
 
-    if (error || !data) return null
-    return normalizeGlobalProduct(data)
+    if (data) return normalizeGlobalProduct(data)
+
+    const { data: altData, error: altError } = await supabase
+      .from('global_products')
+      .select('*')
+      .contains('alternate_eans', [ean])
+      .eq('is_active', true)
+      .maybeSingle()
+
+    if (altError || !altData) return null
+    return normalizeGlobalProduct(altData)
   } catch {
     return null
   }

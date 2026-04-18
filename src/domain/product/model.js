@@ -31,6 +31,7 @@ export function createEmptyProduct(overrides = {}) {
     id,
     demoId,
     ean,
+    alternateEans: normalizeStringArray(overrides.alternateEans ?? overrides.alternate_eans),
     name: overrides.name || '',
     nameKz: overrides.nameKz || overrides.name_kz || null,
     brand: overrides.brand || null,
