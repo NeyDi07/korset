@@ -46,17 +46,27 @@ function httpsGet(urlStr) {
 }
 
 async function usdaSearch(query, pageSize = 5) {
-  const url = `https://api.nal.usda.gov/fdc/v1/foods/search?query=${encodeURIComponent(query)}&dataType=Branded&pageSize=${pageSize}&api_key=${USDA_API_KEY}`
+  const url = `https://korset.app/api/usda?query=${encodeURIComponent(query)}&pageSize=${pageSize}`
   const r = await httpsGet(url)
   if (r.status !== 200) return { error: `HTTP ${r.status}`, foods: [] }
-  return { totalHits: r.body.totalHits || 0, foods: r.body.foods || [] }
+  const body = typeof r.body === 'string' ? JSON.parse(r.body) : r.body
+  const foods = (body.foods || []).map(f => ({
+    ...f,
+    foodNutrients: f.nutrients?.map(n => ({ nutrientName: n.name, value: n.value, unitName: n.unit })) || []
+  }))
+  return { totalHits: body.totalHits || 0, foods }
 }
 
 async function usdaSearchByUPC(upc) {
-  const url = `https://api.nal.usda.gov/fdc/v1/foods/search?query=${encodeURIComponent(upc)}&dataType=Branded&pageSize=1&api_key=${USDA_API_KEY}`
+  const url = `https://korset.app/api/usda?upc=${encodeURIComponent(upc)}&pageSize=1`
   const r = await httpsGet(url)
   if (r.status !== 200) return { error: `HTTP ${r.status}`, foods: [] }
-  return { totalHits: r.body.totalHits || 0, foods: r.body.foods || [] }
+  const body = typeof r.body === 'string' ? JSON.parse(r.body) : r.body
+  const foods = (body.foods || []).map(f => ({
+    ...f,
+    foodNutrients: f.nutrients?.map(n => ({ nutrientName: n.name, value: n.value, unitName: n.unit })) || []
+  }))
+  return { totalHits: body.totalHits || 0, foods }
 }
 
 function extractNutrients(food) {
@@ -115,7 +125,6 @@ function parseArgs() {
 async function main() {
   const opts = parseArgs()
 
-  if (!USDA_API_KEY) { console.error('USDA_API_KEY not set in .env.local'); process.exit(1) }
   if (!SUPABASE_URL || !SUPABASE_KEY) { console.error('SUPABASE_URL/SERVICE_ROLE_KEY not set'); process.exit(1) }
 
   if (!fs.existsSync(OUT_DIR)) fs.mkdirSync(OUT_DIR, { recursive: true })
@@ -230,7 +239,7 @@ async function main() {
         }
         if (bestFood.brandName) updates.manufacturer = bestFood.brandName
         if (Object.keys(updates).length > 1) {
-          updates.source_primary = 'kz_verified'
+          updates.source_primary = 'usda'
           const { error: updErr } = await sb.from('global_products').update(updates).eq('id', p.id)
           if (updErr) console.log(`    ⚠ DB update error: ${updErr.message}`)
           else console.log(`    → DB updated`)

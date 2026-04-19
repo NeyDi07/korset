@@ -6,7 +6,10 @@ const { URL } = require('url')
 require('dotenv').config({ path: path.join(__dirname, '..', '.env.local') })
 
 const { createClient } = require('@supabase/supabase-js')
-const { downloadAndUpload, inferSource } = require('./utils/r2-upload')
+const { downloadAndUpload, inferSource } = require('./utils/r2-upload.cjs')
+
+const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL
+const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
 
 const ARBUZ_CONSUMER_NAME = 'arbuz-kz.web.mobile'
 const ARBUZ_CONSUMER_KEY = '20I2OMoyCQ9BGQH7TimHCbErGuEjhLfj'
@@ -164,12 +167,28 @@ async function getArbuzProductDetail(productId) {
 
 function parseArgs() {
   const args = process.argv.slice(2)
-  const result = { dryRun: false, limit: 0 }
+  const result = { dryRun: false, limit: 0, fixNames: false }
   for (const arg of args) {
     if (arg === '--dry-run') result.dryRun = true
+    else if (arg === '--fix-names') result.fixNames = true
     else if (arg.startsWith('--limit=')) result.limit = parseInt(arg.split('=')[1], 10)
   }
   return result
+}
+
+function calcQualityScore(p, updates) {
+  let score = 0
+  const name = updates.name || p.name
+  const ingredients = updates.ingredients_raw || p.ingredients_raw
+  const nutrition = updates.nutriments_json || p.nutriments_json
+  const image = updates.image_url || p.image_url
+  if (name) score += 20
+  if (ingredients) score += 25
+  if (nutrition && Object.keys(nutrition).length > 0) score += 20
+  if (image) score += 15
+  if (updates.halal_status === 'yes' || p.halal_status === 'yes') score += 10
+  if (p.brand) score += 10
+  return Math.min(score, 100)
 }
 
 async function main() {
@@ -189,20 +208,29 @@ async function main() {
 
   const sb = createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: false } })
 
-  const { data: products, error } = await sb
+  let query = sb
     .from('global_products')
-    .select('id, ean, name, brand, ingredients_raw, halal_status, country_of_origin, specs_json, image_url')
+    .select('id, ean, name, brand, ingredients_raw, halal_status, country_of_origin, specs_json, image_url, nutriments_json')
     .eq('is_active', true)
-    .or('ingredients_raw.is.null,ingredients_raw.eq.,halal_status.is.null')
-    .order('id')
+
+  if (!opts.fixNames) {
+    query = query.or('ingredients_raw.is.null,ingredients_raw.eq.,halal_status.is.null')
+  }
+
+  const { data: products, error } = await query.order('id')
 
   if (error) { console.error('DB error:', error); process.exit(1) }
 
-  const needsComposition = products.filter(p => !p.ingredients_raw || p.ingredients_raw.trim() === '')
+  let needsComposition
+  if (opts.fixNames) {
+    needsComposition = products.filter(p => p.name && !/[а-яА-ЯёЁ]/.test(p.name))
+  } else {
+    needsComposition = products.filter(p => !p.ingredients_raw || p.ingredients_raw.trim() === '')
+  }
   console.log(`Total products: ${products.length}`)
   console.log(`Need composition: ${needsComposition.length}`)
 
-  const toProcess = opts.limit > 0 ? needsComposition.slice(0, opts.limit) : needsComposition.slice(0, 20)
+  const toProcess = opts.limit > 0 ? needsComposition.slice(0, opts.limit) : needsComposition
   console.log(`Will process: ${toProcess.length}`)
 
   if (toProcess.length === 0) { console.log('Nothing to do'); return }
@@ -216,7 +244,8 @@ async function main() {
     process.stdout.write(`${label}... `)
 
     const brandQuery = normalize((p.brand || '').trim()).substring(0, 40)
-    if (!brandQuery || brandQuery.length < 2) {
+    const searchQuery = brandQuery.length >= 2 ? brandQuery : normalize((p.name || '').trim()).substring(0, 40)
+    if (!searchQuery || searchQuery.length < 2) {
       console.log('skip (no brand)')
       noMatch++
       await sleep(DELAY_MS)
@@ -224,7 +253,7 @@ async function main() {
     }
 
     try {
-      const search = await searchArbuz(brandQuery, 20)
+      const search = await searchArbuz(searchQuery, 20)
       if (search.error) {
         console.log(`✗ search error: ${search.error}`)
         results.push({ id: p.id, error: search.error })
@@ -236,7 +265,7 @@ async function main() {
       if (searchProducts.length === 0) {
         console.log(`✗ not found`)
         noMatch++
-        results.push({ id: p.id, query: brandQuery, arbuzFound: 0 })
+        results.push({ id: p.id, query: searchQuery, arbuzFound: 0 })
         await sleep(DELAY_MS)
         continue
       }
@@ -248,7 +277,7 @@ async function main() {
       if (best._score < MIN_MATCH_SCORE) {
         console.log(`✗ low match (${best._score}): ${best.brandName || '?'} — ${(best.name || '').substring(0, 30)}`)
         noMatch++
-        results.push({ id: p.id, query: brandQuery, arbuzFound: searchProducts.length, bestScore: best._score, bestName: best.name })
+        results.push({ id: p.id, query: searchQuery, arbuzFound: searchProducts.length, bestScore: best._score, bestName: best.name })
         await sleep(DELAY_MS)
         continue
       }
@@ -259,7 +288,7 @@ async function main() {
       if (detail.error) {
         console.log(`✗ detail error: ${detail.error}`)
         noMatch++
-        results.push({ id: p.id, query: brandQuery, arbuzId: best.id, error: detail.error })
+        results.push({ id: p.id, query: searchQuery, arbuzId: best.id, error: detail.error })
         await sleep(DELAY_MS)
         continue
       }
@@ -294,7 +323,7 @@ async function main() {
         results.push({
         id: p.id,
         ean: p.ean,
-        query: brandQuery,
+        query: searchQuery,
         arbuzId: d?.id,
         arbuzArticleIndex: d?.articleIndex,
         arbuzBarcode: d?.barcode,
@@ -310,12 +339,14 @@ async function main() {
         characteristics: d?.characteristics || [],
       })
 
-      if (!opts.dryRun && composition) {
-        const updates = {
-          ingredients_raw: composition,
-          halal_status: halal ? 'yes' : (p.halal_status || 'unknown'),
-          updated_at: new Date().toISOString(),
-        }
+      if (!opts.dryRun) {
+        const updates = {}
+        if (d?.name) updates.name = d.name
+        if (d?.nameKz) updates.name_kz = d.nameKz
+        if (composition) updates.ingredients_raw = composition
+        updates.halal_status = halal ? 'yes' : (p.halal_status || 'unknown')
+        updates.source_primary = 'arbuz'
+        updates.updated_at = new Date().toISOString()
         if (nutrition) {
           updates.nutriments_json = nutrition
           updates.alcohol_100g = 0
@@ -331,6 +362,7 @@ async function main() {
           updates.image_url = arbuzImageUrl
           updates.image_source = 'arbuz'
         }
+        updates.data_quality_score = calcQualityScore(p, updates)
 
         const { error: updErr } = await sb.from('global_products').update(updates).eq('id', p.id)
         if (updErr) console.log(`    ⚠ DB update error: ${updErr.message}`)

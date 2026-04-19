@@ -88,11 +88,12 @@ function matchScore(item, productName, productBrand) {
 
 function parseArgs() {
   const args = process.argv.slice(2)
-  const result = { dryRun: false, limit: 0, resume: false }
+  const result = { dryRun: false, limit: 0, resume: false, fixNames: false }
   for (const arg of args) {
     if (arg === '--dry-run') result.dryRun = true
     else if (arg.startsWith('--limit=')) result.limit = parseInt(arg.split('=')[1], 10)
     else if (arg === '--resume') result.resume = true
+    else if (arg === '--fix-names') result.fixNames = true
   }
   return result
 }
@@ -109,22 +110,28 @@ async function main() {
 
   const { data: products, error } = await sb
     .from('global_products')
-    .select('id, ean, name, brand, country_of_origin')
+    .select('id, ean, name, name_kz, brand, country_of_origin, source_primary')
     .eq('is_active', true)
     .order('id')
 
   if (error) { console.error('DB error:', error); process.exit(1) }
   console.log(`Total products: ${products.length}`)
 
-  const needsEan = products.filter(p => {
-    if (!p.ean) return true
-    if (p.ean.startsWith('kaspi_')) return true
-    const bc = classifyBarcode(p.ean)
-    return !bc.valid
-  })
-
-  console.log(`Need EAN enrichment: ${needsEan.length}`)
-  const toProcess = opts.limit > 0 ? needsEan.slice(0, opts.limit) : needsEan
+  let toProcess
+  if (opts.fixNames) {
+    const needsName = products.filter(p => p.name && !/[а-яА-ЯёЁ]/.test(p.name))
+    console.log(`English-only names: ${needsName.length}`)
+    toProcess = opts.limit > 0 ? needsName.slice(0, opts.limit) : needsName
+  } else {
+    const needsEan = products.filter(p => {
+      if (!p.ean) return true
+      if (p.ean.startsWith('kaspi_')) return true
+      const bc = classifyBarcode(p.ean)
+      return !bc.valid
+    })
+    console.log(`Need EAN enrichment: ${needsEan.length}`)
+    toProcess = opts.limit > 0 ? needsEan.slice(0, opts.limit) : needsEan
+  }
   console.log(`Will process: ${toProcess.length}`)
 
   if (toProcess.length === 0) { console.log('Nothing to do'); return }
@@ -205,23 +212,36 @@ async function main() {
       }
       results.push(matchData)
 
-      if (!opts.dryRun && gtin && eanValid?.valid) {
-        const updates = {
-          ean: gtin,
-          name: item.nameRu || p.name,
-          name_kz: item.nameKk || null,
-          country_of_origin: attrs.country?.valueRu || attrs.producer_country?.valueRu || p.country_of_origin,
-          manufacturer: attrs.a4282e5d?.valueRu || attrs.a4282e5d?.value || p.manufacturer,
-          source_primary: 'kz_verified',
-          source_confidence: Math.min(best.score, 100),
-          is_verified: best.score >= 15,
-          updated_at: new Date().toISOString(),
-        }
-        if (ntin) updates.alternate_eans = [...(p.alternate_eans || []), ntin]
+      if (!opts.dryRun) {
+        const nameUpdates = { updated_at: new Date().toISOString() }
+        if (item.nameRu) nameUpdates.name = item.nameRu
+        if (item.nameKk) nameUpdates.name_kz = item.nameKk
+        if (attrs.country?.valueRu || attrs.producer_country?.valueRu) nameUpdates.country_of_origin = attrs.country?.valueRu || attrs.producer_country?.valueRu
+        if (attrs.a4282e5d?.valueRu || attrs.a4282e5d?.value) nameUpdates.manufacturer = attrs.a4282e5d?.valueRu || attrs.a4282e5d?.value
 
-        const { error: updErr } = await sb.from('global_products').update(updates).eq('id', p.id)
-        if (updErr) console.log(`    ⚠ DB update error: ${updErr.message}`)
-        else console.log(`    → DB updated`)
+        if (Object.keys(nameUpdates).length > 1) {
+          const { error: nameErr } = await sb.from('global_products').update(nameUpdates).eq('id', p.id)
+          if (nameErr) console.log(`    ⚠ Name update error: ${nameErr.message}`)
+          else console.log(`    → Name updated`)
+        }
+
+        if (gtin && eanValid?.valid) {
+          const eanUpdates = {
+            source_primary: 'npc',
+            source_confidence: Math.min(best.score, 100),
+            is_verified: best.score >= 15,
+          }
+          if (ntin) eanUpdates.alternate_eans = [...(p.alternate_eans || []), ntin]
+          const { data: existing } = await sb.from('global_products').select('id').eq('ean', gtin).limit(1)
+          if (existing && existing.length > 0 && existing[0].id !== p.id) {
+            eanUpdates.alternate_eans = [...(eanUpdates.alternate_eans || p.alternate_eans || []), gtin]
+          } else {
+            eanUpdates.ean = gtin
+          }
+          const { error: eanErr } = await sb.from('global_products').update(eanUpdates).eq('id', p.id)
+          if (eanErr) console.log(`    ⚠ EAN update error: ${eanErr.message}`)
+          else console.log(`    → EAN updated`)
+        }
       }
 
     } catch (e) {
