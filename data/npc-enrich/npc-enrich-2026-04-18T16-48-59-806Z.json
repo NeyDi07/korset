@@ -1,0 +1,185 @@
+{
+  "testedAt": "2026-04-18T16:48:59.809Z",
+  "stats": {
+    "processed": 5,
+    "matched": 5,
+    "gtinFound": 4,
+    "ntinFound": 5,
+    "noMatch": 0
+  },
+  "results": [
+    {
+      "id": "013edac0-66ee-49b6-8d0e-4ad949b6d319",
+      "oldEan": "kaspi_149883341",
+      "query": "Chokodelika Chokodelika Dubai Pistachio шоколадная плитка молочный 50 г",
+      "npcTotal": 3147083,
+      "matchScore": 44,
+      "npcId": 29406412,
+      "gtin": "4610093052389",
+      "ntin": "0200221131976",
+      "nameRu": "Chokodelika Шоколад Dubai Peanut молочный 180г",
+      "nameKk": "Chokodelika Шоколад Dubai Peanut сүтті 180г",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "RU",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "RU",
+          "valueRu": "РОССИЯ"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "Chokodelika",
+          "valueRu": "Chokodelika"
+        },
+        "article": {
+          "nameRu": "Модель / артикул",
+          "value": "180103",
+          "valueRu": "180103"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1806903100",
+          "valueRu": "Прочий шоколад и изделия из него, с начинкой"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "producer_country": {
+          "nameRu": "Страна производителя",
+          "value": "RU",
+          "valueRu": "РОССИЯ"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "ЗАО АДАОР ПЛЮС",
+          "valueRu": "ЗАО АДАОР ПЛЮС"
+        }
+      }
+    },
+    {
+      "id": "01401c84-f862-4c5c-8af5-f8726492e789",
+      "oldEan": "kaspi_101152554",
+      "query": "Bucheron Bucheron STAND'ART Bitter 72% какао шоколадная плитка горький 100 г",
+      "npcTotal": 3213589,
+      "matchScore": 32,
+      "npcId": 10809334,
+      "gtin": "4607141336287",
+      "ntin": "0200011779210",
+      "nameRu": "Bucheron stand'art bitter 72%bch tb 0.1kg b шоколад bucheron 10 0гр",
+      "nameKk": "Bucheron stand'art bitter 72%bch tb 0.1kg b шоколад bucheron 10 0гр",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "RU",
+      "attrs": {}
+    },
+    {
+      "id": "02177a20-bb01-4865-9145-8f6978b8dcd0",
+      "oldEan": "4820000000003",
+      "query": "Halal Meat KZ Сосиски куриные Halal",
+      "npcTotal": 53780,
+      "matchScore": 11,
+      "npcId": 18966638,
+      "gtin": "2449900",
+      "ntin": "0200120691632",
+      "nameRu": "СОСИСКИ СИБИЛЛА КУРИНЫЕ, ШТ",
+      "nameKk": "СОСИСКИ СИБИЛЛА КУРИНЫЕ, ШТ",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": false,
+      "gtinCountry": null,
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "KZ",
+          "valueRu": "КАЗАХСТАН"
+        }
+      }
+    },
+    {
+      "id": "02883e8a-913c-4cf5-a012-b2a3c359f980",
+      "oldEan": "kaspi_101146462",
+      "query": "Bucheron Bucheron Californian Almond + Cranberry + Strawberry шоколадная плитка ",
+      "npcTotal": 139324,
+      "matchScore": 27,
+      "npcId": 18711786,
+      "gtin": null,
+      "ntin": "0200090659755",
+      "nameRu": "Bucheron шоколадная плитка горький, фисташки 100 г",
+      "nameKk": "Bucheron шоколадная плитка горький, фисташки 100 г",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": false,
+      "gtinCountry": null,
+      "attrs": {}
+    },
+    {
+      "id": "029b347b-9a48-4049-bb5e-5888146fa2eb",
+      "oldEan": "kaspi_135858903",
+      "query": "Alma Chocolates Alma Chocolates Dzen с чаем матча шоколадная плитка белый 90 г",
+      "npcTotal": 3786699,
+      "matchScore": 53,
+      "npcId": 29392855,
+      "gtin": "0796554251820",
+      "ntin": "0200220999089",
+      "nameRu": "Alma Chocolates Шоколад Dzen белый  с чаем матча 90г",
+      "nameKk": "Alma Chocolates Dzen матча шайы бар ақ шоколад 90 г",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "US/CA",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "KZ",
+          "valueRu": "КАЗАХСТАН"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "Alma Chocolates",
+          "valueRu": "Alma Chocolates"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1806329000",
+          "valueRu": "Прочие готовые пищевые продукты, содержащие какао, но без начинки, находящиеся в форме брикетов, пластин или плиток"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "producer_country": {
+          "nameRu": "Страна производителя",
+          "value": "KZ",
+          "valueRu": "КАЗАХСТАН"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "ТОО Alma Chocolates",
+          "valueRu": "ТОО Alma Chocolates"
+        }
+      }
+    }
+  ]
+}

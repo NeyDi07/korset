@@ -1,0 +1,83 @@
+{
+  "testedAt": "2026-04-18T18:21:06.773Z",
+  "stats": {
+    "processed": 10,
+    "found": 0,
+    "compositionFound": 0,
+    "kbjuFound": 0,
+    "halalFound": 0,
+    "noMatch": 10
+  },
+  "results": [
+    {
+      "id": "013edac0-66ee-49b6-8d0e-4ad949b6d319",
+      "query": "Chokodelika Chokodelika Dubai Pistachio шоколадная плитка мо",
+      "arbuzFound": 10,
+      "bestScore": 4,
+      "bestName": "Пюре Агуша фруктовое яблоко, 90 г"
+    },
+    {
+      "id": "01401c84-f862-4c5c-8af5-f8726492e789",
+      "query": "Bucheron Bucheron STAND'ART Bitter 72% какао шоколадная плит",
+      "arbuzFound": 10,
+      "bestScore": 4,
+      "bestName": "Пюре Агуша фруктовое яблоко, 90 г"
+    },
+    {
+      "id": "02883e8a-913c-4cf5-a012-b2a3c359f980",
+      "query": "Bucheron Bucheron Californian Almond + Cranberry + Strawberr",
+      "arbuzFound": 10,
+      "bestScore": 4,
+      "bestName": "Пюре Агуша фруктовое яблоко, 90 г"
+    },
+    {
+      "id": "05d8ac20-dd37-4547-8975-7c21d9490947",
+      "query": "Chokocat Chokocat Не принцесса шоколадная плитка молочный 20",
+      "arbuzFound": 10,
+      "bestScore": 4,
+      "bestName": "Пюре Агуша фруктовое яблоко, 90 г"
+    },
+    {
+      "id": "05f7521c-e842-401e-a482-89428f6a9aad",
+      "query": "А4 А4 квадрат-шоколад с печенькой-начинкой шоколадная плитка",
+      "arbuzFound": 10,
+      "bestScore": 4,
+      "bestName": "Пюре Агуша фруктовое яблоко, 90 г"
+    },
+    {
+      "id": "062b6f0e-b8f7-47c1-8ae6-bdee56e0383e",
+      "query": "Prod.Art Prod.Art Роллентинка шоколадная плитка молочный 5 г",
+      "arbuzFound": 10,
+      "bestScore": 4,
+      "bestName": "Пюре Агуша фруктовое яблоко, 90 г"
+    },
+    {
+      "id": "088d8501-d2d5-4588-bfba-c992315936c3",
+      "query": "Bucheron Bucheron Bucheron Village шоколадная плитка горький",
+      "arbuzFound": 10,
+      "bestScore": 4,
+      "bestName": "Пюре Агуша фруктовое яблоко, 90 г"
+    },
+    {
+      "id": "0c15d81f-def8-4ff9-8e86-bb405bee018e",
+      "query": "Schogetten Schogetten Trilogia Noisettes шоколадная плитка б",
+      "arbuzFound": 10,
+      "bestScore": 4,
+      "bestName": "Пюре Агуша фруктовое яблоко, 90 г"
+    },
+    {
+      "id": "0c15e5ba-57e9-4703-a289-91348b45f1b9",
+      "query": "Milka Milka Alpine Milk шоколадная плитка молочный 90 г",
+      "arbuzFound": 10,
+      "bestScore": 4,
+      "bestName": "Пюре Агуша фруктовое яблоко, 90 г"
+    },
+    {
+      "id": "0e11f7f4-2aac-4d3d-bba6-7dcb9a893235",
+      "query": "Ritter Sport Ritter Sport карамельный крем и печенье шоколад",
+      "arbuzFound": 10,
+      "bestScore": 4,
+      "bestName": "Пюре Агуша фруктовое яблоко, 90 г"
+    }
+  ]
+}

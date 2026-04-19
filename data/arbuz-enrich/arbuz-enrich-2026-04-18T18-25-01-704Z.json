@@ -1,0 +1,596 @@
+{
+  "testedAt": "2026-04-18T18:25:01.706Z",
+  "stats": {
+    "processed": 30,
+    "found": 22,
+    "compositionFound": 21,
+    "kbjuFound": 21,
+    "halalFound": 1,
+    "noMatch": 8
+  },
+  "results": [
+    {
+      "id": "013edac0-66ee-49b6-8d0e-4ad949b6d319",
+      "query": "Chokodelika",
+      "arbuzFound": 20,
+      "bestScore": 4,
+      "bestName": "Пюре Агуша фруктовое яблоко, 90 г"
+    },
+    {
+      "id": "01401c84-f862-4c5c-8af5-f8726492e789",
+      "ean": "kaspi_101152554",
+      "query": "Bucheron",
+      "arbuzId": "227816",
+      "arbuzArticleIndex": "",
+      "arbuzBarcode": "",
+      "composition": null,
+      "nutrition": null,
+      "halal": false,
+      "price": 2495,
+      "brand": "Bucheron",
+      "country": "Россия",
+      "name": "Шоколад Bucheron горький какао 72% 100 г",
+      "image": "https://arbuz.kz/image/s3/arbuz-kz-products/227816-shokolad_bucheron_gorkii_kakao_72_100_g.jpg?w=400&h=400&_c=1776339812",
+      "characteristics": []
+    },
+    {
+      "id": "02883e8a-913c-4cf5-a012-b2a3c359f980",
+      "ean": "kaspi_101146462",
+      "query": "Bucheron",
+      "arbuzId": "313217",
+      "arbuzArticleIndex": "",
+      "arbuzBarcode": "",
+      "composition": "Какао тертое, сахар, масло какао, какао-порошок, карамель леденцовая (сахар, заменитель молочного жира (рафинированные дезодорированные растительные масла (пальмовое и его фракции, подсолнечное), антиокислитель (токоферол)), патака крахмальная, сухая молочная сыворотка, соль, стабилизатор (ацетилированный дикрахмаладипат), молоко сухое обезжиренное, эмульгатор (лецитин соевый),агент антислеживающий (диоксид кремния), арахис обжаренный дробленый, ядра орехов миндаля обжаренные дробленые, ядра ореха пекан обжаренные дробленые перец кайенский, ароматизатор &quot;Ванилин&quot;.",
+      "nutrition": {
+        "energy_kcal": 500,
+        "protein_100g": 8.5,
+        "fat_100g": 40,
+        "carbohydrates_100g": 32
+      },
+      "halal": false,
+      "price": 2930,
+      "brand": "Bucheron",
+      "country": "Россия",
+      "name": "Шоколад Bucheron горький с соленой карамелью и пеканом 100 г",
+      "image": "https://arbuz.kz/image/s3/arbuz-kz-products/file_name__182cea28-67ad-4649-880d-650090ca76fb-img_6628_jpg.jpg?w=400&h=400&_c=1732015963",
+      "characteristics": []
+    },
+    {
+      "id": "05d8ac20-dd37-4547-8975-7c21d9490947",
+      "query": "Chokocat",
+      "arbuzFound": 20,
+      "bestScore": 4,
+      "bestName": "Пюре Агуша фруктовое яблоко, 90 г"
+    },
+    {
+      "id": "05f7521c-e842-401e-a482-89428f6a9aad",
+      "query": "А4",
+      "arbuzFound": 1,
+      "bestScore": 20,
+      "bestName": "Раскраска-антистресс А4 12л, Узоры Р-1244"
+    },
+    {
+      "id": "062b6f0e-b8f7-47c1-8ae6-bdee56e0383e",
+      "query": "Prod.Art",
+      "arbuzFound": 20,
+      "bestScore": 4,
+      "bestName": "Пюре Агуша фруктовое яблоко, 90 г"
+    },
+    {
+      "id": "088d8501-d2d5-4588-bfba-c992315936c3",
+      "ean": "kaspi_155187523",
+      "query": "Bucheron",
+      "arbuzId": "333678",
+      "arbuzArticleIndex": "",
+      "arbuzBarcode": "",
+      "composition": "Какао тёртое, сахар, масло какао, какао-порошок, клюква сушёная (клюква, сахар, подсолнечное масло), клубника сушёная, ядро ореха фисташки жареное дроблёное, эмульгатор (соевый лецитин). Может содержать следы молочных продуктов, других видов орехов и арахиса., Массовая доля общего сухого остатка какао — не менее 72,0%, общее содержание какао-продуктов — не менее 72,0% в горьком шоколаде.,",
+      "nutrition": {
+        "energy_kcal": 530,
+        "protein_100g": 8,
+        "fat_100g": 37,
+        "carbohydrates_100g": 35
+      },
+      "halal": false,
+      "price": 1995,
+      "brand": "Bucheron",
+      "country": "Россия",
+      "name": "Шоколад Bucheron горький с клюквой клубникой и фисташками, 85 г",
+      "image": "https://arbuz.kz/image/s3/arbuz-kz-products/file_name__1ab8c004-4b71-4516-9ac5-679f0073611c-4610088211333_1_jpg.jpg?w=400&h=400&_c=1767958180",
+      "characteristics": [
+        {
+          "id": "12",
+          "name": "Импортный товар",
+          "iconPng": "https://arbuz.kz/image/s3/arbuz-kz-characteristics/img_url__12-importnyi_tovar.png?_c=1739163206"
+        }
+      ]
+    },
+    {
+      "id": "0c15d81f-def8-4ff9-8e86-bb405bee018e",
+      "ean": "kaspi_101221975",
+      "query": "Schogetten",
+      "arbuzId": "318015",
+      "arbuzArticleIndex": "",
+      "arbuzBarcode": "",
+      "composition": "Сахар, какао-масса, какао-масло, молочный жир (молоко), эмульгатор: лецитин (соя); ванильный экстракт. с благородным какао. Может содержать следы арахиса, орехов, яиц и глютена.",
+      "nutrition": {
+        "energy_kcal": 529,
+        "protein_100g": 6.8,
+        "fat_100g": 31,
+        "carbohydrates_100g": 52
+      },
+      "halal": false,
+      "price": 1669,
+      "brand": "Schogetten",
+      "country": "Германия",
+      "name": "Шоколад Schogetten полугорький, 100 г",
+      "image": "https://arbuz.kz/image/s3/arbuz-kz-products/file_name__f124dddc-8367-4ae2-8be9-bf1fb147285a-4000607151200_1_jpg.jpg?w=400&h=400&_c=1754453909",
+      "characteristics": [
+        {
+          "id": "12",
+          "name": "Импортный товар",
+          "iconPng": "https://arbuz.kz/image/s3/arbuz-kz-characteristics/img_url__12-importnyi_tovar.png?_c=1739163206"
+        }
+      ]
+    },
+    {
+      "id": "0c15e5ba-57e9-4703-a289-91348b45f1b9",
+      "ean": "kaspi_147586839",
+      "query": "Milka",
+      "arbuzId": "229476",
+      "arbuzArticleIndex": "",
+      "arbuzBarcode": "",
+      "composition": "Шоколад молочный (сахар, масло какао, молоко сухое обезжиренное, какао тертое, сыворотка сухая молочная, жир молочный, эмульгаторы: (лецитин соевый, Е476), ароматизатор), печенье 25% (мука пшеничная, сахар, масло пальмовое и олеин пальмовый, масло сливочное, молоко сухое цельное, сироп глюкозный, соль, молоко сухое обезжиренное, ароматизаторы, разрыхлители (Е450i, натрия гидрокарбонат, аммония гидрокарбонат), солодовый экстракт из ячменя, крахмал пшеничный, эмульгатор (лецитин соевый), консервант (пиросульфит натрия) Содержит пшеницу, молочные продукты, глютен, сульфиты, соевый лецитин. Может содержать следы яиц и сои.",
+      "nutrition": {
+        "energy_kcal": 511,
+        "protein_100g": 6.4,
+        "fat_100g": 26,
+        "carbohydrates_100g": 63
+      },
+      "halal": true,
+      "price": 1825,
+      "brand": "Milka",
+      "country": "Венгрия",
+      "name": "Шоколад Milka молочный с печеньем Lu, 87 г",
+      "image": "https://arbuz.kz/image/s3/arbuz-kz-products/image__229476-shokolad_milka_molochnyi_s_pechenem_lu_87_g_.jpg?w=400&h=400&_c=1775895288",
+      "characteristics": [
+        {
+          "id": "6",
+          "name": "Халал",
+          "iconPng": "https://arbuz.kz/image/s3/arbuz-kz-characteristics/6-halal.png?_c=1702450629"
+        }
+      ]
+    },
+    {
+      "id": "0e11f7f4-2aac-4d3d-bba6-7dcb9a893235",
+      "ean": "kaspi_146532213",
+      "query": "Ritter Sport",
+      "arbuzId": "235028",
+      "arbuzArticleIndex": "",
+      "arbuzBarcode": "",
+      "composition": "Сахар, орех лещины, масло какао, какао тертое, сухое цельное молоко, лактоза, сухое обезжиренное молоко, молочный жир, эмульгатор (соевый лецитин), натуральный ароматизатор (экстракт бурбонской ванили). Может содержать следы арахиса, других орехов, глютена и яиц.,",
+      "nutrition": {
+        "energy_kcal": 575,
+        "protein_100g": 8.7,
+        "fat_100g": 39,
+        "carbohydrates_100g": 46
+      },
+      "halal": false,
+      "price": 2087,
+      "brand": "Ritter Sport",
+      "country": "Германия",
+      "name": "Шоколад Ritter Sport Extra Nut молочный с цельным лесным орехом 100 г",
+      "image": "https://arbuz.kz/image/s3/arbuz-kz-products/image__235028-shokolad_ritter_sport_extra_nut_molochnyi_s_celnym_lesnym_orehom_100_g.jpg?w=400&h=400&_c=1776204908",
+      "characteristics": []
+    },
+    {
+      "id": "0e26cf4a-b879-43b3-a798-925030d56f15",
+      "query": "Nestlé",
+      "arbuzFound": 20,
+      "bestScore": 12,
+      "bestName": "Мороженое 48 копеек шоколадная Прага, 800 мл"
+    },
+    {
+      "id": "10f5f035-dddd-4fd5-9401-93506eade943",
+      "query": "O`Zera",
+      "arbuzFound": 1,
+      "bestScore": 14,
+      "bestName": "Шоколадный батончик O'Zera Ex.milk & Hazelnut, 45 г"
+    },
+    {
+      "id": "12d3f832-cc55-42b7-8faa-32f3d30bb5e1",
+      "ean": "8000500400807",
+      "query": "nutella",
+      "arbuzId": "20477",
+      "arbuzArticleIndex": "",
+      "arbuzBarcode": "",
+      "composition": "Сахар, растительный жир, лесной орех, сухое обезжиренное молоко, обезжиренный какао-порошок, эмульгатор: лецитины, ароматизатор,",
+      "nutrition": {
+        "energy_kcal": 539,
+        "protein_100g": 6.3,
+        "fat_100g": 30.9,
+        "carbohydrates_100g": 57.5
+      },
+      "halal": false,
+      "price": 3015,
+      "brand": "Nutella",
+      "country": "Россия",
+      "name": "Паста Nutella шоколадно-ореховая, 350 г",
+      "image": "https://arbuz.kz/image/s3/arbuz-kz-products/file_name__c648eb6e-cc9c-4fd2-9250-737e8e168abc-20477-001_isp_jpg.jpg?w=400&h=400&_c=1718641781",
+      "characteristics": []
+    },
+    {
+      "id": "15202e0a-90fb-4962-9718-226198cc5521",
+      "ean": "0062020000972",
+      "query": "Ferrero Rocher",
+      "arbuzId": "332617",
+      "arbuzArticleIndex": "",
+      "arbuzBarcode": "",
+      "composition": "Молочный шоколад (сахар, масло какао, тертое какао, сухое обезжиренное молоко, молочный жир, эмульгатор: лецитины, ароматизатор), лесные орехи, сахар, растительный жир, пшеничная мука, сухая молочная сыворотка, обезжиренный какао-порошок, эмульгатор: лецитины, разрыхлитель: гидрокарбонат натрия, соль, ароматизатор",
+      "nutrition": {
+        "energy_kcal": 603,
+        "protein_100g": 8.2,
+        "fat_100g": 42.7,
+        "carbohydrates_100g": 44.4
+      },
+      "halal": false,
+      "price": 11974,
+      "brand": "Ferrero Rocher",
+      "country": "Италия",
+      "name": "Конфеты Ferrero Rocher конус, 350 г",
+      "image": "https://arbuz.kz/image/s3/arbuz-kz-products/image__332617-konfety_ferrero_rocher_konus_350_g.jpg?w=400&h=400&_c=1776236481",
+      "characteristics": []
+    },
+    {
+      "id": "15eae2c4-213b-489e-a5cf-6ed6abb73a74",
+      "ean": "kaspi_101281807",
+      "query": "Schogetten",
+      "arbuzId": "318015",
+      "arbuzArticleIndex": "",
+      "arbuzBarcode": "",
+      "composition": "Сахар, какао-масса, какао-масло, молочный жир (молоко), эмульгатор: лецитин (соя); ванильный экстракт. с благородным какао. Может содержать следы арахиса, орехов, яиц и глютена.",
+      "nutrition": {
+        "energy_kcal": 529,
+        "protein_100g": 6.8,
+        "fat_100g": 31,
+        "carbohydrates_100g": 52
+      },
+      "halal": false,
+      "price": 1669,
+      "brand": "Schogetten",
+      "country": "Германия",
+      "name": "Шоколад Schogetten полугорький, 100 г",
+      "image": "https://arbuz.kz/image/s3/arbuz-kz-products/file_name__f124dddc-8367-4ae2-8be9-bf1fb147285a-4000607151200_1_jpg.jpg?w=400&h=400&_c=1754453909",
+      "characteristics": [
+        {
+          "id": "12",
+          "name": "Импортный товар",
+          "iconPng": "https://arbuz.kz/image/s3/arbuz-kz-characteristics/img_url__12-importnyi_tovar.png?_c=1739163206"
+        }
+      ]
+    },
+    {
+      "id": "1aff4cf1-9550-4d07-b3ce-3a1dac499ba5",
+      "ean": "kaspi_104463965",
+      "query": "Ritter Sport",
+      "arbuzId": "235028",
+      "arbuzArticleIndex": "",
+      "arbuzBarcode": "",
+      "composition": "Сахар, орех лещины, масло какао, какао тертое, сухое цельное молоко, лактоза, сухое обезжиренное молоко, молочный жир, эмульгатор (соевый лецитин), натуральный ароматизатор (экстракт бурбонской ванили). Может содержать следы арахиса, других орехов, глютена и яиц.,",
+      "nutrition": {
+        "energy_kcal": 575,
+        "protein_100g": 8.7,
+        "fat_100g": 39,
+        "carbohydrates_100g": 46
+      },
+      "halal": false,
+      "price": 2087,
+      "brand": "Ritter Sport",
+      "country": "Германия",
+      "name": "Шоколад Ritter Sport Extra Nut молочный с цельным лесным орехом 100 г",
+      "image": "https://arbuz.kz/image/s3/arbuz-kz-products/image__235028-shokolad_ritter_sport_extra_nut_molochnyi_s_celnym_lesnym_orehom_100_g.jpg?w=400&h=400&_c=1776204908",
+      "characteristics": []
+    },
+    {
+      "id": "1b1d2f48-123c-4c0b-97c3-1fe556c35ca7",
+      "query": "O`Zera",
+      "arbuzFound": 1,
+      "bestScore": 4,
+      "bestName": "Шоколадный батончик O'Zera Ex.milk & Hazelnut, 45 г"
+    },
+    {
+      "id": "1cb710b0-64f7-4d8e-8cf9-1f58ae7bc491",
+      "ean": "kaspi_124116377",
+      "query": "Ritter Sport",
+      "arbuzId": "316894",
+      "arbuzArticleIndex": "",
+      "arbuzBarcode": "",
+      "composition": "Шоколад молочный (сахар, масло какао, какао тёртое, сухое цельное молоко, лактоза, сухое обезжиренное молоко, молочный жир, эмульгатор соевый лецитин), начинка (масло пальмовое, сахар, крошка бисквита брауни (сахар, какао-порошок, глюкозный сироп, пшеничный крахмал, сухие сливки, подсолнечное масло, кокосовое масло, агент влагоудерживающий глицерин, соль) какао-порошок с пониженным содержанием жира, сухое цельное молоко, сухое обезжиренное молоко, молочный жир, эмульгатор соевый лецитин):начинка (масло пальмовое, сахар, карамель измельчённая (сыворотка молочная, масло сливочное, мальтодекстрин, сахар, обезжиренное молоко), кусочки солёного печенья (пшеничная мука, сахар, масло сливочное, соль, пшеничный крахмал, глюкозно-фруктозный сироп, разрыхлители (гидрокарбонат натрия, карбонат аммония), сухое обезжиренное молоко, эмульгатор соевый лецитин, сухая молочная сыворотка), сухое цельное молоко, сухое обезжиренное молоко, соль, эмульгатор соевый лецитин). Возможно наличие следов орехов, арахиса и яиц.",
+      "nutrition": {
+        "energy_kcal": 557,
+        "protein_100g": 0,
+        "fat_100g": 0,
+        "carbohydrates_100g": 0
+      },
+      "halal": false,
+      "price": 3448,
+      "brand": "Ritter Sport",
+      "country": "Германия",
+      "name": "Шоколад Ritter Sport duo солёная карамель и шоколадный брауни 218 г",
+      "image": "https://arbuz.kz/image/s3/arbuz-kz-products/image__316894-shokolad_ritter_sport_duo_sol_naya_karamel_i_shokoladnyi_brauni_218_g.jpg?w=400&h=400&_c=1776119847",
+      "characteristics": []
+    },
+    {
+      "id": "2012b379-cf9c-467b-b6e7-8b4afbdfdbf8",
+      "ean": "kaspi_113220408",
+      "query": "Ritter Sport",
+      "arbuzId": "235028",
+      "arbuzArticleIndex": "",
+      "arbuzBarcode": "",
+      "composition": "Сахар, орех лещины, масло какао, какао тертое, сухое цельное молоко, лактоза, сухое обезжиренное молоко, молочный жир, эмульгатор (соевый лецитин), натуральный ароматизатор (экстракт бурбонской ванили). Может содержать следы арахиса, других орехов, глютена и яиц.,",
+      "nutrition": {
+        "energy_kcal": 575,
+        "protein_100g": 8.7,
+        "fat_100g": 39,
+        "carbohydrates_100g": 46
+      },
+      "halal": false,
+      "price": 2087,
+      "brand": "Ritter Sport",
+      "country": "Германия",
+      "name": "Шоколад Ritter Sport Extra Nut молочный с цельным лесным орехом 100 г",
+      "image": "https://arbuz.kz/image/s3/arbuz-kz-products/image__235028-shokolad_ritter_sport_extra_nut_molochnyi_s_celnym_lesnym_orehom_100_g.jpg?w=400&h=400&_c=1776204908",
+      "characteristics": []
+    },
+    {
+      "id": "208ef83c-bb97-4966-a9d4-64b4be0ce961",
+      "ean": "26040233",
+      "query": "M&M's",
+      "arbuzId": "260872",
+      "arbuzArticleIndex": "",
+      "arbuzBarcode": "",
+      "composition": "Молочный шоколад (сахар, какао тертое, сухое цельное молоко, лактоза, какао масло, эквивалент масла какао (масло пальмовое, масло ши), эмульгатор (соевый лецитин), ароматизаторы (ванилин, масляная кислота)) сахар, крахмал кукурузный, глюкозный сироп (кукурузный, пшеничный), красители (Е171, Е120, куркумин, каротины, Е133), загуститель (декстрин), глазирователь (воск карнаубский), жир специального назначения (масло кокосовое, масло пальмоядровое). Может содержать незначительное количество арахиса, глютена ячменя.",
+      "nutrition": {
+        "energy_kcal": 491,
+        "protein_100g": 18.9,
+        "fat_100g": 4.4,
+        "carbohydrates_100g": 74.6
+      },
+      "halal": false,
+      "price": 835,
+      "brand": "M&M's",
+      "country": "Россия",
+      "name": "Драже M&M's с молочным шоколадом 80 г",
+      "image": "https://arbuz.kz/image/s3/arbuz-kz-products/file_name__d1c0b964-644c-4303-84fd-4bc39ca2099d-4660085510915_jpg.jpg?w=400&h=400&_c=1747653202",
+      "characteristics": []
+    },
+    {
+      "id": "20fac30d-985e-4f41-8572-ab3b314ea820",
+      "ean": "kaspi_101281824",
+      "query": "Schogetten",
+      "arbuzId": "318015",
+      "arbuzArticleIndex": "",
+      "arbuzBarcode": "",
+      "composition": "Сахар, какао-масса, какао-масло, молочный жир (молоко), эмульгатор: лецитин (соя); ванильный экстракт. с благородным какао. Может содержать следы арахиса, орехов, яиц и глютена.",
+      "nutrition": {
+        "energy_kcal": 529,
+        "protein_100g": 6.8,
+        "fat_100g": 31,
+        "carbohydrates_100g": 52
+      },
+      "halal": false,
+      "price": 1669,
+      "brand": "Schogetten",
+      "country": "Германия",
+      "name": "Шоколад Schogetten полугорький, 100 г",
+      "image": "https://arbuz.kz/image/s3/arbuz-kz-products/file_name__f124dddc-8367-4ae2-8be9-bf1fb147285a-4000607151200_1_jpg.jpg?w=400&h=400&_c=1754453909",
+      "characteristics": [
+        {
+          "id": "12",
+          "name": "Импортный товар",
+          "iconPng": "https://arbuz.kz/image/s3/arbuz-kz-characteristics/img_url__12-importnyi_tovar.png?_c=1739163206"
+        }
+      ]
+    },
+    {
+      "id": "233f361a-f80a-4e6d-9ea6-8776362453dd",
+      "ean": "8901491990219",
+      "query": "Doritos",
+      "arbuzId": "226044",
+      "arbuzArticleIndex": "",
+      "arbuzBarcode": "",
+      "composition": "Кукуруза, пальмовое масло, ароматизатор (мальтодекстрин, порошок молочной сыворотки, пшеничная мука, соль, сырный порошок (содержит сычужный фермент), растительные масла (подсолнечное, рапсовое, пальмовое), томатный порошок, вкусоароматические вещества (содержат производные молока, экстракт дрожжей, ваниль, луковый порошок, порошок пахты, агент желирующий (хлорид калия), усилитель вкуса и аромата (глутамат натрия 1&dash;замещенный), чесночный порошок, молочный белок, декстроза, красители (экстракт паприки, аннато, сахарный колер I), регуляторы кислотности (молочная кислота, лимонная кислота), специи, сахар, сухое обезжиренное молоко),",
+      "nutrition": {
+        "energy_kcal": 490,
+        "protein_100g": 7,
+        "fat_100g": 26,
+        "carbohydrates_100g": 57
+      },
+      "halal": false,
+      "price": 675,
+      "brand": "Doritos",
+      "country": "Казахстан",
+      "name": "Чипсы Doritos кукурузные сыр Начо, 70 г",
+      "image": "https://arbuz.kz/image/s3/arbuz-kz-products/image__226044-chipsy_doritos_kukuruznye_syr_nacho_70_g.jpg?w=400&h=400&_c=1775796505",
+      "characteristics": []
+    },
+    {
+      "id": "23799b32-be81-470e-86a9-23d2aef66b05",
+      "ean": "kaspi_162249619",
+      "query": "Ritter Sport",
+      "arbuzId": "235039",
+      "arbuzArticleIndex": "",
+      "arbuzBarcode": "",
+      "composition": "Темный шоколад (сахар, какао тертое, масло какао, эмульгатор соевый лецитин); начинка (сахар, ядра орехов миндаля измельченные, инвертный сироп, вода питьевая). Возможно наличие других орехов, арахиса, глютена злаков, молока и яиц,",
+      "nutrition": {
+        "energy_kcal": 479,
+        "protein_100g": 7,
+        "fat_100g": 27,
+        "carbohydrates_100g": 52
+      },
+      "halal": false,
+      "price": 1865,
+      "brand": "Ritter Sport",
+      "country": "Германия",
+      "name": "Шоколад Ritter Sport темный с марципаном 100 г",
+      "image": "https://arbuz.kz/image/s3/arbuz-kz-products/file_name__e4f96d74-536a-42df-baaa-a0a72f62c7d7-4000417025005_1_jpg.jpg?w=400&h=400&_c=1754452041",
+      "characteristics": []
+    },
+    {
+      "id": "2508f749-b8e5-4d36-9d4f-05b56d10abd4",
+      "ean": "kaspi_154380265",
+      "query": "Babyfox",
+      "arbuzId": "290335",
+      "arbuzArticleIndex": "",
+      "arbuzBarcode": "",
+      "composition": "Cахар, какао-порошок (какао алкализованный с пониженным содержанием жира, эмульгатор рапсовый лецитин), мальтодекстрин, соль, натуральные ароматизаторы, витаминный премикс (витамины: А, D, E, B1, B2, B3 (PP), B6, B9, B12, C), корица молотая. Возможно наличие незначительного количества глютена, молочных продуктов, горчицы, сельдерея, кунжута, кокосовой стружки.",
+      "nutrition": {
+        "energy_kcal": 370,
+        "protein_100g": 3.5,
+        "fat_100g": 2.5,
+        "carbohydrates_100g": 84
+      },
+      "halal": false,
+      "price": 665,
+      "brand": "BabyFox",
+      "country": "Россия",
+      "name": "Напиток Babyfox с какао-порошком быстрорастворимый, 135 г",
+      "image": "https://arbuz.kz/image/s3/arbuz-kz-products/file_name__1eb2ccc7-7e22-4ec0-9c14-4e552cd7e48e-4607024898000_1_jpg.jpg?w=400&h=400&_c=1744521133",
+      "characteristics": []
+    },
+    {
+      "id": "26f6aff1-cfe9-42ed-9398-1bea2a9ce865",
+      "ean": "kaspi_101152990",
+      "query": "Bucheron",
+      "arbuzId": "313217",
+      "arbuzArticleIndex": "",
+      "arbuzBarcode": "",
+      "composition": "Какао тертое, сахар, масло какао, какао-порошок, карамель леденцовая (сахар, заменитель молочного жира (рафинированные дезодорированные растительные масла (пальмовое и его фракции, подсолнечное), антиокислитель (токоферол)), патака крахмальная, сухая молочная сыворотка, соль, стабилизатор (ацетилированный дикрахмаладипат), молоко сухое обезжиренное, эмульгатор (лецитин соевый),агент антислеживающий (диоксид кремния), арахис обжаренный дробленый, ядра орехов миндаля обжаренные дробленые, ядра ореха пекан обжаренные дробленые перец кайенский, ароматизатор &quot;Ванилин&quot;.",
+      "nutrition": {
+        "energy_kcal": 500,
+        "protein_100g": 8.5,
+        "fat_100g": 40,
+        "carbohydrates_100g": 32
+      },
+      "halal": false,
+      "price": 2930,
+      "brand": "Bucheron",
+      "country": "Россия",
+      "name": "Шоколад Bucheron горький с соленой карамелью и пеканом 100 г",
+      "image": "https://arbuz.kz/image/s3/arbuz-kz-products/file_name__182cea28-67ad-4649-880d-650090ca76fb-img_6628_jpg.jpg?w=400&h=400&_c=1732015963",
+      "characteristics": []
+    },
+    {
+      "id": "27d740f8-97c1-4d4e-acd7-7b1eb5c2afef",
+      "query": "Chokodelika",
+      "arbuzFound": 20,
+      "bestScore": 14,
+      "bestName": "Конфеты шоколадные Snickers mini, 180 г"
+    },
+    {
+      "id": "281e7ff6-967e-4079-9eeb-e68c3ee99c39",
+      "ean": "kaspi_143862661",
+      "query": "Schogetten",
+      "arbuzId": "318015",
+      "arbuzArticleIndex": "",
+      "arbuzBarcode": "",
+      "composition": "Сахар, какао-масса, какао-масло, молочный жир (молоко), эмульгатор: лецитин (соя); ванильный экстракт. с благородным какао. Может содержать следы арахиса, орехов, яиц и глютена.",
+      "nutrition": {
+        "energy_kcal": 529,
+        "protein_100g": 6.8,
+        "fat_100g": 31,
+        "carbohydrates_100g": 52
+      },
+      "halal": false,
+      "price": 1669,
+      "brand": "Schogetten",
+      "country": "Германия",
+      "name": "Шоколад Schogetten полугорький, 100 г",
+      "image": "https://arbuz.kz/image/s3/arbuz-kz-products/file_name__f124dddc-8367-4ae2-8be9-bf1fb147285a-4000607151200_1_jpg.jpg?w=400&h=400&_c=1754453909",
+      "characteristics": [
+        {
+          "id": "12",
+          "name": "Импортный товар",
+          "iconPng": "https://arbuz.kz/image/s3/arbuz-kz-characteristics/img_url__12-importnyi_tovar.png?_c=1739163206"
+        }
+      ]
+    },
+    {
+      "id": "2b337db4-92b4-42c6-9398-b4d67784ccd6",
+      "ean": "kaspi_128709014",
+      "query": "Bucheron",
+      "arbuzId": "336701",
+      "arbuzArticleIndex": "",
+      "arbuzBarcode": "",
+      "composition": "Сахар, масло какао, молоко сухое обезжиренное, какао тертое, молоко сухое цельное, ядра миндаля жареные, жир молочный, эквивалент масло какао (масла растительные рафинированные, эмульгатор (лецитин подсолнечный)), эмульгатор (лецитин соевый), ароматизатор \"Ванилин\"",
+      "nutrition": {
+        "energy_kcal": 570,
+        "protein_100g": 9,
+        "fat_100g": 38,
+        "carbohydrates_100g": 48
+      },
+      "halal": false,
+      "price": 1530,
+      "brand": "Bucheron",
+      "country": "Россия",
+      "name": "Шоколад Bucheron The Original молочный с миндалем, 90 г",
+      "image": "https://arbuz.kz/image/s3/arbuz-kz-products/image__336701-shokolad_bucheron_the_original_molochnyi_s_mindalem_90_g.jpg?w=400&h=400&_c=1776345157",
+      "characteristics": [
+        {
+          "id": "12",
+          "name": "Импортный товар",
+          "iconPng": "https://arbuz.kz/image/s3/arbuz-kz-characteristics/img_url__12-importnyi_tovar.png?_c=1739163206"
+        }
+      ]
+    },
+    {
+      "id": "2b43f822-5d07-4b89-a7a3-59de00a96acc",
+      "ean": "kaspi_155280462",
+      "query": "Bucheron",
+      "arbuzId": "333678",
+      "arbuzArticleIndex": "",
+      "arbuzBarcode": "",
+      "composition": "Какао тёртое, сахар, масло какао, какао-порошок, клюква сушёная (клюква, сахар, подсолнечное масло), клубника сушёная, ядро ореха фисташки жареное дроблёное, эмульгатор (соевый лецитин). Может содержать следы молочных продуктов, других видов орехов и арахиса., Массовая доля общего сухого остатка какао — не менее 72,0%, общее содержание какао-продуктов — не менее 72,0% в горьком шоколаде.,",
+      "nutrition": {
+        "energy_kcal": 530,
+        "protein_100g": 8,
+        "fat_100g": 37,
+        "carbohydrates_100g": 35
+      },
+      "halal": false,
+      "price": 1995,
+      "brand": "Bucheron",
+      "country": "Россия",
+      "name": "Шоколад Bucheron горький с клюквой клубникой и фисташками, 85 г",
+      "image": "https://arbuz.kz/image/s3/arbuz-kz-products/file_name__1ab8c004-4b71-4516-9ac5-679f0073611c-4610088211333_1_jpg.jpg?w=400&h=400&_c=1767958180",
+      "characteristics": [
+        {
+          "id": "12",
+          "name": "Импортный товар",
+          "iconPng": "https://arbuz.kz/image/s3/arbuz-kz-characteristics/img_url__12-importnyi_tovar.png?_c=1739163206"
+        }
+      ]
+    },
+    {
+      "id": "2bcfcecb-ff6e-4fd7-b3e3-9bf25fc344a9",
+      "ean": "kaspi_116857321",
+      "query": "Bucheron",
+      "arbuzId": "313217",
+      "arbuzArticleIndex": "",
+      "arbuzBarcode": "",
+      "composition": "Какао тертое, сахар, масло какао, какао-порошок, карамель леденцовая (сахар, заменитель молочного жира (рафинированные дезодорированные растительные масла (пальмовое и его фракции, подсолнечное), антиокислитель (токоферол)), патака крахмальная, сухая молочная сыворотка, соль, стабилизатор (ацетилированный дикрахмаладипат), молоко сухое обезжиренное, эмульгатор (лецитин соевый),агент антислеживающий (диоксид кремния), арахис обжаренный дробленый, ядра орехов миндаля обжаренные дробленые, ядра ореха пекан обжаренные дробленые перец кайенский, ароматизатор &quot;Ванилин&quot;.",
+      "nutrition": {
+        "energy_kcal": 500,
+        "protein_100g": 8.5,
+        "fat_100g": 40,
+        "carbohydrates_100g": 32
+      },
+      "halal": false,
+      "price": 2930,
+      "brand": "Bucheron",
+      "country": "Россия",
+      "name": "Шоколад Bucheron горький с соленой карамелью и пеканом 100 г",
+      "image": "https://arbuz.kz/image/s3/arbuz-kz-products/file_name__182cea28-67ad-4649-880d-650090ca76fb-img_6628_jpg.jpg?w=400&h=400&_c=1732015963",
+      "characteristics": []
+    }
+  ]
+}

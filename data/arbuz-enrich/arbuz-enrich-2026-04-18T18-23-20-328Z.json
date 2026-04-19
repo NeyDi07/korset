@@ -1,0 +1,91 @@
+{
+  "testedAt": "2026-04-18T18:23:20.330Z",
+  "stats": {
+    "processed": 15,
+    "found": 9,
+    "compositionFound": 8,
+    "kbjuFound": 8,
+    "halalFound": 1,
+    "noMatch": 6
+  },
+  "results": [
+    {
+      "id": "013edac0-66ee-49b6-8d0e-4ad949b6d319",
+      "query": "Chokodelika",
+      "arbuzFound": 20,
+      "bestScore": 4,
+      "bestName": "Пюре Агуша фруктовое яблоко, 90 г"
+    },
+    {
+      "id": "01401c84-f862-4c5c-8af5-f8726492e789",
+      "error": "query is not defined"
+    },
+    {
+      "id": "02883e8a-913c-4cf5-a012-b2a3c359f980",
+      "error": "query is not defined"
+    },
+    {
+      "id": "05d8ac20-dd37-4547-8975-7c21d9490947",
+      "query": "Chokocat",
+      "arbuzFound": 20,
+      "bestScore": 4,
+      "bestName": "Пюре Агуша фруктовое яблоко, 90 г"
+    },
+    {
+      "id": "05f7521c-e842-401e-a482-89428f6a9aad",
+      "query": "А4",
+      "arbuzFound": 1,
+      "bestScore": 20,
+      "bestName": "Раскраска-антистресс А4 12л, Узоры Р-1244"
+    },
+    {
+      "id": "062b6f0e-b8f7-47c1-8ae6-bdee56e0383e",
+      "query": "Prod.Art",
+      "arbuzFound": 20,
+      "bestScore": 4,
+      "bestName": "Пюре Агуша фруктовое яблоко, 90 г"
+    },
+    {
+      "id": "088d8501-d2d5-4588-bfba-c992315936c3",
+      "error": "query is not defined"
+    },
+    {
+      "id": "0c15d81f-def8-4ff9-8e86-bb405bee018e",
+      "error": "query is not defined"
+    },
+    {
+      "id": "0c15e5ba-57e9-4703-a289-91348b45f1b9",
+      "error": "query is not defined"
+    },
+    {
+      "id": "0e11f7f4-2aac-4d3d-bba6-7dcb9a893235",
+      "error": "query is not defined"
+    },
+    {
+      "id": "0e26cf4a-b879-43b3-a798-925030d56f15",
+      "query": "Nestlé",
+      "arbuzFound": 20,
+      "bestScore": 12,
+      "bestName": "Мороженое 48 копеек шоколадная Прага, 800 мл"
+    },
+    {
+      "id": "10f5f035-dddd-4fd5-9401-93506eade943",
+      "query": "O`Zera",
+      "arbuzFound": 1,
+      "bestScore": 14,
+      "bestName": "Шоколадный батончик O'Zera Ex.milk & Hazelnut, 45 г"
+    },
+    {
+      "id": "12d3f832-cc55-42b7-8faa-32f3d30bb5e1",
+      "error": "query is not defined"
+    },
+    {
+      "id": "15202e0a-90fb-4962-9718-226198cc5521",
+      "error": "query is not defined"
+    },
+    {
+      "id": "15eae2c4-213b-489e-a5cf-6ed6abb73a74",
+      "error": "query is not defined"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "testedAt": "2026-04-18T16:54:33.672Z",
+  "stats": {
+    "processed": 5,
+    "found": 0,
+    "compositionFound": 0,
+    "kbjuFound": 0,
+    "halalFound": 0,
+    "noMatch": 0
+  },
+  "results": [
+    {
+      "id": "013edac0-66ee-49b6-8d0e-4ad949b6d319",
+      "error": "HTTP 404"
+    },
+    {
+      "id": "01401c84-f862-4c5c-8af5-f8726492e789",
+      "error": "HTTP 404"
+    },
+    {
+      "id": "02883e8a-913c-4cf5-a012-b2a3c359f980",
+      "error": "HTTP 404"
+    },
+    {
+      "id": "05d8ac20-dd37-4547-8975-7c21d9490947",
+      "error": "HTTP 404"
+    },
+    {
+      "id": "05f7521c-e842-401e-a482-89428f6a9aad",
+      "error": "HTTP 404"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "testedAt": "2026-04-18T19:04:28.082Z",
+  "stats": {
+    "processed": 5,
+    "enriched": 0,
+    "compositionFound": 0,
+    "nutritionFound": 0,
+    "noMatch": 0
+  },
+  "results": [
+    {
+      "id": "013edac0-66ee-49b6-8d0e-4ad949b6d319",
+      "error": ""
+    },
+    {
+      "id": "01401c84-f862-4c5c-8af5-f8726492e789",
+      "error": ""
+    },
+    {
+      "id": "029b347b-9a48-4049-bb5e-5888146fa2eb",
+      "error": ""
+    },
+    {
+      "id": "04e490a8-f179-46bd-8f85-7d180fcdc105",
+      "error": ""
+    },
+    {
+      "id": "05d8ac20-dd37-4547-8975-7c21d9490947",
+      "error": ""
+    }
+  ]
+}

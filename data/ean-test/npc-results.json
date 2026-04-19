@@ -1,0 +1,807 @@
+{
+  "testedAt": "2026-04-18T15:05:04.550Z",
+  "results": [
+    {
+      "query": "Milka Alpenmilch",
+      "found": true,
+      "total": 10276,
+      "gtin": null,
+      "ntin": "0200090202357",
+      "nameRu": "Milka Milk & Choco Biscuits 150 г",
+      "id": 18610992,
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "attributes": {},
+      "allItemsCount": 2
+    },
+    {
+      "query": "Milka Oreo",
+      "found": true,
+      "total": 10928,
+      "gtin": "7622210544179",
+      "ntin": "0200253509538",
+      "nameRu": "Шоколад Milka Oreo White 100гр",
+      "id": 32721473,
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "attributes": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "PL",
+          "valueRu": "ПОЛЬША"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1806310000",
+          "valueRu": "Изделия прочие, содержащие какао, в брикетах, пластинках или плитках с начинкой"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "producer_country": {
+          "nameRu": "Страна производителя",
+          "value": "PL",
+          "valueRu": "ПОЛЬША"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "Mondelez Polska S.A.",
+          "valueRu": "Mondelez Polska S.A."
+        }
+      },
+      "allItemsCount": 2
+    },
+    {
+      "query": "Ritter Sport миндаль",
+      "found": true,
+      "total": 47389,
+      "gtin": "4000417629616",
+      "ntin": "0200196499538",
+      "nameRu": "Шоколад \"Ritter Sport Миндаль в карамели \" 0,1 кг",
+      "id": 26667610,
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "attributes": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "RU",
+          "valueRu": "РОССИЯ"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1806901900",
+          "valueRu": "Прочие шоколадные конфеты, с начинкой или без начинки"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "511",
+          "valueRu": "Килограмм"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "0.1",
+          "valueRu": "0.1"
+        },
+        "eaes": {
+          "nameRu": "Знак ЕАЭС",
+          "value": "true",
+          "valueRu": "true"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "МЕТРО Кэш энд Керри",
+          "valueRu": "МЕТРО Кэш энд Керри"
+        }
+      },
+      "allItemsCount": 2
+    },
+    {
+      "query": "Ritter Sport Praline",
+      "found": true,
+      "total": 41505,
+      "gtin": "4000417212009",
+      "ntin": "0200208643355",
+      "nameRu": "ШОКОЛАД RITTER SPORT ТЕМНЫЙ МИНДАЛЬ И АПЕЛЬСИН 100ГР",
+      "id": 27985221,
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "attributes": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "DE",
+          "valueRu": "ГЕРМАНИЯ"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "RITTER SPORT",
+          "valueRu": "RITTER SPORT"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1806321000",
+          "valueRu": "Прочие готовые пищевые продукты, содержащие какао, без начинки, но с добавкой зерна хлебных знаков, плодов (фруктов) или орехов и находящиеся в брикетах, пластинах или плитках"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "RITTER SPORT",
+          "valueRu": "RITTER SPORT"
+        }
+      },
+      "allItemsCount": 2
+    },
+    {
+      "query": "KINDER шоколад",
+      "found": true,
+      "total": 49285,
+      "gtin": "40084077",
+      "ntin": "0200209979538",
+      "nameRu": "ШОКОЛАД МОЛ KINDER ШОКОЛАД МАКСИ Т1",
+      "id": 28118839,
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "attributes": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "RU",
+          "valueRu": "РОССИЯ"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "FERRERO",
+          "valueRu": "FERRERO"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1806310000",
+          "valueRu": "Изделия прочие, содержащие какао, в брикетах, пластинках или плитках с начинкой"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "FERRERO",
+          "valueRu": "FERRERO"
+        }
+      },
+      "allItemsCount": 2
+    },
+    {
+      "query": "KINDER Bueno",
+      "found": true,
+      "total": 2052,
+      "gtin": null,
+      "ntin": "0200232506879",
+      "nameRu": "Kinder Bueno Т30",
+      "id": 30548641,
+      "fullCategoryCode": "1020-0009-0002-100006324",
+      "categoryNameRuL1": "Продукты пищевые/Напитки",
+      "categoryNameRuL4": "Кондитерские изделия – Наборы",
+      "attributes": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "PL",
+          "valueRu": "ПОЛЬША"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1905321900",
+          "valueRu": "Прочие вафли и вафельные облатки, полностью или частично покрытые шоколадом или другими изделиями, содержащими какао"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "FERRERO",
+          "valueRu": "FERRERO"
+        }
+      },
+      "allItemsCount": 2
+    },
+    {
+      "query": "Schogetten шоколад",
+      "found": true,
+      "total": 47781,
+      "gtin": "4000415832308",
+      "ntin": "0200166779226",
+      "nameRu": "SCHOGETTEN Шоколад Popcorn 100г",
+      "id": 23649203,
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "attributes": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "DE",
+          "valueRu": "ГЕРМАНИЯ"
+        },
+        "article": {
+          "nameRu": "Модель / артикул",
+          "value": "190-02992",
+          "valueRu": "190-02992"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1806321000",
+          "valueRu": "Прочие готовые пищевые продукты, содержащие какао, без начинки, но с добавкой зерна хлебных знаков, плодов (фруктов) или орехов и находящиеся в брикетах, пластинах или плитках"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "unit_category": {
+          "nameRu": "Категория единицы измерения ",
+          "value": "economicUnits",
+          "valueRu": "Экономические единицы"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Ко��ичественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "producer_country": {
+          "nameRu": "Страна производителя",
+          "value": "DE",
+          "valueRu": "ГЕРМАНИЯ"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "Ludwig Schokolade GmbH & Co. KG",
+          "valueRu": "Ludwig Schokolade GmbH & Co. KG"
+        }
+      },
+      "allItemsCount": 2
+    },
+    {
+      "query": "Победа шоколад",
+      "found": true,
+      "total": 55829,
+      "gtin": "4751033540433",
+      "ntin": "0200303093970",
+      "nameRu": "Победа Шоколад горький «Доминикана»",
+      "id": 37667300,
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "attributes": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "RU",
+          "valueRu": "РОССИЯ"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "3307490000",
+          "valueRu": "Прочие средства для ароматизации и дезодорирования воздуха помещений, включая благовония для религиозных обрядов"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "Победа",
+          "valueRu": "Победа"
+        }
+      },
+      "allItemsCount": 2
+    },
+    {
+      "query": "Bucheron шоколад",
+      "found": true,
+      "total": 47833,
+      "gtin": "4610088209620",
+      "ntin": "0200210051018",
+      "nameRu": "ШОКОЛАД BUCHERON FILLING МАНГО-МАРАКУЙЯ 85Г",
+      "id": 28125987,
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "attributes": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "RU",
+          "valueRu": "РОССИЯ"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "BUCHERON",
+          "valueRu": "BUCHERON"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1806903100",
+          "valueRu": "Прочий шоколад и изделия из него, с начинкой"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "BUCHERON",
+          "valueRu": "BUCHERON"
+        }
+      },
+      "allItemsCount": 2
+    },
+    {
+      "query": "O'Zera шоколад",
+      "found": true,
+      "total": 47829,
+      "gtin": "4690329009257",
+      "ntin": "0200016602537",
+      "nameRu": "ШОКОЛАД O'ZERA TRUFFLE MOUSSE 93ГР ФЛ.П O'ZERA ШОКОЛАД     17364 4755    ",
+      "id": 11290051,
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "attributes": {
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1806310000",
+          "valueRu": "Изделия прочие, содержащие какао, в брикетах, пластинках или плитках с начинкой"
+        }
+      },
+      "allItemsCount": 2
+    },
+    {
+      "query": "Alpen Gold молочный",
+      "found": true,
+      "total": 94225,
+      "gtin": "7622201427153",
+      "ntin": "0200137576274",
+      "nameRu": "Шоколад Alpen Gold молочный 85гр",
+      "id": 20709352,
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "attributes": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "CH",
+          "valueRu": "ШВЕЙЦАРИЯ"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1806310000",
+          "valueRu": "Изделия прочие, содержащие какао, в брикетах, пластинках или плитках с начинкой"
+        },
+        "unit_category": {
+          "nameRu": "Категория единицы измерения ",
+          "value": "economicUnits",
+          "valueRu": "Экономические единицы"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "eaes": {
+          "nameRu": "Знак ЕАЭС",
+          "value": "false",
+          "valueRu": "false"
+        },
+        "marking_required_status": {
+          "nameRu": "Статус обязательной маркировки",
+          "value": "false",
+          "valueRu": "false"
+        },
+        "szpt": {
+          "nameRu": "Статус СЗПТ",
+          "value": "false",
+          "valueRu": "false"
+        },
+        "made_in_country": {
+          "nameRu": "Отечественный товар",
+          "value": "false",
+          "valueRu": "false"
+        },
+        "producer_country": {
+          "nameRu": "Страна производителя",
+          "value": "CH",
+          "valueRu": "ШВЕЙЦАРИЯ"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "MONDELEZ",
+          "valueRu": "MONDELEZ"
+        }
+      },
+      "allItemsCount": 2
+    },
+    {
+      "query": "Alpen Gold фундук",
+      "found": true,
+      "total": 36064,
+      "gtin": null,
+      "ntin": "0200236035306",
+      "nameRu": "Alpen Gold \" фундук \" 85гр (21)",
+      "id": 30973905,
+      "fullCategoryCode": "1020-0009-0002-100011317",
+      "categoryNameRuL1": "Продукты пищевые/Напитки",
+      "categoryNameRuL4": "Шоколад плиточный / Кондитерский шоколад",
+      "attributes": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "RU",
+          "valueRu": "РОССИЯ"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1806903100",
+          "valueRu": "Прочий шокол��д и изделия из него, с начинкой"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "Mondelēz International",
+          "valueRu": "Mondelēz International"
+        }
+      },
+      "allItemsCount": 2
+    },
+    {
+      "query": "KitKat молочный",
+      "found": true,
+      "total": 62116,
+      "gtin": "3800020411087",
+      "ntin": "0200210136371",
+      "nameRu": "ШОКОЛАД KITKAT МОЛОЧНЫЙ ВАФЛЯ БЕЛАЯ ГЛАЗУРЬ СОЛЕНАЯ КАРАМЕЛЬ 99ГР",
+      "id": 28134523,
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "attributes": {
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "2104100000",
+          "valueRu": "Супы и бульоны готовые и заготовки для их приготовления"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "BG",
+          "valueRu": "БОЛГАРИЯ"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "NESTLE",
+          "valueRu": "NESTLE"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "NESTLE",
+          "valueRu": "NESTLE"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        }
+      },
+      "allItemsCount": 2
+    },
+    {
+      "query": "KitKat тёмный",
+      "found": true,
+      "total": 217191,
+      "gtin": null,
+      "ntin": "0200090459782",
+      "nameRu": "KitKat Nestle Темный 169 г",
+      "id": 18603493,
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "attributes": {},
+      "allItemsCount": 2
+    },
+    {
+      "query": "Hershey's молочный",
+      "found": true,
+      "total": 61111,
+      "gtin": "34000338955",
+      "ntin": "0200109161774",
+      "nameRu": "HERSHEY.S 28г шокол.",
+      "id": 19033166,
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "attributes": {
+        "article": {
+          "nameRu": "Модель / артикул",
+          "value": "20809",
+          "valueRu": "20809"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "БЕЗ БРЕНДА",
+          "valueRu": "БЕЗ БРЕНДА"
+        },
+        "quantity": {
+          "nameRu": "Значение (в [ед. изм.])",
+          "value": "0",
+          "valueRu": "0"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1806901900",
+          "valueRu": "Прочие шоколадные конфеты, с начинкой или без начинки"
+        }
+      },
+      "allItemsCount": 2
+    },
+    {
+      "query": "Спартак шоколад",
+      "found": true,
+      "total": 74199,
+      "gtin": "2270250",
+      "ntin": "0200210138221",
+      "nameRu": "КОНФЕТЫ СПАРТАК ШОКОЛАД ГОРЬКИЙ 90% ПЕНАЛ ВЕС",
+      "id": 28134708,
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "attributes": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "BY",
+          "valueRu": "БЕЛАРУСЬ"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "СПАРТАК",
+          "valueRu": "СПАРТАК"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1806329000",
+          "valueRu": "Прочие готовые пищевые продукты, содержащие какао, но без начинки, находящиеся в форме брикетов, пластин или плиток"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "166",
+          "valueRu": "Килограмм"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "СПАРТАК",
+          "valueRu": "СПАРТАК"
+        }
+      },
+      "allItemsCount": 2
+    },
+    {
+      "query": "NA MEDU орехи",
+      "found": true,
+      "total": 31955,
+      "gtin": null,
+      "ntin": "0200091263166",
+      "nameRu": "Кукла MGA Na Na Na Surprise Sparkle",
+      "id": 18682332,
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "attributes": {},
+      "allItemsCount": 2
+    },
+    {
+      "query": "NA MEDU шоколад",
+      "found": true,
+      "total": 58187,
+      "gtin": "4640047112548",
+      "ntin": "0200320049684",
+      "nameRu": "ШОКОЛАД NA MEDU Сказочный Молочный 46% 70г/10",
+      "id": 39362873,
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "attributes": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "RU",
+          "valueRu": "РОССИЯ"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1806329000",
+          "valueRu": "Прочие готовые пищевые продукты, содержащие какао, но без начинки, находящиеся в форме брикетов, пластин или плиток"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "massUnits",
+          "valueRu": "Единицы массы"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "0.07",
+          "valueRu": "0.07"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "ООО ПРАЙД",
+          "valueRu": "ООО ПРАЙД"
+        }
+      },
+      "allItemsCount": 2
+    },
+    {
+      "query": "Lindt Excellence",
+      "found": true,
+      "total": 5072,
+      "gtin": "3046920028004",
+      "ntin": "0200141118842",
+      "nameRu": "Шоколад Lindt Excellence dark 70% 100гр",
+      "id": 21082660,
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "attributes": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "FR",
+          "valueRu": "ФРАНЦИЯ"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1806329000",
+          "valueRu": "Прочие готовые пищевые продукты, содержащие какао, но без начинки, находящиеся в форме брикетов, пластин или плиток"
+        },
+        "unit_category": {
+          "nameRu": "Категория единицы измерения ",
+          "value": "economicUnits",
+          "valueRu": "Экономические единицы"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "LINDT & SPRUENGLI AG",
+          "valueRu": "LINDT & SPRUENGLI AG"
+        }
+      },
+      "allItemsCount": 2
+    },
+    {
+      "query": "Ferrero Raffaello",
+      "found": true,
+      "total": 4424,
+      "gtin": null,
+      "ntin": "0200090379899",
+      "nameRu": "Конфеты Ferrero Raffaello 150 г",
+      "id": 18597951,
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "attributes": {},
+      "allItemsCount": 2
+    }
+  ],
+  "stats": {
+    "total": 20,
+    "found": 20,
+    "gtinCount": 14,
+    "ntinCount": 20
+  }
+}

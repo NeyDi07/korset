@@ -1,0 +1,153 @@
+{
+  "testedAt": "2026-04-18T18:19:41.799Z",
+  "stats": {
+    "processed": 5,
+    "found": 5,
+    "compositionFound": 5,
+    "kbjuFound": 5,
+    "halalFound": 0,
+    "noMatch": 0
+  },
+  "results": [
+    {
+      "id": "013edac0-66ee-49b6-8d0e-4ad949b6d319",
+      "ean": "kaspi_149883341",
+      "query": "Chokodelika Chokodelika Dubai Pistachio шоколадная плитка мо",
+      "arbuzId": "207691",
+      "arbuzArticleIndex": "",
+      "arbuzBarcode": "",
+      "composition": "Яблочное пюре, яблочный сок. Продукт изготовлен из концентрированных сока и пюре. Содержит сахара природного (естественного) происхождения.,",
+      "nutrition": {
+        "energy_kcal": 52,
+        "protein_100g": null,
+        "fat_100g": null,
+        "carbohydrates_100g": 13
+      },
+      "halal": false,
+      "price": 435,
+      "brand": "Агуша",
+      "country": "Россия",
+      "name": "Пюре Агуша фруктовое яблоко, 90 г",
+      "image": "https://arbuz.kz/image/s3/arbuz-kz-products/file_name__e716a416-feb4-410a-b9c6-be961586da0c-4813163008495_pyure_agusha_fruktovoe_yabloko_90_g_1_jpg.jpg?w=400&h=400&_c=1754301113",
+      "characteristics": [
+        {
+          "id": "9",
+          "name": "Без сахара",
+          "iconPng": "https://arbuz.kz/image/s3/arbuz-kz-characteristics/img_url__9-bez_sahara.png?_c=1732789253"
+        }
+      ]
+    },
+    {
+      "id": "01401c84-f862-4c5c-8af5-f8726492e789",
+      "ean": "kaspi_101152554",
+      "query": "Bucheron Bucheron STAND'ART Bitter 72% какао шоколадная плит",
+      "arbuzId": "207691",
+      "arbuzArticleIndex": "",
+      "arbuzBarcode": "",
+      "composition": "Яблочное пюре, яблочный сок. Продукт изготовлен из концентрированных сока и пюре. Содержит сахара природного (естественного) происхождения.,",
+      "nutrition": {
+        "energy_kcal": 52,
+        "protein_100g": null,
+        "fat_100g": null,
+        "carbohydrates_100g": 13
+      },
+      "halal": false,
+      "price": 435,
+      "brand": "Агуша",
+      "country": "Россия",
+      "name": "Пюре Агуша фруктовое яблоко, 90 г",
+      "image": "https://arbuz.kz/image/s3/arbuz-kz-products/file_name__e716a416-feb4-410a-b9c6-be961586da0c-4813163008495_pyure_agusha_fruktovoe_yabloko_90_g_1_jpg.jpg?w=400&h=400&_c=1754301113",
+      "characteristics": [
+        {
+          "id": "9",
+          "name": "Без сахара",
+          "iconPng": "https://arbuz.kz/image/s3/arbuz-kz-characteristics/img_url__9-bez_sahara.png?_c=1732789253"
+        }
+      ]
+    },
+    {
+      "id": "02883e8a-913c-4cf5-a012-b2a3c359f980",
+      "ean": "kaspi_101146462",
+      "query": "Bucheron Bucheron Californian Almond + Cranberry + Strawberr",
+      "arbuzId": "207691",
+      "arbuzArticleIndex": "",
+      "arbuzBarcode": "",
+      "composition": "Яблочное пюре, яблочный сок. Продукт изготовлен из концентрированных сока и пюре. Содержит сахара природного (естественного) происхождения.,",
+      "nutrition": {
+        "energy_kcal": 52,
+        "protein_100g": null,
+        "fat_100g": null,
+        "carbohydrates_100g": 13
+      },
+      "halal": false,
+      "price": 435,
+      "brand": "Агуша",
+      "country": "Россия",
+      "name": "Пюре Агуша фруктовое яблоко, 90 г",
+      "image": "https://arbuz.kz/image/s3/arbuz-kz-products/file_name__e716a416-feb4-410a-b9c6-be961586da0c-4813163008495_pyure_agusha_fruktovoe_yabloko_90_g_1_jpg.jpg?w=400&h=400&_c=1754301113",
+      "characteristics": [
+        {
+          "id": "9",
+          "name": "Без сахара",
+          "iconPng": "https://arbuz.kz/image/s3/arbuz-kz-characteristics/img_url__9-bez_sahara.png?_c=1732789253"
+        }
+      ]
+    },
+    {
+      "id": "05d8ac20-dd37-4547-8975-7c21d9490947",
+      "ean": "kaspi_104496741",
+      "query": "Chokocat Chokocat Не принцесса шоколадная плитка молочный 20",
+      "arbuzId": "207691",
+      "arbuzArticleIndex": "",
+      "arbuzBarcode": "",
+      "composition": "Яблочное пюре, яблочный сок. Продукт изготовлен из концентрированных сока и пюре. Содержит сахара природного (естественного) происхождения.,",
+      "nutrition": {
+        "energy_kcal": 52,
+        "protein_100g": null,
+        "fat_100g": null,
+        "carbohydrates_100g": 13
+      },
+      "halal": false,
+      "price": 435,
+      "brand": "Агуша",
+      "country": "Россия",
+      "name": "Пюре Агуша фруктовое яблоко, 90 г",
+      "image": "https://arbuz.kz/image/s3/arbuz-kz-products/file_name__e716a416-feb4-410a-b9c6-be961586da0c-4813163008495_pyure_agusha_fruktovoe_yabloko_90_g_1_jpg.jpg?w=400&h=400&_c=1754301113",
+      "characteristics": [
+        {
+          "id": "9",
+          "name": "Без сахара",
+          "iconPng": "https://arbuz.kz/image/s3/arbuz-kz-characteristics/img_url__9-bez_sahara.png?_c=1732789253"
+        }
+      ]
+    },
+    {
+      "id": "05f7521c-e842-401e-a482-89428f6a9aad",
+      "ean": "kaspi_141542971",
+      "query": "А4 А4 квадрат-шоколад с печенькой-начинкой шоколадная плитка",
+      "arbuzId": "207691",
+      "arbuzArticleIndex": "",
+      "arbuzBarcode": "",
+      "composition": "Яблочное пюре, яблочный сок. Продукт изготовлен из концентрированных сока и пюре. Содержит сахара природного (естественного) происхождения.,",
+      "nutrition": {
+        "energy_kcal": 52,
+        "protein_100g": null,
+        "fat_100g": null,
+        "carbohydrates_100g": 13
+      },
+      "halal": false,
+      "price": 435,
+      "brand": "Агуша",
+      "country": "Россия",
+      "name": "Пюре Агуша фруктовое яблоко, 90 г",
+      "image": "https://arbuz.kz/image/s3/arbuz-kz-products/file_name__e716a416-feb4-410a-b9c6-be961586da0c-4813163008495_pyure_agusha_fruktovoe_yabloko_90_g_1_jpg.jpg?w=400&h=400&_c=1754301113",
+      "characteristics": [
+        {
+          "id": "9",
+          "name": "Без сахара",
+          "iconPng": "https://arbuz.kz/image/s3/arbuz-kz-characteristics/img_url__9-bez_sahara.png?_c=1732789253"
+        }
+      ]
+    }
+  ]
+}

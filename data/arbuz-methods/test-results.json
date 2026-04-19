@@ -1,0 +1,24 @@
+{
+  "method1": {
+    "totalProducts": 49,
+    "needDetail": false,
+    "categoriesFound": 0
+  },
+  "method2": {
+    "found": 10,
+    "withComp": 9,
+    "withNut": 9,
+    "notFound": 0
+  },
+  "method3": {
+    "found": 10,
+    "withComp": 9,
+    "withNut": 9,
+    "notFound": 0
+  },
+  "collections": {
+    "totalProducts": 50,
+    "withComp": 42,
+    "withNut": 41
+  }
+}

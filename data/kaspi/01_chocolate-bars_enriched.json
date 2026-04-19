@@ -1,0 +1,4620 @@
+{
+  "category": "Chocolate bars",
+  "enrichedAt": "2026-04-18T13:41:12.220Z",
+  "total": 269,
+  "enriched": 130,
+  "found": 52,
+  "verified": 31,
+  "notFound": 78,
+  "products": [
+    {
+      "kaspiCode": "100222742",
+      "name": "KINDER Country шоколадная плитка молочный 23.5 г",
+      "brand": "KINDER",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h5e/h5b/70035311919134.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h5e/h5b/70035311919134.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h5e/h5b/70035311919134.jpg?format=gallery-large"
+        }
+      ],
+      "composition": "молочный шоколад 33,5% , сахар, сухое обезжиренное молоко, растительный жир, воздушные злаки 7,5% (ячмень, рис, пшеница, пшеница спельта, гречиха), молочный жир, эмульгатор (соевый лецитин), идентичный натуральному ароматизатор (ванилин)",
+      "nutritionPer100": {
+        "kcal": 561,
+        "protein": 8.6,
+        "fat": 33.4,
+        "carbs": 54.9
+      },
+      "weight": "23.5",
+      "storageConditions": "хранить при температуре не выше 21°C и относительной влажности не более 70%",
+      "shelfLife": "12 месяцев",
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Россия",
+      "chocolateType": "молочный",
+      "filling": "молочная",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 5,
+      "reviewsCount": 4,
+      "priceKzt": 365,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "120746248",
+      "name": "Milka Alpine Milk шоколадная плитка молочный 80 г",
+      "brand": "Milka",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/hd3/h69/87086320353310.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/hd3/h69/87086320353310.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/hd3/h69/87086320353310.jpg?format=gallery-large"
+        }
+      ],
+      "composition": "сахар, какао-масло, какао тёртое, молоко сухое цельное, сыворотка сухая молочная, молоко сухое обезжиренное, жир молочный, эмульгаторы (лецитин соевый, Е476), паста ореховая (фундук),ароматизатор. В молочной шоколадной массе содержание общего сухого остатка какао – не менее 25 %, сухого обезжиренного остатка какао – не менее 2,5 %, сухого обезжиренного остатка молока – не менее 12 %, молочного жира – не менее 2,5 %",
+      "nutritionPer100": null,
+      "weight": "80",
+      "storageConditions": "Хранить в сухом, прохладном месте, вдали от прямых солнечных лучей.",
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Россия",
+      "chocolateType": "молочный",
+      "filling": "без начинки",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1249,
+      "ean": "7622300424695",
+      "eanMatchSource": "known",
+      "eanVerified": true,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "100222548",
+      "name": "Milka Tuc шоколадная плитка молочный 87 г",
+      "brand": "Milka",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h33/h79/68766218977310.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h33/h79/68766218977310.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h33/h79/68766218977310.jpg?format=gallery-large"
+        },
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/hc2/h43/68766219239454.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/hc2/h43/68766219239454.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/hc2/h43/68766219239454.jpg?format=gallery-large"
+        }
+      ],
+      "composition": "шоколад молочный, (сахар, масло какао, молоко сухое обезжиренное, какао тертое, сыворотка сухая молочная, жир молочный, эмульгаторы (лецитин соевый, Е476), ароматизатор), крекер соленый 15% (мука пшеничная, масло пальмовое и олеин пальмовый, сироп глюкозный, солодовый экстракт из ячменя, соль, крахмал пшеничный, разрыхлители (E450i, натрия гидрокарбонат, аммония гидрокарбонат), молоко сухое обезжиренное, эмульгатор (лецитин соевый), сахар, ароматизаторы, консервант (пиросульфит натрия), масло сливочное, молоко сухое цельное)",
+      "nutritionPer100": null,
+      "weight": "87",
+      "storageConditions": "5-25 °C",
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Германия",
+      "chocolateType": "молочный",
+      "filling": "печенье",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 5,
+      "reviewsCount": null,
+      "priceKzt": 1595,
+      "ean": "0891128148237",
+      "eanMatchSource": "upcitemdb+off",
+      "eanVerified": true,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "120746245",
+      "name": "Milka Hazelnut шоколадная плитка молочный 80 г",
+      "brand": "Milka",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h5a/h22/87086320287774.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h5a/h22/87086320287774.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h5a/h22/87086320287774.jpg?format=gallery-large"
+        }
+      ],
+      "composition": "сахар, фундук цельный обжаренный, какао-масло, какао тертое, молоко сухое цельное, молоко сухое обезжиренное, сыворотка сухая молочная, жир молочный, паста ореховая (фундук), эмульгаторы(лецитин соевый, Е476), ароматизатор",
+      "nutritionPer100": null,
+      "weight": "80",
+      "storageConditions": "хранить при температуре &amp;#43;18°С",
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Украина",
+      "chocolateType": "молочный",
+      "filling": "молочная",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 930,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "102219552",
+      "name": "Победа 72% какао Stevia шоколадная плитка горький 50 г",
+      "brand": "Победа",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/he0/hcd/64131276275742.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/he0/hcd/64131276275742.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/he0/hcd/64131276275742.jpg?format=gallery-large"
+        },
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h09/hb1/64131280764958.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h09/hb1/64131280764958.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h09/hb1/64131280764958.jpg?format=gallery-large"
+        }
+      ],
+      "composition": "тертое какао, подсластитель (мальтитол), какао-порошок, пребиотик (инулин*) (10 %), масло какао, эмульгатор (лецитин соевый), натуральная ваниль, подсластитель натуральный стевия (0,03 %). Не содержит гмо. Содержит сахара природного (естественного) происхождения. Содержит подсластитель",
+      "nutritionPer100": null,
+      "weight": "50",
+      "storageConditions": "Хранить при температуре 10-20 °C, вдали от солнечных лучей",
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Россия",
+      "chocolateType": "горький",
+      "filling": "без начинки",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 5,
+      "reviewsCount": 4,
+      "priceKzt": 850,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "101312517",
+      "name": "Milka Oreo шоколадная плитка молочный 92 г",
+      "brand": "Milka",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h69/h25/83902865014814.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h69/h25/83902865014814.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h69/h25/83902865014814.jpg?format=gallery-large"
+        }
+      ],
+      "composition": "сахар, растительный жир (пальмовое), какао-масло, порошок сыворотки (молоко), сухое обезжиренное молоко, пшеничная мука, какао тертое, молочный жир, сливки сухие (2%), какао-порошок с пониженным содержанием жира (0,7%) , рапсовое масло, эмульгатор (соевый лецитин, лецитин подсолнечника), фундука пасты, сироп глюкозы-фруктозы, пшеничный крахмал, разрыхлители (E 501, E 503, E 500), соль, ароматизаторы",
+      "nutritionPer100": {
+        "kcal": 582,
+        "protein": 5.7,
+        "fat": 27,
+        "carbs": 51
+      },
+      "weight": "92",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Венгрия",
+      "chocolateType": "молочный",
+      "filling": "печенье",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 5,
+      "reviewsCount": 2,
+      "priceKzt": 1125,
+      "ean": "0891128148329",
+      "eanMatchSource": "upcitemdb+off",
+      "eanVerified": true,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "102057772",
+      "name": "OZera Milk & Extra Hazelnuts шоколадная плитка молочный 90 г",
+      "brand": "O`Zera",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/hb8/hdb/68759781703710.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/hb8/hdb/68759781703710.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/hb8/hdb/68759781703710.jpg?format=gallery-large"
+        }
+      ],
+      "composition": "сахар, фундук жареный, молоко сухое цельное, масло какао, какао тертое, сыворотка молочная сухая, эмульгаторы: соевый лецитин, Е476; ароматизатор",
+      "nutritionPer100": {
+        "kcal": 560,
+        "protein": 8,
+        "fat": 39,
+        "carbs": 47
+      },
+      "weight": "90",
+      "storageConditions": "Хранить в сухом, прохладном месте при температуре не выше 25 °C.",
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Россия",
+      "chocolateType": "молочный",
+      "filling": "фундук",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 5,
+      "reviewsCount": 8,
+      "priceKzt": 1035,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "100223060",
+      "name": "KINDER Country шоколадная плитка молочный 94 г",
+      "brand": "KINDER",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h33/h3f/63887399485470.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h33/h3f/63887399485470.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h33/h3f/63887399485470.jpg?format=gallery-large"
+        }
+      ],
+      "composition": "молочный шоколад (сахар, масло какао, сухое цельное молоко, тертое какао, эмульгатор: лецитины, ароматизатор), сахар, сухое обезжиренное молоко, растительный жир, воздушные злаки (ячмень, рис, пшеница, пшеница спельта, гречиха), молочный жир, эмульгатор: лецитины, ароматизатор. Содержит продукты переработки молока и сои",
+      "nutritionPer100": {
+        "kcal": 561,
+        "protein": 8.6,
+        "fat": 33.8,
+        "carbs": 54.9
+      },
+      "weight": "94",
+      "storageConditions": "от &amp;#43;15 до &amp;#43;22",
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Россия",
+      "chocolateType": "молочный",
+      "filling": "злаки",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 5,
+      "reviewsCount": 2,
+      "priceKzt": 1365,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "100222544",
+      "name": "Milka Lu шоколадная плитка молочный 87 г",
+      "brand": "Milka",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/hae/h43/84983045619742.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/hae/h43/84983045619742.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/hae/h43/84983045619742.jpg?format=gallery-large"
+        }
+      ],
+      "composition": "шоколад молочный, печенье 25%, солодовый экстракт из ячменя, крахмал пшеничный, эмульгатор (лецитин соевый), консервант (пиросульфит натрия))",
+      "nutritionPer100": {
+        "kcal": 512,
+        "protein": 6.2,
+        "fat": 26,
+        "carbs": 63
+      },
+      "weight": "87",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Германия",
+      "chocolateType": "молочный",
+      "filling": "печенье",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 5,
+      "reviewsCount": 1,
+      "priceKzt": 1115,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "100222642",
+      "name": "Alpen Gold Max Fun Взрывная карамель, мармелад, печенье шоколадная плитка молочный 130 г",
+      "brand": "Alpen Gold",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/hf6/hd8/63889116463134.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/hf6/hd8/63889116463134.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/hf6/hd8/63889116463134.jpg?format=gallery-large"
+        }
+      ],
+      "composition": "шоколад молочный (сахар, какао тёртое, масло какао, сыворотка сухая молочная, молоко сухое цельное, жир молочный, молоко сухое обезжиренное, эмульгаторы (лецитин соевый, Е476), ароматизатор), взрывная карамель (сахар, сироп глюкозный, лактоза (из молока)), мармелад жевательный фигурный (сироп глюкозный, сахар, желатин говяжий, регулятор кислотности (кислота лимонная), вода, агент желирующий (агар), масла растительные (кокосовое и пальмовое), ароматизатор натуральный, красители (Е163, Е141, экстракт паприки), глазирователи (воск карнаубский, воск пчелиный белый и жёлтый), экстракт чёрной моркови, экстракт куркумы), печенье овсяное (мука овсяная, сахар, жир растительный (масла пальмовое и рапсовое), сироп сахарный инвертный, крахмал тапиоковый, разрыхлители (гидрокарбонат натрия, Е503(ii)), ароматизатор, соль)",
+      "nutritionPer100": null,
+      "weight": "160",
+      "storageConditions": "Хранить при температуре от 5 до 25 °C",
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Украина",
+      "chocolateType": "молочный",
+      "filling": "карамель",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 5,
+      "reviewsCount": 1,
+      "priceKzt": 1560,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "122664720",
+      "name": "Alpen Gold с печеньем орео шоколадная плитка молочный 85 г",
+      "brand": "Alpen Gold",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h24/he2/86882919153694.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h24/he2/86882919153694.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h24/he2/86882919153694.jpg?format=gallery-large"
+        }
+      ],
+      "composition": "шоколад, печенье",
+      "nutritionPer100": null,
+      "weight": "85",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Россия",
+      "chocolateType": "молочный",
+      "filling": "печенье",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 995,
+      "ean": "7622210592002",
+      "eanMatchSource": "upcitemdb",
+      "eanVerified": false,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "100222543",
+      "name": "Milka Цельный миндаль шоколадная плитка молочный 80 г",
+      "brand": "Milka",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h26/h11/63875594420254.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h26/h11/63875594420254.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h26/h11/63875594420254.jpg?format=gallery-large"
+        }
+      ],
+      "composition": "сахар, миндаль обжаренный цельный, масло какао, какао тертое, сухое цельное молоко, сухое обезжиренное молоко, сухая молочная сыворотка, молочный жир, паста ореховая (фундук), эмульгаторы (соевый лецитин, Е476), ароматизатор",
+      "nutritionPer100": {
+        "kcal": 545,
+        "protein": 8.6,
+        "fat": 35,
+        "carbs": 49
+      },
+      "weight": "90",
+      "storageConditions": "хранить в сухом прохладном месте",
+      "shelfLife": "9 месяцев",
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Россия",
+      "chocolateType": "молочный",
+      "filling": "миндаль",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 5,
+      "reviewsCount": 2,
+      "priceKzt": 935,
+      "ean": "0100372312227",
+      "eanMatchSource": "upcitemdb",
+      "eanVerified": false,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "104194927",
+      "name": "Победа 100% Charged с цельным миндалем 36% какао шоколадная плитка молочный 90 г",
+      "brand": "Победа",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h5c/h37/64383889997854.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h5c/h37/64383889997854.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h5c/h37/64383889997854.jpg?format=gallery-large"
+        }
+      ],
+      "composition": "Орех (миндаль) цельный (23%), масло какао, тертое какао, сухое обезжиренное молоко, сыворотка молочная сухая, подсластитель (мальтит), пребиотик (инулин 10%), сухое цельное молоко, эмульгатор (лецитин соевый), подсластитель — экстракты стевии (0,08%), натуральная ваниль.",
+      "nutritionPer100": {
+        "kcal": 570,
+        "protein": 15,
+        "fat": 41,
+        "carbs": 11.7
+      },
+      "weight": "90",
+      "storageConditions": "хранить в сухом, прохладном месте, вдали от прямых солнечных лучей.",
+      "shelfLife": "365 дней",
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Россия",
+      "chocolateType": "молочный",
+      "filling": "миндаль",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 5,
+      "reviewsCount": 1,
+      "priceKzt": 1485,
+      "ean": "0059935265466",
+      "eanMatchSource": "upcitemdb",
+      "eanVerified": false,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "101152789",
+      "name": "Ritter Sport Лесной орех шоколадная плитка молочный 100 г",
+      "brand": "Ritter Sport",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/hc3/h4d/81186012725278.png?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/hc3/h4d/81186012725278.png?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/hc3/h4d/81186012725278.png?format=gallery-large"
+        },
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h0e/h25/81186012790814.png?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h0e/h25/81186012790814.png?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h0e/h25/81186012790814.png?format=gallery-large"
+        }
+      ],
+      "composition": "сахар, масло какао, орех лещины дробленый, какао тертое, сухое цельное молоко, лактоза, сухое обезжиренное молоко, молочный жир, эмульгатор (соевый лецитин)",
+      "nutritionPer100": null,
+      "weight": "100",
+      "storageConditions": "Хранить при температуре от 15 до 21 °C, при относительной влажности воздуха не более 65%",
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Германия",
+      "chocolateType": "молочный",
+      "filling": "лесной орех",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 5,
+      "reviewsCount": null,
+      "priceKzt": 1323,
+      "ean": "4000417019004",
+      "eanMatchSource": "known",
+      "eanVerified": true,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "101152933",
+      "name": "Ritter Sport Марципан шоколадная плитка темный 100 г",
+      "brand": "Ritter Sport",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h8f/hc4/81186012823582.png?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h8f/hc4/81186012823582.png?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h8f/hc4/81186012823582.png?format=gallery-large"
+        },
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h38/hb1/81186012889118.png?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h38/hb1/81186012889118.png?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h38/hb1/81186012889118.png?format=gallery-large"
+        }
+      ],
+      "composition": "сахар, какао тертое, ядро миндаля, масло какао, инвертный сироп, эмульгатор (соевый лецитин)",
+      "nutritionPer100": null,
+      "weight": "100",
+      "storageConditions": "При температуре от +15`С до +21`С, с относительной влажностью воздуха не более 75%, не подвергать воздействию прямого солнечного света.",
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Германия",
+      "chocolateType": "темный",
+      "filling": "марципан",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 5,
+      "reviewsCount": 10,
+      "priceKzt": 1437,
+      "ean": "0050255011009",
+      "eanMatchSource": "upcitemdb+off",
+      "eanVerified": true,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "102211250",
+      "name": "Ritter Sport Цельный миндаль шоколадная плитка темный 100 г",
+      "brand": "Ritter Sport",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h8e/had/64360697921566.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h8e/had/64360697921566.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h8e/had/64360697921566.jpg?format=gallery-large"
+        },
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h77/hcd/64360703229982.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h77/hcd/64360703229982.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h77/hcd/64360703229982.jpg?format=gallery-large"
+        }
+      ],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "100",
+      "storageConditions": "хранить в сухом прохладном месте",
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Германия",
+      "chocolateType": "темный",
+      "filling": "миндаль",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 5,
+      "reviewsCount": 1,
+      "priceKzt": 1528,
+      "ean": "0050255011009",
+      "eanMatchSource": "upcitemdb+off",
+      "eanVerified": true,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "101152852",
+      "name": "Ritter Sport Extra Cocoa 74% шоколадная плитка темный 100 г",
+      "brand": "Ritter Sport",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h52/h09/81186012528670.png?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h52/h09/81186012528670.png?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h52/h09/81186012528670.png?format=gallery-large"
+        },
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h0a/heb/81186012594206.png?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h0a/heb/81186012594206.png?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h0a/heb/81186012594206.png?format=gallery-large"
+        }
+      ],
+      "composition": "какао",
+      "nutritionPer100": null,
+      "weight": "100",
+      "storageConditions": "хранить при температуре &amp;#43;18°С",
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Германия",
+      "chocolateType": "темный",
+      "filling": "без начинки",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 5,
+      "reviewsCount": 2,
+      "priceKzt": 1996,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "101153203",
+      "name": "Ritter Sport Ром, изюм, орех шоколадная плитка молочный 100 г",
+      "brand": "Ritter Sport",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h84/hc1/81186012168222.png?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h84/hc1/81186012168222.png?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h84/hc1/81186012168222.png?format=gallery-large"
+        },
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h73/h45/81186012233758.png?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h73/h45/81186012233758.png?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h73/h45/81186012233758.png?format=gallery-large"
+        }
+      ],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "100",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Германия",
+      "chocolateType": "молочный",
+      "filling": "изюм",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 5,
+      "reviewsCount": 4,
+      "priceKzt": 1355,
+      "ean": "0050255011009",
+      "eanMatchSource": "upcitemdb+off",
+      "eanVerified": true,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "113220408",
+      "name": "Ritter Sport Лесной орех и клюква шоколадная плитка молочный 100 г",
+      "brand": "Ritter Sport",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h25/h26/83647907463198.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h25/h26/83647907463198.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h25/h26/83647907463198.jpg?format=gallery-large"
+        }
+      ],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "100",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Германия",
+      "chocolateType": "молочный",
+      "filling": "лесной орех",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1287,
+      "ean": "4000417019004",
+      "eanMatchSource": "known",
+      "eanVerified": true,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "101153246",
+      "name": "Ritter Sport Цельный лесной орех шоколадная плитка темный 100 г",
+      "brand": "Ritter Sport",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h05/h62/64222020075550.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h05/h62/64222020075550.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h05/h62/64222020075550.jpg?format=gallery-large"
+        }
+      ],
+      "composition": "Сахар, какао тертое, орех лещины, масло какао, молочный жир, эмульгатор (соевый лецитин). Может содержать следы арахиса, других орехов, глютена, молочных продуктов и яиц. Содержание в шоколадной массе: общего сухого остатка какао - не менее 50%.",
+      "nutritionPer100": null,
+      "weight": "100",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Германия",
+      "chocolateType": "темный",
+      "filling": "лесной орех",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 5,
+      "reviewsCount": null,
+      "priceKzt": 1671,
+      "ean": "4000417019004",
+      "eanMatchSource": "known",
+      "eanVerified": true,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "104680497",
+      "name": "Победа 100% Charged с цельным миндалем 57% какао шоколадная плитка темный 90 г",
+      "brand": "Победа",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h5f/h03/64917270724638.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h5f/h03/64917270724638.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h5f/h03/64917270724638.jpg?format=gallery-large"
+        }
+      ],
+      "composition": "Тёртое какао, орех (миндаль) цельный (23%), подсластитель (мальтит), сыворотка молочная сухая, масло какао, пребиотик (инулин 10%), какао-порошок, эмульгатор (лецитин соевый), натуральная ваниль, подсластитель — экстракты стевии (0,07%).",
+      "nutritionPer100": {
+        "kcal": 490,
+        "protein": 12,
+        "fat": 38,
+        "carbs": 26
+      },
+      "weight": "90",
+      "storageConditions": "хранить в сухом, прохладном месте, вдали от источников тепла и солнечного света.",
+      "shelfLife": "365 дней",
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Россия",
+      "chocolateType": "темный",
+      "filling": "миндаль",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 5,
+      "reviewsCount": null,
+      "priceKzt": 1590,
+      "ean": "0788436832050",
+      "eanMatchSource": "upcitemdb",
+      "eanVerified": false,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "104733097",
+      "name": "Победа С цельным фундуком шоколадная плитка молочный 90 г",
+      "brand": "Победа",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h49/ha5/64909567066142.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h49/ha5/64909567066142.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h49/ha5/64909567066142.jpg?format=gallery-large"
+        },
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h04/h4d/64909568180254.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h04/h4d/64909568180254.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h04/h4d/64909568180254.jpg?format=gallery-large"
+        }
+      ],
+      "composition": "Орех (фундук) цельный (23%), масло какао, тертое какао, сухое обезжиренное молоко, сыворотка молочная сухая, подсластитель (мальтит), пребиотик (инулин 10%), сухое цельное молоко, эмульгатор (лецитин соевый), подсластитель — стевиолгликозиды (0,08%), натуральная ваниль.",
+      "nutritionPer100": {
+        "kcal": 590,
+        "protein": 14,
+        "fat": 44,
+        "carbs": 34
+      },
+      "weight": "90",
+      "storageConditions": null,
+      "shelfLife": "365 дней",
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Россия",
+      "chocolateType": "молочный",
+      "filling": "фундук",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 5,
+      "reviewsCount": 2,
+      "priceKzt": 1575,
+      "ean": "0767035151816",
+      "eanMatchSource": "upcitemdb",
+      "eanVerified": false,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "101152586",
+      "name": "Ritter Sport Кокос шоколадная плитка молочный 100 г",
+      "brand": "Ritter Sport",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/hce/hd9/64222729895966.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/hce/hd9/64222729895966.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/hce/hd9/64222729895966.jpg?format=gallery-large"
+        }
+      ],
+      "composition": "Сахар, масло пальмовое, масло какао, кокосовая стружка, сухое цельное молоко, какао тертое, сухое обезжиренное молоко, лактоза, молочный жир, экстракт мякоти кокосового ореха, глюкозный сироп, эмульгатор (соевый лецитин), растительный белок (горох), концентрат лимонного сока. Может содержать следы арахиса, других орехов, глютена и яиц. Содержание в шоколадной массе: общего сухого остатка какао - не менее 30%, сухого обезжиренного остатка какао - не менее 5%, сухого обезжиренного остатка молока - не менее 18%, молочного жира - не менее 5%.",
+      "nutritionPer100": null,
+      "weight": "100",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Германия",
+      "chocolateType": "молочный",
+      "filling": "кокос",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 5,
+      "reviewsCount": 1,
+      "priceKzt": 1287,
+      "ean": "0050255011009",
+      "eanMatchSource": "upcitemdb+off",
+      "eanVerified": true,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "101152947",
+      "name": "Ritter Sport Мята шоколадная плитка темный 100 г",
+      "brand": "Ritter Sport",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h94/h2c/64018470567966.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h94/h2c/64018470567966.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h94/h2c/64018470567966.jpg?format=gallery-large"
+        }
+      ],
+      "composition": "ахар, какао тертое, масло какао, молочный жир, эмульгатор (соевый лецитин). Начинка: сахар, растительное масло - смесь (пальмовое, кокосовое), глюкозный сироп, влагоудерживающий агент (сорбитовый сироп), масло мяты перечной, эмульгатор (соевый лецитин).",
+      "nutritionPer100": null,
+      "weight": "100",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Германия",
+      "chocolateType": "темный",
+      "filling": "мята",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 5,
+      "reviewsCount": 1,
+      "priceKzt": 1377,
+      "ean": "0696603064749",
+      "eanMatchSource": "upcitemdb",
+      "eanVerified": false,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "160269603",
+      "name": "Schogetten с начинкой из йогурта со вкусом вишни и гибискуса шоколадная плитка молочный 100 г",
+      "brand": "Schogetten",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "100 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Германия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1922,
+      "ean": "4000607029004",
+      "eanMatchSource": "upcitemdb+off",
+      "eanVerified": true,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "101152706",
+      "name": "Ritter Sport Карамельный мусс с миндалем шоколадная плитка молочный 100 г",
+      "brand": "Ritter Sport",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h6d/h82/81186012626974.png?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h6d/h82/81186012626974.png?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h6d/h82/81186012626974.png?format=gallery-large"
+        },
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h2a/h9e/81186012692510.png?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h2a/h9e/81186012692510.png?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h2a/h9e/81186012692510.png?format=gallery-large"
+        }
+      ],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "100",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Германия",
+      "chocolateType": "молочный",
+      "filling": "миндаль",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 5,
+      "reviewsCount": 1,
+      "priceKzt": 1372,
+      "ean": "0696603064749",
+      "eanMatchSource": "upcitemdb",
+      "eanVerified": false,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "162250015",
+      "name": "Ritter Sport Extra Cocoa шоколадная плитка темный 300 г",
+      "brand": "Ritter Sport",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "300 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Германия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 5700,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "138619983",
+      "name": "KitKat соленая карамель с хрустящей вафлей шоколадная плитка молочный 99 г",
+      "brand": "KitKat",
+      "categoryCodes": [],
+      "images": [],
+      "composition": "сахар, масло какао, сухое цельное молоко, жир специального назначения (масло пальмовое, эмульгатор (лецитины)), мука пшеничная (содержит глютен), какао тёртое, сыворотка молочная сухая, молочный жир, глюкозный сироп, эмульгаторы (лецитины, Е476), ароматизаторы натуральные, соль, масло сливочное, какао-порошок с пониженным содержанием жира, сливки, разрыхлитель (гидрокарбонат натрия), вещество для обработки муки (сульфат кальция), краситель (экстракт паприки), антиокислители (Е304(i), альфа-Токоферол)",
+      "nutritionPer100": {
+        "kcal": 522,
+        "protein": 7.2,
+        "fat": 28.4,
+        "carbs": 58.5
+      },
+      "weight": "99 г",
+      "storageConditions": "Хранить при температуре от 5 до 25 °C",
+      "shelfLife": "330",
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Болгария",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 2750,
+      "ean": "0653046163606",
+      "eanMatchSource": "upcitemdb",
+      "eanVerified": false,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "162054474",
+      "name": "Feastables Mr.Beast Milk шоколадная плитка молочный 60 г",
+      "brand": "Feastables",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "60 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "США",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 4389,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "162249489",
+      "name": "Ritter Sport марципан шоколадная плитка темный 300 г",
+      "brand": "Ritter Sport",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "300 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Германия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 4140,
+      "ean": "0744759759320",
+      "eanMatchSource": "upcitemdb",
+      "eanVerified": false,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "162249231",
+      "name": "Ritter Sport марципан шоколадная плитка темный 200 г",
+      "brand": "Ritter Sport",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "200 г",
+      "storageConditions": "При температуре 0°С до &amp;#43;25°С и относительной влажности воздуха не более 75%",
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Германия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 2840,
+      "ean": "4051379008124",
+      "eanMatchSource": "upcitemdb",
+      "eanVerified": false,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "162249619",
+      "name": "Ritter Sport марципан шоколадная плитка темный 1200 г",
+      "brand": "Ritter Sport",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "1200 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Германия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 15000,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "162249783",
+      "name": "Ritter Sport цельный лесной орех шоколадная плитка темный 200 г",
+      "brand": "Ritter Sport",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "200 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Германия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 3440,
+      "ean": "4051379008124",
+      "eanMatchSource": "upcitemdb",
+      "eanVerified": false,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "162249299",
+      "name": "Ritter Sport Extra Cocoa шоколадная плитка темный 200 г",
+      "brand": "Ritter Sport",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "200 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Германия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 4000,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "163224774",
+      "name": "Libertad Kids Libertad без сахара с фундуком шоколадная плитка молочный 65 г",
+      "brand": "Libertad",
+      "categoryCodes": [],
+      "images": [],
+      "composition": "овсяный шоколад (подсластитель мальтит, какао масло, овсяные хлопья молотые, какао тертое, эмульгатор лецитин соевый, экстракт ванили) дробленый фундук",
+      "nutritionPer100": {
+        "kcal": 510,
+        "protein": 4.2,
+        "fat": 39.4,
+        "carbs": 50.8
+      },
+      "weight": "65 г",
+      "storageConditions": "продукт следует хранить при температуре от 15ºС до 22 ºС и относительной влажности воздуха не более 70%. Продукт не должен подвергаться воздействию прямого солнечного света.",
+      "shelfLife": "12 месяцев",
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Россия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1250,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "161859183",
+      "name": "Ritter Sport цельный миндаль шоколадная плитка темный 100 г",
+      "brand": "Ritter Sport",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "100 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Германия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 4830,
+      "ean": "0050255011009",
+      "eanMatchSource": "upcitemdb+off",
+      "eanVerified": true,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "104194781",
+      "name": "Победа 100% Charged с цельным фундуком 57% какао шоколадная плитка темный 90 г",
+      "brand": "Победа",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/hca/ha2/64383891963934.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/hca/ha2/64383891963934.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/hca/ha2/64383891963934.jpg?format=gallery-large"
+        },
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h9d/h09/64383894093854.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h9d/h09/64383894093854.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h9d/h09/64383894093854.jpg?format=gallery-large"
+        }
+      ],
+      "composition": "Орех (фундук) цельный (23%), подсластитель (мальтит), сыворотка молочная сухая, масло какао, пребиотик (инулин 10%), какао-порошок, эмульгатор (лецитин соевый), натуральная ваниль, подсластитель — экстракты стевии (0,07%).",
+      "nutritionPer100": {
+        "kcal": 510,
+        "protein": 11,
+        "fat": 41,
+        "carbs": 26
+      },
+      "weight": "90",
+      "storageConditions": "хранить в сухом помещении от 5 до 25 градусов",
+      "shelfLife": "365 дней",
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Россия",
+      "chocolateType": "темный",
+      "filling": "фундук",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 5,
+      "reviewsCount": 7,
+      "priceKzt": 2000,
+      "ean": "0788436832050",
+      "eanMatchSource": "upcitemdb",
+      "eanVerified": false,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "146532213",
+      "name": "Ritter Sport карамельный крем и печенье шоколадная плитка молочный 100 г",
+      "brand": "Ritter Sport",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "100 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Германия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1441,
+      "ean": "0696603064749",
+      "eanMatchSource": "upcitemdb",
+      "eanVerified": false,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "101144584",
+      "name": "Ritter Sport Миндаль и апельсин шоколадная плитка темный 100 г",
+      "brand": "Ritter Sport",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h4a/h4e/64224338411550.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h4a/h4e/64224338411550.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h4a/h4e/64224338411550.jpg?format=gallery-large"
+        }
+      ],
+      "composition": "шоколад тёмный (сахар, какао тёртое, масло какао, молочный жир, эмульгатор соевый лецитин); ядра орехов миндаля дроблёные; апельсиновые цукаты (апельсиновая цедра, глюкозно-фруктозный сироп, сахар, концентрированный лимонный сок, апельсиновое эфирное масло, декстроза)",
+      "nutritionPer100": null,
+      "weight": "100",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Германия",
+      "chocolateType": "темный",
+      "filling": "миндаль",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 5,
+      "reviewsCount": 2,
+      "priceKzt": 1318,
+      "ean": "0050255018008",
+      "eanMatchSource": "upcitemdb+off",
+      "eanVerified": true,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "104267640",
+      "name": "Ritter Sport Cashew шоколадная плитка молочный 100 г",
+      "brand": "Ritter Sport",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/he8/hef/64455761952798.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/he8/hef/64455761952798.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/he8/hef/64455761952798.jpg?format=gallery-large"
+        }
+      ],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "100",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Германия",
+      "chocolateType": "молочный",
+      "filling": "кешью",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 5,
+      "reviewsCount": 2,
+      "priceKzt": 1533,
+      "ean": "0050255707001",
+      "eanMatchSource": "upcitemdb",
+      "eanVerified": false,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "153958532",
+      "name": "Feastables Milk Crunch шоколадная плитка молочный 60 г",
+      "brand": "Feastables",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "60 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "фольга",
+      "countryOfOrigin": "США",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 4389,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "155280585",
+      "name": "Bucheron Filing черника со сливками шоколадная плитка молочный 85 г",
+      "brand": "Bucheron",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "85 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Россия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 985,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "155280474",
+      "name": "Bucheron Blanc Edition с изюмом и орехами шоколадная плитка молочный 85 г",
+      "brand": "Bucheron",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "85 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Россия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1124,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "155187496",
+      "name": "Bucheron Bucheron Blanc Edition шоколадная плитка молочный 85 г",
+      "brand": "Bucheron",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "85 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Россия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1124,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "155280114",
+      "name": "Bucheron миланская карамель шоколадная плитка молочный 85 г",
+      "brand": "Bucheron",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "85 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Россия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 969,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "155187516",
+      "name": "Bucheron Bucheron Village шоколадная плитка молочный 85 г",
+      "brand": "Bucheron",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "85 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Россия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1648,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "155280462",
+      "name": "Bucheron Village cocoa+whole almond шоколадная плитка горький 85 г",
+      "brand": "Bucheron",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "85 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Россия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1745,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "155187523",
+      "name": "Bucheron Bucheron Village шоколадная плитка горький 85 г",
+      "brand": "Bucheron",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "85 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Россия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1745,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "155280462",
+      "name": "Bucheron Village cocoa+whole almond шоколадная плитка горький 85 г",
+      "brand": "Bucheron",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "85 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Россия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1745,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "161189072",
+      "name": "Спартак с поп-корном шоколадная плитка молочный 95 г",
+      "brand": "Спартак ",
+      "categoryCodes": [],
+      "images": [],
+      "composition": "сахар, какао-масло, молоко сухое (массовая доля жира 25%), какао тертое, зерна кукурузы карамелизованные, сыворотка молочная сухая, эмульгатор (лецитин), ароматизатор натуральный «Ваниль»",
+      "nutritionPer100": null,
+      "weight": "95 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Беларусь",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1500,
+      "ean": "0758626327215",
+      "eanMatchSource": "upcitemdb",
+      "eanVerified": false,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "100222717",
+      "name": "Ritter Sport Цельный лесной орех шоколадная плитка молочный 100 г",
+      "brand": "Ritter Sport",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h54/ha1/85075821166622.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h54/ha1/85075821166622.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h54/ha1/85075821166622.jpg?format=gallery-large"
+        },
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h47/h57/85075821297694.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h47/h57/85075821297694.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h47/h57/85075821297694.jpg?format=gallery-large"
+        }
+      ],
+      "composition": "шоколад молочный (сахар, какао тёртое, масло какао, сухое цельное молоко, лактоза, сухое обезжиренное молоко, молочный жир, эмульгатор соевый лецитин); ядра орехов лещины",
+      "nutritionPer100": null,
+      "weight": "100",
+      "storageConditions": "хранить при температуре от +15°С до +21°С и относительной влажности воздуха не более 65%",
+      "shelfLife": "10 месяцев",
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Германия",
+      "chocolateType": "молочный",
+      "filling": "фундук",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 5,
+      "reviewsCount": 6,
+      "priceKzt": 1671,
+      "ean": "4000417019004",
+      "eanMatchSource": "known",
+      "eanVerified": true,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "103022368",
+      "name": "Ritter Sport Caramelized Almonds шоколадная плитка молочный 100 г",
+      "brand": "Ritter Sport",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/ha6/h84/63899628830750.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/ha6/h84/63899628830750.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/ha6/h84/63899628830750.jpg?format=gallery-large"
+        }
+      ],
+      "composition": "сахар, какао-масло, какао-масса, сухое цельное МОЛОКО, МИНДАЛЬ (2,5%), ЛАКТОЗА, сухое обезжиренное МОЛОКО, безводное СЛИВОЧНОЕ МАСЛО, эмульгатор: СОЕВЫЙ лецитин. Может содержать арахис, другие ОРЕХИ, злаки, содержащие глютен, и яйца. Какао: минимум 30%",
+      "nutritionPer100": null,
+      "weight": "100",
+      "storageConditions": "хранить в сухом, прохладном месте, вдали от прямых солнечных лучей",
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Германия",
+      "chocolateType": "молочный",
+      "filling": "миндаль",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 5,
+      "reviewsCount": null,
+      "priceKzt": 1402,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "139323164",
+      "name": "Победа Пористый без сахара шоколадная плитка молочный 65 г",
+      "brand": "Победа",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": {
+        "kcal": 470,
+        "protein": 11,
+        "fat": 31,
+        "carbs": 36
+      },
+      "weight": "65 г",
+      "storageConditions": "Хранить при температуре (18±3)°С и относительной влажности воздуха не более 70%. Не подвергать воздействию прямого солнечного света.",
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Россия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 960,
+      "ean": "0042621159699",
+      "eanMatchSource": "upcitemdb",
+      "eanVerified": false,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "160268925",
+      "name": "Schogetten с начинкой из йогурта со вкусом карамельного чизкейка шоколадная плитка молочный 100 г",
+      "brand": "Schogetten",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "100 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Германия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1922,
+      "ean": "4000607029004",
+      "eanMatchSource": "upcitemdb+off",
+      "eanVerified": true,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "116861663",
+      "name": "Alma Chocolates с жентом шоколадная плитка темный 200 г",
+      "brand": "Alma Chocolates",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h2c/hb5/85242310000670.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h2c/hb5/85242310000670.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h2c/hb5/85242310000670.jpg?format=gallery-large"
+        },
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/hd6/ha1/85242310066206.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/hd6/ha1/85242310066206.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/hd6/ha1/85242310066206.jpg?format=gallery-large"
+        }
+      ],
+      "composition": "какао тертое, сахар, масло какао, эмульгатор: соевый лецитин, ароматизатор: ванилин, эмульгатор: Е476.",
+      "nutritionPer100": {
+        "kcal": 539,
+        "protein": 5.3,
+        "fat": 34.4,
+        "carbs": 47.2
+      },
+      "weight": "200",
+      "storageConditions": "Хранить при температуре 8-23º C и относительной влажности не более 75%",
+      "shelfLife": "12 месяцев",
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Казахстан",
+      "chocolateType": "темный",
+      "filling": "жент",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 4100,
+      "ean": "7290001419779",
+      "eanMatchSource": "upcitemdb+off",
+      "eanVerified": true,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "101222091",
+      "name": "Schogetten Yoghurt-Strawberry шоколадная плитка молочный 100 г",
+      "brand": "Schogetten",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/hd2/h5f/64007142277150.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/hd2/h5f/64007142277150.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/hd2/h5f/64007142277150.jpg?format=gallery-large"
+        },
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/hd5/h6d/64007145160734.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/hd5/h6d/64007145160734.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/hd5/h6d/64007145160734.jpg?format=gallery-large"
+        }
+      ],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "100 г",
+      "storageConditions": null,
+      "shelfLife": "365 дней",
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Германия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1742,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "116860636",
+      "name": "Ritter Sport Orange шоколадная плитка темный 100 г",
+      "brand": "Ritter Sport",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h25/hb1/85242367836190.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h25/hb1/85242367836190.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h25/hb1/85242367836190.jpg?format=gallery-large"
+        }
+      ],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "100",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Германия",
+      "chocolateType": "темный",
+      "filling": "апельсин",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1890,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "101281818",
+      "name": "Schogetten Caramel brownie шоколадная плитка молочный 100 г",
+      "brand": "Schogetten",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/hc3/h28/64588871270430.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/hc3/h28/64588871270430.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/hc3/h28/64588871270430.jpg?format=gallery-large"
+        },
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/hbc/h07/64588874317854.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/hbc/h07/64588874317854.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/hbc/h07/64588874317854.jpg?format=gallery-large"
+        }
+      ],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "100 г",
+      "storageConditions": "при температуре от +12'C до +18'C и относительной влажности воздуха не более 60%",
+      "shelfLife": "365 дней",
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Германия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 5,
+      "reviewsCount": null,
+      "priceKzt": 1742,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "141542971",
+      "name": "А4 квадрат-шоколад с печенькой-начинкой шоколадная плитка молочный 66 г",
+      "brand": "А4",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "66 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Россия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 890,
+      "ean": "0028562004755",
+      "eanMatchSource": "upcitemdb",
+      "eanVerified": false,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "133947705",
+      "name": "Alma Chocolates Nomad's Sweets с куртом шоколадная плитка темный 200 г",
+      "brand": "Alma Chocolates",
+      "categoryCodes": [],
+      "images": [],
+      "composition": "какао тертое, сахар, масло какао, эмульгатор: соевый лецитин, ароматизатор: ванилин, эмульгатор: Е476.",
+      "nutritionPer100": {
+        "kcal": 539,
+        "protein": 5.3,
+        "fat": 34.4,
+        "carbs": 47.2
+      },
+      "weight": "200 г",
+      "storageConditions": "Хранить при температуре 8-23º C и относительной влажности не более 75%",
+      "shelfLife": "12 месяцев",
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Казахстан",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 4100,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "129847711",
+      "name": "Ritter Sport Шоколад молочный Фисташка шоколадная плитка молочный 100 г",
+      "brand": "Ritter Sport",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "100 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Германия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1614,
+      "ean": "0050255018008",
+      "eanMatchSource": "upcitemdb+off",
+      "eanVerified": true,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "102991689",
+      "name": "Ritter Sport Имбирное печенье шоколадная плитка молочный 100 г",
+      "brand": "Ritter Sport",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h68/h8e/64099876143134.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h68/h8e/64099876143134.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h68/h8e/64099876143134.jpg?format=gallery-large"
+        }
+      ],
+      "composition": "сахар, масло пальмовое, масло какао, какао тертое, пшеничная мука, лактоза, сухое цельное молоко, сухое обезжиренное молоко, сухие сливки, молочный жир, сливочное масло, пряности (корица, мускатный орех, гвоздика, кориандр, имбирь, перец душистый, мускатный цвет, кардамон), эмульгатор (соевый лецитин), пшеничный крахмал, разрыхлитель (гидрокарбонат натрия, гидрокарбонат аммония), глюкозно-фруктозный сироп, карамельный сироп",
+      "nutritionPer100": null,
+      "weight": "100",
+      "storageConditions": "При температуре от &amp;#43;15&amp;#96;С до &amp;#43;21&amp;#96;С, с относительной влажностью воздуха не более 75%, не подвергать воздействию прямого солнечного света.",
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Германия",
+      "chocolateType": "молочный",
+      "filling": "печенье",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1200,
+      "ean": "0050255269004",
+      "eanMatchSource": "upcitemdb+off",
+      "eanVerified": true,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "133947463",
+      "name": "Alma Chocolates Nomad's Sweets с тары шоколадная плитка молочный 200 г",
+      "brand": "Alma Chocolates",
+      "categoryCodes": [],
+      "images": [],
+      "composition": "сахар, масло какао, сухое цельное молоко, какао тертое, сухая молочная сыворотка, молочный жир, эмульгатор: соевый лецитин, ароматизатор: ванилин, эмульгатор: Е476",
+      "nutritionPer100": {
+        "kcal": 540,
+        "protein": 5.5,
+        "fat": 31.5,
+        "carbs": 57
+      },
+      "weight": "200 г",
+      "storageConditions": "Хранить при температуре 8-23º C и относительной влажности не более 75%",
+      "shelfLife": "12 месяцев",
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Казахстан",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 4100,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "148409289",
+      "name": "Победа Rich chocolate 32% шоколадная плитка белый 80 г",
+      "brand": "Победа",
+      "categoryCodes": [],
+      "images": [],
+      "composition": "сахар, сухое обезжиренное молоко, масло какао, сухо-цельное молоко, пахта сухая, эквивалент масла какао, эмульгатор (лецитин соевый), соль, ароматизатор ванилин. В белом шоколаде содержатся, не менее: масло какао - 20 %, сухой общий остаток молока и продуктов его переработки - 32 %, молочный жир - 2,5 %. Содержит до 5% эквивалента масла какао в дополнение к маслу какао. Может содержать следы арахиса, орехов, злаков.",
+      "nutritionPer100": null,
+      "weight": "80 г",
+      "storageConditions": "хранить в сухом помещении от 5 до 25 градусов",
+      "shelfLife": null,
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Россия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 670,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "147393373",
+      "name": "Ritter Sport Ванильный рогалик шоколадная плитка молочный 100 г",
+      "brand": "Ritter Sport",
+      "categoryCodes": [],
+      "images": [],
+      "composition": "шоколад молочный (сахар, какао тёртое, масло какао, сухое цельное молоко, лактоза, сухое обезжиренное молоко, молочный жир, эмульгатор соевый лецитин); начинка миндальный крем, ванильное печенье измельчённое (пшеничная мука, сахар, масло пальмовое, молочный жир, пшеничный крахмал, сухое обезжиренное молоко, глюкозно-фруктозный сироп, соль, разрыхлители (гидрокарбонат натрия, гидрокарбонат аммония), измельчённые стручки ванили)",
+      "nutritionPer100": null,
+      "weight": "100 г",
+      "storageConditions": "хранить при температуре от 15.0 °C до 21.0 °C и относительной влажности воздуха не более 65%",
+      "shelfLife": null,
+      "packaging": "пакет пластиковый",
+      "countryOfOrigin": "Германия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1200,
+      "ean": "0050255011009",
+      "eanMatchSource": "upcitemdb+off",
+      "eanVerified": true,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "116857502",
+      "name": "Alma Chocolates с маком шоколадная плитка молочный 200 г",
+      "brand": "Alma Chocolates",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h16/he2/85241424085022.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h16/he2/85241424085022.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h16/he2/85241424085022.jpg?format=gallery-large"
+        },
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/hd8/ha1/85241424150558.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/hd8/ha1/85241424150558.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/hd8/ha1/85241424150558.jpg?format=gallery-large"
+        }
+      ],
+      "composition": "сахар, масло какао, сухое цельное молоко, какао тертое, сухая молочная сыворотка, молочный жир, эмульгатор: соевый лецитин, ароматизатор: ванилин, эмульгатор: Е476",
+      "nutritionPer100": {
+        "kcal": 540,
+        "protein": 5.5,
+        "fat": 31.5,
+        "carbs": 57
+      },
+      "weight": "200",
+      "storageConditions": "Хранить при температуре 8-23º C и относительной влажности не более 75%",
+      "shelfLife": "12 месяцев",
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Казахстан",
+      "chocolateType": "молочный",
+      "filling": "мак",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 4100,
+      "ean": "7290001419779",
+      "eanMatchSource": "upcitemdb",
+      "eanVerified": false,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "100222715",
+      "name": "Ritter Sport Цельный лесной орех шоколадная плитка темный 100 г",
+      "brand": "Ritter Sport",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/hdd/h6b/63858797936670.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/hdd/h6b/63858797936670.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/hdd/h6b/63858797936670.jpg?format=gallery-large"
+        }
+      ],
+      "composition": "сахар, какао-масло, лесные орехи, какао-масса, сухие сливки, обезжиренное сухое молоко, сухая сладкая молочная сыворотка, молочный сахар, обезвоженный молочный жир, эмульгатор (соевый лецитин), натуральный ароматизатор",
+      "nutritionPer100": {
+        "kcal": 559,
+        "protein": 8.4,
+        "fat": 41,
+        "carbs": 39
+      },
+      "weight": "100",
+      "storageConditions": "хранить при температуре от +15°С до +21°С и относительной влажности воздуха не более 65%",
+      "shelfLife": "10 месяцев",
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Германия",
+      "chocolateType": "темный",
+      "filling": "фундук",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 5,
+      "reviewsCount": 3,
+      "priceKzt": 2058,
+      "ean": "4000417019004",
+      "eanMatchSource": "known",
+      "eanVerified": true,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "101281824",
+      "name": "Schogetten Alpine milk with hazelnut шоколадная плитка молочный 100 г",
+      "brand": "Schogetten",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/hf7/h36/64588553584670.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/hf7/h36/64588553584670.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/hf7/h36/64588553584670.jpg?format=gallery-large"
+        },
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h04/h40/64588556795934.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h04/h40/64588556795934.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h04/h40/64588556795934.jpg?format=gallery-large"
+        }
+      ],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "100 г",
+      "storageConditions": "при t от +15'C до +21'C и относительной влажности не более 75%",
+      "shelfLife": "12 месяцев  ",
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Германия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 5,
+      "reviewsCount": null,
+      "priceKzt": 1990,
+      "ean": "4000607151002",
+      "eanMatchSource": "known",
+      "eanVerified": true,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "138619984",
+      "name": "KitKat с фундуком с хрустящей вафлей шоколадная плитка темный 99 г",
+      "brand": "KitKat",
+      "categoryCodes": [],
+      "images": [],
+      "composition": "сахар, какао тёртое, эквиваленты масла-какао (масло пальмовое, масло ши), пшеничная мука (содержит глютен), обезжиренное сухое молоко, масло какао, сыворотка молочная сухая, глюкозный сироп, молочный жир, паста фундучная, какао-порошок, эмульгатор (лецитины), соль, ароматизатор натуральный, разрыхлитель (гидрокарбонат натрия)",
+      "nutritionPer100": {
+        "kcal": 530,
+        "protein": 5.8,
+        "fat": 29.9,
+        "carbs": 57.8
+      },
+      "weight": "99 г",
+      "storageConditions": "Хранить в сухом прохладном месте.",
+      "shelfLife": "330",
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Болгария",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1990,
+      "ean": "0653046163606",
+      "eanMatchSource": "upcitemdb",
+      "eanVerified": false,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "104463965",
+      "name": "Ritter Sport Зимняя коллекция Миндаль в карамели шоколадная плитка молочный 100 г",
+      "brand": "Ritter Sport",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/hc4/h5c/87357830397982.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/hc4/h5c/87357830397982.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/hc4/h5c/87357830397982.jpg?format=gallery-large"
+        }
+      ],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "100",
+      "storageConditions": "18±3 °С | хранить в сухом прохладном месте",
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Германия",
+      "chocolateType": "молочный",
+      "filling": "миндаль",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1200,
+      "ean": "0050255011009",
+      "eanMatchSource": "upcitemdb+off",
+      "eanVerified": true,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "110323910",
+      "name": "OZera Pineapple & Popping Candy шоколадная плитка белый 90 г",
+      "brand": "O`Zera",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/hac/h9b/80733761175582.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/hac/h9b/80733761175582.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/hac/h9b/80733761175582.jpg?format=gallery-large"
+        }
+      ],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "90",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Россия",
+      "chocolateType": "белый",
+      "filling": "фруктовая",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 966,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "120984174",
+      "name": "Feastables Mr.Beast Milk шоколадная плитка молочный 60 г",
+      "brand": "Feastables",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h4f/h59/86428855664670.png?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h4f/h59/86428855664670.png?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h4f/h59/86428855664670.png?format=gallery-large"
+        }
+      ],
+      "composition": "молочный шоколад (сахар, сухое цельное молоко, какао-масло, несладкий шоколад, лецитин (соевый), натуральный экстракт ванили)",
+      "nutritionPer100": null,
+      "weight": "60",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "США",
+      "chocolateType": "молочный",
+      "filling": "без начинки",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 3700,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "103043646",
+      "name": "Ritter Sport Шоколадное печенье с орехами шоколадная плитка молочный 100 г",
+      "brand": "Ritter Sport",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/hf6/h81/64370932613150.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/hf6/h81/64370932613150.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/hf6/h81/64370932613150.jpg?format=gallery-large"
+        }
+      ],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "100",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Германия",
+      "chocolateType": "молочный",
+      "filling": "лесной орех",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 5,
+      "reviewsCount": null,
+      "priceKzt": 1890,
+      "ean": "0050255011009",
+      "eanMatchSource": "upcitemdb+off",
+      "eanVerified": true,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "106832771",
+      "name": "Bucheron The Dark 72% какао шоколадная плитка горький 90 г",
+      "brand": "Bucheron",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h9b/hae/64558279000094.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h9b/hae/64558279000094.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h9b/hae/64558279000094.jpg?format=gallery-large"
+        }
+      ],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "90",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Россия",
+      "chocolateType": "горький",
+      "filling": "без начинки",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1590,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "101152812",
+      "name": "Bucheron STAND'ART Milky Raspberry шоколадная плитка молочный 100 г",
+      "brand": "Bucheron",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h16/h26/64226485108766.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h16/h26/64226485108766.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h16/h26/64226485108766.jpg?format=gallery-large"
+        }
+      ],
+      "composition": null,
+      "nutritionPer100": {
+        "kcal": 540,
+        "protein": 5,
+        "fat": 32,
+        "carbs": 57
+      },
+      "weight": "100",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "коробка металлическая",
+      "countryOfOrigin": "Россия",
+      "chocolateType": "молочный",
+      "filling": "малина",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 2367,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "101152830",
+      "name": "Bucheron 72% какао Coffee + Sicilian Orange шоколадная плитка горький 100 г",
+      "brand": "Bucheron",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h0f/hdc/64227940630558.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h0f/hdc/64227940630558.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h0f/hdc/64227940630558.jpg?format=gallery-large"
+        }
+      ],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "100",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "коробка металлическая",
+      "countryOfOrigin": "Россия",
+      "chocolateType": "горький",
+      "filling": "кофе",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 3590,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "101700395",
+      "name": "Bucheron 72% какао миндаль шоколадная плитка горький 90 г",
+      "brand": "Bucheron",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h32/h6a/64057110200350.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h32/h6a/64057110200350.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h32/h6a/64057110200350.jpg?format=gallery-large"
+        }
+      ],
+      "composition": null,
+      "nutritionPer100": {
+        "kcal": 530,
+        "protein": 11,
+        "fat": 41,
+        "carbs": 28
+      },
+      "weight": "90",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Россия",
+      "chocolateType": "горький",
+      "filling": "миндаль",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1585,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "101281807",
+      "name": "Schogetten Stracciatella шоколадная плитка белый, горький 100 г",
+      "brand": "Schogetten",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/hdc/he3/64122294304798.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/hdc/he3/64122294304798.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/hdc/he3/64122294304798.jpg?format=gallery-large"
+        },
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h60/h8f/64122296860702.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h60/h8f/64122296860702.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h60/h8f/64122296860702.jpg?format=gallery-large"
+        }
+      ],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "100 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Германия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1824,
+      "ean": "4000607029004",
+      "eanMatchSource": "upcitemdb+off",
+      "eanVerified": true,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "139323177",
+      "name": "Победа Пористый 72% без сахара шоколадная плитка горький 65 г",
+      "brand": "Победа",
+      "categoryCodes": [],
+      "images": [],
+      "composition": "тертое какао, подсластитель (мальтит), какао-порошок, пребиотик (инулин 10%), масло какао, эмульгатор (лецитин соевый), натуральная ваниль, подсластитель - экстракт стевии (0,03%). Содержит сахара природного (естественного) происхождения. Содержит подсластитель. Может содержать следы арахиса, орехов, злаков. В молочном шоколаде содержатся, не менее: общий сухой остаток какао - 72%, масло какао - 33%.",
+      "nutritionPer100": {
+        "kcal": 450,
+        "protein": 10,
+        "fat": 35,
+        "carbs": 24
+      },
+      "weight": "65 г",
+      "storageConditions": "При температуре от &amp;#43;15°С до &amp;#43;21°С, с относительной влажностью воздуха не более 70%.",
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Россия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1230,
+      "ean": "0044294144996",
+      "eanMatchSource": "upcitemdb",
+      "eanVerified": false,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "103016497",
+      "name": "OZera Dark & Extra Almond шоколадная плитка горький 90 г",
+      "brand": "O`Zera",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h0d/h94/64171975442462.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h0d/h94/64171975442462.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h0d/h94/64171975442462.jpg?format=gallery-large"
+        }
+      ],
+      "composition": "80% шоколада и 20% цельного миндаля",
+      "nutritionPer100": null,
+      "weight": "90",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Россия",
+      "chocolateType": "горький",
+      "filling": "миндаль",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 4,
+      "reviewsCount": 3,
+      "priceKzt": 1046,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "120984207",
+      "name": "Feastables Mr.Beast Deez Nuts with Peanut Butter шоколадная плитка молочный 60 г",
+      "brand": "Feastables",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h16/hd9/86428920381470.png?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h16/hd9/86428920381470.png?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h16/hd9/86428920381470.png?format=gallery-large"
+        }
+      ],
+      "composition": "молочный шоколад (сахар, сухое цельное молоко, какао-масло, несладкий шоколад, лецитин (соевый), натуральный экстракт ванили), арахисовое масло (арахис, сахар, пальмовое масло, соль), хрустящий рис (рисовая мука, сахар, соль)",
+      "nutritionPer100": null,
+      "weight": "60",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "США",
+      "chocolateType": "молочный",
+      "filling": "арахис",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 3700,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "135858769",
+      "name": "Alma Chocolates Dzen с чаем матча и манго шоколадная плитка белый 90 г",
+      "brand": "Alma Chocolates",
+      "categoryCodes": [],
+      "images": [],
+      "composition": "Белый шоколад, минимум какао 28%, сахар,масло какао,сухое молоко цельное, соевый лецитин, ароматизатор ваниль, манго сушеный, чай матча.",
+      "nutritionPer100": null,
+      "weight": "90 г",
+      "storageConditions": null,
+      "shelfLife": "12 месяцев",
+      "packaging": "обертка фольгированная",
+      "countryOfOrigin": "Казахстан",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 3150,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "160269337",
+      "name": "Schogetten с начинкой из фундука и тестом кадайф шоколадная плитка молочный 100 г",
+      "brand": "Schogetten",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "100 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Германия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1922,
+      "ean": "4000607029004",
+      "eanMatchSource": "upcitemdb+off",
+      "eanVerified": true,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "136152054",
+      "name": "Schogetten Crunchy Peanut Butter шоколадная плитка молочный 100 г",
+      "brand": "Schogetten",
+      "categoryCodes": [],
+      "images": [],
+      "composition": "белый шоколад (30%) с хрустящими фундуками (3%), пралине с фундуком и молочным шоколадом (33%), молочный шоколад (34%): сахар, какао-масло, паста фундука, цельное молоко в порошке, сливки в порошке, какао-масса, хрустящие фундуки (сахар, фундук [20%]), обезжиренное молоко в порошке, молочный сахар, сыворотка в порошке, масло сливочное, эмульгатор (соевый лецитин), натуральный ванильный ароматизатор",
+      "nutritionPer100": null,
+      "weight": "100 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Испания",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1990,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "104511162",
+      "name": "Milka Joghurt шоколадная плитка молочный 100 г",
+      "brand": "Milka",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h11/hdb/64898151186462.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h11/hdb/64898151186462.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h11/hdb/64898151186462.jpg?format=gallery-large"
+        }
+      ],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "100",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Германия",
+      "chocolateType": "молочный",
+      "filling": "йогурт",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1850,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "102736423",
+      "name": "OZera White & Extra Almond шоколадная плитка белый 90 г",
+      "brand": "O`Zera",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/hcf/hc3/64024051187742.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/hcf/hc3/64024051187742.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/hcf/hc3/64024051187742.jpg?format=gallery-large"
+        }
+      ],
+      "composition": "сахар, миндаль жареный, масло какао, молоко сухое цельное, молоко сухое обезжиренное, эмульгаторы – лецитины (рапсовый, соевый), ароматизаторы. Возможно наличие следов других орехов, арахиса, глютена. Содержание в шоколадной массе: масла какао – не менее 25 %.",
+      "nutritionPer100": null,
+      "weight": "90",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Россия",
+      "chocolateType": "белый",
+      "filling": "миндаль",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 5,
+      "reviewsCount": 1,
+      "priceKzt": 955,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "109267702",
+      "name": "Hershey’s Cookies 'n' Creme шоколадная плитка белый 43 г",
+      "brand": "Hershey’s",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/hf2/hb9/69871221211166.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/hf2/hb9/69871221211166.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/hf2/hb9/69871221211166.jpg?format=gallery-large"
+        },
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h50/hf1/69871221735454.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h50/hf1/69871221735454.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h50/hf1/69871221735454.jpg?format=gallery-large"
+        }
+      ],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "43",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "США",
+      "chocolateType": "белый",
+      "filling": "печенье",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1090,
+      "ean": "0034000271184",
+      "eanMatchSource": "upcitemdb+off",
+      "eanVerified": true,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "120612769",
+      "name": "Nestlé Antep Fistikli шоколадная плитка молочный 60 г",
+      "brand": "Nestlé",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h28/h84/86329640026142.png?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h28/h84/86329640026142.png?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h28/h84/86329640026142.png?format=gallery-large"
+        }
+      ],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "60",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "обертка бумажная",
+      "countryOfOrigin": "Турция",
+      "chocolateType": "молочный",
+      "filling": "фисташки",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1550,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "101354489",
+      "name": "CHIKALAB White Protein Almonds + Coconut Chips шоколадная плитка белый 100 г",
+      "brand": "CHIKALAB",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h2b/he1/64112389423134.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h2b/he1/64112389423134.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h2b/he1/64112389423134.jpg?format=gallery-large"
+        }
+      ],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "100",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Россия",
+      "chocolateType": "белый",
+      "filling": "миндаль",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 5,
+      "reviewsCount": null,
+      "priceKzt": 2690,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "139467644",
+      "name": "Feastables Mr. Beast Almond шоколадная плитка молочный 60 г",
+      "brand": "Feastables",
+      "categoryCodes": [],
+      "images": [],
+      "composition": "тростниковый сахар, органическое какао масло, органический шоколадный ликер, органическое молоко, взбитые сливки, рис, органическая ванильная пудра, подсолнечный лецитин, арахис, морская соль, киноа",
+      "nutritionPer100": null,
+      "weight": "60 г",
+      "storageConditions": "хранить при температуре &amp;#43;18°С",
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "США",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 3700,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "108583367",
+      "name": "OZera Extra Milk шоколадная плитка молочный 45 г",
+      "brand": "O`Zera",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h3f/hbb/68230284705822.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h3f/hbb/68230284705822.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h3f/hbb/68230284705822.jpg?format=gallery-large"
+        }
+      ],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "45",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "обертка бумажная",
+      "countryOfOrigin": "Россия",
+      "chocolateType": "молочный",
+      "filling": "без начинки",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 505,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "160268938",
+      "name": "Schogetten с начинкой из фисташек шоколадная плитка молочный 100 г",
+      "brand": "Schogetten",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "100 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Германия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1922,
+      "ean": "4000607029004",
+      "eanMatchSource": "upcitemdb+off",
+      "eanVerified": true,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "130641741",
+      "name": "NA MEDU шоколадная плитка молочный классический 70 г",
+      "brand": "NA MEDU",
+      "categoryCodes": [],
+      "images": [],
+      "composition": "молоко сухое цельное, масло какао, мёд, какао тёртое",
+      "nutritionPer100": {
+        "kcal": 580,
+        "protein": 10.3,
+        "fat": 43.7,
+        "carbs": 37.6
+      },
+      "weight": "70 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "обертка",
+      "countryOfOrigin": "Россия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1590,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "101700355",
+      "name": "Bucheron 72% какао фундук шоколадная плитка горький 90 г",
+      "brand": "Bucheron",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/hd3/h45/64057110822942.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/hd3/h45/64057110822942.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/hd3/h45/64057110822942.jpg?format=gallery-large"
+        }
+      ],
+      "composition": null,
+      "nutritionPer100": {
+        "protein": 10,
+        "fat": 45,
+        "carbs": 26
+      },
+      "weight": "90",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Россия",
+      "chocolateType": "горький",
+      "filling": "фундук",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 4,
+      "reviewsCount": null,
+      "priceKzt": 2890,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "102049048",
+      "name": "KDV много молока шоколадная плитка молочный 47 г",
+      "brand": "KDV",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/hda/h68/63991746986014.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/hda/h68/63991746986014.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/hda/h68/63991746986014.jpg?format=gallery-large"
+        },
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/hee/hb1/63991750131742.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/hee/hb1/63991750131742.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/hee/hb1/63991750131742.jpg?format=gallery-large"
+        }
+      ],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "47",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "обертка фольгированная",
+      "countryOfOrigin": "Россия",
+      "chocolateType": "молочный",
+      "filling": "молочная",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 5,
+      "reviewsCount": 4,
+      "priceKzt": 459,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "143862613",
+      "name": "Schogetten Macadamia Cookie шоколадная плитка молочный 100 г",
+      "brand": "Schogetten",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "100 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Германия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1988,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "101222173",
+      "name": "Schogetten Dark шоколадная плитка темный 100 г",
+      "brand": "Schogetten",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/he5/hb8/64002177826846.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/he5/hb8/64002177826846.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/he5/hb8/64002177826846.jpg?format=gallery-large"
+        },
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/hd4/h52/64002180087838.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/hd4/h52/64002180087838.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/hd4/h52/64002180087838.jpg?format=gallery-large"
+        }
+      ],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "100 г",
+      "storageConditions": null,
+      "shelfLife": "365 дней",
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Германия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1988,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "119866990",
+      "name": "Babyfox молочный шоколадная плитка молочный 90 г",
+      "brand": "Babyfox",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h02/ha5/86139301330974.png?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h02/ha5/86139301330974.png?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h02/ha5/86139301330974.png?format=gallery-large"
+        }
+      ],
+      "composition": "молочный шоколад",
+      "nutritionPer100": null,
+      "weight": "90",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Россия",
+      "chocolateType": "молочный",
+      "filling": "молочная",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1099,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "132738833",
+      "name": "Bucheron Горький с апельсином шоколадная плитка горький 90 г",
+      "brand": "Bucheron",
+      "categoryCodes": [],
+      "images": [],
+      "composition": "Какао тертое, сахар, масло какао, апельсиновые кусочки (концентрированное яблочное пюре, концентрированный грушевый сок, концентрированный апельсиновый сок, цитрусовые волокна, желирующий агент пектин, регулятор кислотности лимонная кислота, натуральный ароматизатор «Апельсин»), какао-порошок, эмульгатор (лецитин соевый), ароматизатор «Ванилин». Может содержать следы молочных продуктов, орехов и арахиса.",
+      "nutritionPer100": {
+        "kcal": 490,
+        "protein": 8,
+        "fat": 33,
+        "carbs": 39
+      },
+      "weight": "90 г",
+      "storageConditions": "хранить при температуре от &amp;#43;5°С до &amp;#43;22°С и относительной влажностью воздуха не более 70%.",
+      "shelfLife": "18 месяцев с даты изготовления, указанной на упаковке",
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Россия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1585,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "142130798",
+      "name": "Milka White шоколадная плитка белый 90 г",
+      "brand": "Milka",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "90 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Болгария",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1850,
+      "ean": "7622200007332",
+      "eanMatchSource": "upcitemdb+off",
+      "eanVerified": true,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "103307901",
+      "name": "Спартак Milk шоколадная плитка молочный 1000 г",
+      "brand": "Спартак ",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h06/h13/64125361553438.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h06/h13/64125361553438.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h06/h13/64125361553438.jpg?format=gallery-large"
+        },
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/hbd/hfa/64125364273182.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/hbd/hfa/64125364273182.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/hbd/hfa/64125364273182.jpg?format=gallery-large"
+        }
+      ],
+      "composition": "cахарная пудра, какао-масло, молоко сухое, какао тёртое, сыворотка молочная сухая, эмульгатор (лецитин), ароматизатор натуральный «Ваниль»",
+      "nutritionPer100": {
+        "kcal": 560,
+        "protein": 11,
+        "fat": 38,
+        "carbs": 43
+      },
+      "weight": "1000",
+      "storageConditions": "12 месяцев при температуре от +15С до +21С и относительной влажности воздуха не более 75%",
+      "shelfLife": "12 месяцев",
+      "packaging": "обертка бумажная",
+      "countryOfOrigin": "Беларусь",
+      "chocolateType": "молочный",
+      "filling": "без начинки",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 4.5,
+      "reviewsCount": 8,
+      "priceKzt": 14970,
+      "ean": "0074312019470",
+      "eanMatchSource": "upcitemdb+off",
+      "eanVerified": true,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "101222009",
+      "name": "Schogetten Black and white шоколадная плитка молочный 100 г",
+      "brand": "Schogetten",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h2f/ha3/64002974777374.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h2f/ha3/64002974777374.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h2f/ha3/64002974777374.jpg?format=gallery-large"
+        },
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/hfd/hed/64003008921630.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/hfd/hed/64003008921630.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/hfd/hed/64003008921630.jpg?format=gallery-large"
+        }
+      ],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "100 г",
+      "storageConditions": null,
+      "shelfLife": "365 дней ",
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Германия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": 5,
+      "reviewsCount": 1,
+      "priceKzt": 1742,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "133014786",
+      "name": "Prod.Art На любой повод шоколадная плитка молочный 10 г",
+      "brand": "Prod.Art",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "10 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "обертка бумажная",
+      "countryOfOrigin": "Россия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 750,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "120614206",
+      "name": "Milka Milkinis шоколадная плитка молочный 100 г",
+      "brand": "Milka",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h66/hcd/86330062372894.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h66/hcd/86330062372894.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h66/hcd/86330062372894.jpg?format=gallery-large"
+        }
+      ],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "100",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Великобритания",
+      "chocolateType": "молочный",
+      "filling": "кремовая",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1249,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "135819215",
+      "name": "Handy Candy Когда ты рядом шоколадная плитка молочный 15 г",
+      "brand": "Handy Candy",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "15 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Казахстан",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1200,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "128709014",
+      "name": "Bucheron The Original шоколадная плитка молочный 90 г",
+      "brand": "Bucheron",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "90 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Россия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1270,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "135858895",
+      "name": "Alma Chocolates Dzen с чаем матча и малиной шоколадная плитка белый 90 г",
+      "brand": "Alma Chocolates",
+      "categoryCodes": [],
+      "images": [],
+      "composition": "Белый шоколад, минимум какао 28%, сахар, масло какао, сухое молоко цельное, соевый лецитин, ароматизатор ваниль, малина сублимированная, чай матча",
+      "nutritionPer100": null,
+      "weight": "90 г",
+      "storageConditions": null,
+      "shelfLife": "12 месяцев",
+      "packaging": "обертка фольгированная",
+      "countryOfOrigin": "Казахстан",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 3150,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "143862596",
+      "name": "Schogetten Blonde Pistacho шоколадная плитка белый 100 г",
+      "brand": "Schogetten",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "100 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Германия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1990,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "136099907",
+      "name": "Crea 74% Venezuela шоколадная плитка горький 100 г",
+      "brand": "Crea",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "100 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Италия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 2577,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "141409941",
+      "name": "А4 тренди-стик шоколадно-сливочные ломтики 53 г",
+      "brand": "А4",
+      "categoryCodes": [],
+      "images": [],
+      "composition": "сахар, молоко сухое цельное, растительные жиры, какао тертое, какао порошок, эмульгаторы: лецитины (сои), Е476, сливки сухие, экстракт растительный куркумина (краситель), соль пищевая, ароматизатор «ванилин»",
+      "nutritionPer100": null,
+      "weight": "53 г",
+      "storageConditions": "Хранить при температуре 18 - 22°C и относительной влажности воздуха не более 70%",
+      "shelfLife": null,
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Россия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 690,
+      "ean": "0029808010257",
+      "eanMatchSource": "upcitemdb",
+      "eanVerified": false,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "130641722",
+      "name": "NA MEDU шоколадная плитка темный овсяный 70 г",
+      "brand": "NA MEDU",
+      "categoryCodes": [],
+      "images": [],
+      "composition": "какао тёртое, масло какао, мёд, мука овсяная",
+      "nutritionPer100": {
+        "kcal": 590,
+        "protein": 6,
+        "fat": 43,
+        "carbs": 44
+      },
+      "weight": "70 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "обертка",
+      "countryOfOrigin": "Россия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1590,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "130752120",
+      "name": "Natures Own Factory Гречишный шоколадная плитка молочный 20 г",
+      "brand": "Natures Own Factory",
+      "categoryCodes": [],
+      "images": [],
+      "composition": "масло какао, какао-бобы, семена татарской гречихи, натуральный эмульгатор подсолнечный лецитин, натуральная ваниль",
+      "nutritionPer100": {
+        "kcal": 569,
+        "protein": 9.7,
+        "fat": 40.6,
+        "carbs": 41.1
+      },
+      "weight": "20 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "обертка",
+      "countryOfOrigin": "Россия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1590,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "104749125",
+      "name": "Milka Caramel шоколадная плитка молочный 100 г",
+      "brand": "Milka",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/he7/h9d/64911956541470.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/he7/h9d/64911956541470.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/he7/h9d/64911956541470.jpg?format=gallery-large"
+        }
+      ],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "100",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Германия",
+      "chocolateType": "молочный",
+      "filling": "карамель",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1850,
+      "ean": "0891128143164",
+      "eanMatchSource": "upcitemdb+off",
+      "eanVerified": true,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "124116611",
+      "name": "Ritter Sport Duo шоколадная плитка молочный, соленая карамель 218 г",
+      "brand": "Ritter Sport",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/hd1/h69/87254640885790.png?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/hd1/h69/87254640885790.png?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/hd1/h69/87254640885790.png?format=gallery-large"
+        },
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h4f/hf8/87254640951326.png?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h4f/hf8/87254640951326.png?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h4f/hf8/87254640951326.png?format=gallery-large"
+        }
+      ],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "218",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Германия",
+      "chocolateType": "молочный",
+      "filling": "карамель",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 3143,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "144858954",
+      "name": "Milka Lotus Biscoff шоколадная плитка молочный 90 г",
+      "brand": "Milka",
+      "categoryCodes": [],
+      "images": [],
+      "composition": "молочный шоколад, начинка из печенья Lotus Biscoff",
+      "nutritionPer100": null,
+      "weight": "90 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Польша",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1249,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "124116377",
+      "name": "Ritter Sport Duo шоколадная плитка молочный, ягодная 218 г",
+      "brand": "Ritter Sport",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h78/hc6/87254640033822.png?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h78/hc6/87254640033822.png?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h78/hc6/87254640033822.png?format=gallery-large"
+        },
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/hcd/hfa/87254640099358.png?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/hcd/hfa/87254640099358.png?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/hcd/hfa/87254640099358.png?format=gallery-large"
+        }
+      ],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "218",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Германия",
+      "chocolateType": "молочный",
+      "filling": "ягодная",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 3143,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "136098855",
+      "name": "Crea 73% Ecuador шоколадная плитка горький 100 г",
+      "brand": "Crea",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "100 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "обертка",
+      "countryOfOrigin": "Италия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 2577,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "143862578",
+      "name": "Schogetten Blonde Caramel шоколадная плитка белый 100 г",
+      "brand": "Schogetten",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "100 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Германия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1990,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "143862661",
+      "name": "Schogetten Blonde Almond шоколадная плитка белый 100 г",
+      "brand": "Schogetten",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "100 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Германия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1990,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "108583351",
+      "name": "OZera Extra Milk & Hazelnut шоколадная плитка молочный 45 г",
+      "brand": "O`Zera",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/hf1/hd6/68230283657246.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/hf1/hd6/68230283657246.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/hf1/hd6/68230283657246.jpg?format=gallery-large"
+        }
+      ],
+      "composition": "фундук",
+      "nutritionPer100": null,
+      "weight": "45",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "обертка бумажная",
+      "countryOfOrigin": "Россия",
+      "chocolateType": "молочный",
+      "filling": "фундук",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 539,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "154380265",
+      "name": "Babyfox с молочной начинкой шоколадная плитка молочный 24 г",
+      "brand": "Babyfox",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "24 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Россия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 311,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "101254574",
+      "name": "Milka Bubbly White шоколадная плитка белый, молочный 95 г",
+      "brand": "Milka",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/hb8/hca/64196544921630.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/hb8/hca/64196544921630.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/hb8/hca/64196544921630.jpg?format=gallery-large"
+        }
+      ],
+      "composition": "сахар, фруктоза-глюкозный сироп, малиновое пюре, влагоудерживающие агенты (сироп сорбита), регулятор кислотности (лимонная кислота), желирующий агент (амидированный пектин), растительные жиры, масло какао, сухое обезжиренное молоко, какао тертое, молочный порошок, молочный жир, сливки сухие, лесной орех паста, эмульгатор (соевый лецитин)",
+      "nutritionPer100": {
+        "kcal": 535,
+        "fat": 30,
+        "carbs": 59
+      },
+      "weight": "95",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "флоу-пак",
+      "countryOfOrigin": "Германия",
+      "chocolateType": "белый",
+      "filling": "молочная",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1249,
+      "ean": "7622210369925",
+      "eanMatchSource": "upcitemdb+off",
+      "eanVerified": true,
+      "needsEan": false
+    },
+    {
+      "kaspiCode": "116860213",
+      "name": "Alma Chocolates Kazakhstan 53% какао шоколадная плитка темный 200 г",
+      "brand": "Alma Chocolates",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/he8/h1f/85241969934366.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/he8/h1f/85241969934366.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/he8/h1f/85241969934366.jpg?format=gallery-large"
+        },
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h36/h78/85241969999902.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h36/h78/85241969999902.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h36/h78/85241969999902.jpg?format=gallery-large"
+        }
+      ],
+      "composition": "какао тертое, сахар, масло какао, эмульгатор: соевый лецитин, ароматизатор: ванилин, эмульгатор: Е476",
+      "nutritionPer100": {
+        "kcal": 539,
+        "protein": 5.3,
+        "fat": 34.4,
+        "carbs": 47.2
+      },
+      "weight": "200",
+      "storageConditions": "Хранить при температуре 8-23º C и относительной влажности не более 75%",
+      "shelfLife": "12 месяцев",
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Казахстан",
+      "chocolateType": "темный",
+      "filling": "без начинки",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 4100,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "136975165",
+      "name": "Alpen Gold Oreo Черничная поляна шоколадная плитка молочный 85 г",
+      "brand": "Alpen Gold",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "85 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "обертка",
+      "countryOfOrigin": "Россия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 931,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "104142619",
+      "name": "Schogetten White шоколадная плитка белый 100 г",
+      "brand": "Schogetten",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/h8c/h2b/64634462437406.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/h8c/h2b/64634462437406.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/h8c/h2b/64634462437406.jpg?format=gallery-large"
+        }
+      ],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "100",
+      "storageConditions": "Хранить в сухом, прохладном месте",
+      "shelfLife": null,
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Германия",
+      "chocolateType": "белый",
+      "filling": "без начинки",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1985,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "101700412",
+      "name": "Bucheron 72% какао морская соль шоколадная плитка горький 90 г",
+      "brand": "Bucheron",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/he2/h77/64314993901598.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/he2/h77/64314993901598.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/he2/h77/64314993901598.jpg?format=gallery-large"
+        }
+      ],
+      "composition": "какао тертое, сахар, масло какао, какао-порошок, эмульгатор (лецитин соевый), морская соль, ароматизатор &amp;#34;Ванилин&amp;#34;",
+      "nutritionPer100": {
+        "kcal": 520,
+        "protein": 9,
+        "fat": 39,
+        "carbs": 32
+      },
+      "weight": "90",
+      "storageConditions": "при температуре от &amp;#43;15°С до &amp;#43;21°С, с относительной влажностью воздуха не более 70%",
+      "shelfLife": null,
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Россия",
+      "chocolateType": "горький",
+      "filling": "морская соль",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1568,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "101152694",
+      "name": "Bucheron 72% какао Pistachios + Strawberry + Cranberry шоколадная плитка горький 100 г",
+      "brand": "Bucheron",
+      "categoryCodes": [],
+      "images": [
+        {
+          "small": "https://resources.cdn-kaspi.kz/img/m/p/ha7/h13/64227680223262.jpg?format=gallery-small",
+          "medium": "https://resources.cdn-kaspi.kz/img/m/p/ha7/h13/64227680223262.jpg?format=gallery-medium",
+          "large": "https://resources.cdn-kaspi.kz/img/m/p/ha7/h13/64227680223262.jpg?format=gallery-large"
+        }
+      ],
+      "composition": null,
+      "nutritionPer100": {
+        "kcal": 490,
+        "protein": 9,
+        "fat": 35,
+        "carbs": 35
+      },
+      "weight": "100",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "коробка картонная",
+      "countryOfOrigin": "Россия",
+      "chocolateType": "горький",
+      "filling": "фисташки",
+      "productType": "шоколадная плитка",
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 3590,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "135858754",
+      "name": "Alma Chocolates Dzen с чаем матча и чиа шоколадная плитка белый 90 г",
+      "brand": "Alma Chocolates",
+      "categoryCodes": [],
+      "images": [],
+      "composition": "Белый шоколад, минимум какао 28%, сахар,масло какао,сухое молоко цельное, соевый лецитин, ароматизатор ваниль, семена чиа, чай матча.",
+      "nutritionPer100": null,
+      "weight": "90 г",
+      "storageConditions": null,
+      "shelfLife": "12 месяцев",
+      "packaging": "обертка фольгированная",
+      "countryOfOrigin": "Казахстан",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 3150,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "145116659",
+      "name": "Ritter Sport Praline шоколадная плитка молочный 100 г",
+      "brand": "Ritter Sport",
+      "categoryCodes": [],
+      "images": [],
+      "composition": null,
+      "nutritionPer100": null,
+      "weight": "100 г",
+      "storageConditions": null,
+      "shelfLife": null,
+      "packaging": "обертка",
+      "countryOfOrigin": "Германия",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 1287,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    },
+    {
+      "kaspiCode": "135858887",
+      "name": "Alma Chocolates Dzen с чаем матча и кокосом шоколадная плитка белый 90 г",
+      "brand": "Alma Chocolates",
+      "categoryCodes": [],
+      "images": [],
+      "composition": "Белый шоколад, минимум какао 28%, сахар,масло какао,сухое молоко цельное, соевый лецитин, ароматизатор ваниль, кокос, чай матча.",
+      "nutritionPer100": null,
+      "weight": "90 г",
+      "storageConditions": null,
+      "shelfLife": "12 месяцев",
+      "packaging": "обертка фольгированная",
+      "countryOfOrigin": "Казахстан",
+      "chocolateType": null,
+      "filling": null,
+      "productType": null,
+      "unit": {
+        "type": "PIECES",
+        "measurementLiteral": "шт.",
+        "countingLiteral": "шт",
+        "increment": 1
+      },
+      "rating": null,
+      "reviewsCount": null,
+      "priceKzt": 3150,
+      "ean": null,
+      "eanMatchSource": null,
+      "eanVerified": false,
+      "needsEan": true
+    }
+  ]
+}

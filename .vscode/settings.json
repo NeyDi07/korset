@@ -1,4 +1,7 @@
 {
-  "terminal.integrated.allowedCommands": ["*"],
-  "terminal.integrated.enableMultiLinePasteWarning": "never"
+  "terminal.integrated.allowedCommands": [
+    "*"
+  ],
+  "terminal.integrated.enableMultiLinePasteWarning": "never",
+  "editor.fontSize": 16
 }

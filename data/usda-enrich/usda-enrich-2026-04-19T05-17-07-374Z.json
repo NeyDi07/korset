@@ -1,0 +1,434 @@
+{
+  "testedAt": "2026-04-19T05:17:07.375Z",
+  "stats": {
+    "processed": 50,
+    "enriched": 22,
+    "compositionFound": 22,
+    "nutritionFound": 22,
+    "noMatch": 23
+  },
+  "results": [
+    {
+      "id": "013edac0-66ee-49b6-8d0e-4ad949b6d319",
+      "ean": "4610093052389",
+      "searchMethod": "name",
+      "noMatch": true
+    },
+    {
+      "id": "01401c84-f862-4c5c-8af5-f8726492e789",
+      "ean": "4607141336287",
+      "searchMethod": "name",
+      "bestScore": 9,
+      "fdcId": 368539,
+      "gtinUpc": "207926404954",
+      "description": "MONTCHEVRE, BUCHERON, SOFT RIPENED GOAT CHEESE",
+      "brandName": null,
+      "hasComp": true,
+      "hasNutr": true
+    },
+    {
+      "id": "029b347b-9a48-4049-bb5e-5888146fa2eb",
+      "ean": "0796554251820",
+      "searchMethod": "name",
+      "noMatch": true
+    },
+    {
+      "id": "04e490a8-f179-46bd-8f85-7d180fcdc105",
+      "ean": "kaspi_104749065",
+      "searchMethod": "name",
+      "bestScore": 21,
+      "fdcId": 1459186,
+      "gtinUpc": "00070221008116",
+      "description": "MILKA BISCUITS 1X5.29 OZ",
+      "brandName": "MILKA",
+      "hasComp": true,
+      "hasNutr": true
+    },
+    {
+      "id": "05d8ac20-dd37-4547-8975-7c21d9490947",
+      "error": "HTTP 400"
+    },
+    {
+      "id": "05f7521c-e842-401e-a482-89428f6a9aad",
+      "ean": "kaspi_141542971",
+      "searchMethod": "name",
+      "noMatch": true
+    },
+    {
+      "id": "062b6f0e-b8f7-47c1-8ae6-bdee56e0383e",
+      "ean": "4627193447007",
+      "searchMethod": "name",
+      "noMatch": true
+    },
+    {
+      "id": "0bfee3f3-4e0c-4d1b-83c4-38473c2fd4ee",
+      "ean": "kaspi_100222548",
+      "searchMethod": "name",
+      "bestScore": 21,
+      "fdcId": 1459186,
+      "gtinUpc": "00070221008116",
+      "description": "MILKA BISCUITS 1X5.29 OZ",
+      "brandName": "MILKA",
+      "hasComp": true,
+      "hasNutr": true
+    },
+    {
+      "id": "0fb535e2-95e2-4132-84bc-8cf2bedfd814",
+      "ean": "kaspi_120612789",
+      "searchMethod": "name",
+      "noMatch": true
+    },
+    {
+      "id": "106969ac-2925-4ba8-8e6e-1375d53cd975",
+      "ean": "7622202218965",
+      "searchMethod": "name",
+      "bestScore": 21,
+      "fdcId": 2597168,
+      "gtinUpc": "0055712025728",
+      "description": "ALPEN MUESLI, 14 OZ",
+      "brandName": "ALPEN",
+      "hasComp": true,
+      "hasNutr": true
+    },
+    {
+      "id": "1ed41491-4617-4c9a-9474-e3f75913b330",
+      "ean": "kaspi_101144584",
+      "searchMethod": "name",
+      "bestScore": 27,
+      "fdcId": 2678458,
+      "gtinUpc": "050255026003",
+      "description": "RITTER SPORT, PRALINE",
+      "brandName": "RITTER SPORT",
+      "hasComp": true,
+      "hasNutr": true
+    },
+    {
+      "id": "21d94f99-7f6c-46f9-a7fa-46f589cf54b3",
+      "ean": "0726529216318",
+      "searchMethod": "name",
+      "noMatch": true
+    },
+    {
+      "id": "225e25b4-96a9-40f0-9a9c-42675da20e14",
+      "ean": "0796554251981",
+      "searchMethod": "name",
+      "noMatch": true
+    },
+    {
+      "id": "27d740f8-97c1-4d4e-acd7-7b1eb5c2afef",
+      "ean": "4610093052303",
+      "searchMethod": "name",
+      "noMatch": true
+    },
+    {
+      "id": "2cf07d18-e127-46f5-86b9-e138eb00c946",
+      "ean": "4627193446802",
+      "searchMethod": "name",
+      "noMatch": true
+    },
+    {
+      "id": "2d32fdab-55ae-4ff5-ab01-8e766f61d861",
+      "ean": "6900000000011",
+      "searchMethod": "name",
+      "noMatch": true
+    },
+    {
+      "id": "2fb8ccce-c47a-47ad-912d-080efe113df3",
+      "ean": "kaspi_102991689",
+      "searchMethod": "name",
+      "bestScore": 27,
+      "fdcId": 2678458,
+      "gtinUpc": "050255026003",
+      "description": "RITTER SPORT, PRALINE",
+      "brandName": "RITTER SPORT",
+      "hasComp": true,
+      "hasNutr": true
+    },
+    {
+      "id": "31b0c21f-4cac-4418-8d95-4761035828a7",
+      "error": "HTTP 400"
+    },
+    {
+      "id": "3c6100c6-701a-4cc0-978c-5027a1aad67d",
+      "ean": "kaspi_104497923",
+      "searchMethod": "name",
+      "noMatch": true
+    },
+    {
+      "id": "40fea24c-19c2-42b2-bb59-6734c6e85cd1",
+      "ean": "4690329009899",
+      "searchMethod": "name",
+      "noMatch": true
+    },
+    {
+      "id": "42681aee-b625-4aa9-953b-5b7b752de4c8",
+      "ean": "kaspi_101700355",
+      "searchMethod": "name",
+      "bestScore": 6,
+      "fdcId": 368539,
+      "gtinUpc": "207926404954",
+      "description": "MONTCHEVRE, BUCHERON, SOFT RIPENED GOAT CHEESE",
+      "brandName": null,
+      "hasComp": true,
+      "hasNutr": true
+    },
+    {
+      "id": "4664dec8-d67c-42ce-ba92-2c01fafe8262",
+      "ean": "kaspi_101152586",
+      "searchMethod": "name",
+      "bestScore": 27,
+      "fdcId": 2678458,
+      "gtinUpc": "050255026003",
+      "description": "RITTER SPORT, PRALINE",
+      "brandName": "RITTER SPORT",
+      "hasComp": true,
+      "hasNutr": true
+    },
+    {
+      "id": "46742b9b-fce2-4a78-a55f-74cdd2db753f",
+      "ean": "kaspi_156486376",
+      "searchMethod": "name",
+      "bestScore": 27,
+      "fdcId": 2678458,
+      "gtinUpc": "050255026003",
+      "description": "RITTER SPORT, PRALINE",
+      "brandName": "RITTER SPORT",
+      "hasComp": true,
+      "hasNutr": true
+    },
+    {
+      "id": "47ed9d6d-8c34-49b0-9f34-9582773c183e",
+      "ean": "kaspi_101152933",
+      "searchMethod": "name",
+      "bestScore": 27,
+      "fdcId": 2678458,
+      "gtinUpc": "050255026003",
+      "description": "RITTER SPORT, PRALINE",
+      "brandName": "RITTER SPORT",
+      "hasComp": true,
+      "hasNutr": true
+    },
+    {
+      "id": "482303b7-7f70-4006-a790-aa0f8eab8944",
+      "ean": "4800000000013",
+      "searchMethod": "name",
+      "noMatch": true
+    },
+    {
+      "id": "48b27c41-83f9-40a2-a168-0d03be7699ac",
+      "error": "HTTP 500"
+    },
+    {
+      "id": "4cc75b2d-8c36-46a9-91b2-03574c19c7d5",
+      "ean": "7622201762063",
+      "searchMethod": "name",
+      "bestScore": 27,
+      "fdcId": 2317318,
+      "gtinUpc": "9300617293354",
+      "description": "Cadbury Dairy Milk Baubles 113g",
+      "brandName": "Cadbury",
+      "hasComp": true,
+      "hasNutr": true
+    },
+    {
+      "id": "4ff012d8-85ed-445b-9a2a-76ffbbb923f2",
+      "ean": "kaspi_101152830",
+      "searchMethod": "name",
+      "bestScore": 6,
+      "fdcId": 368539,
+      "gtinUpc": "207926404954",
+      "description": "MONTCHEVRE, BUCHERON, SOFT RIPENED GOAT CHEESE",
+      "brandName": null,
+      "hasComp": true,
+      "hasNutr": true
+    },
+    {
+      "id": "57757d94-0a81-43be-8f63-35adb664cbbd",
+      "ean": "4660013941064",
+      "searchMethod": "name",
+      "noMatch": true
+    },
+    {
+      "id": "5858b94c-0721-4b62-b177-7e36c8190066",
+      "ean": "4690329009714",
+      "searchMethod": "name",
+      "noMatch": true
+    },
+    {
+      "id": "58d60639-8141-45e3-a5c8-508b3daa90ed",
+      "ean": "kaspi_122664720",
+      "searchMethod": "name",
+      "bestScore": 21,
+      "fdcId": 2597168,
+      "gtinUpc": "0055712025728",
+      "description": "ALPEN MUESLI, 14 OZ",
+      "brandName": "ALPEN",
+      "hasComp": true,
+      "hasNutr": true
+    },
+    {
+      "id": "5938a258-ddf8-496e-9781-effa97f5ae1a",
+      "error": "HTTP 400"
+    },
+    {
+      "id": "5d296761-a9e0-49c6-80ce-2177d97a0c86",
+      "ean": "kaspi_101146543",
+      "searchMethod": "name",
+      "bestScore": 6,
+      "fdcId": 368539,
+      "gtinUpc": "207926404954",
+      "description": "MONTCHEVRE, BUCHERON, SOFT RIPENED GOAT CHEESE",
+      "brandName": null,
+      "hasComp": true,
+      "hasNutr": true
+    },
+    {
+      "id": "5d95ea8f-875b-4189-bab5-ae43ad676749",
+      "ean": "8410679232022",
+      "searchMethod": "name",
+      "noMatch": true
+    },
+    {
+      "id": "5f4e83c0-a633-44f2-a9b5-91ea4b5e94f7",
+      "ean": "kaspi_102219552",
+      "searchMethod": "name",
+      "noMatch": true
+    },
+    {
+      "id": "5f502aa6-3ac7-4c61-ba0b-9dd327dd366b",
+      "ean": "kaspi_152662456",
+      "searchMethod": "name",
+      "bestScore": 27,
+      "fdcId": 2678458,
+      "gtinUpc": "050255026003",
+      "description": "RITTER SPORT, PRALINE",
+      "brandName": "RITTER SPORT",
+      "hasComp": true,
+      "hasNutr": true
+    },
+    {
+      "id": "5fe45f25-f0e1-4877-af52-83b8e1a60735",
+      "ean": "4800000000015",
+      "searchMethod": "name",
+      "noMatch": true
+    },
+    {
+      "id": "60dc969e-d615-436a-9db4-9c3179932ffe",
+      "ean": "kaspi_142158597",
+      "searchMethod": "name",
+      "bestScore": 24,
+      "fdcId": 1460420,
+      "gtinUpc": "00070221103057",
+      "description": "MILKA CHOCOLATE BAR HAZELNUTS 1X3.520 OZ",
+      "brandName": "MILKA",
+      "hasComp": true,
+      "hasNutr": true
+    },
+    {
+      "id": "621b0cd5-c368-4c27-8d9c-ef1cd2b88920",
+      "ean": "4650060716210",
+      "searchMethod": "name",
+      "noMatch": true
+    },
+    {
+      "id": "64ef0dab-2263-4d1d-b496-092a786b5023",
+      "ean": "kaspi_142498815",
+      "searchMethod": "name",
+      "bestScore": 9,
+      "fdcId": 770884,
+      "gtinUpc": "07622300305024",
+      "description": "MILKA CHOCOLATE",
+      "brandName": null,
+      "hasComp": true,
+      "hasNutr": true
+    },
+    {
+      "id": "651e7a42-8050-4565-a34a-9714fb9fb0bf",
+      "error": "HTTP 400"
+    },
+    {
+      "id": "65a2cc0b-c466-4b50-810b-a6891fcb8997",
+      "ean": "5900951293801",
+      "searchMethod": "name",
+      "noMatch": true
+    },
+    {
+      "id": "6c52af62-354d-4017-b18a-c4b0227b5bee",
+      "ean": "kaspi_104464106",
+      "searchMethod": "name",
+      "bestScore": 6,
+      "fdcId": 368539,
+      "gtinUpc": "207926404954",
+      "description": "MONTCHEVRE, BUCHERON, SOFT RIPENED GOAT CHEESE",
+      "brandName": null,
+      "hasComp": true,
+      "hasNutr": true
+    },
+    {
+      "id": "6c6dd19c-3958-486a-9a4f-2c5c4abc80f7",
+      "ean": "1230000168205",
+      "searchMethod": "name",
+      "bestScore": 24,
+      "fdcId": 2643147,
+      "gtinUpc": "850027880334",
+      "description": "DEEZ NUTZ MILK CHOCOLATE WITH PEANUT BUTTER MR BEAST BAR, DEEZ NUTZ",
+      "brandName": "FEASTABLES",
+      "hasComp": true,
+      "hasNutr": true
+    },
+    {
+      "id": "6cb88f7c-e2c2-46f5-9c71-918dada98b77",
+      "ean": "2500100089700",
+      "searchMethod": "name",
+      "noMatch": true
+    },
+    {
+      "id": "7245d290-2a06-4123-a5fe-196ec2a4f70f",
+      "ean": "6942836724092",
+      "searchMethod": "name",
+      "noMatch": true
+    },
+    {
+      "id": "78327230-3da1-4aab-bc1d-45f8033bd2df",
+      "ean": "6416453014442",
+      "searchMethod": "name",
+      "noMatch": true
+    },
+    {
+      "id": "78e9050f-05dc-44b5-9c8a-d529afb50f15",
+      "ean": "kaspi_120746245",
+      "searchMethod": "name",
+      "bestScore": 24,
+      "fdcId": 1460420,
+      "gtinUpc": "00070221103057",
+      "description": "MILKA CHOCOLATE BAR HAZELNUTS 1X3.520 OZ",
+      "brandName": "MILKA",
+      "hasComp": true,
+      "hasNutr": true
+    },
+    {
+      "id": "7bc79348-fcd5-4142-b684-3e630ea12b64",
+      "ean": "kaspi_101700395",
+      "searchMethod": "name",
+      "bestScore": 6,
+      "fdcId": 368539,
+      "gtinUpc": "207926404954",
+      "description": "MONTCHEVRE, BUCHERON, SOFT RIPENED GOAT CHEESE",
+      "brandName": null,
+      "hasComp": true,
+      "hasNutr": true
+    },
+    {
+      "id": "7da81e43-6b4a-49c4-b86d-cde2db9fc880",
+      "ean": "kaspi_101152852",
+      "searchMethod": "name",
+      "bestScore": 30,
+      "fdcId": 2017983,
+      "gtinUpc": "050255294006",
+      "description": "RITTER SPORT, MILK CHOCOLATE WITH COCOA MOUSSE",
+      "brandName": "RITTER SPORT",
+      "hasComp": true,
+      "hasNutr": true
+    }
+  ]
+}

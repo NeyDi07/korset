@@ -1,0 +1,1849 @@
+{
+  "testedAt": "2026-04-19T17:13:41.194Z",
+  "verifiedCount": 0,
+  "anyEANCount": 20,
+  "sourceStats": {
+    "DuckDuckGo": {
+      "found": 10,
+      "empty": 10,
+      "errors": 0
+    },
+    "Bing": {
+      "found": 20,
+      "empty": 0,
+      "errors": 0
+    },
+    "Yandex": {
+      "found": 0,
+      "empty": 20,
+      "errors": 0
+    },
+    "Google": {
+      "found": 0,
+      "empty": 20,
+      "errors": 0
+    },
+    "Ozon": {
+      "found": 0,
+      "empty": 20,
+      "errors": 0
+    },
+    "Wildberries": {
+      "found": 0,
+      "empty": 20,
+      "errors": 0
+    }
+  },
+  "results": [
+    {
+      "product": {
+        "ean": "arbuz_325512",
+        "name": "Чай холодный Fuse манго и ананас 1,5 л",
+        "brand": "Fuse"
+      },
+      "query": "Fuse Чай холодный Fuse манго и ананас 1,5 л",
+      "verified": null,
+      "bestGuess": {
+        "ean": "5449000216335",
+        "sourceCount": 1,
+        "sources": [
+          "DuckDuckGo"
+        ],
+        "totalCount": 1
+      },
+      "rankedEANs": [
+        {
+          "ean": "5449000216335",
+          "sourceCount": 1,
+          "sources": [
+            "DuckDuckGo"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "86400000",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "67433319",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        }
+      ],
+      "sourceResults": {
+        "DuckDuckGo": {
+          "status": "ok",
+          "eans": [
+            {
+              "ean": "5449000216335",
+              "count": 1
+            }
+          ]
+        },
+        "Bing": {
+          "status": "ok",
+          "eans": [
+            {
+              "ean": "86400000",
+              "count": 1
+            },
+            {
+              "ean": "67433319",
+              "count": 1
+            }
+          ]
+        },
+        "Yandex": {
+          "status": 302,
+          "eans": []
+        },
+        "Google": {
+          "status": "ok",
+          "eans": []
+        },
+        "Ozon": {
+          "status": 307,
+          "eans": []
+        },
+        "Wildberries": {
+          "status": 498,
+          "eans": []
+        }
+      }
+    },
+    {
+      "product": {
+        "ean": "arbuz_330704",
+        "name": "Мука Edeka ржаная тип 1150, 1 кг",
+        "brand": "Edeka"
+      },
+      "query": "Edeka Мука Edeka ржаная тип 1150, 1 кг",
+      "verified": null,
+      "bestGuess": {
+        "ean": "25201150",
+        "sourceCount": 1,
+        "sources": [
+          "DuckDuckGo"
+        ],
+        "totalCount": 4
+      },
+      "rankedEANs": [
+        {
+          "ean": "25201150",
+          "sourceCount": 1,
+          "sources": [
+            "DuckDuckGo"
+          ],
+          "totalCount": 4
+        },
+        {
+          "ean": "4601780016241",
+          "sourceCount": 1,
+          "sources": [
+            "DuckDuckGo"
+          ],
+          "totalCount": 2
+        },
+        {
+          "ean": "4311501367032",
+          "sourceCount": 1,
+          "sources": [
+            "DuckDuckGo"
+          ],
+          "totalCount": 2
+        },
+        {
+          "ean": "4000462813053",
+          "sourceCount": 1,
+          "sources": [
+            "DuckDuckGo"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "4311501436028",
+          "sourceCount": 1,
+          "sources": [
+            "DuckDuckGo"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "4311501483718",
+          "sourceCount": 1,
+          "sources": [
+            "DuckDuckGo"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "4311501356180",
+          "sourceCount": 1,
+          "sources": [
+            "DuckDuckGo"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "4311501445365",
+          "sourceCount": 1,
+          "sources": [
+            "DuckDuckGo"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "4311501490884",
+          "sourceCount": 1,
+          "sources": [
+            "DuckDuckGo"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "43115563",
+          "sourceCount": 1,
+          "sources": [
+            "DuckDuckGo"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "86400000",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "67433319",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        }
+      ],
+      "sourceResults": {
+        "DuckDuckGo": {
+          "status": "ok",
+          "eans": [
+            {
+              "ean": "25201150",
+              "count": 4
+            },
+            {
+              "ean": "4601780016241",
+              "count": 2
+            },
+            {
+              "ean": "4311501367032",
+              "count": 2
+            },
+            {
+              "ean": "4000462813053",
+              "count": 1
+            },
+            {
+              "ean": "4311501436028",
+              "count": 1
+            }
+          ]
+        },
+        "Bing": {
+          "status": "ok",
+          "eans": [
+            {
+              "ean": "86400000",
+              "count": 1
+            },
+            {
+              "ean": "67433319",
+              "count": 1
+            }
+          ]
+        },
+        "Yandex": {
+          "status": 302,
+          "eans": []
+        },
+        "Google": {
+          "status": "ok",
+          "eans": []
+        },
+        "Ozon": {
+          "status": 307,
+          "eans": []
+        },
+        "Wildberries": {
+          "status": 498,
+          "eans": []
+        }
+      }
+    },
+    {
+      "product": {
+        "ean": "arbuz_252232",
+        "name": "Колбаса СПК утренняя варёная в/у, кг",
+        "brand": "СПК"
+      },
+      "query": "СПК Колбаса СПК утренняя варёная в/у, кг",
+      "verified": null,
+      "bestGuess": {
+        "ean": "4630103115064",
+        "sourceCount": 1,
+        "sources": [
+          "DuckDuckGo"
+        ],
+        "totalCount": 2
+      },
+      "rankedEANs": [
+        {
+          "ean": "4630103115064",
+          "sourceCount": 1,
+          "sources": [
+            "DuckDuckGo"
+          ],
+          "totalCount": 2
+        },
+        {
+          "ean": "35544699",
+          "sourceCount": 1,
+          "sources": [
+            "DuckDuckGo"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "86400000",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "14400000",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "67433319",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        }
+      ],
+      "sourceResults": {
+        "DuckDuckGo": {
+          "status": "ok",
+          "eans": [
+            {
+              "ean": "4630103115064",
+              "count": 2
+            },
+            {
+              "ean": "35544699",
+              "count": 1
+            }
+          ]
+        },
+        "Bing": {
+          "status": "ok",
+          "eans": [
+            {
+              "ean": "86400000",
+              "count": 1
+            },
+            {
+              "ean": "14400000",
+              "count": 1
+            },
+            {
+              "ean": "67433319",
+              "count": 1
+            }
+          ]
+        },
+        "Yandex": {
+          "status": 302,
+          "eans": []
+        },
+        "Google": {
+          "status": "ok",
+          "eans": []
+        },
+        "Ozon": {
+          "status": 307,
+          "eans": []
+        },
+        "Wildberries": {
+          "status": 498,
+          "eans": []
+        }
+      }
+    },
+    {
+      "product": {
+        "ean": "arbuz_196394",
+        "name": "Кетчуп 3 Желания классический 450 г",
+        "brand": "3 Желания"
+      },
+      "query": "3 Желания Кетчуп 3 Желания классический 450 г",
+      "verified": null,
+      "bestGuess": {
+        "ean": "4870035007673",
+        "sourceCount": 1,
+        "sources": [
+          "DuckDuckGo"
+        ],
+        "totalCount": 6
+      },
+      "rankedEANs": [
+        {
+          "ean": "4870035007673",
+          "sourceCount": 1,
+          "sources": [
+            "DuckDuckGo"
+          ],
+          "totalCount": 6
+        },
+        {
+          "ean": "4870035007703",
+          "sourceCount": 1,
+          "sources": [
+            "DuckDuckGo"
+          ],
+          "totalCount": 2
+        },
+        {
+          "ean": "4870035008533",
+          "sourceCount": 1,
+          "sources": [
+            "DuckDuckGo"
+          ],
+          "totalCount": 2
+        },
+        {
+          "ean": "86400000",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "67433319",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        }
+      ],
+      "sourceResults": {
+        "DuckDuckGo": {
+          "status": "ok",
+          "eans": [
+            {
+              "ean": "4870035007673",
+              "count": 6
+            },
+            {
+              "ean": "4870035007703",
+              "count": 2
+            },
+            {
+              "ean": "4870035008533",
+              "count": 2
+            }
+          ]
+        },
+        "Bing": {
+          "status": "ok",
+          "eans": [
+            {
+              "ean": "86400000",
+              "count": 1
+            },
+            {
+              "ean": "67433319",
+              "count": 1
+            }
+          ]
+        },
+        "Yandex": {
+          "status": 302,
+          "eans": []
+        },
+        "Google": {
+          "status": "ok",
+          "eans": []
+        },
+        "Ozon": {
+          "status": 307,
+          "eans": []
+        },
+        "Wildberries": {
+          "status": 498,
+          "eans": []
+        }
+      }
+    },
+    {
+      "product": {
+        "ean": "arbuz_295393",
+        "name": "Сосиски Индилайт молочные, 440 г",
+        "brand": "Индилайт"
+      },
+      "query": "Индилайт Сосиски Индилайт молочные, 440 г",
+      "verified": null,
+      "bestGuess": {
+        "ean": "86400000",
+        "sourceCount": 1,
+        "sources": [
+          "Bing"
+        ],
+        "totalCount": 1
+      },
+      "rankedEANs": [
+        {
+          "ean": "86400000",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "14400000",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "67433319",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        }
+      ],
+      "sourceResults": {
+        "DuckDuckGo": {
+          "status": "ok",
+          "eans": []
+        },
+        "Bing": {
+          "status": "ok",
+          "eans": [
+            {
+              "ean": "86400000",
+              "count": 1
+            },
+            {
+              "ean": "14400000",
+              "count": 1
+            },
+            {
+              "ean": "67433319",
+              "count": 1
+            }
+          ]
+        },
+        "Yandex": {
+          "status": 302,
+          "eans": []
+        },
+        "Google": {
+          "status": "ok",
+          "eans": []
+        },
+        "Ozon": {
+          "status": 307,
+          "eans": []
+        },
+        "Wildberries": {
+          "status": 498,
+          "eans": []
+        }
+      }
+    },
+    {
+      "product": {
+        "ean": "arbuz_307191",
+        "name": "Сосиски Arbuz Select говяжьи 390 г",
+        "brand": "Arbuz Select"
+      },
+      "query": "Arbuz Select Сосиски Arbuz Select говяжьи 390 г",
+      "verified": null,
+      "bestGuess": {
+        "ean": "86400000",
+        "sourceCount": 1,
+        "sources": [
+          "Bing"
+        ],
+        "totalCount": 1
+      },
+      "rankedEANs": [
+        {
+          "ean": "86400000",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "14400000",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "67433319",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        }
+      ],
+      "sourceResults": {
+        "DuckDuckGo": {
+          "status": "ok",
+          "eans": []
+        },
+        "Bing": {
+          "status": "ok",
+          "eans": [
+            {
+              "ean": "86400000",
+              "count": 1
+            },
+            {
+              "ean": "14400000",
+              "count": 1
+            },
+            {
+              "ean": "67433319",
+              "count": 1
+            }
+          ]
+        },
+        "Yandex": {
+          "status": 302,
+          "eans": []
+        },
+        "Google": {
+          "status": "ok",
+          "eans": []
+        },
+        "Ozon": {
+          "status": 307,
+          "eans": []
+        },
+        "Wildberries": {
+          "status": 498,
+          "eans": []
+        }
+      }
+    },
+    {
+      "product": {
+        "ean": "arbuz_317523",
+        "name": "Сосиски Папа может мясные с говядиной, 600 г",
+        "brand": "Папа может"
+      },
+      "query": "Папа может Сосиски Папа может мясные с говядиной, 600 г",
+      "verified": null,
+      "bestGuess": {
+        "ean": "47279594",
+        "sourceCount": 1,
+        "sources": [
+          "DuckDuckGo"
+        ],
+        "totalCount": 1
+      },
+      "rankedEANs": [
+        {
+          "ean": "47279594",
+          "sourceCount": 1,
+          "sources": [
+            "DuckDuckGo"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "86400000",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "14400000",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "67433319",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        }
+      ],
+      "sourceResults": {
+        "DuckDuckGo": {
+          "status": "ok",
+          "eans": [
+            {
+              "ean": "47279594",
+              "count": 1
+            }
+          ]
+        },
+        "Bing": {
+          "status": "ok",
+          "eans": [
+            {
+              "ean": "86400000",
+              "count": 1
+            },
+            {
+              "ean": "14400000",
+              "count": 1
+            },
+            {
+              "ean": "67433319",
+              "count": 1
+            }
+          ]
+        },
+        "Yandex": {
+          "status": 302,
+          "eans": []
+        },
+        "Google": {
+          "status": "ok",
+          "eans": []
+        },
+        "Ozon": {
+          "status": 307,
+          "eans": []
+        },
+        "Wildberries": {
+          "status": 498,
+          "eans": []
+        }
+      }
+    },
+    {
+      "product": {
+        "ean": "arbuz_301706",
+        "name": "Колбаса Ет Байрам Мусульманская Халал вареная 600 г",
+        "brand": "Ет Байрам"
+      },
+      "query": "Ет Байрам Колбаса Ет Байрам Мусульманская Халал вареная 600 г",
+      "verified": null,
+      "bestGuess": {
+        "ean": "4870218873538",
+        "sourceCount": 1,
+        "sources": [
+          "DuckDuckGo"
+        ],
+        "totalCount": 3
+      },
+      "rankedEANs": [
+        {
+          "ean": "4870218873538",
+          "sourceCount": 1,
+          "sources": [
+            "DuckDuckGo"
+          ],
+          "totalCount": 3
+        },
+        {
+          "ean": "86400000",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "14400000",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "67433319",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        }
+      ],
+      "sourceResults": {
+        "DuckDuckGo": {
+          "status": "ok",
+          "eans": [
+            {
+              "ean": "4870218873538",
+              "count": 3
+            }
+          ]
+        },
+        "Bing": {
+          "status": "ok",
+          "eans": [
+            {
+              "ean": "86400000",
+              "count": 1
+            },
+            {
+              "ean": "14400000",
+              "count": 1
+            },
+            {
+              "ean": "67433319",
+              "count": 1
+            }
+          ]
+        },
+        "Yandex": {
+          "status": 302,
+          "eans": []
+        },
+        "Google": {
+          "status": "ok",
+          "eans": []
+        },
+        "Ozon": {
+          "status": 307,
+          "eans": []
+        },
+        "Wildberries": {
+          "status": 498,
+          "eans": []
+        }
+      }
+    },
+    {
+      "product": {
+        "ean": "arbuz_229754",
+        "name": "Рис Makfa длиннозерный пропаренный в пакетиках для варки, 400 г",
+        "brand": "Makfa"
+      },
+      "query": "Makfa Рис Makfa длиннозерный пропаренный в пакетиках для варки, 400 г",
+      "verified": null,
+      "bestGuess": {
+        "ean": "16407913",
+        "sourceCount": 1,
+        "sources": [
+          "DuckDuckGo"
+        ],
+        "totalCount": 1
+      },
+      "rankedEANs": [
+        {
+          "ean": "16407913",
+          "sourceCount": 1,
+          "sources": [
+            "DuckDuckGo"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "86400000",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "67433319",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        }
+      ],
+      "sourceResults": {
+        "DuckDuckGo": {
+          "status": "ok",
+          "eans": [
+            {
+              "ean": "16407913",
+              "count": 1
+            }
+          ]
+        },
+        "Bing": {
+          "status": "ok",
+          "eans": [
+            {
+              "ean": "86400000",
+              "count": 1
+            },
+            {
+              "ean": "67433319",
+              "count": 1
+            }
+          ]
+        },
+        "Yandex": {
+          "status": 302,
+          "eans": []
+        },
+        "Google": {
+          "status": "ok",
+          "eans": []
+        },
+        "Ozon": {
+          "status": 307,
+          "eans": []
+        },
+        "Wildberries": {
+          "status": 498,
+          "eans": []
+        }
+      }
+    },
+    {
+      "product": {
+        "ean": "arbuz_204499",
+        "name": "Соус для пасты Barilla Арабьята 400 г",
+        "brand": "Barilla"
+      },
+      "query": "Barilla Соус для пасты Barilla Арабьята 400 г",
+      "verified": null,
+      "bestGuess": {
+        "ean": "8076809513388",
+        "sourceCount": 1,
+        "sources": [
+          "DuckDuckGo"
+        ],
+        "totalCount": 7
+      },
+      "rankedEANs": [
+        {
+          "ean": "8076809513388",
+          "sourceCount": 1,
+          "sources": [
+            "DuckDuckGo"
+          ],
+          "totalCount": 7
+        },
+        {
+          "ean": "86400000",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "67433319",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        }
+      ],
+      "sourceResults": {
+        "DuckDuckGo": {
+          "status": "ok",
+          "eans": [
+            {
+              "ean": "8076809513388",
+              "count": 7
+            }
+          ]
+        },
+        "Bing": {
+          "status": "ok",
+          "eans": [
+            {
+              "ean": "86400000",
+              "count": 1
+            },
+            {
+              "ean": "67433319",
+              "count": 1
+            }
+          ]
+        },
+        "Yandex": {
+          "status": 302,
+          "eans": []
+        },
+        "Google": {
+          "status": "ok",
+          "eans": []
+        },
+        "Ozon": {
+          "status": 307,
+          "eans": []
+        },
+        "Wildberries": {
+          "status": 498,
+          "eans": []
+        }
+      }
+    },
+    {
+      "product": {
+        "ean": "arbuz_231675",
+        "name": "Майонез Махеевъ с перепелиным яйцом 67%, 380 г",
+        "brand": "Махеевъ"
+      },
+      "query": "Махеевъ Майонез Махеевъ с перепелиным яйцом 67%, 380 г",
+      "verified": null,
+      "bestGuess": {
+        "ean": "86400000",
+        "sourceCount": 1,
+        "sources": [
+          "Bing"
+        ],
+        "totalCount": 1
+      },
+      "rankedEANs": [
+        {
+          "ean": "86400000",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "14400000",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "67433319",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        }
+      ],
+      "sourceResults": {
+        "DuckDuckGo": {
+          "status": "ok",
+          "eans": []
+        },
+        "Bing": {
+          "status": "ok",
+          "eans": [
+            {
+              "ean": "86400000",
+              "count": 1
+            },
+            {
+              "ean": "14400000",
+              "count": 1
+            },
+            {
+              "ean": "67433319",
+              "count": 1
+            }
+          ]
+        },
+        "Yandex": {
+          "status": 302,
+          "eans": []
+        },
+        "Google": {
+          "status": "ok",
+          "eans": []
+        },
+        "Ozon": {
+          "status": 307,
+          "eans": []
+        },
+        "Wildberries": {
+          "status": 498,
+          "eans": []
+        }
+      }
+    },
+    {
+      "product": {
+        "ean": "arbuz_331030",
+        "name": "Макароны фузилли Bioitalia из чечевицы 250 г",
+        "brand": "Bioitalia"
+      },
+      "query": "Bioitalia Макароны фузилли Bioitalia из чечевицы 250 г",
+      "verified": null,
+      "bestGuess": {
+        "ean": "86400000",
+        "sourceCount": 1,
+        "sources": [
+          "Bing"
+        ],
+        "totalCount": 1
+      },
+      "rankedEANs": [
+        {
+          "ean": "86400000",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "14400000",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "67433319",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        }
+      ],
+      "sourceResults": {
+        "DuckDuckGo": {
+          "status": "ok",
+          "eans": []
+        },
+        "Bing": {
+          "status": "ok",
+          "eans": [
+            {
+              "ean": "86400000",
+              "count": 1
+            },
+            {
+              "ean": "14400000",
+              "count": 1
+            },
+            {
+              "ean": "67433319",
+              "count": 1
+            }
+          ]
+        },
+        "Yandex": {
+          "status": 302,
+          "eans": []
+        },
+        "Google": {
+          "status": "ok",
+          "eans": []
+        },
+        "Ozon": {
+          "status": 307,
+          "eans": []
+        },
+        "Wildberries": {
+          "status": 498,
+          "eans": []
+        }
+      }
+    },
+    {
+      "product": {
+        "ean": "arbuz_330276",
+        "name": "Цельнозерновые фузилли Джейми Оливер 500 г",
+        "brand": "Джейми Оливер"
+      },
+      "query": "Джейми Оливер Цельнозерновые фузилли Джейми Оливер 500 г",
+      "verified": null,
+      "bestGuess": {
+        "ean": "86400000",
+        "sourceCount": 1,
+        "sources": [
+          "Bing"
+        ],
+        "totalCount": 1
+      },
+      "rankedEANs": [
+        {
+          "ean": "86400000",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "67433319",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        }
+      ],
+      "sourceResults": {
+        "DuckDuckGo": {
+          "status": "ok",
+          "eans": []
+        },
+        "Bing": {
+          "status": "ok",
+          "eans": [
+            {
+              "ean": "86400000",
+              "count": 1
+            },
+            {
+              "ean": "67433319",
+              "count": 1
+            }
+          ]
+        },
+        "Yandex": {
+          "status": 302,
+          "eans": []
+        },
+        "Google": {
+          "status": "ok",
+          "eans": []
+        },
+        "Ozon": {
+          "status": 307,
+          "eans": []
+        },
+        "Wildberries": {
+          "status": 498,
+          "eans": []
+        }
+      }
+    },
+    {
+      "product": {
+        "ean": "arbuz_255781",
+        "name": "Конфеты Победа charget без сахара в горьком шоколаде, кг",
+        "brand": "Победа"
+      },
+      "query": "Победа Конфеты Победа charget без сахара в горьком шоколаде, кг",
+      "verified": null,
+      "bestGuess": {
+        "ean": "86400000",
+        "sourceCount": 1,
+        "sources": [
+          "Bing"
+        ],
+        "totalCount": 1
+      },
+      "rankedEANs": [
+        {
+          "ean": "86400000",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "67433319",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        }
+      ],
+      "sourceResults": {
+        "DuckDuckGo": {
+          "status": "ok",
+          "eans": []
+        },
+        "Bing": {
+          "status": "ok",
+          "eans": [
+            {
+              "ean": "86400000",
+              "count": 1
+            },
+            {
+              "ean": "67433319",
+              "count": 1
+            }
+          ]
+        },
+        "Yandex": {
+          "status": 302,
+          "eans": []
+        },
+        "Google": {
+          "status": "ok",
+          "eans": []
+        },
+        "Ozon": {
+          "status": 307,
+          "eans": []
+        },
+        "Wildberries": {
+          "status": 498,
+          "eans": []
+        }
+      }
+    },
+    {
+      "product": {
+        "ean": "arbuz_328915",
+        "name": "Желтый горошек Bio planet органический 500 г",
+        "brand": "Bio planet"
+      },
+      "query": "Bio planet Желтый горошек Bio planet органический 500 г",
+      "verified": null,
+      "bestGuess": {
+        "ean": "5902983782711",
+        "sourceCount": 1,
+        "sources": [
+          "DuckDuckGo"
+        ],
+        "totalCount": 1
+      },
+      "rankedEANs": [
+        {
+          "ean": "5902983782711",
+          "sourceCount": 1,
+          "sources": [
+            "DuckDuckGo"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "86400000",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "14400000",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "67433319",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        }
+      ],
+      "sourceResults": {
+        "DuckDuckGo": {
+          "status": "ok",
+          "eans": [
+            {
+              "ean": "5902983782711",
+              "count": 1
+            }
+          ]
+        },
+        "Bing": {
+          "status": "ok",
+          "eans": [
+            {
+              "ean": "86400000",
+              "count": 1
+            },
+            {
+              "ean": "14400000",
+              "count": 1
+            },
+            {
+              "ean": "67433319",
+              "count": 1
+            }
+          ]
+        },
+        "Yandex": {
+          "status": 302,
+          "eans": []
+        },
+        "Google": {
+          "status": "ok",
+          "eans": []
+        },
+        "Ozon": {
+          "status": 307,
+          "eans": []
+        },
+        "Wildberries": {
+          "status": 498,
+          "eans": []
+        }
+      }
+    },
+    {
+      "product": {
+        "ean": "arbuz_331390",
+        "name": "Макаронное изделие Edeka Rigatoni 500 г",
+        "brand": "Edeka"
+      },
+      "query": "Edeka Макаронное изделие Edeka Rigatoni 500 г",
+      "verified": null,
+      "bestGuess": {
+        "ean": "4311501666449",
+        "sourceCount": 1,
+        "sources": [
+          "DuckDuckGo"
+        ],
+        "totalCount": 3
+      },
+      "rankedEANs": [
+        {
+          "ean": "4311501666449",
+          "sourceCount": 1,
+          "sources": [
+            "DuckDuckGo"
+          ],
+          "totalCount": 3
+        },
+        {
+          "ean": "4311501452264",
+          "sourceCount": 1,
+          "sources": [
+            "DuckDuckGo"
+          ],
+          "totalCount": 3
+        },
+        {
+          "ean": "86400000",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "14400000",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "67433319",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        }
+      ],
+      "sourceResults": {
+        "DuckDuckGo": {
+          "status": "ok",
+          "eans": [
+            {
+              "ean": "4311501666449",
+              "count": 3
+            },
+            {
+              "ean": "4311501452264",
+              "count": 3
+            }
+          ]
+        },
+        "Bing": {
+          "status": "ok",
+          "eans": [
+            {
+              "ean": "86400000",
+              "count": 1
+            },
+            {
+              "ean": "14400000",
+              "count": 1
+            },
+            {
+              "ean": "67433319",
+              "count": 1
+            }
+          ]
+        },
+        "Yandex": {
+          "status": 302,
+          "eans": []
+        },
+        "Google": {
+          "status": "ok",
+          "eans": []
+        },
+        "Ozon": {
+          "status": 307,
+          "eans": []
+        },
+        "Wildberries": {
+          "status": 498,
+          "eans": []
+        }
+      }
+    },
+    {
+      "product": {
+        "ean": "arbuz_331395",
+        "name": "Горчица Thomy Delikatess средне-острая, приправленная, 200 мл",
+        "brand": "Thomy"
+      },
+      "query": "Thomy Горчица Thomy Delikatess средне-острая, приправленная, 200 мл",
+      "verified": null,
+      "bestGuess": {
+        "ean": "86400000",
+        "sourceCount": 1,
+        "sources": [
+          "Bing"
+        ],
+        "totalCount": 1
+      },
+      "rankedEANs": [
+        {
+          "ean": "86400000",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "67433319",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        }
+      ],
+      "sourceResults": {
+        "DuckDuckGo": {
+          "status": "ok",
+          "eans": []
+        },
+        "Bing": {
+          "status": "ok",
+          "eans": [
+            {
+              "ean": "86400000",
+              "count": 1
+            },
+            {
+              "ean": "67433319",
+              "count": 1
+            }
+          ]
+        },
+        "Yandex": {
+          "status": 302,
+          "eans": []
+        },
+        "Google": {
+          "status": "ok",
+          "eans": []
+        },
+        "Ozon": {
+          "status": 307,
+          "eans": []
+        },
+        "Wildberries": {
+          "status": 498,
+          "eans": []
+        }
+      }
+    },
+    {
+      "product": {
+        "ean": "arbuz_328926",
+        "name": "Молодой ячмень Bio planet органический порошок 100 г",
+        "brand": "Bio planet"
+      },
+      "query": "Bio planet Молодой ячмень Bio planet органический порошок 100 г",
+      "verified": null,
+      "bestGuess": {
+        "ean": "86400000",
+        "sourceCount": 1,
+        "sources": [
+          "Bing"
+        ],
+        "totalCount": 1
+      },
+      "rankedEANs": [
+        {
+          "ean": "86400000",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "14400000",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "67433319",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        }
+      ],
+      "sourceResults": {
+        "DuckDuckGo": {
+          "status": "ok",
+          "eans": []
+        },
+        "Bing": {
+          "status": "ok",
+          "eans": [
+            {
+              "ean": "86400000",
+              "count": 1
+            },
+            {
+              "ean": "14400000",
+              "count": 1
+            },
+            {
+              "ean": "67433319",
+              "count": 1
+            }
+          ]
+        },
+        "Yandex": {
+          "status": 302,
+          "eans": []
+        },
+        "Google": {
+          "status": "ok",
+          "eans": []
+        },
+        "Ozon": {
+          "status": 307,
+          "eans": []
+        },
+        "Wildberries": {
+          "status": 498,
+          "eans": []
+        }
+      }
+    },
+    {
+      "product": {
+        "ean": "arbuz_235141",
+        "name": "Шпикачки Папа может сочные со свининой, кг",
+        "brand": "Папа может"
+      },
+      "query": "Папа может Шпикачки Папа может сочные со свининой, кг",
+      "verified": null,
+      "bestGuess": {
+        "ean": "86400000",
+        "sourceCount": 1,
+        "sources": [
+          "Bing"
+        ],
+        "totalCount": 1
+      },
+      "rankedEANs": [
+        {
+          "ean": "86400000",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "14400000",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "67433319",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        }
+      ],
+      "sourceResults": {
+        "DuckDuckGo": {
+          "status": "ok",
+          "eans": []
+        },
+        "Bing": {
+          "status": "ok",
+          "eans": [
+            {
+              "ean": "86400000",
+              "count": 1
+            },
+            {
+              "ean": "14400000",
+              "count": 1
+            },
+            {
+              "ean": "67433319",
+              "count": 1
+            }
+          ]
+        },
+        "Yandex": {
+          "status": 302,
+          "eans": []
+        },
+        "Google": {
+          "status": "ok",
+          "eans": []
+        },
+        "Ozon": {
+          "status": 307,
+          "eans": []
+        },
+        "Wildberries": {
+          "status": 498,
+          "eans": []
+        }
+      }
+    },
+    {
+      "product": {
+        "ean": "arbuz_320949",
+        "name": "Рис Arbuz Select x Damdala с овощами и курицей 300 г",
+        "brand": "Arbuz Select x Damdala"
+      },
+      "query": "Arbuz Select x Damdala Рис Arbuz Select x Damdala с овощами и курицей 300 г",
+      "verified": null,
+      "bestGuess": {
+        "ean": "86400000",
+        "sourceCount": 1,
+        "sources": [
+          "Bing"
+        ],
+        "totalCount": 1
+      },
+      "rankedEANs": [
+        {
+          "ean": "86400000",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "14400000",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        },
+        {
+          "ean": "67433319",
+          "sourceCount": 1,
+          "sources": [
+            "Bing"
+          ],
+          "totalCount": 1
+        }
+      ],
+      "sourceResults": {
+        "DuckDuckGo": {
+          "status": "ok",
+          "eans": []
+        },
+        "Bing": {
+          "status": "ok",
+          "eans": [
+            {
+              "ean": "86400000",
+              "count": 1
+            },
+            {
+              "ean": "14400000",
+              "count": 1
+            },
+            {
+              "ean": "67433319",
+              "count": 1
+            }
+          ]
+        },
+        "Yandex": {
+          "status": 302,
+          "eans": []
+        },
+        "Google": {
+          "status": "ok",
+          "eans": []
+        },
+        "Ozon": {
+          "status": 307,
+          "eans": []
+        },
+        "Wildberries": {
+          "status": 498,
+          "eans": []
+        }
+      }
+    }
+  ]
+}

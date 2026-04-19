@@ -1,0 +1,802 @@
+[
+  {
+    "id": "852b6f26-8f5e-4ed1-8177-eef3c8b4b3a8",
+    "ean": "5059319016573",
+    "name": "ЗАВТРАК СУХОЙ KELLOGG'S FROOT LOOPS 375ГР",
+    "brand": "Kellogg's",
+    "source_primary": "npc",
+    "ingredients_raw": "Oat (71%), sugar, sunflower oil, wheat flour (6.5%), corn fibers, glucose syrup, chuffed barley (2.5%), frutti liofilizzati (2.5%) (ribes nero, mirtilli), emulsionante (lecitina di soia), aroma naturale di spezie, aroma naturale, estratto di malto d'orzo. Per gli allergeni vedi ingredienti in grassetto. Può contenere glutine da altri cereali, frutta a guscio."
+  },
+  {
+    "id": "cdf2a7b5-5425-4120-b59b-49697f7d061c",
+    "ean": "0028400516679",
+    "name": "ЧИПСЫ DORITOS КУКУРУЗНЫЕ СО ВКУСОМ ЗЕЛЕНЫЙ ПЕРЕЦ 77ГР",
+    "brand": "Doritos",
+    "source_primary": "npc",
+    "ingredients_raw": "CORN, VEGETABLE OIL (CORN, CANOLA, AND/OR SUNFLOWER OIL), SALT, SUGAR, MONOSODIUM GLUTAMATE, FRUCTOSE, SODIUM DIACETATE, SOY SAUCE (SOYBEAN, WHEAT, SALT), ONION POWDER, MALTODEXTRIN (MADE FROM CORN), HYDROLYZED SOY PROTEIN, HYDROLYZED CORN PROTEIN, GARLIC POWDER, TORULA YEAST, MALIC ACID, EXTRACTIVES OF PAPRIKA, SPICES, CARAMEL COLOR, DISODIUM INOSINATE, DISODIUM GUANYLATE, DEXTROSE, AND NATURAL FLAVOR. CONTAINS SOY AND WHEAT INGREDIENTS."
+  },
+  {
+    "id": "4860186c-5da8-4960-a4d7-0dc1400f3111",
+    "ean": "0028400770590",
+    "name": "Чипсы DORITOS Перец Зеленый 70гр",
+    "brand": "Doritos",
+    "source_primary": "npc",
+    "ingredients_raw": "Corn, vegetable oil (corn, canola, soybean, and/or sunflower oil), corn maltodextrin, cheddar cheese (milk, cheese cultures, salt, enzymes), salt, whey, monosodium glutamate, buttermilk, Romano cheese (milk, cheese cultures, salt, enzymes), whey protein concentrate, onion powder, potassium salt, corn flour, natural & artificial flavors, dextrose, tomato powder, lactose, spices, artificial color (Yellow 6, Yellow 5, Red 40), lactic acid, citric acid, sugar, garlic powder, skim milk, red and green bell peppers, disodium inosinate, disodium guanylate."
+  },
+  {
+    "id": "65a4c76f-b74b-4e34-bdbe-9837ea319dea",
+    "ean": "0009800820078",
+    "name": "TREAT банан nutella ",
+    "brand": "Nutella",
+    "source_primary": "npc",
+    "ingredients_raw": "HAZELNUT SPREAD WITH COCOA (SUGAR, PALM OIL, HAZELNUTS, SKIM MILK, COCOA, LECITHIN AS EMULSIFIER, VANILLIN: AN ARTIFICIAL FLAVOR), WHEAT FLOUR, BAKER'S YEAST, BARLEY MALT EXTRACT, SALT, SKIM MILK, LECITHIN AS EMULSIFIER, WHEAT PROTEINS, WHEY PROTEINS."
+  },
+  {
+    "id": "e6ba8615-2823-4020-95e9-1eadb4f61a84",
+    "ean": "8000500398449",
+    "name": "TREAT банан nutella ",
+    "brand": "Nutella",
+    "source_primary": "npc",
+    "ingredients_raw": "toll free in or ingredients: sugar, palm oil, hazelnuts (13%), skimmed milk powder (8.7%), low-fat cocoa (7.4%), emulsifiers: lecithins (soy), vanillin, gluten-free nutritional values energy carbohydrates (kj kcal) of which sugars fatty proteins (g) 30.9 of which saturated fatty acids (g) 10.6 per 100 g (g) (g) 2252 539 57.5 56.3 6.3 (g) (g) 0.107 per portion %* for 15 g portion 4 7 336 80 4.6 1.6 8.6 8.4 0.9 0.016 78 8 3 39 9 2 0 &quot;reference intakes of an average adult (8400 kj/"
+  },
+  {
+    "id": "eadd23db-e71b-48eb-a610-3bd00e91fa59",
+    "ean": "7622210882974",
+    "name": "Шоколад Cadbury Dairy Milk молочный 45гр",
+    "brand": "Cadbury",
+    "source_primary": "npc",
+    "ingredients_raw": "sugar, milk, cocoa butter, cocoa mass, skimmed milk powder, whey permeate powder (from milk), vegetable fats (palm, shea), milk fat, modified starches (maize, tapioca), emulsifiers (e442, e476), flavourings, maltodextrin, colours (anthocyanins, beetroot red, paprika extract, carotenes)."
+  },
+  {
+    "id": "eea6e3bd-7d7e-447f-b696-75ebd1ce9482",
+    "ean": "8410199025579",
+    "name": "Чипсы DORITOS Перец Зеленый 70гр",
+    "brand": "Doritos",
+    "source_primary": "npc",
+    "ingredients_raw": "Maíz, aceite de colza, aroma (azúcar, aromas, correctores de acidez (ácido cítrico, ácido málico), sal, ajo en polvo, cloruro potásico, potenciador del sabor (glutamato monosódico), cebolla en polvo, pimentón ahumado en polvo, concentrado de vegetales (rábano, zanahoria), pimiento jalapeño en polvo, especias, colorante (extracto de pimentón), hierbas aromáticas, maltodextrina ahumada, aceite de girasol ahumado), antioxidantes (extracto de romero, ácido ascórbico, extracto rico en tocoferoles, ácido cítrico)."
+  },
+  {
+    "id": "0c39ffb2-27ce-4fc2-a7bf-544cf4b979b9",
+    "ean": "5411188133476",
+    "name": "НАПИТОК ALPRO ФУНДУК-ПЕКАН 1Л TBA ALPRO ЖАҢҒАҚ-ПЕКАН СУСЫНЫ 27707 7449 ",
+    "brand": "alpro",
+    "source_primary": "npc",
+    "ingredients_raw": "soijapohja (vesi, kuoritut soijapavut (12%)), sokeri, vähärasvainen kaakaojauhe (1,6%), herneproteiini, merisuola, kalsiumkarbonaatti, stabilointiaine (gellaanikumi), happamuudensäätöaine (kaliumfosfaatit), aromit, vitamiinit (B2, D2),"
+  },
+  {
+    "id": "2136b06f-0f7b-400a-b6e7-3e44144e1309",
+    "ean": "5601363001168",
+    "name": "ЧИПСЫ DORITOS КУКУРУЗНЫЕ СО ВКУСОМ ЗЕЛЕНЫЙ ПЕРЕЦ 77ГР",
+    "brand": "Doritos",
+    "source_primary": "npc",
+    "ingredients_raw": "Milho (80%), óleos vegetais (milho e girassol em proporções variáveis), condimento preparado com sabor a queijo (soro de _leite_ em pó, farinha de _trigo_, sal, queijo em pó (de _leite_), tomate em pó, aromas (contêm _leite_), cebola em pó, soro de manteiga em pó (de _leite_), cloreto de potássio, intensificador de sabor (glutamato monossódico), proteinas de _leite_, alho em pó, dextrose, reguladores de acidez (ácido lático, ácido cítrico), corantes (extrato de pimentão, bixina de anato, caramelo natural), especiarias, açúcar, _leite_ desnatado em pó."
+  },
+  {
+    "id": "df6158f3-5bed-468f-9858-72bdbf75e265",
+    "ean": "0810003780805",
+    "name": "Bien Кружка",
+    "brand": "Biena",
+    "source_primary": "npc",
+    "ingredients_raw": "Chickpeas, Expeller Pressed High Oleic Sunflower or Safflower Oil, Pink Himalayan Salt"
+  },
+  {
+    "id": "8b6f4423-442f-45f4-ac25-8ea670012f1d",
+    "ean": "3168930171881",
+    "name": "ЧИПСЫ DORITOS КУКУРУЗНЫЕ СО ВКУСОМ ЗЕЛЕНЫЙ ПЕРЕЦ 77ГР",
+    "brand": "Doritos",
+    "source_primary": "npc",
+    "ingredients_raw": "Eau,huile de colza,tomate (8%),crème acidulée (LAIT),purée d'ail,oignon (4%),avocat (3,8%),amidon modifié,jus de citron vert à base de concentré,jus de citron à base de concentré,poudre de petit-LAIT,sucre,piment jalapeño (1%),coriandre,sel,stabilisant (gomme xanthane),jaune d'OEUF liquide pasteurisé,correcteur d'acidité (acide citrique),poivron rouge séché,piment en poudre,conservateur (sorbate de potassium),colorants (lutéine, E141)"
+  },
+  {
+    "id": "282ddd47-97ed-422f-9ba9-b578021ff9f0",
+    "ean": "3017620420702",
+    "name": "Шоколадно ореховая Nutella 630g Ferrero",
+    "brand": "Ferrero",
+    "source_primary": "openfoodfacts",
+    "ingredients_raw": "Sucre, huile de palme, NOISETTES 13%, LAIT écrémé en poudre 8,7%, cacao maigre 7,4%, émulsifiants: lécithines [SOJA]; vanilline."
+  },
+  {
+    "id": "2f24796c-8709-4ecc-a0be-223fb9061fc2",
+    "ean": "8682116970648",
+    "name": "Bien Кружка",
+    "brand": "Biena",
+    "source_primary": "npc",
+    "ingredients_raw": "Chickpeas, Expeller Pressed High Oleic Sunflower or Safflower Oil, Lil' Bit of Everything Seasoning (Sesame Seed, Poppy Seed, Sea Salt. Onion Powder, Garlic Powder, Spice, Yeast Extract. Sesame Oil, Natural Flavor), Sugar, Sea Salt"
+  },
+  {
+    "id": "90b91415-f237-4c22-89fd-58134fd5b8c3",
+    "ean": "5000328029146",
+    "name": "Чипсы DORITOS Перец Зеленый 70гр",
+    "brand": "Doritos",
+    "source_primary": "npc",
+    "ingredients_raw": "Corn (Maize), Rapeseed Oil, Chilli Heatwave Flavour [Sugar, Flavourings, Flavour Enhancers (Monosodium Glutamate, Disodium Guanylate), Potassium Chloride, Hydrolysed Vegetable Protein, Salt, Garlic Powder, Paprika Powder, Onion Powder, Acid (Citric Acid), Cayenne Pepper, Colour (Paprika Extract)], Antioxidants (Rosemary Extract, Ascorbic Acid, Tocopherol Rich Extract, Citric Acid). May contain: Milk, Soya, Wheat and the other cereals containing gluten."
+  },
+  {
+    "id": "0d414358-cb2d-4f97-b338-c366bbd03fd9",
+    "ean": "3017620425035",
+    "name": "TREAT банан nutella ",
+    "brand": "nutella",
+    "source_primary": "npc",
+    "ingredients_raw": "Sucre, huile de palme, NOISETTES 13%, LAIT écrémé en poudre 8,7%, cacao maigre 7,4%, émulsifiants: lécithines [SOJA]; vanilline. Sans gluten"
+  },
+  {
+    "id": "eb8adddb-0f70-4a7b-bbab-62d5fdec531c",
+    "ean": "3168930166108",
+    "name": "ЧИПСЫ DORITOS КУКУРУЗНЫЕ СО ВКУСОМ ПЕРЕЦ ОСТРЫЙ 130ГР",
+    "brand": "Doritos",
+    "source_primary": "npc",
+    "ingredients_raw": "Eau,huile de colza,crème acidulée (9%) (LAIT),amidon de maïs modifié (dont sirop de glucose),crème fraîche épaisse (LAIT) (2,9%),poudre de petit-LAIT,LAIT entier en poudre,crème en poudre (LAIT),oignons,vinaigre de vin blanc,ciboulette,poudre de jaune d'ŒUF,sel,purée d'ail,correcteur d'acidité (acide lactique),stabilisant (gomme xanthane),arôme,conservateur (sorbate do potassium)"
+  },
+  {
+    "id": "641b8840-48ae-419f-8681-706ed9295b73",
+    "ean": "5053827198165",
+    "name": "ЗАВТРАК KELLOGG'S EXTRA ХРУСТЯЩАЯ ГРАНОЛА-МЮСЛИ ОРЕХИ.ФРУКТЫ.ЯГОДЫ 300ГР КОР ",
+    "brand": "Kellogg's",
+    "source_primary": "npc",
+    "ingredients_raw": "Avoine complète(48%), sucre, huile de palme durable, morceaux de chocolat(11%) (sucre, pâte de cacao, beurre de cacao, graisses végétales{palme, karité} en proportions variables, matière grasse du lait, émulsifiant{lécithine de soja}), farine de blé, noisettes(3%), sel, mélasse, noix de coco séchée, extrait de malt d'orge, Peut contenir gluten provenant d'autres céréales, autres fruits à coque,"
+  },
+  {
+    "id": "5cbda32e-71d7-4748-95ed-0ff0b71f841c",
+    "ean": "3168930159896",
+    "name": "LIPTON Sun Tea фрукт",
+    "brand": "Lipton",
+    "source_primary": "npc",
+    "ingredients_raw": "Eau, sucre, fructose, acidifiants (acide citrique, acide malique), extrait de thé noir⁽¹⁾ (0,12%), jus de pêche à base de concentré (0,1%), correcteur d'acidité (citrate trisodique), arômes, antioxydant (acide ascorbique), édulcorant (Glycosides de stéviol issus de Stevia),⁽¹⁾ Certifié Rainforest Alliance."
+  },
+  {
+    "id": "10e6c946-9d0f-4c92-9c87-65e06d27bb2f",
+    "ean": "3502110010674",
+    "name": "Напиток безалкогольный негазированный чайный «Черный лимон» торговой марки LIPTON ICE TEA ",
+    "brand": "Lipton",
+    "source_primary": "npc",
+    "ingredients_raw": "Eau,sucre,acidifiant (acide citrique),extrait de thé noir⁽¹⁾ (0,12%),jus de framboise à base de concentré (0,1%),arômes,correcteur d'acidité (citrate trisodique),antioxydant (acide ascorbique),édulcorant (Glycosides de stéviol issus de Stevia),⁽¹⁾ Certifié Rainforest Alliance. Plus d'informations sur ra.org. People and nature = l'humain et la nature."
+  },
+  {
+    "id": "dc3dd524-e580-47e0-89c0-70c3b28b2640",
+    "ean": "3168930159988",
+    "name": "LIPTON Sun Tea фрукт",
+    "brand": "Lipton",
+    "source_primary": "npc",
+    "ingredients_raw": "Eau,sucre,acidifiant (acide citrique),extrait de thé noir⁽¹⁾ (0,12%),jus de framboise à base de concentré (0,1%),arômes,correcteur d'acidité (citrate trisodique),antioxydant (acide ascorbique),édulcorant (Glycosides de stéviol issus de Stevia),⁽¹⁾ Certifié Rainforest Alliance. Plus d'informations sur ra.org. People and nature = l'humain et la nature."
+  },
+  {
+    "id": "8fdd0b31-e699-4f2c-9792-d424f2c8957c",
+    "ean": "2029020500015",
+    "name": "АКЦИЯ КАКАО NESTLE NESQUIK 500ГР+КАКАО NESTLE NESQUIK 100ГР ГР/УП",
+    "brand": "Nesquik",
+    "source_primary": "npc",
+    "ingredients_raw": "Zucker, Fett 19,5% Kakao, Traubenzucker, Emulgator: Soja-Lecithin, Vitamine und Mineralien: Thiamin (B1), Niacin (PP, B3) Folsäure (B9), Pantothensäure (B5) Vitamine B6, C, D3 und E, Calciumcarbonat, Magnesiumcarbonat, Salz, Zimt, Aroma"
+  },
+  {
+    "id": "c1efe427-60c8-430e-96b5-04076eadd568",
+    "ean": "3017620429484",
+    "name": "ПАСТА FERRERO NUTELLA ШОКОЛАДНАЯ 350ГР С/Б",
+    "brand": "Ferrero",
+    "source_primary": "npc",
+    "ingredients_raw": "Sucre, huile de palme, NOISETTES 13%, LAIT écrémé en poudre 8,7%, cacao maigre 7,4%, émulsifiants : lécithines [ SOJA ] vanilline"
+  },
+  {
+    "id": "f0ea3bbe-e074-428f-ab74-917afe3885d3",
+    "ean": "7622201734848",
+    "name": "Бисквит Cadbury Wispa 124г",
+    "brand": "Cadbury",
+    "source_primary": "npc",
+    "ingredients_raw": "milk, sugar, glucose syrup, cocoa butter, cocoa mass, vegetable fats (palm, shea), whey powder (from milk), glucose-fructose syrup, skimmed milk powder, whole milk powder, rice flour, emulsifiers (e442, soya lecithins, e471, e476), whey permeate powder (from milk), milk fat, stabiliser (sorbitol), humectant (glycerol), invert sugar syrup, fat-reduced cocoa powder, salt, flavourings (contain milk), barley malt extract,       molasses, dried egg whites, acidity regulator (sodium carbonates), colours (carotenes, paprika extract, e150d), milk chocolate: milk solids 20% minimum, milk chocolate: milk solids 14% minimum, y contain nuts, dinky decker unit may contain peanuts, nuts and wheat, all units may contains vegetable fats in addition to cocoa butter, ¹734848,quot,,gt, 622201 c cadbury heroes share good times 8257971"
+  },
+  {
+    "id": "16d6069a-b71d-4443-accb-646977ab255b",
+    "ean": "5411188136347",
+    "name": "НАПИТОК ALPRO ФУНДУК-ПЕКАН 1Л TBA ALPRO ЖАҢҒАҚ-ПЕКАН СУСЫНЫ 27707 7449 ",
+    "brand": "alpro",
+    "source_primary": "npc",
+    "ingredients_raw": "Sojabasis (81,8%) (Wasser, geschälte Sojabohnen (9,5%), Rote-Früchte-Dattel-Mix (16,8%) (Kirsche (3,4%), Dattel (3,2%), Erdbeere (3,2%), Dattelsaftkonzentrat (3,1%), Kirschsaftkonzentrat (2,7%), Erdbeersaftkonzentrat (1,2%), Säureregulatoren (Citronensäure, Natriumcitrate), Stabilisator (Pektine), Calcium (Tricalciumphosphat), färbendes schwarzes Karottenkonzentrat, Meersalz, Antioxidationsmittel (stark tocopherolhaltige Extrakte, Fettsäureester der Ascorbinsäure), Aromen, Vitamine B2, B12, D2, Joghurtkulturen (S. thermophilus, L. bulgaricus). Kann Spuren von Schalenfrüchten enthalten."
+  },
+  {
+    "id": "1f99fcd2-f33c-453a-bd9f-ca97e16df66b",
+    "ean": "5411188124269",
+    "name": "НАПИТОК ALPRO ФУНДУК-ПЕКАН 1Л TBA ALPRO ЖАҢҒАҚ-ПЕКАН СУСЫНЫ 27707 7449 ",
+    "brand": "alpro",
+    "source_primary": "npc",
+    "ingredients_raw": "Sojabasis (Wasser, geschälte Sojabohnen (9,7%)), Hafer (3%), Zichorienwurzel - fasern, Zucker, Tricalciumcitrat, Säureregulatoren (Natriumcitrate, Citronensäure), Stabilisator (Pektine), natürliches Aroma, Meersalz, Antioxidationsmittel (stark tocopherolhaltige Extrakte, Fettsäureester der Ascorbinsäure), Vitamine (B12, D2), Joghurtkulturen (Str. thermophilus, L. bulgaricus). PO00 Kann Spuren von Schalenfrüchten (keine Erdnüsse) enthalten."
+  },
+  {
+    "id": "26541883-dbfe-47e2-992c-d6166bcaa5ba",
+    "ean": "3168930170969",
+    "name": "Напиток безалкогольный негазированный чайный «Черный лимон» торговой марки LIPTON ICE TEA ",
+    "brand": "Lipton",
+    "source_primary": "npc",
+    "ingredients_raw": "Eau,sucre,acidifiant (acide citrique),extrait de thé noir (0,12%) ,arôme naturel,antioxydant (acide ascorbique),régulateur d'acidite (citrate trisodique),édulcorant (Glycosides de stéviol issus de Stevia)"
+  },
+  {
+    "id": "92e9efbc-1605-4dde-aee5-96b12c1b6246",
+    "ean": "5411188112747",
+    "name": "НАПИТОК ALPRO ФУНДУК-ПЕКАН 1Л TBA ALPRO ЖАҢҒАҚ-ПЕКАН СУСЫНЫ 27707 7449 ",
+    "brand": "Alpro",
+    "source_primary": "npc",
+    "ingredients_raw": "Base de soja (84,3%) (eau, fèves de soja décortiquées (9,7%)), sucre, sirop de glucose-fructose, mélange citron-citron vert (3,4%) (jus à base de concentré (1,7%), citron (1,1%)), jus de citron vert à base de concentré (0,6%)), correcteurs d'acidité (acide citrique, citrates de sodium), stabilisant (pectines), calcium (phosphate tricalcique), sel marin de table, concentré de carotte et potiron, antioxydants (extrait riche en tocophérols, esters d'acides gras de l'acide ascorbique), arôme, arôme naturel de citron avec d'autres arômes naturels, vitamines (B2, B12, D2), ferments de yaourt (S. thermophilus, L. bulgaricus)."
+  },
+  {
+    "id": "f16544ff-cf38-4c3d-b218-63011424b04e",
+    "ean": "7622202216916",
+    "name": "Бисквит Cadbury Wispa 124г",
+    "brand": "Cadbury",
+    "source_primary": "npc",
+    "ingredients_raw": "Cake (45%*)-Refined Wheat Flour (Maida), Sugar, Humectants (420 (ii), 422, 1520), Palm Olein, Liquid Glucose, Milk Solids, Cocoa Solids, Starch, Emulsifiers (322, 475, 471, 491), Raising Agent (500 (i), 450 (i), 341 (i), lodised Salt, Flavours (Natural Flavour, Nature Identical Flavouring Substances), Preservative (202), Stabilizer (415)); Chocolayer (29%*) - Sugar, Hydrogenated Vegetable Oils, Milk Solids, Cocoa Solids, Emulsifiers (442, 476)), Flavours (Nature Identical, Artificial (Vanilla and Caramel) Flavouring Substances); Filling (26%*) - (Sugar, Fractionated Fat, Liquid Glucose, Humectant (422, 1520), Water, Emulsifiers (322, 475, 471,491), Cocoa Solids, Flavours (Natural flavour, Nature Identical Flavouring Substances), lodised Salt, Preservative (202)). Allergen Information: Contains Milk, Wheat, Sulphites and Soy. Private Limited, Serving size:17 g*, No of serving per package: 1* P-Mfd By: Parson and Survey No.225 Area, Harohalli,Kar Ramanagara, Kan Doe lo"
+  },
+  {
+    "id": "fc26aeb7-1f45-408a-a015-fb50496c9b51",
+    "ean": "7622210946003",
+    "name": "Шоколад Cadbury Dairy Milk молочный 45гр",
+    "brand": "Cadbury",
+    "source_primary": "npc",
+    "ingredients_raw": "sugar, milk, cocoa butter, cocoa mass, skimmed milk powder, whey permeate powder (from milk), vegetable fats (palm, shea), milk fat, modified starches (maize, tapioca), emulsifiers e442, e476), flavourings, maltodextrin, colours (anthocyanins, beetroot red, paprika extract, carotenes)."
+  },
+  {
+    "id": "bc229a48-b2ca-457f-bd46-d2aa3243bf1a",
+    "ean": "5000159441209",
+    "name": "Кабельный ввод SKINTOP MS-M 63X1.5",
+    "brand": "M&Ms",
+    "source_primary": "npc",
+    "ingredients_raw": "sucre, cacahuètes, pâte de cacao, lait écrémé en poudre, lactose et protéines de lait, matière grasse végétale, beurre de cacao, beurre concentré, amidon, sirop de glucose, émulsifiant (lécithine de soja), gélifiant (gomme arabique), colorants*, dextrine, agent d'enrobage (cire de carnauba), arômes, sel, huile végétale."
+  },
+  {
+    "id": "8e27996a-36df-4662-b664-faa72da9a998",
+    "ean": "5053827175654",
+    "name": "Kellogg's Готовый завтрак Cocoa Krispies 65гр стакан",
+    "brand": "Kellogg's",
+    "source_primary": "openfoodfacts",
+    "ingredients_raw": "Riz, sucre, sirop de glucose, cacao maigre en poudre, sel, pâte de cacao, extrait de malt d'orge, arômes, niacine, fer, vitamine B6, riboflavine, thiamine, acide folique, vitamine D, vitamine B12."
+  },
+  {
+    "id": "279438d2-3c87-4254-a43a-df8a3c018646",
+    "ean": "5000201468611",
+    "name": "Бисквит Cadbury Wispa 124г",
+    "brand": "Cadbury",
+    "source_primary": "npc",
+    "ingredients_raw": "sugar, glucose syrup, cocoa butter, cocoa mass, skimmed milk powder, whey permeate powder (from milk), palm oil, milk fat, emulsifier (e442), flavourings, coconut oil."
+  },
+  {
+    "id": "93867ad2-86da-4d14-add7-bbef686a1d4e",
+    "ean": "7622201149574",
+    "name": "Шоколад Cadbury Dairy Milk молочный с карамельной начинкой 120гр",
+    "brand": "Cadbury",
+    "source_primary": "npc",
+    "ingredients_raw": "Milk**, sugar, roasted hazelnuts, cocoa butter, cocoa mass, vegetable fats (palm, shea), emulsifiers (E442, E476), flavourings. May contain other nuts, wheat. **The equivalent of 426 ml of fresh liquid milk in every 227 g of milk chocolate. MILK CHOCOLATE: MILK SOLIDS 20% MINIMUM, ACTUAL 23 %. COCOA SOLIDS 20% MINIMUM. CONTAINS VEGETABLE FATS IN ADDITION TO COCOA BUTTER. 7 W"
+  },
+  {
+    "id": "e06090c3-8a36-4121-990a-d299fb4460a5",
+    "ean": "8005016141206",
+    "name": "Напитки — Tagliolini Aux Oeufs 250 g",
+    "brand": "Calvé",
+    "source_primary": "npc",
+    "ingredients_raw": "Cacahuète 85%, huile de colza, huile de soja, huile de palme totalement hydrogénée, sel,"
+  },
+  {
+    "id": "339d296d-394a-42ef-9293-0a50c780ad96",
+    "ean": "5000201499776",
+    "name": "Бисквит Cadbury Wispa 124г",
+    "brand": "Cadbury",
+    "source_primary": "npc",
+    "ingredients_raw": "_Milk_, sugar, cocoa butter, cocoa mass, whey powder (from _milk_), vegetable fats (palm, shea), emulsifiers (E442, E476), flavourings."
+  },
+  {
+    "id": "9893fd78-5549-401e-a5fb-abb870ce71e2",
+    "ean": "50201600",
+    "name": "Шоколад Cadbury Dairy Milk молочный 110гр",
+    "brand": "Cadbury",
+    "source_primary": "npc",
+    "ingredients_raw": "Sugar, _milk_, glucose syrup, cocoa butter, invert sugar syrup, dried whey powder (from _milk_), cocoa mass, vegetable fats (palm, shea), emulsifier (E442), dried _egg_ white, flavourings, colour (paprika extract)."
+  },
+  {
+    "id": "f5612da7-d60c-49f8-bb54-635886411a58",
+    "ean": "5059319025681",
+    "name": "ЗАВТРАК СУХОЙ KELLOGG'S SMACKS 330ГР",
+    "brand": "Kellogg's",
+    "source_primary": "npc",
+    "ingredients_raw": "Riso (47%), frumento integrale (37%), zucchero, orzo (5%), farina di malto d'orzo, sale, estratto di malto d'orzo, niacina, ferro, riboflavina, tiammina, vitamina B6, acido folico, vitamina D, vitamina B12. Per gli allergeni vedi ingredienti in grassetto. Può contenere glutine da altri cereali, latte."
+  },
+  {
+    "id": "a85d78d0-d931-417e-b736-e2c9f1c73190",
+    "ean": "5411188102809",
+    "name": "НАПИТОК ALPRO ФУНДУК-ПЕКАН 1Л TBA ALPRO ЖАҢҒАҚ-ПЕКАН СУСЫНЫ 27707 7449 ",
+    "brand": "Alpro",
+    "source_primary": "npc",
+    "ingredients_raw": "soy base (water, peeled _soybeans_ (9,8%)), sugar, blueberry (5,7%), tricalcium citrate, stabilizer (pectins), acid icing regulators (citric acid, sodium citrates), natural aroma, blueberry extract, carrot extract, sea salt, antioxidants (tocopherolrich extract, fatty acid esters of ascorbic acid), vitamins (b2, b12, d2), ferments (s thermophilus, l bulgaricus)"
+  },
+  {
+    "id": "f1f47f7d-55e8-46f0-b73e-ca0204fec0d3",
+    "ean": "5021554001591",
+    "name": "Lipton Tropical 330 мл",
+    "brand": "Lipton",
+    "source_primary": "npc",
+    "ingredients_raw": "Eau,sucre,acidifiants (acide citrique, acide malique),extrait de thé vert⁽¹⁾ (0,12%),jus de citron vert à base de concentré (0,1%),correcteur d'acidité (citrate trisodique),arôme naturel de citron vert et menthe avec autres arômes naturels,antioxydant (acide ascorbique),édulcorant (Glycosides de stéviol issus de Stevia),extrait de menthe (0,01%),⁽¹⁾ Certifié Rainforest Alliance. Plus d'informations sur ra.org. People and nature = l'humain et la nature."
+  },
+  {
+    "id": "83a2d165-edd2-4b9b-9033-7f2a8f044aeb",
+    "ean": "5411188124726",
+    "name": "НАПИТОК ALPRO ФУНДУК-ПЕКАН 1Л TBA ALPRO ЖАҢҒАҚ-ПЕКАН СУСЫНЫ 27707 7449 ",
+    "brand": "Alpro",
+    "source_primary": "npc",
+    "ingredients_raw": "Haferbasis (Wasser, Hafer (3,2%)], Mandeln (1,7%), Zichorienwurzelfasern, Tricalciumphosphat, Stabilisatoren (Johannisbrotkernmehl, Gellan), Meersalz, natürliche Aromen, Vitamine (B2, B12, E, D2)."
+  },
+  {
+    "id": "4d0c3488-e2ab-4d54-a2cb-e5ff04788bb1",
+    "ean": "5411188099154",
+    "name": "НАПИТОК ALPRO ФУНДУК-ПЕКАН 1Л TBA ALPRO ЖАҢҒАҚ-ПЕКАН СУСЫНЫ 27707 7449 ",
+    "brand": "alpro",
+    "source_primary": "npc",
+    "ingredients_raw": "water, hulled soya beans (10,7%), sugar, calcium (tricalcium citrate), stabiliser (pectins), acidity regulators (sodium citrates, citric acid), sea salt, flavouring,  antioxidants (tocopherol-rich extract, fatty acid esters of ascorbic acid), vitamins (b12, d2), yogurt cultures (s, thermophilus, l, bulgaricus)."
+  },
+  {
+    "id": "bbfc6c2d-44d2-4da6-a420-fac1dcf7c7c6",
+    "ean": "5411188115458",
+    "name": "НАПИТОК ALPRO СОЕВЫЙ ALPRO НАТУРАЛЬНЫЙ 1Л Т/ПАК",
+    "brand": "alpro",
+    "source_primary": "npc",
+    "ingredients_raw": "Base de soja (água, grãos de soja descascados (7%)), açúcar, cacau magro (1,5%), carbonato de cálció, estabilizadores (carragenina, goma de guar, goma xantana), regulador de acidez (fosfatos de potássio], aroma, sal marinho, aroma natural, vitaminas (B2, D2)."
+  },
+  {
+    "id": "ed37e9cf-fccf-4e42-9b13-2ba1ef5b58ba",
+    "ean": "5411188115472",
+    "name": "НАПИТОК ALPRO ФУНДУК-ПЕКАН 1Л TBA ALPRO ЖАҢҒАҚ-ПЕКАН СУСЫНЫ 27707 7449 ",
+    "brand": "alpro",
+    "source_primary": "npc",
+    "ingredients_raw": "SOJABASIS (96,8%) (Wasser, geschälte SOJABOHNEN (8%)), Zucker, Säureregulator (Kaliumphosphate), Calcium (Calciumcarbonat), Aroma, Meersalz, Stabilisator (Gellan), Vitamine (B2, B12, D2)"
+  },
+  {
+    "id": "153ec2a3-3a5e-4110-89d1-4203865ddb9f",
+    "ean": "5411188080268",
+    "name": "НАПИТОК ALPRO СОЕВЫЙ ALPRO НАТУРАЛЬНЫЙ 1Л Т/ПАК",
+    "brand": "alpro",
+    "source_primary": "npc",
+    "ingredients_raw": "Wasser, Zucker, Haselnüsse (2,8%), Calcium (Tricalciumphosphat), Meersalz, Stabilisatoren (Johannisbrotkernmehl, Gellan], Emulgator (Lecithine), Vitamine B2, B12, D2, E. Kann Spuren von Schalenfrüchten enthalten."
+  },
+  {
+    "id": "9560a5ef-1150-41ec-b546-171835eb18e9",
+    "ean": "8711327574557",
+    "name": "Напиток безалкогольный негазированный чайный «Черный лимон» торговой марки LIPTON ICE TEA ",
+    "brand": "Lipton",
+    "source_primary": "npc",
+    "ingredients_raw": "100% CLABLE thee-extract zoetstof van houdend water tract (0,3%) appelzuur atriumcitraat) oncentreerd antioxidant zoetstof en van Stevia). Ice Tea bevat bezinksel is houdbaar tot ante aux extraits wec du sucre et naturelle pellante, sucre, ethe (0,3%), citrique, acide fadidité (citrate dron à partir d'un antioxydant (rines, que), édulcorant O de la Stévia). le Tea contient In léger dépôt consommer de fin: voir dessous mit Tee-Extrakt, Sissungsmittel LOW IN CALORIES Lipton O inal 0 ୦୦୦ 0 0 Sparkling haltiges Wasser, Extra(0,3%), Titronensäure, neregulator Thronensaft aus 1.1%), Aromen, Ascorbinsäure), glykoside aus bar bis zum Dose. Bruis Petill TEA Per blikje Par cannett Pro Dose 281"
+  },
+  {
+    "id": "77feb77c-454f-4eed-aaa1-cddc72addced",
+    "ean": "4044773173581",
+    "name": "Кабельный ввод SKINTOP MS-M 32X1.5",
+    "brand": "M&Ms",
+    "source_primary": "npc",
+    "ingredients_raw": "milk chocolate 75% (sugar, cocoa mass, skim milk powder, lactose, cocoa butter, vegetable fat (palm, coconui, and shea), milk fat, emulsifier (soy lecithin), salt, natural flavour), sugar, starch (sources include wheat), glucose syrup (sources include wheat), vegetable gum (gum acacia), colours (titanium dioxide, sunset yellow, tartrazine, allura red, brilliant blue), thickener (dextrin), glazing àgent (carńauba wax). contains permitted flavouring agent and colour, permitted emulsifier from soy, thickeners from gum arabic and dextrin, and glazing agent from carnauba wax as permitted food conditioners. milk chocolate contains a minimum of 29% cocoa solids and 21% milk solids. may be present: peanuts, treenuts, barley. guarantee of satisfaction: if you are not satisfied in any way, please call 1800 245 455 in australia or 0800 444 443 in new zealand. please dispose of this packaging carefully. &quot"
+  },
+  {
+    "id": "42681aee-b625-4aa9-953b-5b7b752de4c8",
+    "ean": "kaspi_101700355",
+    "name": "Шоколад Bucheron горький какао 72% 100 г",
+    "brand": "Bucheron",
+    "source_primary": "usda",
+    "ingredients_raw": "PASTEURIZED GOAT MILK, SALT, CHEESE CULTURE, VEGETAL RENNET, PENICILLIUM CANDIDUM."
+  },
+  {
+    "id": "dd0c20eb-a99b-4cf7-a590-523963dfbadf",
+    "ean": "7622210470126",
+    "name": "Виспа",
+    "brand": "Cadbury",
+    "source_primary": "openfoodfacts",
+    "ingredients_raw": "milk , sugar, cocoa butter, cocoa mass, vegetable fats (palm, shea), whey powder (from milk), emulsifier (e442), flavourings."
+  },
+  {
+    "id": "c9dc192f-5e35-431f-9b8d-16fd46d5f251",
+    "ean": "7622201735906",
+    "name": "Бисквит Cadbury Wispa 124г",
+    "brand": "Cadbury",
+    "source_primary": "npc",
+    "ingredients_raw": "Harina de trigo enriquecida (*); azúcar; aceite vegetal; cacao en polvo; dextrosa; licor de cacao; manteca de cacao; leche descremada en polvo; leudantes químicos: bicarbonato de amonio, bicarbonato de sodio, fosfato monocálcico; emulsionantes: sodio estearoil lactilato, 7 622201 735906 4050050415001 lecitina de soja, polirricinoleato de poliglicerol, sorbitán triestearato, lecitina de girasol; aromatizantes artificiales: vainilla y almendra; colorante: betacaroteno. (*) Ley 25630 (Harina, hierro: 30 mg/kg, ácido fólico: 2,2 mg/kg, vitamina B1: A 6,3 mg/kg, vitamina B2: 1,3 mg/kg. So niacina: 13,0 mg/kg). CONTIENE LECHE, DERIVADOS DE S TRIGO Y DE SOJA. me"
+  },
+  {
+    "id": "d8e84bf0-56d2-4841-aaea-614455c89f79",
+    "ean": "6221031497995",
+    "name": "ЧИПСЫ DORITOS КУКУРУЗНЫЕ СО ВКУСОМ ЗЕЛЕНЫЙ ПЕРЕЦ 77ГР",
+    "brand": "Doritos",
+    "source_primary": "npc",
+    "ingredients_raw": "Com, Vegetable oil (Palm Olein), Sweet Chill Pepper Flavor (Natural flavoring substances - Artificial flavoring substance Sugar, wheat Flour, Favor enhancer (INS/SIN 621, INS/SIN 508, INS/SIN 627, INS/SIN 631) Hydrolyzed vegetable protein Edible Salt, Anti caking agent (INS/SIN 551), Ho Garlic Powder, Onion Powder, Malze Starch, Vegetable oil (Sunflower) . Acidity regulator (INS/SIN 330) Color (INS/SIN 160c) - Spice & Herb) Contains around 1.5 % St Approximately Contains: what (ton) مكونات دوريتوس بطعم الفلفل الحلوة درد، زيت نباتي ( أولين التحيل)، مكسب طعم الفلفل الحلو (طبيعي - صناعي) اسكر، دقيق القمح، معزز تكية (62) INS/SIN 631. INS/SIN 627. INS/SIN 508. INS/SIN) بروتين نهائي محلل ، ملح الطعام ، مضاد لكتل (551) INS/SIN) ، بابريكا حارة بودرة ثوم يارة بصل ، نشا ذرة ، زيت نباتي (حوار (الشمس)، منهم حموضة (330) INS/SIN) لون (160) INS/SIN، توابل وأعشاب نسبة ملح الطعام حوالي 15% تقريبا يحتوي على القمح (جلوتين ) المعلومات الغذائية /"
+  },
+  {
+    "id": "c4b77fbc-b479-4dff-b97e-293edbaf0370",
+    "ean": "6221031492051",
+    "name": "ЧИПСЫ DORITOS КУКУРУЗНЫЕ СО ВКУСОМ ЗЕЛЕНЫЙ ПЕРЕЦ 77ГР",
+    "brand": "Doritos",
+    "source_primary": "npc",
+    "ingredients_raw": "Com, Vegetable oil (Palm Olein), Nacho Cheese Flavor Natural flavoring substances-Artificial flavoring substances) Mantodextrin Edible Salt-Whey Powder-Sugar-Flavor Enhancer INS/SIN 621, INS/SIN 627, INS/SIN 631) - Dextrose-Salt Replacer (INS/SIN 508)-Anticaking agent (INS/SIN 551, INS/SIN 33911)-Acidity Regulator (INS/SIN 330, INS/SIN 327)-Palm Kernel Fat-Hydrolyzed Soy Protein-Coloring Agent (INS/SIN 160C, INS/SIN 160b) - Starch Modified Taploca (INS/SIN 1450)- Acacia Gum (INS/SIN 414) - thermal flavoring] Contains around 1.5% Salt Approximately It contains: Milk & Its Derivatives (Lactose) - Soya & Its Derivatives"
+  },
+  {
+    "id": "dd3da12c-d8e2-41b0-991e-1cad44b18ecb",
+    "ean": "8712100707063",
+    "name": "СОУС CALVE МЕКСИКАНСКАЯ САЛЬСА 230ГР",
+    "brand": "Calvé",
+    "source_primary": "npc",
+    "ingredients_raw": "Salsa al pomodoro piccante con spezie e peperone. Senza glutine. Ingredientic acqua, semiconcentrato di pomodor&quot; (28%), zuccher, aceto d'alcile, peperone rosso (4,49) amido modificato di mais, peperoncino (1,8%), sale, aglio, spezie 0,6% (pepe di cayenme cumina, coriandola, pepe nerol, cipolla&quot; (0,6%), peperone verde (0,3%), succo di limone concentrati estratto di lievito, ammi. Può contenere sedano e senape.&quot; Da agricoltura sostenibile Bottiglia PE101 Plastica, Sigillo 07 Plastica, Tappo PP05 Plastica. Segui le indicazioni del tuo Comune INFORMAZIONI NUTRIZIONALI valori medi del prodotto UROPEAN VEGE per 100ml per porzione** %* per porzione** Energia Grassi 266 kJ/67 kcal 40 kJ/10 kcal &lt;1% &lt;0,5g &lt;0,5 g &lt;1% di cui acidi grassi saturi &lt;0,1g &lt;0,1g &lt;1% Carboidrati 14g 2,1g &lt;1%"
+  },
+  {
+    "id": "99432fae-67fe-4ce0-8db3-b96b149e646e",
+    "ean": "3159470204412",
+    "name": "ЗАВТРАК СУХОЙ KELLOGG'S FROSTIES 330ГР",
+    "brand": "Kellogg's",
+    "source_primary": "npc",
+    "ingredients_raw": "whole grains (whole wheat {32%}, oats {5,5%}, chocolate (13%) (sugar, cocoa paste, cocoa butter, lean cocoa powder, emulsifiers {soy lecithin, e476}, natural vanilla flavour), crispy cereals (11%)(whole wheat flour, rice flour, sugar, malted barley flour, malted wheat flour, salt, rapeseed oil, stabilizer {calcium carbonate}, emulsifier {soy lecithin}),  glucose syrup, corn fiber, sugar, fructose, dark chocolate pieces (2%) (sugar,   cocoa paste, cocoa butter, emulsifier {soy lecithin}, flavor), humectants(sorbitoln, glycerol), palm oil, dextrose, salt, barley malt flavor, natural cocoa flavor with other natural flavors, emulsifier (soy lecithin), milk, antioxidant(tocopherol-rich extract), niacin,  iron, vitamin b6, vitamin b1, folic acid, vitamin b12,"
+  },
+  {
+    "id": "c165b8de-0bf7-4c19-b15d-bd24021e74ef",
+    "ean": "5900259067999",
+    "name": "CHEETOS Чипсы Spirals Cheese & Ketchup 145г",
+    "brand": "Calvé",
+    "source_primary": "npc",
+    "ingredients_raw": "Água, pasta de tomate¹ (30%), açúcar, vinagre de álcool, sal, aromas naturais.\r\n¹ Proveniente de agricultura sustentável."
+  },
+  {
+    "id": "3ceccc93-a0ec-4ef8-bc2f-6e864f31b64d",
+    "ean": "8000500359358",
+    "name": "Печенье Nutella biscuits 193g Ferrero",
+    "brand": "nutella",
+    "source_primary": "openfoodfacts",
+    "ingredients_raw": "Pâte à tartiner aux NISETTES etau cacao 40% (sucre, huile de palme, NOISETTES 12 écrémé en poudre 8,7%, cacao maigre 7,4%, émulsifiants:lécithines (SOJAI:vanilline), farine de FROMENT 32,5%, graisses vegétales (palme, palmiste), sucre de can3%. LA LACTOSE, son de BLE, LAIT entier en poudre, extrait en poudre de malt d'ORGE et de maïs, miel, poudres a lever (diphospháte disodique, carbonate acide d'ammonium carbonate acide de sodium), cacao maigre, sel, amidon de FROMENT farine d'ORGE malté, émulsifiants:lecithines [SOJA]; vanilline."
+  },
+  {
+    "id": "9b0accaa-7b9b-4c27-9c4a-37670a44de8d",
+    "ean": "5053827110983",
+    "name": "ЗАВТРАК СУХОЙ KELLOGG'S COCO POPS 330ГР",
+    "brand": "Kellogg's",
+    "source_primary": "npc",
+    "ingredients_raw": "Farine de maïs (80%), sucre, sirop de glucose, fibre de maïs, miel (2%), extrait de malt d'orge, sel, arôme naturel, niacine, fer, vitamine B6, riboflavine, thiamine, acide folique, vitamine D, vitamine B12, colorant (caroténoïdes)."
+  },
+  {
+    "id": "08df00c4-e417-409d-85d7-ce323f475cd0",
+    "ean": "8710908958502",
+    "name": "СОУС CALVE МЕКСИКАНСКАЯ САЛЬСА 230ГР",
+    "brand": "Calvé",
+    "source_primary": "npc",
+    "ingredients_raw": "Agua, aceite de soja 40%, vinagre de vino blanco 5.6%, yema de _huevo_ 3,2%, almidón modificado, almidón de _trigo_, azúcar, sal mineral de potasio, zumo de limón concentrado, espesante (goma guar), aromas."
+  },
+  {
+    "id": "aced7ccd-bfa0-4da6-8726-5ef480e5bbef",
+    "ean": "5059319023342",
+    "name": "ЗАВТРАК СУХОЙ KELLOGG'S FROOT LOOPS 375ГР",
+    "brand": "Kellogg's",
+    "source_primary": "npc",
+    "ingredients_raw": "Maïs, sucre, extrait de malt d'orge, sel, niacine, fer, vitamine B6, riboflavine, thiamine, acide folique, vitamine D, vitamine B12."
+  },
+  {
+    "id": "803df21d-8c87-4911-a5de-9635b8b62a1c",
+    "ean": "0040000579816",
+    "name": "M&M's Драже Peanut Butter 255,2г",
+    "brand": "M&M's",
+    "source_primary": "npc",
+    "ingredients_raw": "milk chocolate (sugar, cocoa mass, milk ingredients, cocoa butter, lactose, peanuts, soy lecithin, salt, flavour), peanuts, sugars (sugar, corn syrup), cornstarch, palm oil, tapioca dextrin, carnauba wax, gum acacia, titanium dioxide, brilliant blue fcf, sunset yellow fcf, allura red, tartrazine, indigotine. may contain: tree nuts. ingrédients : chocolat au lait 7% (sucre, pâte de cacao, substances laitières, beurre de cacao, lactose, arachides, lécithine de soja, sel, arôme), arachides, sucres (sucre, sirop de maïs), amidon de maïs, huile de palme, dextrine de tapioca, cire de carnauba, gomme 20% arabique, dioxyde de titane, bleu brillant fcf, jaune soleil fcf, rouge allura, tartrazine, indigotine. peut contenir: noix. % daily value* % valeur quotidienne* 15% 20% 58496 46352 1% 3% 3% 6% less is a little, 15% or more is a lot u moins c'est peu, 15 % ou plus eaucoup by/importé par mars canada inc. 1534992 640, bolton, ontario l7e 5t5 questions? 1-888-709-6277 best before/meilleur avant 6 07/2023 232ag4ne02 10:05 ud"
+  },
+  {
+    "id": "9a5202b0-353a-4a4f-bfcc-ff41bcbe46da",
+    "ean": "2030301000094",
+    "name": "КОНФЕТЫ STORCK TOFFIFEE 125ГР",
+    "brand": "Toffifee",
+    "source_primary": "npc",
+    "ingredients_raw": "Caramel (41%): sugar, vegetable oils (palm, shea, coconut), hazelnuts (10%), glucose syrup, humectant: sorbitol syrup, skimmed milk powder, lactose-free skimmed milk, cocoa butter, milk fat, cane sugar syrup, milk powder, emulsifier: soy lecithin, salt, flavorings."
+  },
+  {
+    "id": "2c0d4b3e-8fc1-4041-876a-4ec7fb5de6f9",
+    "ean": "5053827199636",
+    "name": "ЗАВТРАК СУХОЙ KELLOGG'S TRESOR CHOCO NUT 410ГР",
+    "brand": "Kellogg's",
+    "source_primary": "npc",
+    "ingredients_raw": "Farines de céréales(55%)(BLÉ, BLÉ complet, Maïs), Fourrage au chocolat au LAIT (Sucre, Huiles végétales{Palme, Tournesol, Colza} en proportions variables, Chocolat au LAIT{8,5%}{Sucre, Pâte de cacao, Petit-LAIT en poudre, Matière grasse du LAIT, LAIT entier en poudre, Beurre de cacao}, Sirop de glucose, Cacao maigre en poudre, LAIT entier en poudre, LAIT écrémé en poudre, Emulsifiant{Lécithine de SOJA}, Acidifiant{Acide citrique}), Sucre, Sel, Colorant(Rocou, Caroténoïdes), Antioxydants(Palmitate d'ascorbyle, Alpha-tocophérol). Vitamines et Minéraux: Vitamines (Niacine, B6, B2, B1, Acide folique, B12) et Fer."
+  },
+  {
+    "id": "80adc267-abc8-454a-9868-a2eeaa98d372",
+    "ean": "8690624202779",
+    "name": "ЧИПСЫ DORITOS КУКУРУЗНЫЕ СО ВКУСОМ ПЕРЕЦ ОСТРЫЙ 130ГР",
+    "brand": "Doritos",
+    "source_primary": "npc",
+    "ingredients_raw": "Mais (74%), huile de colza, base aromatisante crème fraîche acidulée (sel, arôme (dont lait), sucre, sirop de glucose, oignon en poudre, fromage en poudre (lait), ail en poudre, exhausteurs de goût (glutamate monosodique, 5-ribonucleotide disodique), tomate en poudre, chlorure de potassium, correcteurs d'acidité (acide malique, acétates de sodium, acide citrique), épices, protéine de lait, colorant (bixine de rocoull, sel, antioxydants (acide ascorbique, extraits de romarin, extrait riche en tocopherols, acide citrique). Peut contenir: soja, blé (gluten). La composition des produits varie dans l'Union Européenne, visitez www.info.pepsico.eu pour plus de détails."
+  },
+  {
+    "id": "30cd0b22-95d7-4c54-8296-514a2b6dba1b",
+    "ean": "0009800830039",
+    "name": "Печенье Nutella Biscuits с начинкой из шоколадно-фундучной пасты 304гр",
+    "brand": "nutella",
+    "source_primary": "npc",
+    "ingredients_raw": "HAZELNUT SPREAD WITH COCOA (SUGAR, PALM OIL, HAZELNUTS, SKIM MILK, COCOA, LECITHIN (AS EMULSIFIER), VANILLIN (AN ARTIFICIAL FLAVOR)), WHEAT FLOUR, VEGETABLE FATS (PALM, PALM KERNEL), CANE SUGAR, LACTOSE, WHEAT BRAN, MILK POWDER, HONEY, DISODIUM DIPHOSPHATE, SODIUM BICARBONATE (LEAVENING AGENT), AMMONIUM BICARBONATE (LEAVENING AGENT), MALTED BARLEY FLOUR, COCOA, SALT, EXTRACT OF MALTED BARLEY AND CORN, WHEAT STARCH, LECITHIN (AS EMULSIFIER), VANILLIN: AN ARTIFICIAL FLAVOR."
+  },
+  {
+    "id": "3316ab61-a7d7-4ddc-9006-b64ec98a1677",
+    "ean": "8000500425183",
+    "name": "Сырники с Nutella",
+    "brand": "nutella",
+    "source_primary": "npc",
+    "ingredients_raw": "reconstituted skimmed milk, sugar, pasteurized cream, sunflower oil, hazelnuts (6,5%), glucose syrup, skimmed milk powder, coconut oil, low-fat cocoa (3,5%), dextrose, emulsifiers: lecithins ( soy ), propylene glycol esters of fatty acids, mono - and diglycerides of fatty acids, stabilizers: locust bean gum, cellulose gum, guar gum, carrageenan, flavorings,\r\n\r\nmay contain cereals containing gluten, eggs, almonds, walnuts, cashew nuts, pecan nuts, pistachios and macadamia nuts,"
+  },
+  {
+    "id": "a1029ccb-ad1a-4f9c-8536-49bd85a33670",
+    "ean": "9300727013354",
+    "name": "ВИНО JACOBS CREEK CHARDONNAY PINOT NOIR 11 5% 0 75Л С.Б а вино игристое jacob’s creek spark chard ст.бут 0.75л ",
+    "brand": "Jacobs",
+    "source_primary": "npc",
+    "ingredients_raw": "flour (wheat flour, calcium, iron, niacin, thiamin), vegetable oils (sunflower, palm), dried potato, starch, sour cream and chive flavour (milk) [salt, dried onion, natural flavouring, dextrose, dried whey (milk), maltodextrin, potassium chloride, sugar, vegetable oils (palm, sunflower, coconut, rapeseed), parsley, chives, lactose (milk), dried cream (milk)], maltodextrin, sugar, glucose syrup, raising agents (ammonium bicarbonate, šodium bicarbonate, disodium diphosphate), salt, emulsifier (e472e), for allergens, including cereals containing gluten, see ingredients in bold, may also contain sesame seeds, egg, soya, mustard,"
+  },
+  {
+    "id": "31f4a624-6aa0-4356-8049-6929a927d174",
+    "ean": "3168930173373",
+    "name": "ЧИПСЫ DORITOS КУКУРУЗНЫЕ СО ВКУСОМ ЗЕЛЕНЫЙ ПЕРЕЦ 77ГР",
+    "brand": "Doritos",
+    "source_primary": "npc",
+    "ingredients_raw": "Mais (72%), huile de colza, base aromatisante fromage [poudre de petit-lait, arôme (lait), sel, babeurre en poudre (lait), fromage en poudre (lait), tomate en poudre, oignon en poudre, chlorure de potassium, sucre, ail en poudre, correcteurs d'acidité (acide citrique, acide lactique), colorants (bixine de rocou, caramel ordinaire), protéine de lait, épices, lait écrémé en poudre, exhausteur de goût (5'-ribonucléotide disodique), antioxydants (acide ascorbique, extrait de romarin, extrait riche en tocophérols), acide citrique,\r\n\r\nPeut contenir: soja, blé (gluten),"
+  },
+  {
+    "id": "3a93fc1b-c889-45c1-80c7-677784d8fea8",
+    "ean": "5411188137955",
+    "name": "НАПИТОК ALPRO ФУНДУК-ПЕКАН 1Л TBA ALPRO ЖАҢҒАҚ-ПЕКАН СУСЫНЫ 27707 7449 ",
+    "brand": "alpro",
+    "source_primary": "npc",
+    "ingredients_raw": "Wasser, geschälte SOJABOHNEN (9,9%), Zucker, Stabilisator (Pektine), Säureregulatoren (Citronensäure, Natriumcitrate), Calcium (Tricalciumphosphat), färbendes Karottenkonzentrat, Meersalz, Aromen, natürliches Vanille-Aroma, Aromen, extrahierte Vanilleschoten (0,03%), Antioxidationsmittel (stark tocopherolhaltige Extrakte, Fettsäureester der Ascorbinsäure), Vitamine (B2, B12, D2), Joghurtkulturen (S. thermophilus, L. bulgaricus)."
+  },
+  {
+    "id": "9e79defc-0c07-424f-a663-aecdb90eebd5",
+    "ean": "7622210255396",
+    "name": "Бисквит Cadbury Wispa 124г",
+    "brand": "Cadbury",
+    "source_primary": "npc",
+    "ingredients_raw": "sugar, glucose syrup, cocoa butter, cocoa mass, skimmed milk powder, whey permeate powder (from milk), palm oil, milk fat, emulsifier (e442), flavourings, coconut oil,"
+  },
+  {
+    "id": "00b131ee-b5e9-476e-8ec5-66661a87269d",
+    "ean": "4870001154011",
+    "name": "Напиток безалкогольный негазированный чайный «Черный лимон» торговой марки LIPTON ICE TEA ",
+    "brand": "Lipton",
+    "source_primary": "npc",
+    "ingredients_raw": "Eau,sucre,acidifiant (acide citrique),extrait de thé noir (0,12%),arôme naturel,antioxydant (acide ascorbique),correcteur d'acidité (citrate trisodique) ,édulcorant (Glycosides de stéviol issus de Stevia)"
+  },
+  {
+    "id": "02dd1e39-b7f5-4ecf-96dc-f1ce05a70a3c",
+    "ean": "4600605030691",
+    "name": "НАПИТОК ALPRO ФУНДУК-ПЕКАН 1Л TBA ALPRO ЖАҢҒАҚ-ПЕКАН СУСЫНЫ 27707 7449 ",
+    "brand": "alpro",
+    "source_primary": "npc",
+    "ingredients_raw": "HAFERBASIS(Wasser, HAFER (8,7%)), Sonnenblumenöl, Zichorienwurzelfasern, Erbsenprotein, Calciumcarbonat, Säureregulator (Kaliumphosphate), natürliche Aromen, Meersalz, Stabilisator (Gellan), Vitamine (B12, D2). Von Natur aus laktosefrei."
+  },
+  {
+    "id": "1b0d9f04-f8c7-48f6-93b6-f6bd5cd23cf1",
+    "ean": "1220004202203",
+    "name": "Бисквит Cadbury Wispa 124г",
+    "brand": "cadbury",
+    "source_primary": "npc",
+    "ingredients_raw": "MILK, sugar, cocoa butter, cocoa mass, vegetable fats (palm, shea, coconut, rapeseed), glucose syrup, modified starch, whole MILK powder, emulsifiers (E442, E476, lecithins), carbon dioxide, factose (from MILK), rice starch, glazing agents (gum arabic, carnauba wax), flavourings, colours (anthocyanins, beetroot red, curcumin), acidity regulator (citric acid), maize protein. MAY CONTAIN NUTS, WHEAT."
+  },
+  {
+    "id": "557026a8-48d2-4d7d-908c-a2861dde805a",
+    "ean": "5059319021157",
+    "name": "ЗАВТРАК СУХОЙ KELLOGG'S SMACKS 330ГР",
+    "brand": "Kellogg's",
+    "source_primary": "npc",
+    "ingredients_raw": "Riso (47%), frumento integrale (37%), zucchero, orzo (5%), farina di malto d'orzo, sale, estratto di malto d'orzo, niacina, ferro, riboflavina, tiammina, vitamina B6, acido folico, vitamina D, vitamina B12. Può contenere glutine da altri cereali, latte, soia."
+  },
+  {
+    "id": "088e0bde-037d-4136-a881-94fe7259fd06",
+    "ean": "3800020411162",
+    "name": "Батончик KitKat Chunky Peanut Butter 42г",
+    "brand": "Calvé",
+    "source_primary": "npc",
+    "ingredients_raw": "Calve PEANUT BUTTER ΠΟΛΤΟΣ ΑΠΟ ΑΡΑΧΙΔΕΣ 85% Συστατικά: ΦΥΣΤΙΚΙΑ (αραχίδες) (85%), φυτικά. έλαια (κραμβέλαιο, ουγιέλαιο, σε μταβαλόμεις αναλογίες), φυτικό λίπος (πλήρως υδρογονωμένο φοινικέλαιο), αλάτι (0,6%). Μπορεί να περιέχει γάλα, γλουτέη,. 350ge υ ΓΡΑΜΜΗ ΚΤΑΝΑΛΩΤΗ υ, 800199099 ΧΩΡΙΣ ΧΡΕΟΙΗ ΔΑΤΗΡΕΙΤΑΙ ΣΕ ΧΩΡΟ ΔΡΟΣΕΡΟ ΚΑΙ ΣΚΟΤΕΝΟ ΕΜ ΔΥ ΜΥ Ν ΑΝΑΛΩΣΗ ΚΑΤΑ ΠΡΟΤΙΜΗΣΗ ΠΡΙΝ ΑΠ0 08-12-2019 ΑΥ L8344 20 23 υνdονν"
+  },
+  {
+    "id": "342cc812-7adb-4989-8a83-0414adcd15c4",
+    "ean": "7622300754136",
+    "name": "Шоколад Cadbury Dairy Milk молочный с карамельной начинкой 120гр",
+    "brand": "Cadbury",
+    "source_primary": "npc",
+    "ingredients_raw": "milk**, sugar, vegetable fats (palm, shea), cocoa butter, wheat flour, whey powder (from milk), skimmed milk powder, cocoa mass, milk fat, reduced fat cocoa powder, emulsifiers (e442, soya lecithin, e476, sunflower lecithin), glucose syrup, wheat starch, salt, acidity regulators (e501, e500), raising agent (e503), flavourings, glucose-fructose syrup, **the equivalent of 426ml of fresh liquid milk in every 227g of milk chocolate ,   milk chocolate: milk solids 20% minimum, actual 23%,contains vegetable fats in addition to cocoa butter, may contain nuts,"
+  },
+  {
+    "id": "3e0e25d3-aacf-4289-9764-0068f578577e",
+    "ean": "7622202219306",
+    "name": "Бисквит Cadbury Wispa 124г",
+    "brand": "Cadbury",
+    "source_primary": "npc",
+    "ingredients_raw": "OAT flakes (22%), sugar, glucose syrup, raisins, stabiliser (sorbitols), vegetable fats (palm, shea), invert sugar syrup, whole grain WHEAT flour (5,5 %), rice flour (5 %), cocoa butter, honey (2%), cocoa mass, skimmed MILK powder, WHEAT bran, whey powder (from MILK), humectant (glycerol), MILK fat, emulsifiers (SOYA lecithins, E471, E476), salt, BARLEY malt extract, 5 xe 28 g (140 g) molasses, flavouring. MAY CONTAIN PEANUTS AND NUTS. 7 622202 2"
+  },
+  {
+    "id": "2cdda940-c307-48cb-8b87-13bb8fd0e66b",
+    "ean": "4870242080858",
+    "name": "Сигары Coleccion Especial Lonsdale",
+    "brand": "Calvé",
+    "source_primary": "npc",
+    "ingredients_raw": "Aceite de soja (49%), agua, yema de HUEVO (4,9%), vinagre de alcohol, azúcar, LECHE desnatada, almidón modificado de maíz, sal, almidón de TRIGO, conservador (ácido sórbico), jarabe de glucosa deshidratada, espesantes (goma garrofín, goma guar) colorante (carotenos)."
+  },
+  {
+    "id": "0801e768-b801-435e-bbc7-b46e33e256eb",
+    "ean": "8000500170779",
+    "name": "Конфеты Ferrero Rocher 125гр",
+    "brand": "Ferrero rocher",
+    "source_primary": "npc",
+    "ingredients_raw": "MILK CHOCOLATE (30%) (SUGAR, COCOA BhUTTER, COCOA MASS, SKIMMED MILK POWDER, ANHYDROUS MILKFAT, EMULSIFIER: LECITHIN - INS 322, NATURE IDENTICAL FLAVOURING SUBSTANCE VANILLIN), HAZELNUTS (28.5%), SUGAR, PALM OIL, REFINED WHEAT FLOUR (MAIDA), WHEY POWDER, LOW FAT COCOA POWDER, EMULSIFIER (LECITHIN-INS 322), RAISING AGENT (INS 500ii), EDIBLE COMMON SALT, NATURE IDENTICAL FLAVOURING SUBSTANCE - VANILLIN. \n\nALLERGEN INFORMATION: Contains MILK, Fat NUT, WHEAT, SOY."
+  },
+  {
+    "id": "0deb812c-8b88-456a-bb88-64a6294844f7",
+    "ean": "5411188119753",
+    "name": "Напиток кокосовый Alpro Barista 1л",
+    "brand": "alpro",
+    "source_primary": "npc",
+    "ingredients_raw": "SOJABASIS (Wasser, geschälte SOJABOHNEN (2,9%)), Kokosmilch (3,5%) (Kokoscreme, Wasser), Zucker, Fruktose,\r\nSäureregulatoren (Kaliumphosphate), Calciumcarbonat, Meersalz, Aroma, Stabilisator (Gellan). Kann Spuren von Schalenfrüchten."
+  },
+  {
+    "id": "a2f8ad92-3e4d-4179-8339-fd765f830948",
+    "ean": "3168930174219",
+    "name": "Чипсы DORITOS Перец Зеленый 70гр",
+    "brand": "Doritos",
+    "source_primary": "npc",
+    "ingredients_raw": "Mais (72%), huile de colza, base aromatisante fromage [poudre de petit-lait, arôme (lait), sel, babeurre en poudre (lait), fromage en poudre (lait), tomate en poudre, oignon en poudre, chlorure de potassium, sucre, ail en poudre, correcteurs d'acidité (acide citrique, acide lactique), colorants (bixine de rocou, caramel ordinaire), protéine de lait, épices, lait écrémé en poudre, exhausteur de goût (5-ribonucleotide disodique, antioxydants (acide ascorbique, extraits de romarin, extrait riche en tocopherols, acide citrique), Peut contenir : soja, blé (gluten),"
+  },
+  {
+    "id": "2f8818a0-935b-44ac-bc21-121f18441828",
+    "ean": "8690624203820",
+    "name": "Чипсы DORITOS Перец Острый 70гр",
+    "brand": "Doritos",
+    "source_primary": "npc",
+    "ingredients_raw": "Corn (Maize), Rapeseed Oil, Extra Flamin' Hot Seasoning Sugar, Flavouring, Acidity Regulators (Citric Acid, Malic Acid, Dried Garlic, Salt, Potassium Chloride, Flavour Enhancer (Monosodium Glutamate), Dried Onion, Smoked Paprika Powder, Vegetable Concentrate, Jalapeno pepper Powder, Spices, Herbs, Smoked Sunflower Oil, Smoked Maltodextrin, Colour Paprika Extract, Antioxidents (Rosemary Extract, Ascorbic Acid, Tocopherol Extract, Citric Acid). Allergy Advice May Contain: Milk, Wheat, Gluten, Barley, Soya Suitable for Vegetarians"
+  },
+  {
+    "id": "3d90435d-29e1-473a-8708-1df2bda01b94",
+    "ean": "0062020008015",
+    "name": "КОНФЕТЫ FERRERO ROCHER ШОКОЛАДНЫЕ Т24 300ГР",
+    "brand": "Ferrero Rocher",
+    "source_primary": "npc",
+    "ingredients_raw": "Sugar, Cocoa mass, Hazelnuts, Modified palm oil, Cocoa butter, Cocoa powder, Whey powder, Anhydrous milk fat, Soy and/or sunflower lecithin, Vanillin"
+  },
+  {
+    "id": "a449346a-69ab-420c-aeb1-3cfc3aa455c9",
+    "ean": "7622202225512",
+    "name": "Бисквит Cadbury Wispa 124г",
+    "brand": "Cadbury",
+    "source_primary": "npc",
+    "ingredients_raw": "Refined Wheat Flour (Maida), Sugar, Fractionated Fat, Palmolein, Invert Sugar, Cocoa Solids (2%) Lening Agents 50g (i), 503(ii), Starch, lodised Salt, Emulsifies Naturetical Flavouring Substances. Allergen Inition Contains Wheat, Sulphite, Soy. May Contain and Barley. T&C apply €40 e 2025/7/18 21:04"
+  },
+  {
+    "id": "53c58f0f-cd27-47a7-9c7c-b48dc9619953",
+    "ean": "8711200428953",
+    "name": "СОУС CALVE МЕКСИКАНСКАЯ САЛЬСА 230ГР",
+    "brand": "Calvé",
+    "source_primary": "npc",
+    "ingredients_raw": "PINDA 85%, plantaardige olie (raapzaad, soja, volledig geharde palm), zout,"
+  },
+  {
+    "id": "3234df32-e6d7-4ac9-b0f2-4d1cf14dd865",
+    "ean": "8690624203783",
+    "name": "Чипсы DORITOS Перец Зеленый 70гр",
+    "brand": "Doritos",
+    "source_primary": "npc",
+    "ingredients_raw": "WHOLE CORN, CORN, SUNFLOWER OIL, BUTTERMILK, AND LESS THAN 2% OF SALT, CHEDDAR CHEESE (MILK, CHEESE CULTURES, SALT, ENZYMES), ONION POWDER, NATURAL FLAVORS, TOMATO POWDER, WHEY, CORN MALTODEXTRIN, YEAST EXTRACT, SUGAR, GARLIC POWDER, LACTIC ACID, POTASSIUM SALT, SPICES, DRIED RED BELL PEPPER, AND CITRIC ACID"
+  },
+  {
+    "id": "c2959367-2912-4e77-8e5e-24b71eda394f",
+    "ean": "0038000014680",
+    "name": "Kellogg's Сухой завтрак Frosted Flakes в чашке 60г",
+    "brand": "Kellogg's",
+    "source_primary": "npc",
+    "ingredients_raw": "corn, sugar, aroma of malt of barley, salt, vitamins and minerals : vitamin b3/pp, vitamin b6, vitamin b2, vitamin b1, vitamin b9, vitamin d, vitamin b12, iron,"
+  },
+  {
+    "id": "4298da5f-09e6-4a87-ac18-8d679ad6b481",
+    "ean": "0009800820061",
+    "name": "Сырники с Nutella",
+    "brand": "Nutella",
+    "source_primary": "npc",
+    "ingredients_raw": "HAZELNUT SPREAD WITH COCOA (SUGAR, PALM OIL, HAZELNUTS, SKIM MILK, COCOA, LECITHIN AS EMULSIFIER, VANILLIN: AN ARTIFICIAL FLAVOR), WHEAT FLOUR, BAKER'S YEAST, BARLEY MALT EXTRACT, SALT, SKIM MILK, LECITHIN AS EMULSIFIER, WHEAT PROTEINS, WHEY PROTEINS. CONTAINS WHEAT, TREE NUTS (HAZELNUTS), MILK, SOY."
+  },
+  {
+    "id": "57b2f84d-8cf4-485c-86d5-f68891f55b1e",
+    "ean": "8710398161987",
+    "name": "ЧИПСЫ DORITOS КУКУРУЗНЫЕ СО ВКУСОМ ЗЕЛЕНЫЙ ПЕРЕЦ 77ГР",
+    "brand": "Doritos",
+    "source_primary": "npc",
+    "ingredients_raw": "maize (72%), rapeseed soil, cheese flavour [whey powder/whey powder/whey powder (from/från milk/milk/milk), flavouring/flavouring (from/från milk/milk/milk), salt, buttermilk/buttermilk/buttermilk powder, cheese powder (from milk/milk/milk), tomato powder, onion/onion powder, potassium chloride, sugar/sugar, garlic/garlic powder, acidity regulators (citric acid, lactic acid/lactic acid/lactic acid), colourants/colours (annatto extract bixin, caramel/caramel), milk/milk/milk proteins, spices/ spices, skimmed/skimmed milk/skimmed milk powder, flavour enhancers (disodium-5'- ribonucleotides)], antioxidants (ascorbic acid, rosemary extracts, tocopherol-rich extract, citric acid),"
+  },
+  {
+    "id": "be68453e-ac71-44b1-a0e1-35814fe7c14d",
+    "ean": "2000000335612",
+    "name": "DORITOS mexic.s.190г",
+    "brand": "Doritos",
+    "source_primary": "npc",
+    "ingredients_raw": "er EESE ck Mais CH mit sen ETHE GLE bepulver, buchpulver, pulver (aus Mil Kaliumchlorid Säureregulatoren ilch), Bixin, Zuckerkulör, Paprikaextrakt), Milchprotein Gewürze, Magermilchpulver, Geschmacksverstärk Cronensäure, Milchsäure), Farbstoffe (Annatt Kann Soja, Weizen und andere glutenhaltige (Dinatrium-5'-ribonucleotid). Getreide enthalten. Unter Schutzatmosphäre packt Kühl und trocken lagern. direktes Sonnenlicht schützen. Die Produktzusammensetzung variert inner bot Produziert von PepsiCo Polen für PepsiCo Deutschland. EU, siehe www.info.pepsico.eu für weitere Details i Energie Fett DURCHSCHNITTLICHE NÄHRWERTE PRO davon gesättigte Fettsäuren Kohlenhydrate davon Zucker Ballaststoffe Eiweiß Salz 100g RI 30g 30g 2009 kJ 603 kJ 7% 480 kcal 144 kcal 22g 6,6g 9% 2,2g 0,7 g 3% 61 g 18g 7% 3,7g 1,1 g 1% 5,5g 1,7g 5,8g 2,0g 4% 0.89 g 0,27 g 4% 'Die Packung enthält 6 Portionen. *Referenzmenge für einen durchschnittlichen Erwachsenen (8400 kJ/2000 kcal). shaltbar bis: erseite. ANNEN RERFAHREN 籍 **Queile: Euromonitor International Limited; Snacks 2025ed; entsprechend der Definitionen für Tortilla Chips, Einzelhandel gesamt, Umsatz basierend auf Einzelhandelspreis, 2024 Daten QUALITÄTSGARANTIE Doritos sollten Sie in ausgezeichneter Qualität erreichen. Sollte dies einmal nicht der Fall sein, wenden Sie sich bitte an unserem Konsumentenservice. Geben Sie bitte in dem Sie das Produkt gekauft haben, an. Bitte fügen deutlich den Grund der Beschwerde und das Geschäft Sie auch die angebrochene Packung hinzu. Vielen Dank Infos & Kontakt: www.doritos.de PepsiCo Deutschland GmbH, D-63263 Neu-Isenburg"
+  },
+  {
+    "id": "a4b30c84-ffce-4df1-b8a8-9e01c525e740",
+    "ean": "80051428",
+    "name": "ПАСТА FERRERO NUTELLA ШОКОЛАДНАЯ 350ГР С/Б",
+    "brand": "Ferrero",
+    "source_primary": "npc",
+    "ingredients_raw": "sucre, huile végétale, _noisettes_ (13%), cacao maigre (7,4%), _lait_ écrémé en poudre (6,6%), lactosérum en poudre, émulsifiants lécithines (_soja_), vanilline"
+  },
+  {
+    "id": "37fa37f5-3a17-49cf-8836-31bca9aeb894",
+    "ean": "4791033141056",
+    "name": "LIPTON Sun Tea фрукт",
+    "brand": "Lipton",
+    "source_primary": "npc",
+    "ingredients_raw": "Eau,sucre,fructose,acidifiants (acide citrique, acide malique),extrait de thé noir⁽¹⁾ (0,12%),jus de pêche à base de concentré (0,1%),correcteur d'acidité (citrate trisodique),arômes,antioxydant (acide ascorbique),édulcorant (Glycosides de stéviol issus de Stevia),⁽¹⁾ Certifié Rainforest Alliance. Plus d'informations sur ra.org. People and nature = l'humain et la nature."
+  },
+  {
+    "id": "5c1a2bf3-81db-4e99-89aa-6365ec8efc4b",
+    "ean": "5059319004051",
+    "name": "ЗАВТРАК СУХОЙ KELLOGG'S FROOT LOOPS 375ГР",
+    "brand": "Kellogg's",
+    "source_primary": "npc",
+    "ingredients_raw": "wholewheat(70%), dried fruit(26%)(raisins, coconut, banana(banana, coconut oil, sugar), apple, hazelnuts), sugar, salt, barley malt flavouring. vitamins & minerals: niacin, iron, vitamin b6, vitamin b2(riboflavin), vitamin b1(thiamin), folic acid, vitamin d, vitamin b12. for allergens see ingredients highlighted in bold. may contain other nuts."
+  },
+  {
+    "id": "a9d4097b-887d-4005-a201-25576af40157",
+    "ean": "4044773173093",
+    "name": "Кабельный ввод SKINTOP MS-M 63X1.5",
+    "brand": "M&Ms",
+    "source_primary": "npc",
+    "ingredients_raw": "Sucre, pâte de cacao, farine de riz (9.2%), lait écrémé en poudre, beurre de cacao, matière grasse de palmiste, matière grasse de palme, amidon, perméat de lactosérum (lait), matière grasse du lait, sirop de glucose, matière grasse de karité, extrait de malt d'orge, stabilisant (gomme arabique), sel, dextrine, émulsifiant (lécithine de soja), dextrose, agent d'enrobage (cire de carnauba), colorants. arôme huile de palmiste. (Peut contenir: cacahuètes, amandes, noisettes)"
+  },
+  {
+    "id": "475a8b4b-cb03-4306-91e2-f962e0be639a",
+    "ean": "5411188139126",
+    "name": "НАПИТОК ALPRO ФУНДУК-ПЕКАН 1Л TBA ALPRO ЖАҢҒАҚ-ПЕКАН СУСЫНЫ 27707 7449 ",
+    "brand": "alpro",
+    "source_primary": "npc",
+    "ingredients_raw": "Base de soja (92,7%) (agua, habas de soja descascarilladas (10.4%)), base de coco (7,1%) (crema de coco, agua), azúcar, calcio (citrato tricálcico, correctores de acidez (citratos de sodio, ácido cítrico), estabilizante (pectinas), aromas naturales, sal marina, antioxidantes (extracto rico en tocoferoles, esteres de ácidos grasos del ácido ascórbico), vitamina B12, vitamina D2, fermentos del yogur (S. thermophilus, L. bulgaricus)."
+  },
+  {
+    "id": "644c25da-1eca-46f3-a2ad-5752442baf5e",
+    "ean": "4607001771081",
+    "name": "Кофе натуральный растворимый сублимированный Asian Selection 9x180г",
+    "brand": "Jacobs",
+    "source_primary": "npc",
+    "ingredients_raw": "Flour (Wheat Flour, Calcium, Iron, Niacin, Thiamin), Vegetable Oil (Palm), Sugar, Wheatgerm, Salt, Dried Powdered Cheese (Milk), Barley, Barley Malt Extract, Wheat Starch, Glucose Syrup, Raising Agents (Ammonium Bicarbonate, Sodium Bicarbonate, Disodium Diphosphate), Sesame Seeds, Dried Whey (Milk), Dried Autolysed Yeast, Natural Flavouring [Dried Yeast Extract, Potassium Chloride, Dried Cheese (Milk), Maltodextrin, Natural Flavourings, Dried Whey (Milk), Vegetable Oils (Coconut, Rapeseed)], Black Pepper, Natural Flavourings, Acid (Lactic Acid), Malted Barley Flour, Emulsifier (E472e), Yeast, Poppy Seeds."
+  },
+  {
+    "id": "5b850aa3-aeaf-4e3c-827b-a63efb1adf13",
+    "ean": "5050083535079",
+    "name": "ЗАВТРАК СУХОЙ KELLOGG'S FROSTIES 330ГР",
+    "brand": "Kellogg's",
+    "source_primary": "npc",
+    "ingredients_raw": "Farines de céréales(53%)(BLÉ, BLÉ complet, Maïs), Fourrage goût chocolat NOISETTES (Sucre, Huiles végétales (Palme, Tournesol, Colza) en proportions variables, Chocolat (3.5%)(Sucre, Pâte de cacao), Sirop de glucose, Maltodextrine, Cacao maigre en poudre, Petit-LAIT en poudre, LAIT écrémé en poudre, Purée de NOISETTES (0.5%), Emulsifiant(Lécithine de tournesol), Arôme naturel), Sucre, Sel, Colorants(Caroténoïdes, Rocou), Antioxydants(Palmitate d'ascorbyle, Alpha-tocophérol). Vitamines et Minéraux: Vitamines (Niacine, B6, B2, B1, Acide folique, B12) et Fer."
+  },
+  {
+    "id": "a5b1e7a7-3122-47a0-9615-548bfd53d524",
+    "ean": "8000500310427",
+    "name": "Сырники с Nutella",
+    "brand": "nutella",
+    "source_primary": "npc",
+    "ingredients_raw": "Pâte à tartiner aux NOISETTES et au cacao 40% (sucre, huile de palme, NOISETTES 13%**, LAIT écrémé en poudre 8,7%**, cacao maigre 7,4%**, émulsifiants : lécithines [SOJA]; vanilline), farine de FROMENT 32,5%, graisses végétales (palme, palmiste), sucre de canne (contient BLE) 8,5%, LACTOSE, son de BLE, LAIT en poudre, miel, poudres à lever (diphosphate disodique, carbonate acide de sodium, carbonate acide d'ammonium), farine d'ORGE malté, cacao maigre en poudre, sel, extrait en poudre de malt d'ORGE et de maïs, amidon de FROMENT, émulsifiants: lécithines [SOJA]; vanilline."
+  },
+  {
+    "id": "b30f7ade-54a0-4095-b3f8-a83833d933a0",
+    "ean": "3168930170600",
+    "name": "AVA CITRON  BIB 5 Л",
+    "brand": "Lipton",
+    "source_primary": "openfoodfacts",
+    "ingredients_raw": "Eau,sucre,fructose,acidifiants (acide citrique, acide malique),extrait de thé noir⁽¹⁾ (0,12%),jus de citron à base de concentré (0,1%),arômes,antioxydant (acide ascorbique),correcteur d'acidité (citrates de sodium),édulcorant (Glycosides de stéviol issus de Stevia),⁽¹⁾ Certifié Rainforest Alliance. ,Plus d'informations sur ra.org. ,People and nature = l'humain et la nature."
+  },
+  {
+    "id": "555e73e9-be03-4de6-b071-79611a38465b",
+    "ean": "8000500359679",
+    "name": "КОНФЕТЫ FERRERO ROCHER ШОКОЛАДНЫЕ Т24 300ГР",
+    "brand": "Ferrero Rocher",
+    "source_primary": "npc",
+    "ingredients_raw": "Zucker, Kakaobutter, MAGER-MILCHPULVER, Palmöl, HASELNÜSSE (8,5%), Kakaomasse, MANDELN 6,5%, VOLLMILCHPULVER, BUTTERREIN-FETT, fettarmer Kakao, Emulgator Lecithine (SOJA), Salz, Aromen"
+  },
+  {
+    "id": "56f58931-e336-4880-a215-4d0cb34a6ffd",
+    "ean": "8711200431632",
+    "name": "КЕТЧУП CALVE ТОМАТНЫЙ 350ГР Д.П кет calve томат 350г",
+    "brand": "Calve",
+    "source_primary": "npc",
+    "ingredients_raw": "peanut 85%, vegetable oil (rapeseed, soja, fully hardened palm), salt."
+  },
+  {
+    "id": "a901cf2d-5206-46c9-80e8-d06b58f0a731",
+    "ean": "8000500373118",
+    "name": "КОНФЕТЫ FERRERO ROCHER T-16 ",
+    "brand": "Ferrero Rocher",
+    "source_primary": "npc",
+    "ingredients_raw": "FERRERO ROCHER Origins Ghana :  Fines gaufrettes enrobées de chocolat et noisettes broyées avec fourrage onctueux et noisette entière.\r\nIngrédients : Chocolat noir extra 30% (sucre, pâte de cacao 37% (Ghana), beurre de cacao 13%, BEURRE concentré, émulsifiants (lécithines [SOJA]), vanilline) , NOISETTES 25,5%, huile de palme, sucre, cacao maigre en poudre, farine de FROMENT, LACTOSERUM poudre, émulsants (lécithines [SOJA] ), poudres à lever (carbonate acide de sodium), vanilline, sel.\r\nCacao dans le chocolat noir: 50% minimum.\r\n\r\nFERRERO ROCHER ORIGINS Équateur : Fines gaufrettes enrobées de chocolat noisettes broyées avec fourrage onctueux et noisette entière.\r\nIngrédients: chocolat noir extra 30% (pâte de cacao 54,5% (Equateur), sucre, beurre de cacao 10,5%, BEURRE concentré, émulsifiants (lécithines [SOJA]), vanilline), NOISETTES 25,5%, huile de palme, sucre, cacao maigre en poudre, farine de FROMENT, LACTOSERUM es poudre, émulsifiants (lécitines [SOJA]), poudres à lever (carbonate acide de sodium), vaniline, sel.\r\nCacao dans le chocolat noir: 65% minimum\r\n\r\nFERRERO ROCHER ORIGINS Côte d'Ivoire : Fines gauffettes emobées de chocolat et noisettes broyées avec un fourrage onctueux et noisette entière.\r\nIngrédients: chocolat noir extra 30% (pâte de cacas 77, 5% (Cote d'Ivoire), sucre, beurre de cacao 2,5%, BEURRE concentré, émulsifiants (léchines [SOJA]),arômes) NOISETTES 25,5%, huile de palne, sucre, cacao maigre en poudre, farine de FROMENT, LACTOSERUM en poudre émulsifiants (léchines [SOJA]), poudres à lever (carbonate acide de sodium, vaniline, sel. \r\nCacao dans le chocolate noir : 80% minimum"
+  }
+]

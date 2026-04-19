@@ -12,3 +12,4 @@ Thumbs.db
 .claude/
 npm-debug.log*
 yarn-debug.log*
+.vercel

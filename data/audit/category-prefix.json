@@ -1,0 +1,32 @@
+{
+  "timestamp": "2026-04-19T05:14:04.740Z",
+  "dryRun": false,
+  "stats": {
+    "totalEnglish": 2,
+    "categoriesMapped": 2,
+    "namesUpdated": 2,
+    "categoriesUpdated": 2,
+    "unmappedCount": 0
+  },
+  "updated": [
+    {
+      "id": "e06090c3-8a36-4121-990a-d299fb4460a5",
+      "ean": "8005016141206",
+      "oldName": "Tagliolini Aux Oeufs 250 g",
+      "newName": "Напитки — Tagliolini Aux Oeufs 250 g",
+      "oldCategory": "plant-based-foods-and-beverages",
+      "newCategory": "Напитки",
+      "categorySource": "mapped"
+    },
+    {
+      "id": "0a64adbf-5cd4-4504-9151-31d54606a403",
+      "ean": "8711000870228",
+      "oldName": "Ice macchiato",
+      "newName": "Напитки — Ice macchiato",
+      "oldCategory": "beverages-and-beverages-preparations",
+      "newCategory": "Напитки",
+      "categorySource": "mapped"
+    }
+  ],
+  "unmapped": []
+}

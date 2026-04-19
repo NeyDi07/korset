@@ -1,0 +1,332 @@
+{
+  "methodName": "USDA",
+  "results": [
+    {
+      "product": {
+        "id": 1,
+        "brand": "Milka",
+        "name": "Alpenmilch",
+        "searchEn": "Milka Alpenmilch chocolate"
+      },
+      "result": {
+        "found": false,
+        "error": "",
+        "ean": null,
+        "ingredients": null,
+        "nutrition": null,
+        "raw": null
+      }
+    },
+    {
+      "product": {
+        "id": 2,
+        "brand": "Milka",
+        "name": "Oreo",
+        "searchEn": "Milka Oreo chocolate"
+      },
+      "result": {
+        "found": false,
+        "error": "",
+        "ean": null,
+        "ingredients": null,
+        "nutrition": null,
+        "raw": null
+      }
+    },
+    {
+      "product": {
+        "id": 3,
+        "brand": "Ritter Sport",
+        "name": "Цельный миндаль",
+        "searchEn": "Ritter Sport Whole Almonds"
+      },
+      "result": {
+        "found": false,
+        "error": "",
+        "ean": null,
+        "ingredients": null,
+        "nutrition": null,
+        "raw": null
+      }
+    },
+    {
+      "product": {
+        "id": 4,
+        "brand": "Ritter Sport",
+        "name": "Карамельный мусс",
+        "searchEn": "Ritter Sport Praline Caramel"
+      },
+      "result": {
+        "found": false,
+        "error": "",
+        "ean": null,
+        "ingredients": null,
+        "nutrition": null,
+        "raw": null
+      }
+    },
+    {
+      "product": {
+        "id": 5,
+        "brand": "KINDER",
+        "name": "Шоколад",
+        "searchEn": "KINDER Chocolate"
+      },
+      "result": {
+        "found": false,
+        "error": "",
+        "ean": null,
+        "ingredients": null,
+        "nutrition": null,
+        "raw": null
+      }
+    },
+    {
+      "product": {
+        "id": 6,
+        "brand": "KINDER",
+        "name": "Bueno",
+        "searchEn": "KINDER Bueno"
+      },
+      "result": {
+        "found": false,
+        "error": "",
+        "ean": null,
+        "ingredients": null,
+        "nutrition": null,
+        "raw": null
+      }
+    },
+    {
+      "product": {
+        "id": 7,
+        "brand": "Schogetten",
+        "name": "Молочный",
+        "searchEn": "Schogetten Milk Chocolate"
+      },
+      "result": {
+        "found": false,
+        "error": "",
+        "ean": null,
+        "ingredients": null,
+        "nutrition": null,
+        "raw": null
+      }
+    },
+    {
+      "product": {
+        "id": 8,
+        "brand": "Победа",
+        "name": "Молочный",
+        "searchEn": "Pobeda Milk Chocolate"
+      },
+      "result": {
+        "found": false,
+        "error": "",
+        "ean": null,
+        "ingredients": null,
+        "nutrition": null,
+        "raw": null
+      }
+    },
+    {
+      "product": {
+        "id": 9,
+        "brand": "Bucheron",
+        "name": "Молочный",
+        "searchEn": "Bucheron Chocolate"
+      },
+      "result": {
+        "found": false,
+        "error": "",
+        "ean": null,
+        "ingredients": null,
+        "nutrition": null,
+        "raw": null
+      }
+    },
+    {
+      "product": {
+        "id": 10,
+        "brand": "O'Zera",
+        "name": "Молочный",
+        "searchEn": "OZera Chocolate"
+      },
+      "result": {
+        "found": false,
+        "error": "",
+        "ean": null,
+        "ingredients": null,
+        "nutrition": null,
+        "raw": null
+      }
+    },
+    {
+      "product": {
+        "id": 11,
+        "brand": "Alpen Gold",
+        "name": "Молочный",
+        "searchEn": "Alpen Gold Milk Chocolate"
+      },
+      "result": {
+        "found": false,
+        "error": "",
+        "ean": null,
+        "ingredients": null,
+        "nutrition": null,
+        "raw": null
+      }
+    },
+    {
+      "product": {
+        "id": 12,
+        "brand": "Alpen Gold",
+        "name": "С фундуком",
+        "searchEn": "Alpen Gold Hazelnut Chocolate"
+      },
+      "result": {
+        "found": false,
+        "error": "",
+        "ean": null,
+        "ingredients": null,
+        "nutrition": null,
+        "raw": null
+      }
+    },
+    {
+      "product": {
+        "id": 13,
+        "brand": "KitKat",
+        "name": "Milk",
+        "searchEn": "KitKat Milk Chocolate"
+      },
+      "result": {
+        "found": false,
+        "error": "",
+        "ean": null,
+        "ingredients": null,
+        "nutrition": null,
+        "raw": null
+      }
+    },
+    {
+      "product": {
+        "id": 14,
+        "brand": "KitKat",
+        "name": "Dark",
+        "searchEn": "KitKat Dark Chocolate"
+      },
+      "result": {
+        "found": false,
+        "error": "",
+        "ean": null,
+        "ingredients": null,
+        "nutrition": null,
+        "raw": null
+      }
+    },
+    {
+      "product": {
+        "id": 15,
+        "brand": "Hershey's",
+        "name": "Milk Chocolate",
+        "searchEn": "Hershey Milk Chocolate Bar"
+      },
+      "result": {
+        "found": false,
+        "error": "",
+        "ean": null,
+        "ingredients": null,
+        "nutrition": null,
+        "raw": null
+      }
+    },
+    {
+      "product": {
+        "id": 16,
+        "brand": "Спартак",
+        "name": "Молочный",
+        "searchEn": "Spartak Chocolate"
+      },
+      "result": {
+        "found": false,
+        "error": "",
+        "ean": null,
+        "ingredients": null,
+        "nutrition": null,
+        "raw": null
+      }
+    },
+    {
+      "product": {
+        "id": 17,
+        "brand": "NA MEDU",
+        "name": "С орехами",
+        "searchEn": "NA MEDU Honey Nuts Chocolate"
+      },
+      "result": {
+        "found": false,
+        "error": "",
+        "ean": null,
+        "ingredients": null,
+        "nutrition": null,
+        "raw": null
+      }
+    },
+    {
+      "product": {
+        "id": 18,
+        "brand": "NA MEDU",
+        "name": "Классический",
+        "searchEn": "NA MEDU Classic Chocolate"
+      },
+      "result": {
+        "found": false,
+        "error": "",
+        "ean": null,
+        "ingredients": null,
+        "nutrition": null,
+        "raw": null
+      }
+    },
+    {
+      "product": {
+        "id": 19,
+        "brand": "Lindt",
+        "name": "Excellence",
+        "searchEn": "Lindt Excellence Chocolate"
+      },
+      "result": {
+        "found": false,
+        "error": "",
+        "ean": null,
+        "ingredients": null,
+        "nutrition": null,
+        "raw": null
+      }
+    },
+    {
+      "product": {
+        "id": 20,
+        "brand": "Ferrero",
+        "name": "Raffaello",
+        "searchEn": "Ferrero Raffaello"
+      },
+      "result": {
+        "found": false,
+        "error": "",
+        "ean": null,
+        "ingredients": null,
+        "nutrition": null,
+        "raw": null
+      }
+    }
+  ],
+  "stats": {
+    "total": 20,
+    "found": 0,
+    "eanFound": 0,
+    "ingredientsFound": 0,
+    "nutritionFound": 0
+  }
+}

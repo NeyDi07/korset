@@ -1,0 +1,2606 @@
+{
+  "testedAt": "2026-04-19T04:58:24.053Z",
+  "stats": {
+    "processed": 50,
+    "matched": 49,
+    "gtinFound": 48,
+    "ntinFound": 49,
+    "noMatch": 1
+  },
+  "results": [
+    {
+      "id": "00b131ee-b5e9-476e-8ec5-66661a87269d",
+      "oldEan": "3168930162711",
+      "query": "Lipton Lipton Ice Tea Pastèque Menthe",
+      "npcTotal": 92964,
+      "matchScore": 47,
+      "npcId": 37790119,
+      "gtin": "4870001154011",
+      "ntin": "0200304322161",
+      "nameRu": "Напиток безалкогольный негазированный чайный «Черный лимон» торговой марки LIPTON ICE TEA ",
+      "nameKk": "LIPTON ICE TEA сауда маркасының алкогольсіз газдалмаған шай сусыны «Қара лимон»",
+      "fullCategoryCode": "1020-0001-0002-100006221",
+      "categoryNameRuL1": "Продукты пищевые/Напитки",
+      "categoryNameRuL4": "Напитки ароматизированные – Готовые к употреблению",
+      "gtinValid": true,
+      "gtinCountry": "KZ",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "US",
+          "valueRu": "СОЕДИНЕННЫЕ ШТАТЫ"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "Lipton Ice tea",
+          "valueRu": "Lipton Ice tea"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "2202100000",
+          "valueRu": "Воды, включая минеральные и газированные, содержащие добавки сахара или других подслащивающих или вкусо-ароматических веществ"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "12",
+          "valueRu": "12"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "112",
+          "valueRu": "Литр"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "0.5",
+          "valueRu": "0.5"
+        },
+        "eaes": {
+          "nameRu": "Знак ЕАЭС",
+          "value": "true",
+          "valueRu": "true"
+        },
+        "marking_required_status": {
+          "nameRu": "Статус обязательной маркировки",
+          "value": "false",
+          "valueRu": "false"
+        },
+        "producer_identifier": {
+          "nameRu": "ИИН/БИН производителя",
+          "value": "060440002605",
+          "valueRu": "060440002605"
+        },
+        "producer_country": {
+          "nameRu": "Страна производителя",
+          "value": "KZ",
+          "valueRu": "КАЗАХСТАН"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "RG Brands Kazakhstan",
+          "valueRu": "RG Brands Kazakhstan"
+        }
+      }
+    },
+    {
+      "id": "01c6b31c-a4e4-4a96-a5d4-96acd0ceea88",
+      "oldEan": "8720181775086",
+      "query": "Calvé Ketchup Calvé Zero",
+      "npcTotal": 7334,
+      "matchScore": 10,
+      "npcId": 28450885,
+      "gtin": "4605922011965",
+      "ntin": "0200213298939",
+      "nameRu": "СОУС CALVE МЕКСИКАНСКАЯ САЛЬСА 230ГР",
+      "nameKk": "CALVE ТҰЗДЫҒЫ МЕКСИКАНДЫҚ САЛЬСА 230ГР",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "RU",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "RU",
+          "valueRu": "РОССИЯ"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "FOOD",
+          "valueRu": "FOOD"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "2103909009",
+          "valueRu": "Прочие продукты для приготовления соуса, готовые соусы, вкусовые добавки или приправы смешанные"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "FOOD",
+          "valueRu": "FOOD"
+        }
+      }
+    },
+    {
+      "id": "0242ea77-a95c-4cbe-a0c8-40e8b4d22bb4",
+      "oldEan": "8000500447895",
+      "query": "Ferrero Rocher 70% Dark Hazelnut Chocolate Bar",
+      "npcTotal": 293567,
+      "matchScore": 30,
+      "npcId": 28118876,
+      "gtin": "8000500009673",
+      "ntin": "0200209979903",
+      "nameRu": "КОНФЕТЫ FERRERO ROCHER ШОКОЛАДНЫЕ Т24 300ГР",
+      "nameKk": "FERRERO ROCHER T24 DIAMANTE КӘМПИТТЕРІ 300ГР",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "IT",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "RU",
+          "valueRu": "РОССИЯ"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "FERRERO",
+          "valueRu": "FERRERO"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1806901900",
+          "valueRu": "Прочие шоколадные конфеты, с начинкой или без начинки"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "FERRERO",
+          "valueRu": "FERRERO"
+        }
+      }
+    },
+    {
+      "id": "02dcc451-f02e-439d-823e-7e4fbbf86c3a",
+      "oldEan": "5000127142190",
+      "query": "Kellogg All-Bran Original",
+      "npcTotal": 86413,
+      "matchScore": 15,
+      "npcId": 28460876,
+      "gtin": "5059319023168",
+      "ntin": "0200213398844",
+      "nameRu": "ЗАВТРАК СУХОЙ KELLOGG'S COCO POPS 330ГР",
+      "nameKk": "Қ/ТАҢҒЫ АС KELLOGG ' S COCO POPS 330ГР",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "UK",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "DE",
+          "valueRu": "ГЕРМАНИЯ"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "ИМПОРТ",
+          "valueRu": "ИМПОРТ"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1904109000",
+          "valueRu": "Прочие готовые пищевые продукты,полученные путем вздувания или обжаривания зерна хлебных злаков или зерновых продуктов"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "ИМПОРТ",
+          "valueRu": "ИМПОРТ"
+        }
+      }
+    },
+    {
+      "id": "02dd1e39-b7f5-4ecf-96dc-f1ce05a70a3c",
+      "oldEan": "5411188134985",
+      "query": "alpro not milk",
+      "npcTotal": 37612,
+      "matchScore": 15,
+      "npcId": 10068090,
+      "gtin": "4600605030691",
+      "ntin": "0200004347426",
+      "nameRu": "НАПИТОК ALPRO ФУНДУК-ПЕКАН 1Л TBA ALPRO ЖАҢҒАҚ-ПЕКАН СУСЫНЫ 27707 7449 ",
+      "nameKk": "НАПИТОК ALPRO ФУНДУК-ПЕКАН 1Л TBA ALPRO ЖАҢҒАҚ-ПЕКАН СУСЫНЫ 27707 7449 ",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТР��",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "RU",
+      "attrs": {
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "DANONE НАПИТКИ",
+          "valueRu": "DANONE НАПИТКИ"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "2202991500",
+          "valueRu": "Прочие воды, включая минеральные и газированные, содержащие добавки сахара или других подслащивающих или вкусо-ароматических веществ, и прочие безалкогольные напитки, за исключением фруктовых или овощных соков товарной позиции 2009, прочие не содержащие продуктов товарных позиций 0401 – 0404 иили жира, полученного из продуктов товарных позиций 0401 – 0404: напитки на основе сои с содержанием белка менее 2,8 мас.%; напитки на основе орехов группы 08, злаков группы 10 или семян группы 12"
+        }
+      }
+    },
+    {
+      "id": "03130b0f-b5f2-4c45-9612-610972b38b04",
+      "oldEan": "5411188138051",
+      "query": "Alpro Natur mit Kokosnuss",
+      "npcTotal": 68480,
+      "matchScore": 15,
+      "npcId": 10068090,
+      "gtin": "4600605030691",
+      "ntin": "0200004347426",
+      "nameRu": "НАПИТОК ALPRO ФУНДУК-ПЕКАН 1Л TBA ALPRO ЖАҢҒАҚ-ПЕКАН СУСЫНЫ 27707 7449 ",
+      "nameKk": "НАПИТОК ALPRO ФУНДУК-ПЕКАН 1Л TBA ALPRO ЖАҢҒАҚ-ПЕКАН СУСЫНЫ 27707 7449 ",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "RU",
+      "attrs": {
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "DANONE НАПИТКИ",
+          "valueRu": "DANONE НАПИТКИ"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "2202991500",
+          "valueRu": "Прочие воды, включая минеральные и газированные, содержащие добавки сахара или других подслащивающих или вкусо-ароматических веществ, и прочие безалкогольные напитки, за исключением фруктовых или овощных соков товарной позиции 2009, прочие не содержащие продуктов товарных позиций 0401 – 0404 иили жира, полученного из продуктов товарных позиций 0401 – 0404: напитки на основе сои с содержанием белка менее 2,8 мас.%; напитки на основе орехов группы 08, злаков группы 10 или семян группы 12"
+        }
+      }
+    },
+    {
+      "id": "05125617-bc93-479d-98b7-d443a9e436f3",
+      "oldEan": "8000500193389",
+      "query": "Ferrero Nutella",
+      "npcTotal": 4425,
+      "matchScore": 18,
+      "npcId": 22580720,
+      "gtin": "2004973402814",
+      "ntin": "0200156097408",
+      "nameRu": "ПАСТА FERRERO NUTELLA ШОКОЛАДНАЯ 350ГР С/Б",
+      "nameKk": "FERRERO NUTELLA ШОКОЛАД ПАСТАСЫ 350 Г Ш/Қ",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "unknown",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "TR",
+          "valueRu": "ТУРЦИЯ"
+        },
+        "article": {
+          "nameRu": "Модель / артикул",
+          "value": "49734",
+          "valueRu": "49734"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1806208000",
+          "valueRu": "Изделия готовые прочие,в брикетах,пластинках или плитках масс.более 2кг, или в жидком,пастообр.,порошкообр.,гранулированном или в другом аналог.виде в первич.упак.содерж.более 2 кг:шоколадная глазурь"
+        },
+        "unit_category": {
+          "nameRu": "Категория единицы измерения ",
+          "value": "economicUnits",
+          "valueRu": "Экономические единицы"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "FUTURE TRADE COMPANY ТОО (11584)",
+          "valueRu": "FUTURE TRADE COMPANY ТОО (11584)"
+        }
+      }
+    },
+    {
+      "id": "0574959f-02cb-47b2-a6ed-9d09dee786f3",
+      "oldEan": "0040000601401",
+      "query": "M&Ms Peanut Butter Minis",
+      "npcTotal": 693396,
+      "matchScore": 21,
+      "npcId": 30503447,
+      "gtin": "40000380603",
+      "ntin": "0200232054943",
+      "nameRu": "Драже M&Ms Peanut butter 80,2г",
+      "nameKk": "Драже M&Ms Peanut butter 80,2г",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": false,
+      "gtinCountry": null,
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "DE",
+          "valueRu": "ГЕРМАНИЯ"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "M&M's",
+          "valueRu": "M&M's"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1806901900",
+          "valueRu": "Прочие шоколадные конфеты, с начинкой или без начинки"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. из��.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "producer_country": {
+          "nameRu": "Страна производителя",
+          "value": "DE",
+          "valueRu": "ГЕРМАНИЯ"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "Mars Inc.",
+          "valueRu": "Mars Inc."
+        }
+      }
+    },
+    {
+      "id": "05e782a0-99f4-436e-8341-c36accc1f253",
+      "oldEan": "80135463",
+      "query": "nutella Nutella",
+      "npcTotal": 261,
+      "matchScore": 26,
+      "npcId": 37826779,
+      "gtin": "4870257360518",
+      "ntin": "0200304688762",
+      "nameRu": "TREAT банан nutella ",
+      "nameKk": "TREAT банан nutella ",
+      "fullCategoryCode": "1020-0011-0003-100006355",
+      "categoryNameRuL1": "Продукты пищевые/Напитки",
+      "categoryNameRuL4": "Торты/Кексы/Рулеты/Бисквитные мучные кондитерские изделия – Сладкие",
+      "gtinValid": true,
+      "gtinCountry": "KZ",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "KZ",
+          "valueRu": "КАЗАХСТАН"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "Вкусная История ",
+          "valueRu": "Вкусная История "
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1905906000",
+          "valueRu": "Прочие хлебобулочные и кондитерские изделия с подслащивающими добавками"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "163",
+          "valueRu": "Грамм"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "155",
+          "valueRu": "155"
+        },
+        "marking_required_status": {
+          "nameRu": "Статус обязательной маркировки",
+          "value": "false",
+          "valueRu": "false"
+        },
+        "eaes": {
+          "nameRu": "Знак ЕАЭС",
+          "value": "false",
+          "valueRu": "false"
+        },
+        "producer_identifier": {
+          "nameRu": "ИИН/БИН производителя",
+          "value": "620310350665",
+          "valueRu": "620310350665"
+        },
+        "producer_country": {
+          "nameRu": "Страна производителя",
+          "value": "KZ",
+          "valueRu": "КАЗАХСТАН"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "ИП \"Картоев Х.У.\"",
+          "valueRu": "ИП \"Картоев Х.У.\""
+        }
+      }
+    },
+    {
+      "id": "0801e768-b801-435e-bbc7-b46e33e256eb",
+      "oldEan": "8000500126936",
+      "query": "Ferrero rocher Ferrero Rocher",
+      "npcTotal": 11655,
+      "matchScore": 26,
+      "npcId": 20995193,
+      "gtin": "8000500170779",
+      "ntin": "0200140244177",
+      "nameRu": "Конфеты Ferrero Rocher 125гр",
+      "nameKk": "Кәмпиттер Ferrero Rocher 125 г",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "IT",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "IT",
+          "valueRu": "ИТАЛИЯ"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1806901900",
+          "valueRu": "Прочие шоколадные конфеты, с начинкой или без начинки"
+        },
+        "unit_category": {
+          "nameRu": "Категория единицы измерения ",
+          "value": "economicUnits",
+          "valueRu": "Экономические единицы"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "FERRERO",
+          "valueRu": "FERRERO"
+        }
+      }
+    },
+    {
+      "id": "088e0bde-037d-4136-a881-94fe7259fd06",
+      "oldEan": "8718114720784",
+      "query": "Calvé Peanut butter",
+      "npcTotal": 4172,
+      "matchScore": 11,
+      "npcId": 34132616,
+      "gtin": "3800020411162",
+      "ntin": "0200267747148",
+      "nameRu": "Батончик KitKat Chunky Peanut Butter 42г",
+      "nameKk": "Батончик KitKat Chunky Peanut Butter 42г",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "unknown",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "PL",
+          "valueRu": "PL"
+        },
+        "article": {
+          "nameRu": "Модель / артикул",
+          "value": "УТ-00001687",
+          "valueRu": "УТ-00001687"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1704908200",
+          "valueRu": "1704908200"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "1",
+          "valueRu": "1"
+        }
+      }
+    },
+    {
+      "id": "08df00c4-e417-409d-85d7-ce323f475cd0",
+      "oldEan": "8710908958502",
+      "query": "Calvé Sabor casero",
+      "npcTotal": 4470,
+      "matchScore": 5,
+      "npcId": 28450885,
+      "gtin": "4605922011965",
+      "ntin": "0200213298939",
+      "nameRu": "СОУС CALVE МЕКСИКАНСКАЯ САЛЬСА 230ГР",
+      "nameKk": "CALVE ТҰЗДЫҒЫ МЕКСИКАНДЫҚ САЛЬСА 230ГР",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "RU",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "RU",
+          "valueRu": "РОССИЯ"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "FOOD",
+          "valueRu": "FOOD"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "2103909009",
+          "valueRu": "Прочие продукты для приготовления соуса, готовые соусы, вкусовые добавки или приправы смешанные"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "FOOD",
+          "valueRu": "FOOD"
+        }
+      }
+    },
+    {
+      "id": "0a38ddc0-601c-44ee-a28b-0b255bc42915",
+      "oldEan": "4008400401829",
+      "query": "Ferrero Nutella",
+      "npcTotal": 4425,
+      "matchScore": 18,
+      "npcId": 22580720,
+      "gtin": "2004973402814",
+      "ntin": "0200156097408",
+      "nameRu": "ПАСТА FERRERO NUTELLA ШОКОЛАДНАЯ 350ГР С/Б",
+      "nameKk": "FERRERO NUTELLA ШОКОЛАД ПАСТАСЫ 350 Г Ш/Қ",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "unknown",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "TR",
+          "valueRu": "ТУРЦИЯ"
+        },
+        "article": {
+          "nameRu": "Модель / артикул",
+          "value": "49734",
+          "valueRu": "49734"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1806208000",
+          "valueRu": "Изделия готовые прочие,в брикетах,пластинках или плитках масс.более 2кг, или в жидком,пастообр.,порошкообр.,гранулированном или в другом аналог.виде в первич.упак.содерж.более 2 кг:шоколадная глазурь"
+        },
+        "unit_category": {
+          "nameRu": "Категория единицы измерения ",
+          "value": "economicUnits",
+          "valueRu": "Экономические единицы"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "FUTURE TRADE COMPANY ТОО (11584)",
+          "valueRu": "FUTURE TRADE COMPANY ТОО (11584)"
+        }
+      }
+    },
+    {
+      "id": "0a64adbf-5cd4-4504-9151-31d54606a403",
+      "ean": "8711000870228",
+      "query": "Douwe Egberts Ice macchiato",
+      "npcTotal": 36980,
+      "match": null,
+      "bestScore": 0
+    },
+    {
+      "id": "0c39ffb2-27ce-4fc2-a7bf-544cf4b979b9",
+      "oldEan": "5411188133476",
+      "query": "alpro Suklaanmakuinen soijajuoma",
+      "npcTotal": 151,
+      "matchScore": 15,
+      "npcId": 10068090,
+      "gtin": "4600605030691",
+      "ntin": "0200004347426",
+      "nameRu": "НАПИТОК ALPRO ФУНДУК-ПЕКАН 1Л TBA ALPRO ЖАҢҒАҚ-ПЕКАН СУСЫНЫ 27707 7449 ",
+      "nameKk": "НАПИТОК ALPRO ФУНДУК-ПЕКАН 1Л TBA ALPRO ЖАҢҒАҚ-ПЕКАН СУСЫНЫ 27707 7449 ",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "RU",
+      "attrs": {
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "DANONE НАПИТКИ",
+          "valueRu": "DANONE НАПИТКИ"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "2202991500",
+          "valueRu": "Прочие воды, включая минеральные и газированные, содержащие добавки сахара или других подслащивающих или вкусо-ароматических веществ, и прочие безалкогольные напитки, за исключением фруктовых или овощных соков товарной позиции 2009, прочие не содержащие продуктов товарных позиций 0401 – 0404 иили жира, полученного из продуктов товарных позиций 0401 – 0404: напитки на основе сои с содержанием белка менее 2,8 мас.%; напитки на основе орехов группы 08, злаков группы 10 или семян группы 12"
+        }
+      }
+    },
+    {
+      "id": "0ce47a22-0e57-45b6-9f3a-5b85a963ff03",
+      "oldEan": "5411188133490",
+      "query": "alpro Caramel Coffee Plant Protein Drink",
+      "npcTotal": 36017,
+      "matchScore": 15,
+      "npcId": 10068090,
+      "gtin": "4600605030691",
+      "ntin": "0200004347426",
+      "nameRu": "НАПИТОК ALPRO ФУНДУК-ПЕКАН 1Л TBA ALPRO ЖАҢҒАҚ-ПЕКАН СУСЫНЫ 27707 7449 ",
+      "nameKk": "НАПИТОК ALPRO ФУНДУК-ПЕКАН 1Л TBA ALPRO ЖАҢҒАҚ-ПЕКАН СУСЫНЫ 27707 7449 ",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "RU",
+      "attrs": {
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "DANONE НАПИТКИ",
+          "valueRu": "DANONE НАПИТКИ"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "2202991500",
+          "valueRu": "Прочие воды, включая минеральные и газированные, содержащие добавки сахара или других подслащивающих или вкусо-ароматических веществ, и прочие безалкогольные напитки, за исключением фруктовых или овощных соков товарной позиции 2009, прочие не содержащие продуктов товарных позиций 0401 – 0404 иили жира, полученного из продуктов товарных позиций 0401 – 0404: напитки на основе сои с содержанием белка менее 2,8 мас.%; напитки на основе орехов группы 08, злаков группы 10 или семян группы 12"
+        }
+      }
+    },
+    {
+      "id": "0d414358-cb2d-4f97-b338-c366bbd03fd9",
+      "oldEan": "3017620425035",
+      "query": "nutella Nutella",
+      "npcTotal": 261,
+      "matchScore": 26,
+      "npcId": 37826779,
+      "gtin": "4870257360518",
+      "ntin": "0200304688762",
+      "nameRu": "TREAT банан nutella ",
+      "nameKk": "TREAT банан nutella ",
+      "fullCategoryCode": "1020-0011-0003-100006355",
+      "categoryNameRuL1": "Продукты пищевые/Напитки",
+      "categoryNameRuL4": "Торты/Кексы/Рулеты/Бисквитные мучные кондитерские изделия – Сладкие",
+      "gtinValid": true,
+      "gtinCountry": "KZ",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "KZ",
+          "valueRu": "КАЗАХСТАН"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "Вкусная История ",
+          "valueRu": "Вкусная История "
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1905906000",
+          "valueRu": "Прочие хлебобулочные и кондитерские изделия с подслащивающими добавками"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "163",
+          "valueRu": "Грамм"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "155",
+          "valueRu": "155"
+        },
+        "marking_required_status": {
+          "nameRu": "Статус обязательной маркировки",
+          "value": "false",
+          "valueRu": "false"
+        },
+        "eaes": {
+          "nameRu": "Знак ЕАЭС",
+          "value": "false",
+          "valueRu": "false"
+        },
+        "producer_identifier": {
+          "nameRu": "ИИН/БИН производителя",
+          "value": "620310350665",
+          "valueRu": "620310350665"
+        },
+        "producer_country": {
+          "nameRu": "Страна производителя",
+          "value": "KZ",
+          "valueRu": "КАЗАХСТАН"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "ИП \"Картоев Х.У.\"",
+          "valueRu": "ИП \"Картоев Х.У.\""
+        }
+      }
+    },
+    {
+      "id": "0dd44494-e62b-4c68-a748-33df1638a9b3",
+      "oldEan": "8710398603319",
+      "query": "Doritos Doritos - Sweet Chilli Pepper Flavour",
+      "npcTotal": 19398,
+      "matchScore": 23,
+      "npcId": 28135735,
+      "gtin": "8690624200300",
+      "ntin": "0200210148497",
+      "nameRu": "ЧИПСЫ DORITOS КУКУРУЗНЫЕ СО ВКУСОМ ЗЕЛЕНЫЙ ПЕРЕЦ 77ГР",
+      "nameKk": "DORITOS ЧИПСЫЛАРЫ ЖҮГЕРІ ЖАСЫЛ БҰРЫШ 77ГР",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "TR",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "TR",
+          "valueRu": "ТУРЦИЯ"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "ВБД",
+          "valueRu": "ВБД"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1904101000",
+          "valueRu": "Готовые пищевые продукты, полученные из кукурузы путем вздувания или обжаривания зерна"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "ВБД",
+          "valueRu": "ВБД"
+        }
+      }
+    },
+    {
+      "id": "0deb812c-8b88-456a-bb88-64a6294844f7",
+      "oldEan": "5411188119753",
+      "query": "alpro Kokosnussdrink mit Soja, Barista",
+      "npcTotal": 64059,
+      "matchScore": 18,
+      "npcId": 20934938,
+      "gtin": "5411188119753",
+      "ntin": "0200139641628",
+      "nameRu": "Напиток кокосовый Alpro Barista 1л",
+      "nameKk": "Alpro Barista кокос сусыны 1л",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "BE/LU",
+      "attrs": {
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "2202991500",
+          "valueRu": "Прочие воды, включая минеральные и газированные, содержащие добавки сахара или других подслащивающих или вкусо-ароматических веществ, и прочие безалкогольные напитки, за исключением фруктовых или овощных соков товарной позиции 2009, прочие не содержащие продуктов товарных позиций 0401 – 0404 иили жира, полученного из продуктов товарных позиций 0401 – 0404: напитки на основе сои с содержанием белка менее 2,8 мас.%; напитки на основе орехов группы 08, злаков группы 10 или семян группы 12"
+        },
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "BE",
+          "valueRu": "БЕЛЬГИЯ"
+        },
+        "unit_category": {
+          "nameRu": "Категория единицы измерения ",
+          "value": "economicUnits",
+          "valueRu": "Экономические единицы"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "DANONE + UNI MILK",
+          "valueRu": "DANONE + UNI MILK"
+        }
+      }
+    },
+    {
+      "id": "0ef1f3d9-cb12-407e-ac63-2f1fb57c8b9d",
+      "oldEan": "8710398510587",
+      "query": "Doritos Doritos",
+      "npcTotal": 2290,
+      "matchScore": 23,
+      "npcId": 28135735,
+      "gtin": "8690624200300",
+      "ntin": "0200210148497",
+      "nameRu": "ЧИПСЫ DORITOS КУКУРУЗНЫЕ СО ВКУСОМ ЗЕЛЕНЫЙ ПЕРЕЦ 77ГР",
+      "nameKk": "DORITOS ЧИПСЫЛАРЫ ЖҮГЕРІ ЖАСЫЛ БҰРЫШ 77ГР",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "TR",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "TR",
+          "valueRu": "ТУРЦИЯ"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "ВБД",
+          "valueRu": "ВБД"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1904101000",
+          "valueRu": "Готовые пищевые продукты, полученные из кукурузы путем вздувания или обжаривания зерна"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "ВБД",
+          "valueRu": "ВБД"
+        }
+      }
+    },
+    {
+      "id": "0fbd68ca-f738-49d0-b455-bda121aaf2e8",
+      "oldEan": "5053827139335",
+      "query": "Kellogg's All-bran choco",
+      "npcTotal": 81652,
+      "matchScore": 18,
+      "npcId": 28460862,
+      "gtin": "5053827199568",
+      "ntin": "0200213398707",
+      "nameRu": "ЗАВТРАК СУХОЙ KELLOGG'S TRESOR CHOCO NUT 410ГР",
+      "nameKk": "Қ/ТАҢҒЫ  KELLOGG ' S TRESOR CHOCO ЖАҢҒАҒЫ 410ГР",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "UK",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "DE",
+          "valueRu": "ГЕРМАНИЯ"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "ИМПОРТ",
+          "valueRu": "ИМПОРТ"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1904109000",
+          "valueRu": "Прочие готовые пищевые продукты,полученные путем вздувания или обжаривания зерна хлебных злаков или зерновых продуктов"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "ИМПОРТ",
+          "valueRu": "ИМПОРТ"
+        }
+      }
+    },
+    {
+      "id": "10e6c946-9d0f-4c92-9c87-65e06d27bb2f",
+      "oldEan": "3502110010674",
+      "query": "Lipton Lipton Ice Tea saveur framboise",
+      "npcTotal": 94225,
+      "matchScore": 47,
+      "npcId": 37790119,
+      "gtin": "4870001154011",
+      "ntin": "0200304322161",
+      "nameRu": "Напиток безалкогольный негазированный чайный «Черный лимон» торговой марки LIPTON ICE TEA ",
+      "nameKk": "LIPTON ICE TEA сауда маркасының алкогольсіз газдалмаған шай сусыны «Қара лимон»",
+      "fullCategoryCode": "1020-0001-0002-100006221",
+      "categoryNameRuL1": "Продукты пищевые/Напитки",
+      "categoryNameRuL4": "Напитки ароматизированные – Готовые к употреблению",
+      "gtinValid": true,
+      "gtinCountry": "KZ",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "US",
+          "valueRu": "СОЕДИНЕННЫЕ ШТАТЫ"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "Lipton Ice tea",
+          "valueRu": "Lipton Ice tea"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "2202100000",
+          "valueRu": "Воды, включая минеральные и газированные, содержащие добавки сахара или других подслащивающих или вкусо-ароматических веществ"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "12",
+          "valueRu": "12"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "112",
+          "valueRu": "Литр"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "0.5",
+          "valueRu": "0.5"
+        },
+        "eaes": {
+          "nameRu": "Знак ЕАЭС",
+          "value": "true",
+          "valueRu": "true"
+        },
+        "marking_required_status": {
+          "nameRu": "Статус обязательной маркировки",
+          "value": "false",
+          "valueRu": "false"
+        },
+        "producer_identifier": {
+          "nameRu": "ИИН/БИН производителя",
+          "value": "060440002605",
+          "valueRu": "060440002605"
+        },
+        "producer_country": {
+          "nameRu": "Страна производителя",
+          "value": "KZ",
+          "valueRu": "КАЗАХСТАН"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "RG Brands Kazakhstan",
+          "valueRu": "RG Brands Kazakhstan"
+        }
+      }
+    },
+    {
+      "id": "110e8eda-edd1-4728-89b4-665058fcf6b8",
+      "oldEan": "5000168137605",
+      "query": "Jacobs Jacobs Savours Salt And Black Pepper Bakes",
+      "npcTotal": 189531,
+      "matchScore": 23,
+      "npcId": 18959514,
+      "gtin": "2436650",
+      "ntin": "0200120571811",
+      "nameRu": "КОФЕ МОККАЧИНО JACOBS",
+      "nameKk": "КОФЕ МОККАЧИНО JACOBS",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": false,
+      "gtinCountry": null,
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "KZ",
+          "valueRu": "КАЗАХСТАН"
+        }
+      }
+    },
+    {
+      "id": "11ba4772-b074-449d-b46c-f57e133585fd",
+      "oldEan": "8711000584453",
+      "query": "Jacobs Tassimo Milka Schoko",
+      "npcTotal": 12235,
+      "matchScore": 18,
+      "npcId": 24610464,
+      "gtin": "8714599109229",
+      "ntin": "0200176390152",
+      "nameRu": "Кофе Jacobs Milka cappuccino с добавлением какао порошка 18гр",
+      "nameKk": "Кофе Jacobs Milka capuccino какао ұнтағы қосылған 18 г",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "NL",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "NL",
+          "valueRu": "НИДЕРЛАНДЫ"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "0901210009",
+          "valueRu": "Кофе жареный с кофеином прочий"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "producer_country": {
+          "nameRu": "Страна производителя",
+          "value": "NL",
+          "valueRu": "НИДЕРЛАНДЫ"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "JACOBS",
+          "valueRu": "JACOBS"
+        }
+      }
+    },
+    {
+      "id": "12ca0daf-6381-4ebe-afc6-a12f91629866",
+      "oldEan": "8000500220535",
+      "query": "nutella Nutella",
+      "npcTotal": 261,
+      "matchScore": 26,
+      "npcId": 37826779,
+      "gtin": "4870257360518",
+      "ntin": "0200304688762",
+      "nameRu": "TREAT банан nutella ",
+      "nameKk": "TREAT банан nutella ",
+      "fullCategoryCode": "1020-0011-0003-100006355",
+      "categoryNameRuL1": "Продукты пищевые/Напитки",
+      "categoryNameRuL4": "Торты/Кексы/Рулеты/Бисквитные мучные кондитерские изделия – Сладкие",
+      "gtinValid": true,
+      "gtinCountry": "KZ",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "KZ",
+          "valueRu": "КАЗАХСТАН"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "Вкусная История ",
+          "valueRu": "Вкусная История "
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1905906000",
+          "valueRu": "Прочие хлебобулочные и кондитерские изделия с подслащивающими добавками"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "163",
+          "valueRu": "Грамм"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "155",
+          "valueRu": "155"
+        },
+        "marking_required_status": {
+          "nameRu": "Статус обязательной маркировки",
+          "value": "false",
+          "valueRu": "false"
+        },
+        "eaes": {
+          "nameRu": "Знак ЕАЭС",
+          "value": "false",
+          "valueRu": "false"
+        },
+        "producer_identifier": {
+          "nameRu": "ИИН/БИН производителя",
+          "value": "620310350665",
+          "valueRu": "620310350665"
+        },
+        "producer_country": {
+          "nameRu": "Страна производителя",
+          "value": "KZ",
+          "valueRu": "КАЗАХСТАН"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "ИП \"Картоев Х.У.\"",
+          "valueRu": "ИП \"Картоев Х.У.\""
+        }
+      }
+    },
+    {
+      "id": "12d3f832-cc55-42b7-8faa-32f3d30bb5e1",
+      "oldEan": "8000500400807",
+      "query": "nutella nutella biscuits",
+      "npcTotal": 692,
+      "matchScore": 26,
+      "npcId": 35159848,
+      "gtin": "8000500310427",
+      "ntin": "0200278019456",
+      "nameRu": "Печенье Nutella Biscuits с начинкой из шоколадно-фундучной пасты 304гр",
+      "nameKk": "Nutella Biscuits печеньесі, шоколадты-жаңғақ пастасымен, 304 г",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "IT",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "IT",
+          "valueRu": "ИТАЛИЯ"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1905321100",
+          "valueRu": "Вафли и вафельные облатки прочие, полностью или частично покрытые шоколадом или другими изделиями, содержащими какао, в первичных упаковках нетто-массой не более 85 г"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "producer_country": {
+          "nameRu": "Страна производителя",
+          "value": "IT",
+          "valueRu": "ИТАЛИЯ"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "FERRERO",
+          "valueRu": "FERRERO"
+        }
+      }
+    },
+    {
+      "id": "136f37bf-3195-488f-af7e-8d6693a3d6d0",
+      "oldEan": "8720182138835",
+      "query": "Calvé Maionese Classica",
+      "npcTotal": 1938,
+      "matchScore": 5,
+      "npcId": 28451140,
+      "gtin": "4640174750323",
+      "ntin": "0200213301486",
+      "nameRu": "КЕТЧУП CALVE НЕАПОЛИТАНСКИЙ 350 Г",
+      "nameKk": "КЕТЧУП CALVE НЕОПОЛИТАНДЫҚ 350 Г",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "RU",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "RU",
+          "valueRu": "РОССИЯ"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "CALVE",
+          "valueRu": "CALVE"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "2103200000",
+          "valueRu": "Кетчуп томатный и прочие томатные соусы"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "CALVE",
+          "valueRu": "CALVE"
+        }
+      }
+    },
+    {
+      "id": "13d9171b-76ae-424a-a288-d8a3b8d3790e",
+      "oldEan": "5000328030340",
+      "query": "Doritos doritos cool original",
+      "npcTotal": 59335,
+      "matchScore": 23,
+      "npcId": 28135735,
+      "gtin": "8690624200300",
+      "ntin": "0200210148497",
+      "nameRu": "ЧИПСЫ DORITOS КУКУРУЗНЫЕ СО ВКУСОМ ЗЕЛЕНЫЙ ПЕРЕЦ 77ГР",
+      "nameKk": "DORITOS ЧИПСЫЛАРЫ ЖҮГЕРІ ЖАСЫЛ БҰРЫШ 77ГР",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "TR",
+      "attrs": {
+        "country": {
+          "nameRu": "С��рана происхождения",
+          "value": "TR",
+          "valueRu": "ТУРЦИЯ"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "ВБД",
+          "valueRu": "ВБД"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1904101000",
+          "valueRu": "Готовые пищевые продукты, полученные из кукурузы путем вздувания или обжаривания зерна"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "ВБД",
+          "valueRu": "ВБД"
+        }
+      }
+    },
+    {
+      "id": "15202e0a-90fb-4962-9718-226198cc5521",
+      "oldEan": "0062020000972",
+      "query": "Ferrero Rocher Ferrero Rocher",
+      "npcTotal": 11655,
+      "matchScore": 26,
+      "npcId": 20995193,
+      "gtin": "8000500170779",
+      "ntin": "0200140244177",
+      "nameRu": "Конфеты Ferrero Rocher 125гр",
+      "nameKk": "Кәмпиттер Ferrero Rocher 125 г",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "IT",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "IT",
+          "valueRu": "ИТАЛИЯ"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1806901900",
+          "valueRu": "Прочие шоколадные конфеты, с начинкой или без начинки"
+        },
+        "unit_category": {
+          "nameRu": "Категория единицы измерения ",
+          "value": "economicUnits",
+          "valueRu": "Экономические единицы"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "FERRERO",
+          "valueRu": "FERRERO"
+        }
+      }
+    },
+    {
+      "id": "153ec2a3-3a5e-4110-89d1-4203865ddb9f",
+      "oldEan": "5411188110842",
+      "query": "alpro Rich and indulgent Hazelnut",
+      "npcTotal": 24463,
+      "matchScore": 15,
+      "npcId": 28363052,
+      "gtin": "5411188080268",
+      "ntin": "0200212420607",
+      "nameRu": "НАПИТОК ALPRO СОЕВЫЙ ALPRO НАТУРАЛЬНЫЙ 1Л Т/ПАК",
+      "nameKk": "ALPRO СУСЫНЫ СОЯЛЫҚ ТАБИҒИ 1Л Т/ПАК",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "BE/LU",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "BE",
+          "valueRu": "БЕЛЬГИЯ"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "APPLE",
+          "valueRu": "APPLE"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "2202991500",
+          "valueRu": "Прочие воды, включая минеральные и газированные, содержащие добавки сахара или других подслащивающих или вкусо-ароматических веществ, и прочие безалкогольные напитки, за исключением фруктовых или овощных соков товарной позиции 2009, прочие не содержащие продуктов товарных позиций 0401 – 0404 иили жира, полученного из продуктов товарных позиций 0401 – 0404: напитки на основе сои с содержанием белка менее 2,8 мас.%; напитки на основе орехов группы 08, злаков группы 10 или семян группы 12"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "APPLE",
+          "valueRu": "APPLE"
+        }
+      }
+    },
+    {
+      "id": "16d6069a-b71d-4443-accb-646977ab255b",
+      "oldEan": "5411188136347",
+      "query": "alpro Alpro Fermentiertes Sojaprodukt, rote Früchte mit Datteln, ohne Zuckerzusa",
+      "npcTotal": 76649,
+      "matchScore": 23,
+      "npcId": 10068090,
+      "gtin": "4600605030691",
+      "ntin": "0200004347426",
+      "nameRu": "НАПИТОК ALPRO ФУНДУК-ПЕКАН 1Л TBA ALPRO ЖАҢҒАҚ-ПЕКАН СУСЫНЫ 27707 7449 ",
+      "nameKk": "НАПИТОК ALPRO ФУНДУК-ПЕКАН 1Л TBA ALPRO ЖАҢҒАҚ-ПЕКАН СУСЫНЫ 27707 7449 ",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТР��",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "RU",
+      "attrs": {
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "DANONE НАПИТКИ",
+          "valueRu": "DANONE НАПИТКИ"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "2202991500",
+          "valueRu": "Прочие воды, включая минеральные и газированные, содержащие добавки сахара или других подслащивающих или вкусо-ароматических веществ, и прочие безалкогольные напитки, за исключением фруктовых или овощных соков товарной позиции 2009, прочие не содержащие продуктов товарных позиций 0401 – 0404 иили жира, полученного из продуктов товарных позиций 0401 – 0404: напитки на основе сои с содержанием белка менее 2,8 мас.%; напитки на основе орехов группы 08, злаков группы 10 или семян группы 12"
+        }
+      }
+    },
+    {
+      "id": "18d5fe11-dc35-4912-a92a-a0dd345d4c98",
+      "oldEan": "7622210344205",
+      "query": "Cadbury Creme egg",
+      "npcTotal": 14288,
+      "matchScore": 15,
+      "npcId": 21953928,
+      "gtin": "7622210521811",
+      "ntin": "0200149830685",
+      "nameRu": "Шоколад Cadbury Dairy Milk молочный 110гр",
+      "nameKk": "Шоколад Cadbury Dairy Milk сүтті 110 г",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "CH",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "CH",
+          "valueRu": "ШВЕЙЦАРИЯ"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1806329000",
+          "valueRu": "Прочие готовые пищевые продукты, содержащие какао, но без начинки, находящиеся в форме брикетов, пластин или плиток"
+        },
+        "unit_category": {
+          "nameRu": "Категория единицы измерения ",
+          "value": "economicUnits",
+          "valueRu": "Экономические единицы"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "producer_country": {
+          "nameRu": "Страна производителя",
+          "value": "CH",
+          "valueRu": "ШВЕЙЦАРИЯ"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "ДИРОЛ-КЭДБЕРИ ООО",
+          "valueRu": "ДИРОЛ-КЭДБЕРИ ООО"
+        }
+      }
+    },
+    {
+      "id": "196cf917-39fa-45eb-93a4-1b34412c0455",
+      "oldEan": "9300698001473",
+      "query": "nutella Hazelnut Spread With Cocoa",
+      "npcTotal": 20872,
+      "matchScore": 18,
+      "npcId": 33128796,
+      "gtin": "4870263400741",
+      "ntin": "0200257582711",
+      "nameRu": "Сырники с Nutella",
+      "nameKk": "Nutella қосылған сырниктер",
+      "fullCategoryCode": "1020-0012-0011-100006399",
+      "categoryNameRuL1": "Продукты пищевые/Напитки",
+      "categoryNameRuL4": "Наборы полуфабрикатов/готовых блюд",
+      "gtinValid": true,
+      "gtinCountry": "KZ",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "KZ",
+          "valueRu": "КАЗАХСТАН"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "JamBull",
+          "valueRu": "JamBull"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "2106909808",
+          "valueRu": "Пищевые продукты, в другом месте не поименованные или не включенные: прочие: прочие: прочие: прочие"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "0",
+          "valueRu": "0"
+        },
+        "eaes": {
+          "nameRu": "Знак ЕАЭС",
+          "value": "true",
+          "valueRu": "true"
+        },
+        "marking_required_status": {
+          "nameRu": "Статус обязательной маркировки",
+          "value": "false",
+          "valueRu": "false"
+        },
+        "szpt": {
+          "nameRu": "Статус СЗПТ",
+          "value": "false",
+          "valueRu": "false"
+        },
+        "producer_identifier": {
+          "nameRu": "ИИН/БИН производителя",
+          "value": "251140024192",
+          "valueRu": "251140024192"
+        },
+        "producer_country": {
+          "nameRu": "Страна производителя",
+          "value": "KZ",
+          "valueRu": "КАЗАХСТАН"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "ТОО \"JB Food\"",
+          "valueRu": "ТОО \"JB Food\""
+        }
+      }
+    },
+    {
+      "id": "1b0d9f04-f8c7-48f6-93b6-f6bd5cd23cf1",
+      "oldEan": "7622201770419",
+      "query": "cadbury marvellous creations",
+      "npcTotal": 10050,
+      "matchScore": 30,
+      "npcId": 30307621,
+      "gtin": "1220004202203",
+      "ntin": "0200230096723",
+      "nameRu": "Бисквит Cadbury Wispa 124г",
+      "nameKk": "Бисквит Cadbury Wispa 124г",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "US/CA",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "GB",
+          "valueRu": "СОЕДИНЕННОЕ КОРОЛЕВСТВО"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "Cadbury",
+          "valueRu": "Cadbury"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1905311900",
+          "valueRu": "Сладкое сухое печенье, полностью или частично покрытое шоколадом или другими изделиями, содержащими какао, прочее"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "producer_country": {
+          "nameRu": "Страна производителя",
+          "value": "GB",
+          "valueRu": "СОЕДИНЕННОЕ КОРОЛЕВСТВО"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "Mondelez International",
+          "valueRu": "Mondelez International"
+        }
+      }
+    },
+    {
+      "id": "1b81d904-a107-4eee-99ed-f3253fd55fe4",
+      "oldEan": "3168930159926",
+      "query": "LIPTON Liptonic",
+      "npcTotal": 5072,
+      "matchScore": 38,
+      "npcId": 37790119,
+      "gtin": "4870001154011",
+      "ntin": "0200304322161",
+      "nameRu": "Напиток безалкогольный негазированный чайный «Черный лимон» торговой марки LIPTON ICE TEA ",
+      "nameKk": "LIPTON ICE TEA сауда маркасының алкогольсіз газдалмаған шай сусыны «Қара лимон»",
+      "fullCategoryCode": "1020-0001-0002-100006221",
+      "categoryNameRuL1": "Продукты пищевые/Напитки",
+      "categoryNameRuL4": "Напитки ароматизированные – Готовые к употреблению",
+      "gtinValid": true,
+      "gtinCountry": "KZ",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "US",
+          "valueRu": "СОЕДИНЕННЫЕ ШТАТЫ"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "Lipton Ice tea",
+          "valueRu": "Lipton Ice tea"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "2202100000",
+          "valueRu": "Воды, включая минеральные и газированные, содержащие добавки сахара или других подслащивающих или вкусо-ароматических веществ"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "12",
+          "valueRu": "12"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "112",
+          "valueRu": "Литр"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "0.5",
+          "valueRu": "0.5"
+        },
+        "eaes": {
+          "nameRu": "Знак ЕАЭС",
+          "value": "true",
+          "valueRu": "true"
+        },
+        "marking_required_status": {
+          "nameRu": "Статус обязательной маркировки",
+          "value": "false",
+          "valueRu": "false"
+        },
+        "producer_identifier": {
+          "nameRu": "ИИН/БИН производителя",
+          "value": "060440002605",
+          "valueRu": "060440002605"
+        },
+        "producer_country": {
+          "nameRu": "Страна производителя",
+          "value": "KZ",
+          "valueRu": "КАЗАХСТАН"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "RG Brands Kazakhstan",
+          "valueRu": "RG Brands Kazakhstan"
+        }
+      }
+    },
+    {
+      "id": "1b9f63c3-c035-4ecc-941d-55ef214eb9be",
+      "oldEan": "5900259118639",
+      "query": "Doritos Doritos Nacho Cheese Flavour",
+      "npcTotal": 8481,
+      "matchScore": 23,
+      "npcId": 28135735,
+      "gtin": "8690624200300",
+      "ntin": "0200210148497",
+      "nameRu": "ЧИПСЫ DORITOS КУКУРУЗНЫЕ СО ВКУСОМ ЗЕЛЕНЫЙ ПЕРЕЦ 77ГР",
+      "nameKk": "DORITOS ЧИПСЫЛАРЫ ЖҮГЕРІ ЖАСЫЛ БҰРЫШ 77ГР",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "TR",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "TR",
+          "valueRu": "ТУРЦИЯ"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "ВБД",
+          "valueRu": "ВБД"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1904101000",
+          "valueRu": "Готовые пищевые продукты, полученные из кукурузы путем вздувания или обжаривания зерна"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "ВБД",
+          "valueRu": "ВБД"
+        }
+      }
+    },
+    {
+      "id": "1ce606f8-7be9-4a74-a0a4-7a063514fca6",
+      "oldEan": "5941000030671",
+      "query": "Doritos Doritos",
+      "npcTotal": 2290,
+      "matchScore": 23,
+      "npcId": 28135735,
+      "gtin": "8690624200300",
+      "ntin": "0200210148497",
+      "nameRu": "ЧИПСЫ DORITOS КУКУРУЗНЫЕ СО ВКУСОМ ЗЕЛЕНЫЙ ПЕРЕЦ 77ГР",
+      "nameKk": "DORITOS ЧИПСЫЛАРЫ ЖҮГЕРІ ЖАСЫЛ БҰРЫШ 77ГР",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "TR",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "TR",
+          "valueRu": "ТУРЦИЯ"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "ВБД",
+          "valueRu": "ВБД"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1904101000",
+          "valueRu": "Готовые пищевые продукты, полученные из кукурузы путем вздувания или обжаривания зерна"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "ВБД",
+          "valueRu": "ВБД"
+        }
+      }
+    },
+    {
+      "id": "1d27d470-745c-4e04-aa75-06a0b87032cf",
+      "oldEan": "8000500392935",
+      "query": "Ferrero Nutella-Muffin",
+      "npcTotal": 4682,
+      "matchScore": 15,
+      "npcId": 22580719,
+      "gtin": "2004973502811",
+      "ntin": "0200156097392",
+      "nameRu": "ПАСТА FERRERO NUTELLA ШОКОЛАДНАЯ 630ГР С/Б",
+      "nameKk": "ПАСТА FERRERO NUTELLA ШОКОЛАДНАЯ 630ГР С/Б",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "unknown",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "TR",
+          "valueRu": "ТУРЦИЯ"
+        },
+        "article": {
+          "nameRu": "Модель / артикул",
+          "value": "49735",
+          "valueRu": "49735"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1806906000",
+          "valueRu": "Пасты, содержащие какао"
+        },
+        "unit_category": {
+          "nameRu": "Категория единицы измерения ",
+          "value": "economicUnits",
+          "valueRu": "Экономические единицы"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "��оличественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "ЗАО ФЕРРЕРО РУССИЯ",
+          "valueRu": "ЗАО ФЕРРЕРО РУССИЯ"
+        }
+      }
+    },
+    {
+      "id": "1dc57d12-e4a1-4258-b2d8-be1df78a0d77",
+      "oldEan": "8410188012092",
+      "query": "Kellogg's Kelloggs corn flakes the original",
+      "npcTotal": 130161,
+      "matchScore": 15,
+      "npcId": 28460876,
+      "gtin": "5059319023168",
+      "ntin": "0200213398844",
+      "nameRu": "ЗАВТРАК СУХОЙ KELLOGG'S COCO POPS 330ГР",
+      "nameKk": "Қ/ТАҢҒЫ АС KELLOGG ' S COCO POPS 330ГР",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "UK",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "DE",
+          "valueRu": "ГЕРМАНИЯ"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "ИМПОРТ",
+          "valueRu": "ИМПО��Т"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1904109000",
+          "valueRu": "Прочие готовые пищевые продукты,полученные путем вздувания или обжаривания зерна хлебных злаков или зерновых продуктов"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "ИМПОРТ",
+          "valueRu": "ИМПОРТ"
+        }
+      }
+    },
+    {
+      "id": "1f2af131-802a-43b8-8ee5-f5006d97f653",
+      "oldEan": "8717163842942",
+      "query": "Lipton Lipton Thé Noir Bio Russian Earl Grey 150g",
+      "npcTotal": 128324,
+      "matchScore": 36,
+      "npcId": 28113762,
+      "gtin": null,
+      "ntin": "0200209928765",
+      "nameRu": "Напиток безалкогольный негазированный чайный «Зеленый лимон» торговой марки LIPTON ICE TEA ",
+      "nameKk": "LIPTON ICE TEA сауда маркасының алкогольсіз газдалмаған шай сусыны «Жасыл лимон»",
+      "fullCategoryCode": "1020-0001-0002-100006221",
+      "categoryNameRuL1": "Продукты пищевые/Напитки",
+      "categoryNameRuL4": "Напитки ароматизированные – Готовые к употреблению",
+      "gtinValid": false,
+      "gtinCountry": null,
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "US",
+          "valueRu": "СОЕДИНЕННЫЕ ШТАТЫ"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "Lipton Ice tea",
+          "valueRu": "Lipton Ice tea"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "2202100000",
+          "valueRu": "Воды, включая минеральные и газированные, содержащие добавки сахара или других подслащивающих или вкусо-ароматических веществ"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "6",
+          "valueRu": "6"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "112",
+          "valueRu": "Литр"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1.5",
+          "valueRu": "1.5"
+        },
+        "eaes": {
+          "nameRu": "Знак ЕАЭС",
+          "value": "true",
+          "valueRu": "true"
+        },
+        "marking_required_status": {
+          "nameRu": "Статус обязательной маркировки",
+          "value": "true",
+          "valueRu": "true"
+        },
+        "szpt": {
+          "nameRu": "Статус СЗПТ",
+          "value": "false",
+          "valueRu": "false"
+        },
+        "made_in_country": {
+          "nameRu": "Отечественный товар",
+          "value": "false",
+          "valueRu": "false"
+        },
+        "producer_identifier": {
+          "nameRu": "ИИН/БИН производителя",
+          "value": "060440002605",
+          "valueRu": "060440002605"
+        },
+        "producer_country": {
+          "nameRu": "Страна производителя",
+          "value": "KZ",
+          "valueRu": "КАЗАХСТАН"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "ТОО INNOVA CAPITAL PARTNERS",
+          "valueRu": "ТОО INNOVA CAPITAL PARTNERS"
+        }
+      }
+    },
+    {
+      "id": "1f99fcd2-f33c-453a-bd9f-ca97e16df66b",
+      "oldEan": "5411188124269",
+      "query": "alpro Alpro Joghurtalternative auf Sojabasis, Natur mit Hafer, 500 g",
+      "npcTotal": 2035257,
+      "matchScore": 23,
+      "npcId": 10068090,
+      "gtin": "4600605030691",
+      "ntin": "0200004347426",
+      "nameRu": "НАПИТОК ALPRO ФУНДУК-ПЕКАН 1Л TBA ALPRO ЖАҢҒАҚ-ПЕКАН СУСЫНЫ 27707 7449 ",
+      "nameKk": "НАПИТОК ALPRO ФУНДУК-ПЕКАН 1Л TBA ALPRO ЖАҢҒАҚ-ПЕКАН СУСЫНЫ 27707 7449 ",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "RU",
+      "attrs": {
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "DANONE НАПИТКИ",
+          "valueRu": "DANONE НАПИТКИ"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "2202991500",
+          "valueRu": "Прочие воды, включая минеральные и газированные, содержащие добавки сахара или других подслащивающих или вкусо-ароматических веществ, и прочие безалкогольные напитки, за исключением фруктовых или овощных соков товарной позиции 2009, прочие не содержащие продуктов товарных позиций 0401 – 0404 иили жира, полученного из продуктов товарных позиций 0401 – 0404: напитки на основе сои с содержанием белка менее 2,8 мас.%; напитки на основе орехов группы 08, злаков группы 10 или семян группы 12"
+        }
+      }
+    },
+    {
+      "id": "208ef83c-bb97-4966-a9d4-64b4be0ce961",
+      "oldEan": "26040233",
+      "query": "M&M's M&M's",
+      "npcTotal": 632393,
+      "matchScore": 26,
+      "npcId": 32927253,
+      "gtin": "5056357909034",
+      "ntin": "0200255567307",
+      "nameRu": "Drink M&M's Brownie (Дринк M&M's Брауни) 350мл (8)",
+      "nameKk": "Дринк M&M's Брауни 350мл ",
+      "fullCategoryCode": "1020-0023-0001-100072398",
+      "categoryNameRuL1": "Продукты пищевые/Напитки",
+      "categoryNameRuL4": "Кисломолочные напитки",
+      "gtinValid": true,
+      "gtinCountry": "UK",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "GB",
+          "valueRu": "СОЕДИНЕННОЕ КОРОЛЕВСТВО"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "2309907000",
+          "valueRu": "Прочие продукты, исп��льзуемые в кормлении животных, не содерж. Крахмала, глюкозы, сиропа глюкозы, мальтодекстрина и сиропа мальтодекстрина, но содержащие молочные продукты"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [е��. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": " Mars",
+          "valueRu": " Mars"
+        }
+      }
+    },
+    {
+      "id": "21146fbb-106e-4653-9f45-cfc0200e33c6",
+      "oldEan": "3159470001424",
+      "query": "Kellogg's Céréales All Bran Kellogg's Fibre Plus",
+      "npcTotal": 128672,
+      "matchScore": 23,
+      "npcId": 28460872,
+      "gtin": "5053827110679",
+      "ntin": "0200213398806",
+      "nameRu": "ЗАВТРАК СУХОЙ KELLOGG'S FROOT LOOPS 375ГР",
+      "nameKk": "ҚҰРҒАҚ ТАҢҒЫ АС KELLOGG ' S FROOT LOOPS 375ГР",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "UK",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "DE",
+          "valueRu": "ГЕРМАНИЯ"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "ИМПОРТ",
+          "valueRu": "ИМПОРТ"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1904109000",
+          "valueRu": "Прочие готовые пищевые продукты,полученные путем вздувания или обжаривания зерна хлебных злаков или зерновых продуктов"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "ИМПОРТ",
+          "valueRu": "ИМПОРТ"
+        }
+      }
+    },
+    {
+      "id": "212bc681-0041-48c9-80ac-5e51f7b97300",
+      "oldEan": "5411188116592",
+      "query": "Alpro Alpro tempting and tropical coco low fat",
+      "npcTotal": 64895,
+      "matchScore": 29,
+      "npcId": 12379970,
+      "gtin": "5411188116592",
+      "ntin": "0200027456679",
+      "nameRu": "НАПИТОК ALPRO COCONUT ORIGINAL 1Л ТВА 1л нап соевый alpro stand.-va",
+      "nameKk": "НАПИТОК ALPRO COCONUT ORIGINAL 1Л ТВА 1л нап соевый alpro stand.-va",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "BE/LU",
+      "attrs": {
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "NEMOLOKO",
+          "valueRu": "NEMOLOKO"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "2202991500",
+          "valueRu": "Прочие воды, включая минеральные и газированные, содержащие добавки сахара или других подслащивающих или вкусо-ароматических веществ, и прочие безалкогольные напитки, за исключением фруктовых или овощных соков товарной позиции 2009, прочие не содержащие продуктов товарных позиций 0401 – 0404 и��ли жира, полученного из продуктов товарных позиций 0401 – 0404: напитки на основе сои с содержанием белка менее 2,8 мас.%; напитки на основе орехов группы 08, злаков группы 10 или семян группы 12"
+        }
+      }
+    },
+    {
+      "id": "2136b06f-0f7b-400a-b6e7-3e44144e1309",
+      "oldEan": "5601363001168",
+      "query": "Doritos Snack Aper Matutano Doritos Tex-Mex 120g",
+      "npcTotal": 95479,
+      "matchScore": 23,
+      "npcId": 28135735,
+      "gtin": "8690624200300",
+      "ntin": "0200210148497",
+      "nameRu": "ЧИПСЫ DORITOS КУКУРУЗНЫЕ СО ВКУСОМ ЗЕЛЕНЫЙ ПЕРЕЦ 77ГР",
+      "nameKk": "DORITOS ЧИПСЫЛАРЫ ЖҮГЕРІ ЖАСЫЛ БҰРЫШ 77ГР",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "TR",
+      "attrs": {
+        "country": {
+          "nameRu": "С��рана происхождения",
+          "value": "TR",
+          "valueRu": "ТУРЦИЯ"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "ВБД",
+          "valueRu": "ВБД"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1904101000",
+          "valueRu": "Готовые пищевые продукты, полученные из кукурузы путем вздувания или обжаривания зерна"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "ВБД",
+          "valueRu": "ВБД"
+        }
+      }
+    },
+    {
+      "id": "21bcfa07-e4ee-45a2-83a3-70222649995a",
+      "oldEan": "3168930173281",
+      "query": "Doritos Doritos Gôut Nature",
+      "npcTotal": 30151,
+      "matchScore": 23,
+      "npcId": 28135735,
+      "gtin": "8690624200300",
+      "ntin": "0200210148497",
+      "nameRu": "ЧИПСЫ DORITOS КУКУРУЗНЫЕ СО ВКУСОМ ЗЕЛЕНЫЙ ПЕРЕЦ 77ГР",
+      "nameKk": "DORITOS ЧИПСЫЛАРЫ ЖҮГЕРІ ЖАСЫЛ БҰРЫШ 77ГР",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "TR",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "TR",
+          "valueRu": "ТУРЦИЯ"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "ВБД",
+          "valueRu": "ВБД"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1904101000",
+          "valueRu": "Готовые пищевые продукты, полученные из кукурузы путем вздувания или обжаривания зерна"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "ВБД",
+          "valueRu": "ВБД"
+        }
+      }
+    },
+    {
+      "id": "224b6e82-23b0-4b9f-b608-953592129a25",
+      "oldEan": "80176800",
+      "query": "nutella Nutella",
+      "npcTotal": 261,
+      "matchScore": 26,
+      "npcId": 37826779,
+      "gtin": "4870257360518",
+      "ntin": "0200304688762",
+      "nameRu": "TREAT банан nutella ",
+      "nameKk": "TREAT банан nutella ",
+      "fullCategoryCode": "1020-0011-0003-100006355",
+      "categoryNameRuL1": "Продукты пищевые/Напитки",
+      "categoryNameRuL4": "Торты/Кексы/Рулеты/Бисквитные мучные кондитерские изделия – Сладкие",
+      "gtinValid": true,
+      "gtinCountry": "KZ",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "KZ",
+          "valueRu": "КАЗАХСТАН"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "Вкусная История ",
+          "valueRu": "Вкусная История "
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1905906000",
+          "valueRu": "Прочие хлебобулочные и кондитерские изделия с подслащивающими добавками"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "163",
+          "valueRu": "Грамм"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "155",
+          "valueRu": "155"
+        },
+        "marking_required_status": {
+          "nameRu": "Статус обязательной маркировки",
+          "value": "false",
+          "valueRu": "false"
+        },
+        "eaes": {
+          "nameRu": "Знак ЕАЭС",
+          "value": "false",
+          "valueRu": "false"
+        },
+        "producer_identifier": {
+          "nameRu": "ИИН/БИН производителя",
+          "value": "620310350665",
+          "valueRu": "620310350665"
+        },
+        "producer_country": {
+          "nameRu": "Страна производителя",
+          "value": "KZ",
+          "valueRu": "КАЗАХСТАН"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "ИП \"Картоев Х.У.\"",
+          "valueRu": "ИП \"Картоев Х.У.\""
+        }
+      }
+    },
+    {
+      "id": "22a6de81-0ec1-4388-9d87-7c89edffb7dc",
+      "oldEan": "9310015241949",
+      "query": "Doritos Doritos Original Salted",
+      "npcTotal": 21767,
+      "matchScore": 23,
+      "npcId": 28135735,
+      "gtin": "8690624200300",
+      "ntin": "0200210148497",
+      "nameRu": "ЧИПСЫ DORITOS КУКУРУЗНЫЕ СО ВКУСОМ ЗЕЛЕНЫЙ ПЕРЕЦ 77ГР",
+      "nameKk": "DORITOS ЧИПСЫЛАРЫ ЖҮГЕРІ ЖАСЫЛ БҰРЫШ 77ГР",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "TR",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "TR",
+          "valueRu": "ТУРЦИЯ"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "ВБД",
+          "valueRu": "ВБД"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1904101000",
+          "valueRu": "Готовые пищевые продукты, полученные из кукурузы путем вздувания или обжаривания зерна"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "ВБД",
+          "valueRu": "ВБД"
+        }
+      }
+    },
+    {
+      "id": "22b1fa6b-53f3-4704-9e9d-27c35ce70017",
+      "oldEan": "5059319026053",
+      "query": "Kellogg's Special K Classic",
+      "npcTotal": 394071,
+      "matchScore": 15,
+      "npcId": 28460875,
+      "gtin": "5053827202732",
+      "ntin": "0200213398837",
+      "nameRu": "ЗАВТРАК СУХОЙ KELLOGG'S SMACKS 330ГР",
+      "nameKk": "ҚҰРҒАҚ ТАҢҒЫ АС KELLOGG ' S SMACKS 330ГР",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "UK",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "DE",
+          "valueRu": "ГЕРМАНИЯ"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "ИМПОРТ",
+          "valueRu": "ИМПОРТ"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1904109000",
+          "valueRu": "Прочие готовые пищевые продукты,полученные путем вздувания или обжаривания зерна хлебных злаков или зерновых продуктов"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "ИМПОРТ",
+          "valueRu": "ИМПОРТ"
+        }
+      }
+    },
+    {
+      "id": "233f361a-f80a-4e6d-9ea6-8776362453dd",
+      "oldEan": "8901491990219",
+      "query": "Doritos Doritos",
+      "npcTotal": 2290,
+      "matchScore": 23,
+      "npcId": 28135735,
+      "gtin": "8690624200300",
+      "ntin": "0200210148497",
+      "nameRu": "ЧИПСЫ DORITOS КУКУРУЗНЫЕ СО ВКУСОМ ЗЕЛЕНЫЙ ПЕРЕЦ 77ГР",
+      "nameKk": "DORITOS ЧИПСЫЛАРЫ ЖҮГЕРІ ЖАСЫЛ БҰРЫШ 77ГР",
+      "fullCategoryCode": "1106-0001-0001-100011943",
+      "categoryNameRuL1": "Без ОКТРУ",
+      "categoryNameRuL4": "Без ОКТРУ",
+      "gtinValid": true,
+      "gtinCountry": "TR",
+      "attrs": {
+        "country": {
+          "nameRu": "Страна происхождения",
+          "value": "TR",
+          "valueRu": "ТУРЦИЯ"
+        },
+        "brand": {
+          "nameRu": "Товарный знак (бренд, суббренд, торговая марка)",
+          "value": "ВБД",
+          "valueRu": "ВБД"
+        },
+        "tnved": {
+          "nameRu": "ТНВЭД ЕАЭС",
+          "value": "1904101000",
+          "valueRu": "Готовые пищевые продукты, полученные из кукурузы путем вздувания или обжаривания зерна"
+        },
+        "a0238c5b": {
+          "nameRu": "Количество в упаковке",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "measure_unit": {
+          "nameRu": "Единица измерения",
+          "value": "796",
+          "valueRu": "Штука"
+        },
+        "quantity": {
+          "nameRu": "Количественное значение (в [ед. изм.])",
+          "value": "1",
+          "valueRu": "1"
+        },
+        "a4282e5d": {
+          "nameRu": "Наименование производителя",
+          "value": "ВБД",
+          "valueRu": "ВБД"
+        }
+      }
+    }
+  ]
+}

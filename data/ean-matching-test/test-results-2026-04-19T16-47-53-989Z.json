@@ -1,0 +1,1140 @@
+{
+  "testedAt": "2026-04-19T16:47:53.992Z",
+  "products": [
+    {
+      "ean": "arbuz_325512",
+      "name": "Чай холодный Fuse манго и ананас 1,5 л",
+      "brand": "Fuse"
+    },
+    {
+      "ean": "arbuz_330704",
+      "name": "Мука Edeka ржаная тип 1150, 1 кг",
+      "brand": "Edeka"
+    },
+    {
+      "ean": "arbuz_252232",
+      "name": "Колбаса СПК утренняя варёная в/у, кг",
+      "brand": "СПК"
+    },
+    {
+      "ean": "arbuz_196394",
+      "name": "Кетчуп 3 Желания классический 450 г",
+      "brand": "3 Желания"
+    },
+    {
+      "ean": "arbuz_295393",
+      "name": "Сосиски Индилайт молочные, 440 г",
+      "brand": "Индилайт"
+    },
+    {
+      "ean": "arbuz_307191",
+      "name": "Сосиски Arbuz Select говяжьи 390 г",
+      "brand": "Arbuz Select"
+    },
+    {
+      "ean": "arbuz_317523",
+      "name": "Сосиски Папа может мясные с говядиной, 600 г",
+      "brand": "Папа может"
+    },
+    {
+      "ean": "arbuz_301706",
+      "name": "Колбаса Ет Байрам Мусульманская Халал вареная 600 г",
+      "brand": "Ет Байрам"
+    },
+    {
+      "ean": "arbuz_328926",
+      "name": "Молодой ячмень Bio planet органический порошок 100 г",
+      "brand": "Bio planet"
+    },
+    {
+      "ean": "arbuz_331390",
+      "name": "Макаронное изделие Edeka Rigatoni 500 г",
+      "brand": "Edeka"
+    },
+    {
+      "ean": "arbuz_229754",
+      "name": "Рис Makfa длиннозерный пропаренный в пакетиках для варки, 400 г",
+      "brand": "Makfa"
+    },
+    {
+      "ean": "arbuz_204499",
+      "name": "Соус для пасты Barilla Арабьята 400 г",
+      "brand": "Barilla"
+    },
+    {
+      "ean": "arbuz_331395",
+      "name": "Горчица Thomy Delikatess средне-острая, приправленная, в тюбике 200 мл",
+      "brand": "Thomy"
+    },
+    {
+      "ean": "arbuz_320949",
+      "name": "Рис Arbuz Select x Damdala с овощами и курицей 300 г",
+      "brand": "Arbuz Select x Damdala"
+    },
+    {
+      "ean": "arbuz_328915",
+      "name": "Желтый горошек Bio planet органический 500 г",
+      "brand": "Bio planet"
+    },
+    {
+      "ean": "arbuz_231675",
+      "name": "Майонез Махеевъ с перепелиным яйцом 67%, 380 г",
+      "brand": "Махеевъ"
+    },
+    {
+      "ean": "arbuz_331030",
+      "name": "Макароны фузилли Bioitalia из чечевицы 250 г",
+      "brand": "Bioitalia"
+    },
+    {
+      "ean": "arbuz_330276",
+      "name": "Цельнозерновые фузилли Джейми Оливер 500 г",
+      "brand": "Джейми Оливер"
+    },
+    {
+      "ean": "arbuz_235141",
+      "name": "Шпикачки Папа может сочные со свининой, кг",
+      "brand": "Папа может"
+    },
+    {
+      "ean": "arbuz_255781",
+      "name": "Конфеты Победа charget без сахара в горьком шоколаде, кг",
+      "brand": "Победа"
+    }
+  ],
+  "results": {
+    "searchEanSearchOrg": {
+      "found": 0,
+      "notFound": 0,
+      "errors": 20,
+      "details": [
+        {
+          "product": "arbuz_325512",
+          "method": "ean-search.org",
+          "error": "no token"
+        },
+        {
+          "product": "arbuz_330704",
+          "method": "ean-search.org",
+          "error": "no token"
+        },
+        {
+          "product": "arbuz_252232",
+          "method": "ean-search.org",
+          "error": "no token"
+        },
+        {
+          "product": "arbuz_196394",
+          "method": "ean-search.org",
+          "error": "no token"
+        },
+        {
+          "product": "arbuz_295393",
+          "method": "ean-search.org",
+          "error": "no token"
+        },
+        {
+          "product": "arbuz_307191",
+          "method": "ean-search.org",
+          "error": "no token"
+        },
+        {
+          "product": "arbuz_317523",
+          "method": "ean-search.org",
+          "error": "no token"
+        },
+        {
+          "product": "arbuz_301706",
+          "method": "ean-search.org",
+          "error": "no token"
+        },
+        {
+          "product": "arbuz_328926",
+          "method": "ean-search.org",
+          "error": "no token"
+        },
+        {
+          "product": "arbuz_331390",
+          "method": "ean-search.org",
+          "error": "no token"
+        },
+        {
+          "product": "arbuz_229754",
+          "method": "ean-search.org",
+          "error": "no token"
+        },
+        {
+          "product": "arbuz_204499",
+          "method": "ean-search.org",
+          "error": "no token"
+        },
+        {
+          "product": "arbuz_331395",
+          "method": "ean-search.org",
+          "error": "no token"
+        },
+        {
+          "product": "arbuz_320949",
+          "method": "ean-search.org",
+          "error": "no token"
+        },
+        {
+          "product": "arbuz_328915",
+          "method": "ean-search.org",
+          "error": "no token"
+        },
+        {
+          "product": "arbuz_231675",
+          "method": "ean-search.org",
+          "error": "no token"
+        },
+        {
+          "product": "arbuz_331030",
+          "method": "ean-search.org",
+          "error": "no token"
+        },
+        {
+          "product": "arbuz_330276",
+          "method": "ean-search.org",
+          "error": "no token"
+        },
+        {
+          "product": "arbuz_235141",
+          "method": "ean-search.org",
+          "error": "no token"
+        },
+        {
+          "product": "arbuz_255781",
+          "method": "ean-search.org",
+          "error": "no token"
+        }
+      ]
+    },
+    "searchUPCitemdb": {
+      "found": 0,
+      "notFound": 20,
+      "errors": 0,
+      "details": [
+        {
+          "product": "arbuz_325512",
+          "method": "upcitemdb",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_330704",
+          "method": "upcitemdb",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_252232",
+          "method": "upcitemdb",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_196394",
+          "method": "upcitemdb",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_295393",
+          "method": "upcitemdb",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_307191",
+          "method": "upcitemdb",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_317523",
+          "method": "upcitemdb",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_301706",
+          "method": "upcitemdb",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_328926",
+          "method": "upcitemdb",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_331390",
+          "method": "upcitemdb",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_229754",
+          "method": "upcitemdb",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_204499",
+          "method": "upcitemdb",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_331395",
+          "method": "upcitemdb",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_320949",
+          "method": "upcitemdb",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_328915",
+          "method": "upcitemdb",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_231675",
+          "method": "upcitemdb",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_331030",
+          "method": "upcitemdb",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_330276",
+          "method": "upcitemdb",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_235141",
+          "method": "upcitemdb",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_255781",
+          "method": "upcitemdb",
+          "status": 404,
+          "ean": null
+        }
+      ]
+    },
+    "searchBarcodelookup": {
+      "found": 0,
+      "notFound": 20,
+      "errors": 0,
+      "details": [
+        {
+          "product": "arbuz_325512",
+          "method": "barcodelookup",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_330704",
+          "method": "barcodelookup",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_252232",
+          "method": "barcodelookup",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_196394",
+          "method": "barcodelookup",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_295393",
+          "method": "barcodelookup",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_307191",
+          "method": "barcodelookup",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_317523",
+          "method": "barcodelookup",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_301706",
+          "method": "barcodelookup",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_328926",
+          "method": "barcodelookup",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_331390",
+          "method": "barcodelookup",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_229754",
+          "method": "barcodelookup",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_204499",
+          "method": "barcodelookup",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_331395",
+          "method": "barcodelookup",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_320949",
+          "method": "barcodelookup",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_328915",
+          "method": "barcodelookup",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_231675",
+          "method": "barcodelookup",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_331030",
+          "method": "barcodelookup",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_330276",
+          "method": "barcodelookup",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_235141",
+          "method": "barcodelookup",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_255781",
+          "method": "barcodelookup",
+          "status": 403,
+          "ean": null
+        }
+      ]
+    },
+    "searchGoogleShopping": {
+      "found": 0,
+      "notFound": 20,
+      "errors": 0,
+      "details": [
+        {
+          "product": "arbuz_325512",
+          "method": "google-shopping",
+          "status": 301,
+          "ean": null
+        },
+        {
+          "product": "arbuz_330704",
+          "method": "google-shopping",
+          "status": 301,
+          "ean": null
+        },
+        {
+          "product": "arbuz_252232",
+          "method": "google-shopping",
+          "status": 301,
+          "ean": null
+        },
+        {
+          "product": "arbuz_196394",
+          "method": "google-shopping",
+          "status": 301,
+          "ean": null
+        },
+        {
+          "product": "arbuz_295393",
+          "method": "google-shopping",
+          "status": 301,
+          "ean": null
+        },
+        {
+          "product": "arbuz_307191",
+          "method": "google-shopping",
+          "status": 301,
+          "ean": null
+        },
+        {
+          "product": "arbuz_317523",
+          "method": "google-shopping",
+          "status": 301,
+          "ean": null
+        },
+        {
+          "product": "arbuz_301706",
+          "method": "google-shopping",
+          "status": 301,
+          "ean": null
+        },
+        {
+          "product": "arbuz_328926",
+          "method": "google-shopping",
+          "status": 301,
+          "ean": null
+        },
+        {
+          "product": "arbuz_331390",
+          "method": "google-shopping",
+          "status": 301,
+          "ean": null
+        },
+        {
+          "product": "arbuz_229754",
+          "method": "google-shopping",
+          "status": 301,
+          "ean": null
+        },
+        {
+          "product": "arbuz_204499",
+          "method": "google-shopping",
+          "status": 301,
+          "ean": null
+        },
+        {
+          "product": "arbuz_331395",
+          "method": "google-shopping",
+          "status": 301,
+          "ean": null
+        },
+        {
+          "product": "arbuz_320949",
+          "method": "google-shopping",
+          "status": 301,
+          "ean": null
+        },
+        {
+          "product": "arbuz_328915",
+          "method": "google-shopping",
+          "status": 301,
+          "ean": null
+        },
+        {
+          "product": "arbuz_231675",
+          "method": "google-shopping",
+          "status": 301,
+          "ean": null
+        },
+        {
+          "product": "arbuz_331030",
+          "method": "google-shopping",
+          "status": 301,
+          "ean": null
+        },
+        {
+          "product": "arbuz_330276",
+          "method": "google-shopping",
+          "status": 301,
+          "ean": null
+        },
+        {
+          "product": "arbuz_235141",
+          "method": "google-shopping",
+          "status": 301,
+          "ean": null
+        },
+        {
+          "product": "arbuz_255781",
+          "method": "google-shopping",
+          "status": 301,
+          "ean": null
+        }
+      ]
+    },
+    "searchYandexMarket": {
+      "found": 0,
+      "notFound": 20,
+      "errors": 0,
+      "details": [
+        {
+          "product": "arbuz_325512",
+          "method": "yandex-market",
+          "ean": null,
+          "status": "not_found"
+        },
+        {
+          "product": "arbuz_330704",
+          "method": "yandex-market",
+          "ean": null,
+          "status": "not_found"
+        },
+        {
+          "product": "arbuz_252232",
+          "method": "yandex-market",
+          "ean": null,
+          "status": "not_found"
+        },
+        {
+          "product": "arbuz_196394",
+          "method": "yandex-market",
+          "ean": null,
+          "status": "not_found"
+        },
+        {
+          "product": "arbuz_295393",
+          "method": "yandex-market",
+          "ean": null,
+          "status": "not_found"
+        },
+        {
+          "product": "arbuz_307191",
+          "method": "yandex-market",
+          "ean": null,
+          "status": "not_found"
+        },
+        {
+          "product": "arbuz_317523",
+          "method": "yandex-market",
+          "ean": null,
+          "status": "not_found"
+        },
+        {
+          "product": "arbuz_301706",
+          "method": "yandex-market",
+          "ean": null,
+          "status": "not_found"
+        },
+        {
+          "product": "arbuz_328926",
+          "method": "yandex-market",
+          "ean": null,
+          "status": "not_found"
+        },
+        {
+          "product": "arbuz_331390",
+          "method": "yandex-market",
+          "ean": null,
+          "status": "not_found"
+        },
+        {
+          "product": "arbuz_229754",
+          "method": "yandex-market",
+          "ean": null,
+          "status": "not_found"
+        },
+        {
+          "product": "arbuz_204499",
+          "method": "yandex-market",
+          "ean": null,
+          "status": "not_found"
+        },
+        {
+          "product": "arbuz_331395",
+          "method": "yandex-market",
+          "ean": null,
+          "status": "not_found"
+        },
+        {
+          "product": "arbuz_320949",
+          "method": "yandex-market",
+          "ean": null,
+          "status": "not_found"
+        },
+        {
+          "product": "arbuz_328915",
+          "method": "yandex-market",
+          "error": ""
+        },
+        {
+          "product": "arbuz_231675",
+          "method": "yandex-market",
+          "ean": null,
+          "status": "not_found"
+        },
+        {
+          "product": "arbuz_331030",
+          "method": "yandex-market",
+          "ean": null,
+          "status": "not_found"
+        },
+        {
+          "product": "arbuz_330276",
+          "method": "yandex-market",
+          "ean": null,
+          "status": "not_found"
+        },
+        {
+          "product": "arbuz_235141",
+          "method": "yandex-market",
+          "ean": null,
+          "status": "not_found"
+        },
+        {
+          "product": "arbuz_255781",
+          "method": "yandex-market",
+          "ean": null,
+          "status": "not_found"
+        }
+      ]
+    },
+    "searchWildberries": {
+      "found": 0,
+      "notFound": 20,
+      "errors": 0,
+      "details": [
+        {
+          "product": "arbuz_325512",
+          "method": "wildberries",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_330704",
+          "method": "wildberries",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_252232",
+          "method": "wildberries",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_196394",
+          "method": "wildberries",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_295393",
+          "method": "wildberries",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_307191",
+          "method": "wildberries",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_317523",
+          "method": "wildberries",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_301706",
+          "method": "wildberries",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_328926",
+          "method": "wildberries",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_331390",
+          "method": "wildberries",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_229754",
+          "method": "wildberries",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_204499",
+          "method": "wildberries",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_331395",
+          "method": "wildberries",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_320949",
+          "method": "wildberries",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_328915",
+          "method": "wildberries",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_231675",
+          "method": "wildberries",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_331030",
+          "method": "wildberries",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_330276",
+          "method": "wildberries",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_235141",
+          "method": "wildberries",
+          "status": 403,
+          "ean": null
+        },
+        {
+          "product": "arbuz_255781",
+          "method": "wildberries",
+          "status": 403,
+          "ean": null
+        }
+      ]
+    },
+    "searchMagnumKz": {
+      "found": 0,
+      "notFound": 20,
+      "errors": 0,
+      "details": [
+        {
+          "product": "arbuz_325512",
+          "method": "magnum.kz",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_330704",
+          "method": "magnum.kz",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_252232",
+          "method": "magnum.kz",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_196394",
+          "method": "magnum.kz",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_295393",
+          "method": "magnum.kz",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_307191",
+          "method": "magnum.kz",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_317523",
+          "method": "magnum.kz",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_301706",
+          "method": "magnum.kz",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_328926",
+          "method": "magnum.kz",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_331390",
+          "method": "magnum.kz",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_229754",
+          "method": "magnum.kz",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_204499",
+          "method": "magnum.kz",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_331395",
+          "method": "magnum.kz",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_320949",
+          "method": "magnum.kz",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_328915",
+          "method": "magnum.kz",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_231675",
+          "method": "magnum.kz",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_331030",
+          "method": "magnum.kz",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_330276",
+          "method": "magnum.kz",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_235141",
+          "method": "magnum.kz",
+          "status": 404,
+          "ean": null
+        },
+        {
+          "product": "arbuz_255781",
+          "method": "magnum.kz",
+          "status": 404,
+          "ean": null
+        }
+      ]
+    },
+    "searchGtinLsi": {
+      "found": 0,
+      "notFound": 0,
+      "errors": 20,
+      "details": [
+        {
+          "product": "arbuz_325512",
+          "method": "gtin.lsi.nu",
+          "error": "getaddrinfo ENOTFOUND gtin.lsi.nu"
+        },
+        {
+          "product": "arbuz_330704",
+          "method": "gtin.lsi.nu",
+          "error": "getaddrinfo ENOTFOUND gtin.lsi.nu"
+        },
+        {
+          "product": "arbuz_252232",
+          "method": "gtin.lsi.nu",
+          "error": "getaddrinfo ENOTFOUND gtin.lsi.nu"
+        },
+        {
+          "product": "arbuz_196394",
+          "method": "gtin.lsi.nu",
+          "error": "getaddrinfo ENOTFOUND gtin.lsi.nu"
+        },
+        {
+          "product": "arbuz_295393",
+          "method": "gtin.lsi.nu",
+          "error": "getaddrinfo ENOTFOUND gtin.lsi.nu"
+        },
+        {
+          "product": "arbuz_307191",
+          "method": "gtin.lsi.nu",
+          "error": "getaddrinfo ENOTFOUND gtin.lsi.nu"
+        },
+        {
+          "product": "arbuz_317523",
+          "method": "gtin.lsi.nu",
+          "error": "getaddrinfo ENOTFOUND gtin.lsi.nu"
+        },
+        {
+          "product": "arbuz_301706",
+          "method": "gtin.lsi.nu",
+          "error": "getaddrinfo ENOTFOUND gtin.lsi.nu"
+        },
+        {
+          "product": "arbuz_328926",
+          "method": "gtin.lsi.nu",
+          "error": "getaddrinfo ENOTFOUND gtin.lsi.nu"
+        },
+        {
+          "product": "arbuz_331390",
+          "method": "gtin.lsi.nu",
+          "error": "getaddrinfo ENOTFOUND gtin.lsi.nu"
+        },
+        {
+          "product": "arbuz_229754",
+          "method": "gtin.lsi.nu",
+          "error": "getaddrinfo ENOTFOUND gtin.lsi.nu"
+        },
+        {
+          "product": "arbuz_204499",
+          "method": "gtin.lsi.nu",
+          "error": "getaddrinfo ENOTFOUND gtin.lsi.nu"
+        },
+        {
+          "product": "arbuz_331395",
+          "method": "gtin.lsi.nu",
+          "error": "getaddrinfo ENOTFOUND gtin.lsi.nu"
+        },
+        {
+          "product": "arbuz_320949",
+          "method": "gtin.lsi.nu",
+          "error": "getaddrinfo ENOTFOUND gtin.lsi.nu"
+        },
+        {
+          "product": "arbuz_328915",
+          "method": "gtin.lsi.nu",
+          "error": "getaddrinfo ENOTFOUND gtin.lsi.nu"
+        },
+        {
+          "product": "arbuz_231675",
+          "method": "gtin.lsi.nu",
+          "error": "getaddrinfo ENOTFOUND gtin.lsi.nu"
+        },
+        {
+          "product": "arbuz_331030",
+          "method": "gtin.lsi.nu",
+          "error": "getaddrinfo ENOTFOUND gtin.lsi.nu"
+        },
+        {
+          "product": "arbuz_330276",
+          "method": "gtin.lsi.nu",
+          "error": "getaddrinfo ENOTFOUND gtin.lsi.nu"
+        },
+        {
+          "product": "arbuz_235141",
+          "method": "gtin.lsi.nu",
+          "error": "getaddrinfo ENOTFOUND gtin.lsi.nu"
+        },
+        {
+          "product": "arbuz_255781",
+          "method": "gtin.lsi.nu",
+          "error": "getaddrinfo ENOTFOUND gtin.lsi.nu"
+        }
+      ]
+    }
+  },
+  "summary": [
+    {
+      "method": "EanSearchOrg",
+      "found": 0,
+      "notFound": 0,
+      "errors": 20,
+      "rate": 0
+    },
+    {
+      "method": "UPCitemdb",
+      "found": 0,
+      "notFound": 20,
+      "errors": 0,
+      "rate": 0
+    },
+    {
+      "method": "Barcodelookup",
+      "found": 0,
+      "notFound": 20,
+      "errors": 0,
+      "rate": 0
+    },
+    {
+      "method": "GoogleShopping",
+      "found": 0,
+      "notFound": 20,
+      "errors": 0,
+      "rate": 0
+    },
+    {
+      "method": "YandexMarket",
+      "found": 0,
+      "notFound": 20,
+      "errors": 0,
+      "rate": 0
+    },
+    {
+      "method": "Wildberries",
+      "found": 0,
+      "notFound": 20,
+      "errors": 0,
+      "rate": 0
+    },
+    {
+      "method": "MagnumKz",
+      "found": 0,
+      "notFound": 20,
+      "errors": 0,
+      "rate": 0
+    },
+    {
+      "method": "GtinLsi",
+      "found": 0,
+      "notFound": 0,
+      "errors": 20,
+      "rate": 0
+    }
+  ]
+}

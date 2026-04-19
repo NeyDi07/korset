@@ -1,0 +1,889 @@
+{
+  "testedAt": "2026-04-19T17:21:07.267Z",
+  "stats": {
+    "verifiedCount": 5,
+    "npcOnly": 12,
+    "ddgOnly": 0,
+    "offOnly": 0,
+    "none": 3
+  },
+  "results": [
+    {
+      "product": {
+        "name": "Чай холодный Fuse манго и ананас 1,5 л",
+        "brand": "Fuse"
+      },
+      "query": "Fuse Чай холодный Fuse манго и ананас 1,5 л",
+      "verified": {
+        "ean": "5449000216335",
+        "sourceCount": 2,
+        "sources": "ddg+npc",
+        "names": [
+          "Напиток Fuse Tea манго-ананас 1,5л"
+        ]
+      },
+      "best": {
+        "ean": "5449000216335",
+        "sourceCount": 2,
+        "sources": "ddg+npc",
+        "names": [
+          "Напиток Fuse Tea манго-ананас 1,5л"
+        ]
+      },
+      "ranked": [
+        {
+          "ean": "5449000216335",
+          "sourceCount": 2,
+          "sources": "ddg+npc",
+          "names": [
+            "Напиток Fuse Tea манго-ананас 1,5л"
+          ]
+        },
+        {
+          "ean": "5.449E+12",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "Напиток Fuse Tea манго-ананас 1,5л"
+          ]
+        }
+      ]
+    },
+    {
+      "product": {
+        "name": "Мука Edeka ржаная тип 1150, 1 кг",
+        "brand": "Edeka"
+      },
+      "query": "Edeka Мука Edeka ржаная тип 1150, 1 кг",
+      "verified": {
+        "ean": "4601780016241",
+        "sourceCount": 2,
+        "sources": "ddg+npc",
+        "names": [
+          "МУКА MAKFA РЖАНАЯ ХЛЕБПЕКАРНАЯ.ОБДИРНАЯ "
+        ]
+      },
+      "best": {
+        "ean": "4601780016241",
+        "sourceCount": 2,
+        "sources": "ddg+npc",
+        "names": [
+          "МУКА MAKFA РЖАНАЯ ХЛЕБПЕКАРНАЯ.ОБДИРНАЯ "
+        ]
+      },
+      "ranked": [
+        {
+          "ean": "4601780016241",
+          "sourceCount": 2,
+          "sources": "ddg+npc",
+          "names": [
+            "МУКА MAKFA РЖАНАЯ ХЛЕБПЕКАРНАЯ.ОБДИРНАЯ "
+          ]
+        },
+        {
+          "ean": "4607012292933",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "МУКА РЖАНАЯ.1КГ мука 100пудов 1кг ржаная"
+          ]
+        },
+        {
+          "ean": "4870233380141",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "МУКА РЖАНАЯ 2КГ qazyna "
+          ]
+        },
+        {
+          "ean": "4600819112367",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "МУКА ГОРНИЦА РЖАНАЯ 900ГР СТАБ.Б 900г му"
+          ]
+        },
+        {
+          "ean": "5900950110093",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "Колготки Mona Edera 40 den компрессионны"
+          ]
+        },
+        {
+          "ean": "4000462813053",
+          "sourceCount": 1,
+          "sources": "ddg",
+          "names": []
+        },
+        {
+          "ean": "4311501436028",
+          "sourceCount": 1,
+          "sources": "ddg",
+          "names": []
+        },
+        {
+          "ean": "4311501483718",
+          "sourceCount": 1,
+          "sources": "ddg",
+          "names": []
+        },
+        {
+          "ean": "4311501356180",
+          "sourceCount": 1,
+          "sources": "ddg",
+          "names": []
+        },
+        {
+          "ean": "4311501445365",
+          "sourceCount": 1,
+          "sources": "ddg",
+          "names": []
+        },
+        {
+          "ean": "4311501490884",
+          "sourceCount": 1,
+          "sources": "ddg",
+          "names": []
+        },
+        {
+          "ean": "4311501367032",
+          "sourceCount": 1,
+          "sources": "ddg",
+          "names": []
+        }
+      ]
+    },
+    {
+      "product": {
+        "name": "Колбаса СПК утренняя варёная в/у, кг",
+        "brand": "СПК"
+      },
+      "query": "СПК Колбаса СПК утренняя варёная в/у, кг",
+      "verified": null,
+      "best": {
+        "ean": "4630006261301",
+        "sourceCount": 1,
+        "sources": "npc",
+        "names": [
+          "КОЛБАСА СПК ИЗМАЙЛОВСКАЯ ДЫМКИ ВАРЕНАЯ 0"
+        ]
+      },
+      "ranked": [
+        {
+          "ean": "4630006261301",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "КОЛБАСА СПК ИЗМАЙЛОВСКАЯ ДЫМКИ ВАРЕНАЯ 0"
+          ]
+        },
+        {
+          "ean": "4630103115064",
+          "sourceCount": 1,
+          "sources": "ddg",
+          "names": []
+        }
+      ]
+    },
+    {
+      "product": {
+        "name": "Кетчуп 3 Желания классический 450 г",
+        "brand": "3 Желания"
+      },
+      "query": "3 Желания Кетчуп 3 Желания классический 450 г",
+      "verified": null,
+      "best": {
+        "ean": "4870035002519",
+        "sourceCount": 1,
+        "sources": "npc",
+        "names": [
+          "Кетчуп 3 желания классический 100гр"
+        ]
+      },
+      "ranked": [
+        {
+          "ean": "4870035002519",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "Кетчуп 3 желания классический 100гр"
+          ]
+        },
+        {
+          "ean": "4870035002692",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "Кетчуп 3 желания классический 250гр"
+          ]
+        },
+        {
+          "ean": "4870035003507",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "Кетчуп 3 желания шашлычный 450гр"
+          ]
+        },
+        {
+          "ean": "4870035007673",
+          "sourceCount": 1,
+          "sources": "ddg",
+          "names": []
+        },
+        {
+          "ean": "4870035007703",
+          "sourceCount": 1,
+          "sources": "ddg",
+          "names": []
+        },
+        {
+          "ean": "4870035008526",
+          "sourceCount": 1,
+          "sources": "ddg",
+          "names": []
+        }
+      ]
+    },
+    {
+      "product": {
+        "name": "Сосиски Индилайт молочные, 440 г",
+        "brand": "Индилайт"
+      },
+      "query": "Индилайт Сосиски Индилайт молочные, 440 г",
+      "verified": null,
+      "best": {
+        "ean": "4640167414515",
+        "sourceCount": 1,
+        "sources": "npc",
+        "names": [
+          "Колбаса Индилайт из филе индейки 400гр"
+        ]
+      },
+      "ranked": [
+        {
+          "ean": "4640167414515",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "Колбаса Индилайт из филе индейки 400гр"
+          ]
+        },
+        {
+          "ean": "4640167414607",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "Ветчина Индилайт из филе индейки 400гр"
+          ]
+        },
+        {
+          "ean": "4640167402581",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "КОТЛЕТЫ ИНДИЛАЙТ РУБЛЕНЫЕ ИЗ ИНДЕЙКИ 300"
+          ]
+        }
+      ]
+    },
+    {
+      "product": {
+        "name": "Сосиски Arbuz Select говяжьи 390 г",
+        "brand": "Arbuz Select"
+      },
+      "query": "Arbuz Select Сосиски Arbuz Select говяжьи 390 г",
+      "verified": null,
+      "best": null,
+      "ranked": []
+    },
+    {
+      "product": {
+        "name": "Сосиски Папа может мясные с говядиной, 600 г",
+        "brand": "Папа может"
+      },
+      "query": "Папа может Сосиски Папа может мясные с говядиной, 600 г",
+      "verified": {
+        "ean": "4607958077878",
+        "sourceCount": 2,
+        "sources": "ddg+npc",
+        "names": [
+          "СОСИСКИ ПАПА МОЕЖТ 600ГР С ГОВЯДИНОЙ"
+        ]
+      },
+      "best": {
+        "ean": "4607958077878",
+        "sourceCount": 2,
+        "sources": "ddg+npc",
+        "names": [
+          "СОСИСКИ ПАПА МОЕЖТ 600ГР С ГОВЯДИНОЙ"
+        ]
+      },
+      "ranked": [
+        {
+          "ean": "4607958077878",
+          "sourceCount": 2,
+          "sources": "ddg+npc",
+          "names": [
+            "СОСИСКИ ПАПА МОЕЖТ 600ГР С ГОВЯДИНОЙ"
+          ]
+        },
+        {
+          "ean": "4607958076024",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "Сосиcки Папа может сочные 410гр"
+          ]
+        },
+        {
+          "ean": "4601296002394",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "Сосиски Папа может молочные традиционные"
+          ]
+        }
+      ]
+    },
+    {
+      "product": {
+        "name": "Колбаса Ет Байрам Мусульманская Халал вареная 600 г",
+        "brand": "Ет Байрам"
+      },
+      "query": "Ет Байрам Колбаса Ет Байрам Мусульманская Халал вареная 600 г",
+      "verified": null,
+      "best": null,
+      "ranked": []
+    },
+    {
+      "product": {
+        "name": "Рис Makfa длиннозерный пропаренный, 400 г",
+        "brand": "Makfa"
+      },
+      "query": "Makfa Рис Makfa длиннозерный пропаренный, 400 г",
+      "verified": null,
+      "best": {
+        "ean": "4601780005412",
+        "sourceCount": 1,
+        "sources": "npc",
+        "names": [
+          "РИС MAKFA ДЛИННОЗЕРНЫЙ ШЛИФОВАННЫЙ 800ГР"
+        ]
+      },
+      "ranked": [
+        {
+          "ean": "4601780005412",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "РИС MAKFA ДЛИННОЗЕРНЫЙ ШЛИФОВАННЫЙ 800ГР"
+          ]
+        },
+        {
+          "ean": "4601780005689",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "РИС MAKFA ДЛИННОЗЕРНЫЙ ОБРАБОТАН ПАРОМ 8"
+          ]
+        }
+      ]
+    },
+    {
+      "product": {
+        "name": "Соус для пасты Barilla Арабьята 400 г",
+        "brand": "Barilla"
+      },
+      "query": "Barilla Соус для пасты Barilla Арабьята 400 г",
+      "verified": {
+        "ean": "8076809513739",
+        "sourceCount": 2,
+        "sources": "npc+npc",
+        "names": [
+          "Соус Barilla Basilico сб 400гр",
+          "СОУС BARILLA BASILICO 400ГР С.Б 88737 40"
+        ]
+      },
+      "best": {
+        "ean": "8076809513739",
+        "sourceCount": 2,
+        "sources": "npc+npc",
+        "names": [
+          "Соус Barilla Basilico сб 400гр",
+          "СОУС BARILLA BASILICO 400ГР С.Б 88737 40"
+        ]
+      },
+      "ranked": [
+        {
+          "ean": "8076809513739",
+          "sourceCount": 2,
+          "sources": "npc+npc",
+          "names": [
+            "Соус Barilla Basilico сб 400гр",
+            "СОУС BARILLA BASILICO 400ГР С.Б 88737 40"
+          ]
+        },
+        {
+          "ean": "8076809575997",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "ПАСТА BARILLA ФИЛИНИ 450ГР КОР barilla п"
+          ]
+        },
+        {
+          "ean": "8076809513715",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "Соус Barilla Olive сб 400гр"
+          ]
+        },
+        {
+          "ean": "8076809513678",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "СОУС BARILLA BOLOGNESE 400ГР С.Б 88733 4"
+          ]
+        },
+        {
+          "ean": "8076809513388",
+          "sourceCount": 1,
+          "sources": "ddg",
+          "names": []
+        }
+      ]
+    },
+    {
+      "product": {
+        "name": "Майонез Махеевъ с перепелиным яйцом 67%, 380 г",
+        "brand": "Махеевъ"
+      },
+      "query": "Махеевъ Майонез Махеевъ с перепелиным яйцом 67%, 380 г",
+      "verified": null,
+      "best": {
+        "ean": "4604248003654",
+        "sourceCount": 1,
+        "sources": "npc",
+        "names": [
+          "Майонез Махеевъ с перепелиным яйцом 67% "
+        ]
+      },
+      "ranked": [
+        {
+          "ean": "4604248003654",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "Майонез Махеевъ с перепелиным яйцом 67% "
+          ]
+        },
+        {
+          "ean": "4604248022709",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "МАЙОНЕЗ МАХЕЕВЪ С ПЕРЕПЕЛИНЫМ ЯЙЦОМ 50 5"
+          ]
+        },
+        {
+          "ean": "2500000860942",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "Майонез Махеевъ с перепелиным яйцом+соус"
+          ]
+        },
+        {
+          "ean": "4604248000851",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "Майонез Махеевъ с лимоном 67% 380гр"
+          ]
+        }
+      ]
+    },
+    {
+      "product": {
+        "name": "Макароны фузилли Bioitalia из чечевицы 250 г",
+        "brand": "Bioitalia"
+      },
+      "query": "Bioitalia Макароны фузилли Bioitalia из чечевицы 250 г",
+      "verified": null,
+      "best": null,
+      "ranked": []
+    },
+    {
+      "product": {
+        "name": "Цельнозерновые фузилли Джейми Оливер 500 г",
+        "brand": "Джейми Оливер"
+      },
+      "query": "Джейми Оливер Цельнозерновые фузилли Джейми Оливер 500 г",
+      "verified": {
+        "ean": "9780241431108",
+        "sourceCount": 2,
+        "sources": "npc+npc",
+        "names": [
+          "Книга: One (Jamie Oliver) Один (Джейми О",
+          "Книга: One (Jamie Oliver) Один (Джейми О"
+        ]
+      },
+      "best": {
+        "ean": "9780241431108",
+        "sourceCount": 2,
+        "sources": "npc+npc",
+        "names": [
+          "Книга: One (Jamie Oliver) Один (Джейми О",
+          "Книга: One (Jamie Oliver) Один (Джейми О"
+        ]
+      },
+      "ranked": [
+        {
+          "ean": "9780241431108",
+          "sourceCount": 2,
+          "sources": "npc+npc",
+          "names": [
+            "Книга: One (Jamie Oliver) Один (Джейми О",
+            "Книга: One (Jamie Oliver) Один (Джейми О"
+          ]
+        },
+        {
+          "ean": "9785271256349",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "Книга: Оливер Твист"
+          ]
+        },
+        {
+          "ean": "9785353091943",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "Книга: Оливер Твист"
+          ]
+        }
+      ]
+    },
+    {
+      "product": {
+        "name": "Конфеты Победа charget без сахара в горьком шоколаде",
+        "brand": "Победа"
+      },
+      "query": "Победа Конфеты Победа charget без сахара в горьком шоколаде",
+      "verified": null,
+      "best": {
+        "ean": "4610082660045",
+        "sourceCount": 1,
+        "sources": "npc",
+        "names": [
+          "Шоколад темный без сахара с цельным фунд"
+        ]
+      },
+      "ranked": [
+        {
+          "ean": "4610082660045",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "Шоколад темный без сахара с цельным фунд"
+          ]
+        }
+      ]
+    },
+    {
+      "product": {
+        "name": "Желтый горошек Bio planet органический 500 г",
+        "brand": "Bio planet"
+      },
+      "query": "Bio planet Желтый горошек Bio planet органический 500 г",
+      "verified": null,
+      "best": {
+        "ean": "8020735056006",
+        "sourceCount": 1,
+        "sources": "npc",
+        "names": [
+          "PLANETA TEREBINTO 0.75L BIO"
+        ]
+      },
+      "ranked": [
+        {
+          "ean": "8020735056006",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "PLANETA TEREBINTO 0.75L BIO"
+          ]
+        },
+        {
+          "ean": "8008857704197",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "Nutri Bio 500 g"
+          ]
+        },
+        {
+          "ean": "4630056022884",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "Planeta Organica / BIO / Подарочный набо"
+          ]
+        },
+        {
+          "ean": "4630056023454",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "Planeta Organica / BIO / Detox Oil / Мыл"
+          ]
+        }
+      ]
+    },
+    {
+      "product": {
+        "name": "Макаронное изделие Edeka Rigatoni 500 г",
+        "brand": "Edeka"
+      },
+      "query": "Edeka Макаронное изделие Edeka Rigatoni 500 г",
+      "verified": null,
+      "best": {
+        "ean": "8001250120236",
+        "sourceCount": 1,
+        "sources": "npc",
+        "names": [
+          "Макароны de cecco tortiglioni 500g издел"
+        ]
+      },
+      "ranked": [
+        {
+          "ean": "8001250120236",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "Макароны de cecco tortiglioni 500g издел"
+          ]
+        },
+        {
+          "ean": "4870006440133",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "Макаронные изделия"
+          ]
+        },
+        {
+          "ean": "4870200220128",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "Макаронные изделия"
+          ]
+        },
+        {
+          "ean": "4870200220807",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "Макаронные изделия"
+          ]
+        },
+        {
+          "ean": "4870200220814",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "Макаронные изделия"
+          ]
+        },
+        {
+          "ean": "4311501666449",
+          "sourceCount": 1,
+          "sources": "ddg",
+          "names": []
+        },
+        {
+          "ean": "4311501452264",
+          "sourceCount": 1,
+          "sources": "ddg",
+          "names": []
+        }
+      ]
+    },
+    {
+      "product": {
+        "name": "Горчица Thomy Delikatess средне-острая, 200 мл",
+        "brand": "Thomy"
+      },
+      "query": "Thomy Горчица Thomy Delikatess средне-острая, 200 мл",
+      "verified": null,
+      "best": {
+        "ean": "4820008098498",
+        "sourceCount": 1,
+        "sources": "npc",
+        "names": [
+          "ГОРЧИЦА ВЕРЕС РУССКАЯ ОСТРАЯ 190ГР"
+        ]
+      },
+      "ranked": [
+        {
+          "ean": "4820008098498",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "ГОРЧИЦА ВЕРЕС РУССКАЯ ОСТРАЯ 190ГР"
+          ]
+        },
+        {
+          "ean": "8683114386936",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "БЛУЗКА, LC WAIKIKI, KK.BLZ, THOM-FT"
+          ]
+        },
+        {
+          "ean": "40122342",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "СОУС KUHNE ГОРЧИЦА СРЕДНЕ-ОСТРАЯ 250МЛ"
+          ]
+        },
+        {
+          "ean": "4601576003332",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "ГОРЧИЦА ЕЖК РУССКАЯ ЗЕРНИСТАЯ СЛАБО-ОСТР"
+          ]
+        }
+      ]
+    },
+    {
+      "product": {
+        "name": "Молодой ячмень Bio planet органический порошок 100 г",
+        "brand": "Bio planet"
+      },
+      "query": "Bio planet Молодой ячмень Bio planet органический порошок 100 г",
+      "verified": null,
+      "best": {
+        "ean": "8020735056006",
+        "sourceCount": 1,
+        "sources": "npc",
+        "names": [
+          "PLANETA TEREBINTO 0.75L BIO"
+        ]
+      },
+      "ranked": [
+        {
+          "ean": "8020735056006",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "PLANETA TEREBINTO 0.75L BIO"
+          ]
+        },
+        {
+          "ean": "4630056022884",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "Planeta Organica / BIO / Подарочный набо"
+          ]
+        }
+      ]
+    },
+    {
+      "product": {
+        "name": "Шпикачки Папа может сочные со свининой, кг",
+        "brand": "Папа может"
+      },
+      "query": "Папа может Шпикачки Папа может сочные со свининой, кг",
+      "verified": null,
+      "best": {
+        "ean": "4601296007344",
+        "sourceCount": 1,
+        "sources": "npc",
+        "names": [
+          "СОСИСКИ ПАПА МОЖЕТ СОЧНЫЕ П/О В/У 450ГР"
+        ]
+      },
+      "ranked": [
+        {
+          "ean": "4601296007344",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "СОСИСКИ ПАПА МОЖЕТ СОЧНЫЕ П/О В/У 450ГР"
+          ]
+        }
+      ]
+    },
+    {
+      "product": {
+        "name": "Рис Arbuz Select x Damdala с овощами и курицей 300 г",
+        "brand": "Arbuz Select x Damdala"
+      },
+      "query": "Arbuz Select x Damdala Рис Arbuz Select x Damdala с овощами и курицей 300 г",
+      "verified": null,
+      "best": {
+        "ean": "4870265473040",
+        "sourceCount": 1,
+        "sources": "npc",
+        "names": [
+          "Блины Arbuz Select x Damdala домашние, "
+        ]
+      },
+      "ranked": [
+        {
+          "ean": "4870265473040",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "Блины Arbuz Select x Damdala домашние, "
+          ]
+        },
+        {
+          "ean": "4870265473064",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "Блины Arbuz Select x Damdala с мясом, "
+          ]
+        },
+        {
+          "ean": "4870265473149",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "Салат Arbuz Select x Damdala винегрет"
+          ]
+        },
+        {
+          "ean": "4870265473156",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "Салат Arbuz Select x Damdala крабовый, "
+          ]
+        },
+        {
+          "ean": "4870265473132",
+          "sourceCount": 1,
+          "sources": "npc",
+          "names": [
+            "Плов Arbuz Select x Damdala сиыр етімен,"
+          ]
+        }
+      ]
+    }
+  ]
+}

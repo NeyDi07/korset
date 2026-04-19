@@ -62,74 +62,84 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 
 | Фокус | Статус |
 |-------|--------|
-| **Data Moat Pipeline** | 🔧 РЕАЛИЗАЦИЯ — NPC ✅, Arbuz ✅, USDA ⏳ |
-| **Kaspi Import Pipeline** | ✅ РАБОТАЕТ — Chocolate bars загружены |
+| **Arbuz catalog import** | ✅ 2228 продуктов из Arbuz → 3236 активных в DB |
+| **Каталог: русские имена** | ✅ NPC --fix-names |
+| **R2 CDN миграция** | ✅ ЗАВЕРШЕНА — 580/620 картинок в R2 |
+| **Data Moat Pipeline** | ✅ NPC + Arbuz + USDA — все работают |
+| **NPC EAN enrichment** | ✅ 1320/3236 (40%) реальных EAN |
+| **Удалить мусорные товары** | ✅ 17 деактивировано (электроника, стройматериалы, открытки) |
+| **Перевод инноязычного состава** | ✅ 100% русский состав (0 нерусских) |
+| **Batch upsert** | ✅ arbuz-catalog-parser переведён на batch (100x быстрее) |
 | **Импорт прайс-листа** (RetailImportScreen) | 🔜 |
-| **БД-фиксы** (UNIQUE, CASCADE, триггеры, GIN) | 🔜 |
-| **Метрики в тенге** | 🔜 |
+| **БД-фиксы** (CASCADE, GIN) | 🔜 |
+| **Фронтенд: name_kz по языку** | 🔜 |
+| **USDA enrichment** | 🔜 457 продуктов без состава |
+| **R2 upload для новых продуктов** | 🔜 ~2000 картинок нужно загрузить |
 
-**Data Moat Pipeline — УТВЕРЖДЁННАЯ СТРАТЕГИЯ:**
+**ARBUZ CATALOG PARSER v2 — BATCH UPSERT:**
 
 ```
-Шаг 0: EAN-13 валидация (контрольная сумма) ✅
-Шаг 1: NPC Search API → GTIN + NTIN + nameRu/KK + ОКТРУ ✅ (288/289, 164 GTIN)
-Шаг 2: Arbuz.kz API v1 → СОСТАВ (RU) + КБЖУ + Халал + цена ✅ (190/190, 75% found)
-Шаг 3: USDA FoodData → состав (EN) + КБЖУ — ⏳ (API unreachable from KZ, needs Vercel proxy)
-Шаг 4: Kaspi HTML → состав (RU) + цена — fallback 🔜
-Шаг 5: OFF → аллергены + NutriScore 🔜
+Стратегия: API search по 82 категориям → batch fetch existing → batch upsert
+Скрипт: scripts/arbuz-catalog-parser.cjs
+Инкрементальное сохранение прогресса каждые 10 продуктов
+Ретраи на API таймаутах (3 попытки)
 ```
 
-**⚠️ ARBUZ API v1 — ГЛАВНОЕ ОТКРЫТИЕ:**
+**Ключевые открытия Arbuz API:**
+- `/api/v1/shop/categories` = **404** (НЕ работает)
+- **API search** = даёт `ingredients` + `nutrition` напрямую (НЕ нужен detail API!)
+- **API barcode** = пустые строки (НЕ даёт штрихкоды)
+- **NPC name search** = даёт EAN для ~40% продуктов
+- **82 категорий** обойдены через search queries
 
-- **API `/api/v1/`** полностью открыт (v2=401, v3=404)
-- **Auth:** `POST /api/v1/auth/token` с consumer `arbuz-kz.web.mobile` → JWT (10мин TTL)
-- **Search:** `GET /api/v1/shop/search/products?where[name][c]=QUERY&limit=20`
-- **Detail:** `GET /api/v1/shop/product/{id}` → nutrition, ingredients, characteristics (халал!), price
-- **Халал:** characteristics содержит `{name: "Халал"}` → товар халяльный
-- **Поиск по штрихкоду НЕ работает** — только по названию/бренду
+**ТЕКУЩИЕ СТАТИСТИКИ БД (2026-04-19):**
+- **3236 active** global_products (было 685)
+- **Состав: 2779/3236 (86%)** (было ~75%)
+- **Русский состав: 2779/2779 (100%)** (было ~48%) ← 0 нерусских!
+- Arbuz primary: 2237 (было 26)
+- С реальными EAN: 1303/3236 (40%)
+- Без состава: 457
 
-**⚠️ DB CONSTRAINTS — НУЖНЫ ФИКСЫ:**
+**НОВЫЕ СКРИПТЫ (созданы в этой сессии):**
+- `scripts/translate-composition.cjs` — ✅ перевод состава через OpenAI gpt-4o-mini
 
-1. `source_primary_check` — `'npc'`/`'arbuz'`/`'usda'` не в списке. Скрипты используют `'kz_verified'`
-   - **Миграция 007 написана** (`007_add_pipeline_sources.sql`) — **нужно применить через Supabase Dashboard**
-2. `halal_status_check` — допустимые: `'unknown'`, `'yes'`, `'no'`. `'certified'` — НЕ проходит (исправлено в скрипте)
-3. `global_products_ean_key` — UNIQUE на EAN. Duplicate conflict при одинаковых GTIN для разных вариантов товаров
+**⚠️ DB CONSTRAINTS:**
+
+1. `source_primary_check` — ✅ ИСПРАВЛЕНО: миграция 007 применена
+2. `global_products_ean_key` — UNIQUE на EAN. arbuz_XXX EAN для продуктов без штрихкода
+3. `halal_status_check` — ✅ OK
 
 **API ключи (в .env.local):**
 - NPC_API_KEY ✅
-- USDA_API_KEY ✅ (но API unreachable напрямую из KZ)
+- USDA_API_KEY ✅ (работает через Vercel proxy)
+- VERCEL_TOKEN ✅
 
 **СКРИПТЫ PIPELINE:**
-1. `scripts/validate-ean.cjs` — ✅ РАБОТАЕТ
-2. `scripts/npc-enrich.cjs` — ✅ ПРОД ЗАПУСК: 288/289 matched, 164 GTIN, 288 NTIN, 130+ DB updates
-3. `scripts/arbuz-enrich.cjs` — ✅ ПРОД ЗАПУСК: 190 processed, 143 found (75%), 127 comp, 124 КБЖУ, 23 халал
-4. `scripts/usda-enrich.cjs` — ✅ написан, ⏳ API unreachable (нужен Vercel proxy)
-5. `api/usda.js` — ✅ написан, ⏳ НЕ задеплоен (нет VERCEL_TOKEN)
-6. `api/ean-search.js` — ✅ написан
-
-**ТЕКУЩИЕ СТАТИСТИКИ БД:**
-- 685 active global_products
-- Без состава: 81 (было ~190)
-- Без КБЖУ: 110
-- С халал=yes: 35
-- С source kz_verified (NPC): 115
-- С kaspi_ EAN (ещё нужно): 155
-- С реальным GTIN EAN: ~530
+1. `scripts/arbuz-catalog-parser.cjs` — ✅ ГЛАВНЫЙ: Arbuz-first bulk import (API+NPC+R2)
+2. `scripts/arbuz-enrich.cjs` — ✅ обогащение существующих продуктов через Arbuz
+3. `scripts/npc-enrich.cjs` — ✅ + `--fix-names` режим
+4. `scripts/usda-enrich.cjs` — ✅ через Vercel proxy
+5. `scripts/arbuz-import.cjs` — ✅ старый Arbuz-first pipeline (не запускался)
+6. `scripts/validate-ean.cjs` — ✅ EAN валидация
+7. `scripts/audit-catalog.cjs` — ✅ аудит качества
+8. `scripts/add-category-prefix.cjs` — ✅ prepend русской категории
 
 **МИГРАЦИИ:**
 - 006 (`alternate_eans`): ✅ ВЫПОЛНЕНА
-- 007 (`add_pipeline_sources`): ⚠️ НАПИСАНА, НУЖНО ПРИМЕНИТЬ ЧЕРЕЗ DASHBOARD
+- 007 (`add_pipeline_sources`): ✅ ПРИМЕНЕНА
+- 008 (`r2_image_columns`): ✅ ПРИМЕНЕНА
 
 **ПОРЯДОК ЗАДАЧ (следующий чат):**
-1. Применить миграцию 007 через Supabase Dashboard (добавить 'npc','arbuz','usda' в source_primary)
-2. Задеплоить api/usda.js на Vercel (нужен VERCEL_TOKEN)
-3. Запустить usda-enrich.cjs через Vercel proxy
-4. Обработать duplicate EAN conflict (same GTIN для вариантов → alternate_eans)
-5. Миграция БД: колонки ntin, oktru_code, halal_certified, kbju
-6. Объединить pipeline: NPC → Arbuz → USDA → Kaspi → OFF
+1. USDA enrichment на 457 продуктов без состава
+2. R2 upload для ~2000 новых картинок Arbuz
+3. Фронтенд: показывать name_kz когда user.lang === 'kz'
+4. Импорт прайс-листа (RetailImportScreen)
+5. БД-фиксы (CASCADE, GIN, duplicate arbuz_ EAN)
+6. Retry R2 failed картинок
 
 Офлайн-режим: ✅ ГОТОВО (6 слоёв, 85/100)
 
----
-
-*Подробно: ARCHITECTURE.md | Аудит: docs/vault/plans/audit-full.md | Память: docs/vault/*
+**R2 CDN:**
+- R2 bucket `korset-images` (EEUR), custom domain `cdn.korset.app` ✅
+- 580/620 картинок мигрировано (40 — плейсхолдеры/недоступные)
+- `getImageUrl()` интегрирован, Cloudflare Image Transformations НЕ работают (платный план)

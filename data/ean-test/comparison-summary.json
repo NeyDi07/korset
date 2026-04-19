@@ -1,0 +1,237 @@
+{
+  "testedAt": "2026-04-18T14:22:23.605Z",
+  "productCount": 20,
+  "methods": [
+    {
+      "method": "USDA",
+      "total": 20,
+      "found": 0,
+      "eanFound": 0,
+      "ingredientsFound": 0,
+      "nutritionFound": 0,
+      "rate": 0
+    }
+  ],
+  "perProduct": [
+    {
+      "id": 1,
+      "brand": "Milka",
+      "name": "Alpenmilch",
+      "USDA": {
+        "found": false,
+        "ean": null,
+        "hasIngredients": false,
+        "hasNutrition": false
+      }
+    },
+    {
+      "id": 2,
+      "brand": "Milka",
+      "name": "Oreo",
+      "USDA": {
+        "found": false,
+        "ean": null,
+        "hasIngredients": false,
+        "hasNutrition": false
+      }
+    },
+    {
+      "id": 3,
+      "brand": "Ritter Sport",
+      "name": "Цельный миндаль",
+      "USDA": {
+        "found": false,
+        "ean": null,
+        "hasIngredients": false,
+        "hasNutrition": false
+      }
+    },
+    {
+      "id": 4,
+      "brand": "Ritter Sport",
+      "name": "Карамельный мусс",
+      "USDA": {
+        "found": false,
+        "ean": null,
+        "hasIngredients": false,
+        "hasNutrition": false
+      }
+    },
+    {
+      "id": 5,
+      "brand": "KINDER",
+      "name": "Шоколад",
+      "USDA": {
+        "found": false,
+        "ean": null,
+        "hasIngredients": false,
+        "hasNutrition": false
+      }
+    },
+    {
+      "id": 6,
+      "brand": "KINDER",
+      "name": "Bueno",
+      "USDA": {
+        "found": false,
+        "ean": null,
+        "hasIngredients": false,
+        "hasNutrition": false
+      }
+    },
+    {
+      "id": 7,
+      "brand": "Schogetten",
+      "name": "Молочный",
+      "USDA": {
+        "found": false,
+        "ean": null,
+        "hasIngredients": false,
+        "hasNutrition": false
+      }
+    },
+    {
+      "id": 8,
+      "brand": "Победа",
+      "name": "Молочный",
+      "USDA": {
+        "found": false,
+        "ean": null,
+        "hasIngredients": false,
+        "hasNutrition": false
+      }
+    },
+    {
+      "id": 9,
+      "brand": "Bucheron",
+      "name": "Молочный",
+      "USDA": {
+        "found": false,
+        "ean": null,
+        "hasIngredients": false,
+        "hasNutrition": false
+      }
+    },
+    {
+      "id": 10,
+      "brand": "O'Zera",
+      "name": "Молочный",
+      "USDA": {
+        "found": false,
+        "ean": null,
+        "hasIngredients": false,
+        "hasNutrition": false
+      }
+    },
+    {
+      "id": 11,
+      "brand": "Alpen Gold",
+      "name": "Молочный",
+      "USDA": {
+        "found": false,
+        "ean": null,
+        "hasIngredients": false,
+        "hasNutrition": false
+      }
+    },
+    {
+      "id": 12,
+      "brand": "Alpen Gold",
+      "name": "С фундуком",
+      "USDA": {
+        "found": false,
+        "ean": null,
+        "hasIngredients": false,
+        "hasNutrition": false
+      }
+    },
+    {
+      "id": 13,
+      "brand": "KitKat",
+      "name": "Milk",
+      "USDA": {
+        "found": false,
+        "ean": null,
+        "hasIngredients": false,
+        "hasNutrition": false
+      }
+    },
+    {
+      "id": 14,
+      "brand": "KitKat",
+      "name": "Dark",
+      "USDA": {
+        "found": false,
+        "ean": null,
+        "hasIngredients": false,
+        "hasNutrition": false
+      }
+    },
+    {
+      "id": 15,
+      "brand": "Hershey's",
+      "name": "Milk Chocolate",
+      "USDA": {
+        "found": false,
+        "ean": null,
+        "hasIngredients": false,
+        "hasNutrition": false
+      }
+    },
+    {
+      "id": 16,
+      "brand": "Спартак",
+      "name": "Молочный",
+      "USDA": {
+        "found": false,
+        "ean": null,
+        "hasIngredients": false,
+        "hasNutrition": false
+      }
+    },
+    {
+      "id": 17,
+      "brand": "NA MEDU",
+      "name": "С орехами",
+      "USDA": {
+        "found": false,
+        "ean": null,
+        "hasIngredients": false,
+        "hasNutrition": false
+      }
+    },
+    {
+      "id": 18,
+      "brand": "NA MEDU",
+      "name": "Классический",
+      "USDA": {
+        "found": false,
+        "ean": null,
+        "hasIngredients": false,
+        "hasNutrition": false
+      }
+    },
+    {
+      "id": 19,
+      "brand": "Lindt",
+      "name": "Excellence",
+      "USDA": {
+        "found": false,
+        "ean": null,
+        "hasIngredients": false,
+        "hasNutrition": false
+      }
+    },
+    {
+      "id": 20,
+      "brand": "Ferrero",
+      "name": "Raffaello",
+      "USDA": {
+        "found": false,
+        "ean": null,
+        "hasIngredients": false,
+        "hasNutrition": false
+      }
+    }
+  ]
+}

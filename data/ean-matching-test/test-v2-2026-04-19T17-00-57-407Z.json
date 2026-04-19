@@ -1,0 +1,1023 @@
+{
+  "testedAt": "2026-04-19T17:00:57.446Z",
+  "products": [
+    {
+      "ean": "arbuz_325512",
+      "name": "Чай холодный Fuse манго и ананас 1,5 л",
+      "brand": "Fuse"
+    },
+    {
+      "ean": "arbuz_330704",
+      "name": "Мука Edeka ржаная тип 1150, 1 кг",
+      "brand": "Edeka"
+    },
+    {
+      "ean": "arbuz_252232",
+      "name": "Колбаса СПК утренняя варёная в/у, кг",
+      "brand": "СПК"
+    },
+    {
+      "ean": "arbuz_196394",
+      "name": "Кетчуп 3 Желания классический 450 г",
+      "brand": "3 Желания"
+    },
+    {
+      "ean": "arbuz_295393",
+      "name": "Сосиски Индилайт молочные, 440 г",
+      "brand": "Индилайт"
+    },
+    {
+      "ean": "arbuz_307191",
+      "name": "Сосиски Arbuz Select говяжьи 390 г",
+      "brand": "Arbuz Select"
+    },
+    {
+      "ean": "arbuz_317523",
+      "name": "Сосиски Папа может мясные с говядиной, 600 г",
+      "brand": "Папа может"
+    },
+    {
+      "ean": "arbuz_301706",
+      "name": "Колбаса Ет Байрам Мусульманская Халал вареная 600 г",
+      "brand": "Ет Байрам"
+    },
+    {
+      "ean": "arbuz_328926",
+      "name": "Молодой ячмень Bio planet органический порошок 100 г",
+      "brand": "Bio planet"
+    },
+    {
+      "ean": "arbuz_331390",
+      "name": "Макаронное изделие Edeka Rigatoni 500 г",
+      "brand": "Edeka"
+    },
+    {
+      "ean": "arbuz_229754",
+      "name": "Рис Makfa длиннозерный пропаренный в пакетиках для варки, 400 г",
+      "brand": "Makfa"
+    },
+    {
+      "ean": "arbuz_204499",
+      "name": "Соус для пасты Barilla Арабьята 400 г",
+      "brand": "Barilla"
+    },
+    {
+      "ean": "arbuz_331395",
+      "name": "Горчица Thomy Delikatess средне-острая, приправленная, в тюбике 200 мл",
+      "brand": "Thomy"
+    },
+    {
+      "ean": "arbuz_320949",
+      "name": "Рис Arbuz Select x Damdala с овощами и курицей 300 г",
+      "brand": "Arbuz Select x Damdala"
+    },
+    {
+      "ean": "arbuz_328915",
+      "name": "Желтый горошек Bio planet органический 500 г",
+      "brand": "Bio planet"
+    },
+    {
+      "ean": "arbuz_231675",
+      "name": "Майонез Махеевъ с перепелиным яйцом 67%, 380 г",
+      "brand": "Махеевъ"
+    },
+    {
+      "ean": "arbuz_331030",
+      "name": "Макароны фузилли Bioitalia из чечевицы 250 г",
+      "brand": "Bioitalia"
+    },
+    {
+      "ean": "arbuz_330276",
+      "name": "Цельнозерновые фузилли Джейми Оливер 500 г",
+      "brand": "Джейми Оливер"
+    },
+    {
+      "ean": "arbuz_235141",
+      "name": "Шпикачки Папа может сочные со свининой, кг",
+      "brand": "Папа может"
+    },
+    {
+      "ean": "arbuz_255781",
+      "name": "Конфеты Победа charget без сахара в горьком шоколаде, кг",
+      "brand": "Победа"
+    }
+  ],
+  "results": {
+    "searchNPC": {
+      "found": 10,
+      "notFound": 10,
+      "errors": 0,
+      "details": [
+        {
+          "product": "arbuz_325512",
+          "method": "npc",
+          "ean": "0200089992443",
+          "nameRu": "Чай холодный Fuse-tea Манго ромашка 1 л",
+          "status": "found",
+          "score": 0
+        },
+        {
+          "product": "arbuz_330704",
+          "method": "npc",
+          "ean": "4607012292933",
+          "nameRu": "МУКА РЖАНАЯ.1КГ мука 100пудов 1кг ржаная х.п(8)",
+          "status": "found",
+          "score": 0
+        },
+        {
+          "product": "arbuz_252232",
+          "method": "npc",
+          "ean": "0200120083215",
+          "nameRu": "КОЛБАСА СПК ДОКТОРСКАЯ ВАРЕНАЯ К/ОБ КГ",
+          "status": "found",
+          "score": 0
+        },
+        {
+          "product": "arbuz_196394",
+          "method": "npc",
+          "ean": "0200089915442",
+          "nameRu": "3 Желания Кетчуп Болгарский 450 г",
+          "status": "found",
+          "score": 0
+        },
+        {
+          "product": "arbuz_295393",
+          "method": "npc",
+          "ean": "4640167414515",
+          "nameRu": "Колбаса Индилайт из филе индейки 400гр",
+          "status": "found",
+          "score": 0
+        },
+        {
+          "product": "arbuz_307191",
+          "method": "npc",
+          "ean": "0200219341561",
+          "nameRu": "Приправа Остринка Arbuz select",
+          "status": "found",
+          "score": 0
+        },
+        {
+          "product": "arbuz_317523",
+          "method": "npc",
+          "ean": "4607958077878",
+          "nameRu": "СОСИСКИ ПАПА МОЕЖТ 600ГР С ГОВЯДИНОЙ",
+          "status": "found",
+          "score": 0
+        },
+        {
+          "product": "arbuz_301706",
+          "method": "npc",
+          "ean": "0200120108727",
+          "nameRu": "КОЛБАСА ЕТ БАЙРАМ МУСУЛЬМАНСКАЯ ХАЛАЛ ВАРЕН КГ",
+          "status": "found",
+          "score": 0
+        },
+        {
+          "product": "arbuz_328926",
+          "method": "npc",
+          "ean": "8020735056006",
+          "nameRu": "PLANETA TEREBINTO 0.75L BIO",
+          "status": "found",
+          "score": 0
+        },
+        {
+          "product": "arbuz_331390",
+          "method": "npc",
+          "ean": "8001250120236",
+          "nameRu": "Макароны de cecco tortiglioni 500g изделия макаронные  23 500гр",
+          "status": "found",
+          "score": 0
+        },
+        {
+          "product": "arbuz_229754",
+          "method": "npc",
+          "ean": "4601780005412",
+          "nameRu": "РИС MAKFA ДЛИННОЗЕРНЫЙ ШЛИФОВАННЫЙ 800ГР ФЛ.П длиннозерн ",
+          "status": "found",
+          "score": 0
+        },
+        {
+          "product": "arbuz_204499",
+          "method": "npc",
+          "ean": "8076809575997",
+          "nameRu": "ПАСТА BARILLA ФИЛИНИ 450ГР КОР barilla паста ",
+          "status": "found",
+          "score": 0
+        },
+        {
+          "product": "arbuz_331395",
+          "method": "npc",
+          "ean": "4820008098498",
+          "nameRu": "ГОРЧИЦА ВЕРЕС РУССКАЯ ОСТРАЯ 190ГР",
+          "status": "found",
+          "score": 0
+        },
+        {
+          "product": "arbuz_320949",
+          "method": "npc",
+          "ean": "4870265473040",
+          "nameRu": "Блины Arbuz Select x Damdala домашние, ",
+          "status": "found",
+          "score": 0
+        },
+        {
+          "product": "arbuz_328915",
+          "method": "npc",
+          "ean": "8020735056006",
+          "nameRu": "PLANETA TEREBINTO 0.75L BIO",
+          "status": "found",
+          "score": 0
+        },
+        {
+          "product": "arbuz_231675",
+          "method": "npc",
+          "ean": "0200089922778",
+          "nameRu": "Майонез Махеевъ с перепелиным яйцом 50.5% 770 г",
+          "status": "found",
+          "score": 0
+        },
+        {
+          "product": "arbuz_331030",
+          "method": "npc",
+          "ean": "0200287876750",
+          "nameRu": "Bioitalia Chick peas Турецкий горох (нут) 400гр",
+          "status": "found",
+          "score": 0
+        },
+        {
+          "product": "arbuz_330276",
+          "method": "npc",
+          "ean": "0200299709787",
+          "nameRu": "Диван Оливер ",
+          "status": "found",
+          "score": 0
+        },
+        {
+          "product": "arbuz_235141",
+          "method": "npc",
+          "ean": "0200140629783",
+          "nameRu": "Сардельки Папа может сочные шпикачки вес",
+          "status": "found",
+          "score": 0
+        },
+        {
+          "product": "arbuz_255781",
+          "method": "npc",
+          "ean": "0200158956826",
+          "nameRu": "Победа \"Мишки в лесу\"  в горьком  шоколаде без добавления сахара, 1,5кг №0133",
+          "status": "found",
+          "score": 0
+        }
+      ]
+    },
+    "searchNPCBrandOnly": {
+      "found": 10,
+      "notFound": 10,
+      "errors": 0,
+      "details": [
+        {
+          "product": "arbuz_325512",
+          "method": "npc-brand",
+          "ean": "0200260151164",
+          "nameRu": "Чай Fuse (Ромашка) 1л/12шт",
+          "status": "found",
+          "wordMatch": 2
+        },
+        {
+          "product": "arbuz_330704",
+          "method": "npc-brand",
+          "ean": null,
+          "status": "not_found"
+        },
+        {
+          "product": "arbuz_252232",
+          "method": "npc-brand",
+          "ean": "2258139",
+          "nameRu": "КОЛБАСА СПК ДОКТОРСКАЯ ВЫСОКИЙ ВКУС ВАРЁНАЯ ВЕС",
+          "status": "found",
+          "wordMatch": 3
+        },
+        {
+          "product": "arbuz_196394",
+          "method": "npc-brand",
+          "ean": "4870035002579",
+          "nameRu": "КЕТЧУП 3ЖЕЛАНИЯ КЛАСС 100ГР Д.П 3желания кетчуп классический 100г ЕтчупКлассически3Желания Штука ",
+          "status": "found",
+          "wordMatch": 3
+        },
+        {
+          "product": "arbuz_295393",
+          "method": "npc-brand",
+          "ean": "4610121636062",
+          "nameRu": "Сосиски Индилайт Сливочные из индейки 440гр",
+          "status": "found",
+          "wordMatch": 3
+        },
+        {
+          "product": "arbuz_307191",
+          "method": "npc-brand",
+          "ean": "0200219341493",
+          "nameRu": "Вишневое варенье Arbuz select",
+          "status": "found",
+          "wordMatch": 2
+        },
+        {
+          "product": "arbuz_317523",
+          "method": "npc-brand",
+          "ean": "2800138",
+          "nameRu": "Сардельки  с индейкой \"Папа может\" ОСТ",
+          "status": "found",
+          "wordMatch": 2
+        },
+        {
+          "product": "arbuz_301706",
+          "method": "npc-brand",
+          "ean": "2270869",
+          "nameRu": "КОЛБАСА ЕТ БАЙРАМ ПРЕЗИДЕНТСКАЯ ХАЛАЛ П\\К ВЕС",
+          "status": "found",
+          "wordMatch": 3
+        },
+        {
+          "product": "arbuz_328926",
+          "method": "npc-brand",
+          "ean": "4870210130035",
+          "nameRu": "100% натуральный яблочный сок прямого отжима Amal Bio",
+          "status": "found",
+          "wordMatch": 2
+        },
+        {
+          "product": "arbuz_331390",
+          "method": "npc-brand",
+          "ean": null,
+          "status": "not_found"
+        },
+        {
+          "product": "arbuz_229754",
+          "method": "npc-brand",
+          "ean": "0200236400555",
+          "nameRu": "Макароны MAKFA спагетти триолли 400гр/20шт",
+          "status": "found",
+          "wordMatch": 2
+        },
+        {
+          "product": "arbuz_204499",
+          "method": "npc-brand",
+          "ean": "8076809572996",
+          "nameRu": "СОУС BARILLA С ЧЕСНОКОМ И ТРАВАМИ 400ГР",
+          "status": "found",
+          "wordMatch": 3
+        },
+        {
+          "product": "arbuz_331395",
+          "method": "npc-brand",
+          "ean": null,
+          "status": "not_found"
+        },
+        {
+          "product": "arbuz_320949",
+          "method": "npc-brand",
+          "ean": "0200219341479",
+          "nameRu": "Абрикосовое варенье Arbuz select",
+          "status": "found",
+          "wordMatch": 2
+        },
+        {
+          "product": "arbuz_328915",
+          "method": "npc-brand",
+          "ean": "4870263480019",
+          "nameRu": "МАСЛО ГХИ BIO GOROD 500 мл",
+          "status": "found",
+          "wordMatch": 2
+        },
+        {
+          "product": "arbuz_231675",
+          "method": "npc-brand",
+          "ean": "460424802729",
+          "nameRu": "МАЙОНЕЗ МАХЕЕВЪ ГОРЧИЧНЫЙ 120ГР ТУБА",
+          "status": "found",
+          "wordMatch": 2
+        },
+        {
+          "product": "arbuz_331030",
+          "method": "npc-brand",
+          "ean": null,
+          "status": "not_found"
+        },
+        {
+          "product": "arbuz_330276",
+          "method": "npc-brand",
+          "ean": null,
+          "status": "not_found"
+        },
+        {
+          "product": "arbuz_235141",
+          "method": "npc-brand",
+          "ean": "2800138",
+          "nameRu": "Сардельки  с индейкой \"Папа может\" ОСТ",
+          "status": "found",
+          "wordMatch": 2
+        },
+        {
+          "product": "arbuz_255781",
+          "method": "npc-brand",
+          "ean": null,
+          "status": "not_found"
+        }
+      ]
+    },
+    "searchNPCTransliterated": {
+      "found": 13,
+      "notFound": 7,
+      "errors": 0,
+      "details": [
+        {
+          "product": "arbuz_325512",
+          "method": "npc-translit",
+          "ean": "5449000216335",
+          "nameRu": "Напиток Fuse Tea манго-ананас 1,5л",
+          "status": "found"
+        },
+        {
+          "product": "arbuz_330704",
+          "method": "npc-translit",
+          "ean": "8434198897661",
+          "nameRu": "Сандалии EDERA INTERNATIONAL SHOES GARVALIN S.L.",
+          "status": "found"
+        },
+        {
+          "product": "arbuz_252232",
+          "method": "npc-translit",
+          "ean": "SPR-1316M",
+          "nameRu": "Кольцо проставочное SPR-1316М для динамиков 13см.МДФ  16мм.",
+          "status": "found"
+        },
+        {
+          "product": "arbuz_196394",
+          "method": "npc-translit",
+          "ean": "0200326170726",
+          "nameRu": "AXF-450-B-3/2-GP-4Z\t\t\t\t",
+          "status": "found"
+        },
+        {
+          "product": "arbuz_295393",
+          "method": "npc-translit",
+          "ean": "0200246829360",
+          "nameRu": "лента с липким слоем(скотч)48мм 440м",
+          "status": "found"
+        },
+        {
+          "product": "arbuz_307191",
+          "method": "npc-translit",
+          "ean": "0200219341547",
+          "nameRu": "Салат «Лечо»   Arbuz select",
+          "status": "found"
+        },
+        {
+          "product": "arbuz_317523",
+          "method": "npc-translit",
+          "ean": "4610152390674",
+          "nameRu": "КРЕМ ДЕТСКИЙ PAPA CARE 100 МЛ",
+          "status": "found"
+        },
+        {
+          "product": "arbuz_301706",
+          "method": "npc-translit",
+          "ean": "4780054324234",
+          "nameRu": "SFAD Печенье с кунжутом BAYRAM CHOCO 3кг",
+          "status": "found"
+        },
+        {
+          "product": "arbuz_328926",
+          "method": "npc-translit",
+          "ean": "0200315901430",
+          "nameRu": "Planet VR-100 — VPN-роутер безопасности (5xGbE)",
+          "status": "found"
+        },
+        {
+          "product": "arbuz_331390",
+          "method": "npc-translit",
+          "ean": "5900950110093",
+          "nameRu": "Колготки Mona Edera 40 den компрессионные",
+          "status": "found"
+        },
+        {
+          "product": "arbuz_229754",
+          "method": "npc-translit",
+          "ean": "0200089905337",
+          "nameRu": "MAKFA Улитки 400 г",
+          "status": "found"
+        },
+        {
+          "product": "arbuz_204499",
+          "method": "npc-translit",
+          "ean": "0200089927735",
+          "nameRu": "Barilla Farfalle 400 г",
+          "status": "found"
+        },
+        {
+          "product": "arbuz_331395",
+          "method": "npc-translit",
+          "ean": "4871351000683",
+          "nameRu": "Туфли THOM BROWNE арт.FFH271A-03883-001, цвет Черный, р-р 39",
+          "status": "found"
+        },
+        {
+          "product": "arbuz_320949",
+          "method": "npc-translit",
+          "ean": "4870265473156",
+          "nameRu": "Салат Arbuz Select x Damdala крабовый, ",
+          "status": "found"
+        },
+        {
+          "product": "arbuz_328915",
+          "method": "npc-translit",
+          "ean": "8020735056006",
+          "nameRu": "PLANETA TEREBINTO 0.75L BIO",
+          "status": "found"
+        },
+        {
+          "product": "arbuz_231675",
+          "method": "npc-translit",
+          "ean": "4650252916794",
+          "nameRu": "Спидометр УАЗ 160 км/ч,.67-3802",
+          "status": "found"
+        },
+        {
+          "product": "arbuz_331030",
+          "method": "npc-translit",
+          "ean": "0200287876750",
+          "nameRu": "Bioitalia Chick peas Турецкий горох (нут) 400гр",
+          "status": "found"
+        },
+        {
+          "product": "arbuz_330276",
+          "method": "npc-translit",
+          "ean": "5996175230975",
+          "nameRu": "ГЕЛЬ Д.ДУША PALMOLIVE MILK&OLIVE 250МЛ ФЛ гель д.д рalm oliv25",
+          "status": "found"
+        },
+        {
+          "product": "arbuz_235141",
+          "method": "npc-translit",
+          "ean": "4610152390674",
+          "nameRu": "КРЕМ ДЕТСКИЙ PAPA CARE 100 МЛ",
+          "status": "found"
+        },
+        {
+          "product": "arbuz_255781",
+          "method": "npc-translit",
+          "ean": "3515720117008",
+          "nameRu": "Millet  куртка мужская Pobeda kt",
+          "status": "found"
+        }
+      ]
+    },
+    "searchOFF": {
+      "found": 0,
+      "notFound": 20,
+      "errors": 0,
+      "details": [
+        {
+          "product": "arbuz_325512",
+          "method": "off",
+          "ean": null,
+          "status": "not_found",
+          "count": 0
+        },
+        {
+          "product": "arbuz_330704",
+          "method": "off",
+          "ean": null,
+          "status": "not_found",
+          "count": 0
+        },
+        {
+          "product": "arbuz_252232",
+          "method": "off",
+          "ean": null,
+          "status": "not_found",
+          "count": 0
+        },
+        {
+          "product": "arbuz_196394",
+          "method": "off",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_295393",
+          "method": "off",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_307191",
+          "method": "off",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_317523",
+          "method": "off",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_301706",
+          "method": "off",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_328926",
+          "method": "off",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_331390",
+          "method": "off",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_229754",
+          "method": "off",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_204499",
+          "method": "off",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_331395",
+          "method": "off",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_320949",
+          "method": "off",
+          "ean": null,
+          "status": "not_found",
+          "count": 0
+        },
+        {
+          "product": "arbuz_328915",
+          "method": "off",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_231675",
+          "method": "off",
+          "ean": null,
+          "status": "not_found",
+          "count": 0
+        },
+        {
+          "product": "arbuz_331030",
+          "method": "off",
+          "ean": null,
+          "status": "not_found",
+          "count": 0
+        },
+        {
+          "product": "arbuz_330276",
+          "method": "off",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_235141",
+          "method": "off",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_255781",
+          "method": "off",
+          "ean": null,
+          "status": 503
+        }
+      ]
+    },
+    "searchOFFBrandOnly": {
+      "found": 3,
+      "notFound": 17,
+      "errors": 0,
+      "details": [
+        {
+          "product": "arbuz_325512",
+          "method": "off-brand",
+          "ean": "5449000216335",
+          "productName": "Fuse tea 1,5 litre mango ananas",
+          "brands": "Fuzetea",
+          "status": "found",
+          "wordMatch": 2
+        },
+        {
+          "product": "arbuz_330704",
+          "method": "off-brand",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_252232",
+          "method": "off-brand",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_196394",
+          "method": "off-brand",
+          "ean": "4870035006706",
+          "productName": "майонез классический 3 желания",
+          "brands": "Unknown",
+          "status": "found",
+          "wordMatch": 2
+        },
+        {
+          "product": "arbuz_295393",
+          "method": "off-brand",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_307191",
+          "method": "off-brand",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_317523",
+          "method": "off-brand",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_301706",
+          "method": "off-brand",
+          "ean": null,
+          "status": "not_found",
+          "count": 0
+        },
+        {
+          "product": "arbuz_328926",
+          "method": "off-brand",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_331390",
+          "method": "off-brand",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_229754",
+          "method": "off-brand",
+          "ean": null,
+          "status": "not_found",
+          "count": 38
+        },
+        {
+          "product": "arbuz_204499",
+          "method": "off-brand",
+          "ean": null,
+          "status": "not_found",
+          "count": 1579
+        },
+        {
+          "product": "arbuz_331395",
+          "method": "off-brand",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_320949",
+          "method": "off-brand",
+          "ean": null,
+          "status": "not_found",
+          "count": 0
+        },
+        {
+          "product": "arbuz_328915",
+          "method": "off-brand",
+          "ean": "3760049794298",
+          "productName": "Pain de mie Bio grandes tranches céréales & graines 500g",
+          "brands": "La boulangère bio",
+          "status": "found",
+          "wordMatch": 2
+        },
+        {
+          "product": "arbuz_231675",
+          "method": "off-brand",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_331030",
+          "method": "off-brand",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_330276",
+          "method": "off-brand",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_235141",
+          "method": "off-brand",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_255781",
+          "method": "off-brand",
+          "ean": null,
+          "status": 503
+        }
+      ]
+    },
+    "searchOFFBrandCategory": {
+      "found": 1,
+      "notFound": 19,
+      "errors": 0,
+      "details": [
+        {
+          "product": "arbuz_325512",
+          "method": "off-brand-cat",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_330704",
+          "method": "off-brand-cat",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_252232",
+          "method": "off-brand-cat",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_196394",
+          "method": "off-brand-cat",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_295393",
+          "method": "off-brand-cat",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_307191",
+          "method": "off-brand-cat",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_317523",
+          "method": "off-brand-cat",
+          "ean": "4607958073764",
+          "productName": "Сервелат Пражский",
+          "brands": "Папа может",
+          "status": "found",
+          "count": 4
+        },
+        {
+          "product": "arbuz_301706",
+          "method": "off-brand-cat",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_328926",
+          "method": "off-brand-cat",
+          "ean": null,
+          "status": "no_category"
+        },
+        {
+          "product": "arbuz_331390",
+          "method": "off-brand-cat",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_229754",
+          "method": "off-brand-cat",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_204499",
+          "method": "off-brand-cat",
+          "ean": null,
+          "status": "no_category"
+        },
+        {
+          "product": "arbuz_331395",
+          "method": "off-brand-cat",
+          "ean": null,
+          "status": "no_category"
+        },
+        {
+          "product": "arbuz_320949",
+          "method": "off-brand-cat",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_328915",
+          "method": "off-brand-cat",
+          "ean": null,
+          "status": "no_category"
+        },
+        {
+          "product": "arbuz_231675",
+          "method": "off-brand-cat",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_331030",
+          "method": "off-brand-cat",
+          "ean": null,
+          "status": 503
+        },
+        {
+          "product": "arbuz_330276",
+          "method": "off-brand-cat",
+          "ean": null,
+          "status": "no_category"
+        },
+        {
+          "product": "arbuz_235141",
+          "method": "off-brand-cat",
+          "ean": null,
+          "status": "no_category"
+        },
+        {
+          "product": "arbuz_255781",
+          "method": "off-brand-cat",
+          "ean": null,
+          "status": 503
+        }
+      ]
+    }
+  },
+  "summary": [
+    {
+      "method": "NPCTransliterated",
+      "found": 13,
+      "notFound": 7,
+      "errors": 0,
+      "rate": 65
+    },
+    {
+      "method": "NPC",
+      "found": 10,
+      "notFound": 10,
+      "errors": 0,
+      "rate": 50
+    },
+    {
+      "method": "NPCBrandOnly",
+      "found": 10,
+      "notFound": 10,
+      "errors": 0,
+      "rate": 50
+    },
+    {
+      "method": "OFFBrandOnly",
+      "found": 3,
+      "notFound": 17,
+      "errors": 0,
+      "rate": 15
+    },
+    {
+      "method": "OFFBrandCategory",
+      "found": 1,
+      "notFound": 19,
+      "errors": 0,
+      "rate": 5
+    },
+    {
+      "method": "OFF",
+      "found": 0,
+      "notFound": 20,
+      "errors": 0,
+      "rate": 0
+    }
+  ]
+}
