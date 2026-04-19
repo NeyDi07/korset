@@ -29,6 +29,7 @@ import RetailProductsScreen from './screens/RetailProductsScreen.jsx'
 import RetailImportScreen from './screens/RetailImportScreen.jsx'
 import RetailSettingsScreen from './screens/RetailSettingsScreen.jsx'
 import CompareScreen from './screens/CompareScreen.jsx'
+import ProductMockScreen from './screens/_mock/ProductMockScreen.jsx'
 import { AuthProvider, useAuth } from './contexts/AuthContext.jsx'
 import { ProfileProvider } from './contexts/ProfileContext.jsx'
 import { StoreProvider, useStore } from './contexts/StoreContext.jsx'
@@ -47,7 +48,8 @@ function AppInner() {
     pathname === '/qr-print' ||
     pathname === '/auth' ||
     pathname === '/setup-profile' ||
-    pathname.startsWith('/retail')
+    pathname.startsWith('/retail') ||
+    pathname.startsWith('/_mock')
   const [showOnboarding, setShowOnboarding] = useState(
     !localStorage.getItem('korset_onboarding_done') || !localStorage.getItem('korset_lang')
   )
@@ -106,6 +108,9 @@ function AppInner() {
         <Route path="/setup-profile" element={<SetupProfileScreen />} />
         <Route path="/qr-print" element={<QRPrintScreen />} />
         <Route path="/privacy-policy" element={<PrivacyPolicyScreen />} />
+
+        {/* Mock screens (dev preview, not in production nav) */}
+        <Route path="/_mock/product" element={<ProductMockScreen />} />
 
         {/* Retail Cabinet Entry — finds store by owner_id */}
         <Route path="/retail" element={<RetailEntryScreen />} />
