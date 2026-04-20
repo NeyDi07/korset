@@ -530,7 +530,7 @@ function DietBadges({ product, lang }) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// NUTRITION UNIFIED (5 ячеек + sugar/salt одинаковой длины)
+// NUTRITION UNIFIED — большой Ккал слева + 3 макроса справа + sugar/salt
 // ═══════════════════════════════════════════════════════════════════════════
 function NutritionUnified({ nutrition }) {
   if (!nutrition) return null
@@ -540,25 +540,19 @@ function NutritionUnified({ nutrition }) {
   const carbs = nutrition.carbs ?? nutrition.carbohydrates_100g
   const sugar = nutrition.sugar ?? nutrition.sugars_100g ?? nutrition.sugars
   const salt = nutrition.salt ?? nutrition.salt_100g
-  const saturatedFat = nutrition.saturatedFat ?? nutrition.saturated_fat_100g
 
-  const hasAny = [kcal, protein, fat, carbs, sugar, salt, saturatedFat].some((v) => v != null)
+  const hasAny = [kcal, protein, fat, carbs, sugar, salt].some((v) => v != null)
   if (!hasAny) return null
 
-  // 5-й динамический элемент: sat.fat > sugar (если еще не в нижнем блоке) > клетчатка
-  const fifthCell =
-    saturatedFat != null
-      ? { label: 'Нас. жиры', value: saturatedFat, unit: 'г', color: '#EC4899' }
-      : null
-
   const hasSugarSalt = sugar != null || salt != null
+  const KCAL_COLOR = '#A78BFA'
 
   return (
     <div
       style={{
         background:
-          'linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.015) 100%)',
-        border: '1px solid rgba(255,255,255,0.08)',
+          'linear-gradient(180deg, rgba(255,255,255,0.045) 0%, rgba(255,255,255,0.02) 100%)',
+        border: '1px solid rgba(255,255,255,0.1)',
         borderRadius: 18,
         padding: 16,
       }}
@@ -576,40 +570,92 @@ function NutritionUnified({ nutrition }) {
         Пищевая ценность · на 100 г
       </div>
 
-      {/* Ряд 1: ккал + 3-4 макроса */}
+      {/* Hero row: большой Ккал слева + 3 макроса справа */}
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: fifthCell ? 'repeat(5, 1fr)' : 'repeat(4, 1fr)',
-          gap: 6,
-          marginBottom: hasSugarSalt ? 12 : 0,
+          gridTemplateColumns: '1.1fr 1fr',
+          gap: 10,
+          marginBottom: hasSugarSalt ? 14 : 0,
         }}
       >
-        <MacroCell label="Ккал" value={kcal} unit="" color="#A78BFA" accent bigger />
-        <MacroCell label="Белки" value={protein} unit="г" color="#3B82F6" />
-        <MacroCell label="Жиры" value={fat} unit="г" color="#F59E0B" />
-        <MacroCell label="Углев." value={carbs} unit="г" color="#10B981" />
-        {fifthCell && (
-          <MacroCell
-            label={fifthCell.label}
-            value={fifthCell.value}
-            unit={fifthCell.unit}
-            color={fifthCell.color}
-          />
-        )}
+        {/* Ккал — большой блок слева */}
+        <div
+          style={{
+            background: `linear-gradient(145deg, ${KCAL_COLOR}22 0%, ${KCAL_COLOR}08 100%)`,
+            border: `1px solid ${KCAL_COLOR}44`,
+            borderRadius: 14,
+            padding: '16px 14px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: `inset 0 0 22px ${KCAL_COLOR}15`,
+          }}
+        >
+          <div
+            style={{
+              fontSize: 11,
+              fontWeight: 700,
+              letterSpacing: '0.12em',
+              color: KCAL_COLOR,
+              textTransform: 'uppercase',
+              marginBottom: 6,
+            }}
+          >
+            Энергия
+          </div>
+          <div
+            style={{
+              fontSize: 42,
+              fontWeight: 900,
+              color: '#fff',
+              fontFamily: 'var(--font-display)',
+              lineHeight: 1,
+              letterSpacing: '-0.03em',
+              textShadow: `0 0 24px ${KCAL_COLOR}50`,
+            }}
+          >
+            {fmt(kcal)}
+          </div>
+          <div
+            style={{
+              fontSize: 11,
+              fontWeight: 600,
+              color: 'rgba(255,255,255,0.55)',
+              marginTop: 4,
+              letterSpacing: '0.04em',
+            }}
+          >
+            ккал
+          </div>
+        </div>
+
+        {/* 3 ячейки справа столбиком */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateRows: '1fr 1fr 1fr',
+            gap: 6,
+          }}
+        >
+          <MacroRow label="Белки" value={protein} color="#3B82F6" />
+          <MacroRow label="Жиры" value={fat} color="#F59E0B" />
+          <MacroRow label="Углеводы" value={carbs} color="#10B981" />
+        </div>
       </div>
 
-      {/* Ряд 2: sugar + salt с одинаковыми индикаторами (через grid) */}
+      {/* Sugar / Salt с одинаковыми индикаторами */}
       {hasSugarSalt && (
         <div
           style={{
             display: 'grid',
             gridTemplateColumns: '64px 1fr 96px',
-            rowGap: 8,
+            rowGap: 10,
             columnGap: 10,
             alignItems: 'center',
-            paddingTop: 12,
-            borderTop: '1px solid rgba(255,255,255,0.06)',
+            paddingTop: 14,
+            borderTop: '1px solid rgba(255,255,255,0.08)',
           }}
         >
           {sugar != null && (
@@ -624,24 +670,34 @@ function NutritionUnified({ nutrition }) {
   )
 }
 
-function MacroCell({ label, value, unit, color, accent, bigger }) {
+function MacroRow({ label, value, color }) {
   return (
     <div
       style={{
-        background: accent ? `${color}12` : 'rgba(255,255,255,0.02)',
-        border: `1px solid ${accent ? `${color}30` : 'rgba(255,255,255,0.05)'}`,
-        borderRadius: 12,
-        padding: '10px 4px',
+        background: `${color}18`,
+        border: `1px solid ${color}40`,
+        borderRadius: 11,
+        padding: '8px 12px',
         display: 'flex',
-        flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: 62,
+        justifyContent: 'space-between',
+        gap: 8,
       }}
     >
-      <div
+      <span
         style={{
-          fontSize: bigger ? 22 : 16,
+          fontSize: 10,
+          fontWeight: 700,
+          letterSpacing: '0.06em',
+          color: color,
+          textTransform: 'uppercase',
+        }}
+      >
+        {label}
+      </span>
+      <span
+        style={{
+          fontSize: 15,
           fontWeight: 900,
           color: '#fff',
           fontFamily: 'var(--font-display)',
@@ -650,24 +706,12 @@ function MacroCell({ label, value, unit, color, accent, bigger }) {
         }}
       >
         {fmt(value)}
-        {unit && (
-          <span style={{ fontSize: 10, color: 'var(--text-dim)', marginLeft: 1, fontWeight: 600 }}>
-            {unit}
-          </span>
-        )}
-      </div>
-      <div
-        style={{
-          fontSize: 9,
-          fontWeight: 700,
-          letterSpacing: '0.05em',
-          color: accent ? color : 'var(--text-dim)',
-          textTransform: 'uppercase',
-          marginTop: 5,
-        }}
-      >
-        {label}
-      </div>
+        <span
+          style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', marginLeft: 2, fontWeight: 600 }}
+        >
+          г
+        </span>
+      </span>
     </div>
   )
 }
