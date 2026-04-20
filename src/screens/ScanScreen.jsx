@@ -125,6 +125,7 @@ export default function ScanScreen() {
   const nfTimer = useRef(null)
   const focusTimer = useRef(null)
   const mountedRef = useRef(true)
+  const startScannerRef = useRef(null)
   const ID = 'korset-scan-view'
 
   const stopScanner = useCallback(async () => {
@@ -201,7 +202,7 @@ export default function ScanScreen() {
                   setPinnedProduct(scannedProduct)
                   setSearching(false)
                   busyRef.current = false
-                  startScanner(cameraList, idx)
+                  startScannerRef.current?.(cameraList, idx)
                 } else {
                   // Second scan — navigate to CompareScreen
                   navigate(buildComparePath(slugRef.current, pinned.ean, scannedProduct.ean), {
@@ -219,14 +220,14 @@ export default function ScanScreen() {
               busyRef.current = false
               clearTimeout(nfTimer.current)
               nfTimer.current = setTimeout(() => setNotFoundEan(null), 5000)
-              startScanner(cameraList, idx)
+              startScannerRef.current?.(cameraList, idx)
             } else {
               setNotFoundEan(ean)
               setSearching(false)
               busyRef.current = false
               clearTimeout(nfTimer.current)
               nfTimer.current = setTimeout(() => setNotFoundEan(null), 4000)
-              startScanner(cameraList, idx)
+              startScannerRef.current?.(cameraList, idx)
             }
           },
           () => {}
@@ -257,6 +258,9 @@ export default function ScanScreen() {
     },
     [navigate, stopScanner]
   )
+  useEffect(() => {
+    startScannerRef.current = startScanner
+  }, [startScanner])
 
   useEffect(() => {
     mountedRef.current = true
@@ -711,11 +715,7 @@ export default function ScanScreen() {
             }}
           >
             <p style={{ color: '#F87171', fontSize: 14, fontWeight: 700, marginBottom: 3 }}>
-              {!isOnline
-                ? lang === 'kz'
-                  ? 'Желі жоқ, деректер қол жеткізбейді'
-                  : 'Офлайн. Данных нет'
-                : t.scan.notFoundToast}
+              {!isOnline ? t.scan.offlineNotFound : t.scan.notFoundToast}
             </p>
             <p style={{ color: 'rgba(180,100,100,0.7)', fontSize: 11, fontFamily: 'monospace' }}>
               {notFoundEan}
