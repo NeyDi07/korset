@@ -129,12 +129,18 @@ function computePricePerUnit(priceKzt, quantity) {
 // ═══════════════════════════════════════════════════════════════════════════
 // IMAGE CAROUSEL (оставлен как был — нативный scroll-snap swipe)
 // ═══════════════════════════════════════════════════════════════════════════
-function ImageCarousel({ images, fallbackEan }) {
+function ImageCarousel({ images, fallbackEan, singleImage }) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const scrollRef = useRef(null)
 
   const finalImages =
-    images && images.length > 0 ? images : fallbackEan ? [`/products/${fallbackEan}.png`] : []
+    images && images.length > 0
+      ? images
+      : singleImage
+        ? [singleImage]
+        : fallbackEan
+          ? [`/products/${fallbackEan}.png`]
+          : []
 
   if (finalImages.length === 0) {
     return (
@@ -1091,7 +1097,11 @@ export default function ProductScreen() {
       {/* CONTENT */}
       <div style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 16 }}>
         {/* 1. Фото-карусель (оставляем как была — swipe animation) */}
-        <ImageCarousel images={product.images} fallbackEan={product.ean} />
+        <ImageCarousel
+          images={product.images}
+          fallbackEan={product.ean}
+          singleImage={product.image}
+        />
 
         {/* 2. Title + Price в одну строку */}
         <div
