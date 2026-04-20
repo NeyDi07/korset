@@ -1,4 +1,4 @@
-import { useMemo, useState, useRef } from 'react'
+import { useMemo, useState, useRef, useEffect } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { checkProductFit, formatPrice } from '../utils/fitCheck.js'
 import { useProfile } from '../contexts/ProfileContext.jsx'
@@ -7,6 +7,7 @@ import { useI18n } from '../utils/i18n.js'
 import { useUserData } from '../contexts/UserDataContext.jsx'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { useOffline } from '../contexts/OfflineContext.jsx'
+import { fetchFullProduct } from '../contexts/StoreContext.jsx'
 import { getAnyKnownProductByRef } from '../utils/storeCatalog.js'
 import { coerceProductEntity } from '../domain/product/normalizers.js'
 import {
@@ -897,13 +898,36 @@ export default function ProductScreen() {
   const { isOnline, formatCacheAge } = useOffline()
 
   const activeStoreSlug = storeSlug || currentStore?.slug || null
-  const product = useMemo(() => {
+  const { storeId } = useStore()
+  const baseProduct = useMemo(() => {
     const known = getAnyKnownProductByRef(ean, activeStoreSlug)
     const stateProduct = coerceProductEntity(location.state?.product)
     if (known) return known
     if (stateProduct && stateProduct.ean === ean) return stateProduct
     return stateProduct || null
   }, [ean, activeStoreSlug, location.state])
+
+  const [fullProduct, setFullProduct] = useState(null)
+  const needsFullFetch =
+    baseProduct &&
+    navigator.onLine &&
+    storeId &&
+    (!baseProduct.ingredients ||
+      !baseProduct.description ||
+      Object.keys(baseProduct.nutritionPer100 || {}).length === 0)
+
+  useEffect(() => {
+    if (!needsFullFetch) return
+    let aborted = false
+    fetchFullProduct(storeId, ean).then((fp) => {
+      if (!aborted && fp) setFullProduct(fp)
+    })
+    return () => {
+      aborted = true
+    }
+  }, [needsFullFetch, storeId, ean])
+
+  const product = fullProduct || baseProduct
 
   const isFavorite = checkIsFavorite(product?.ean)
 
