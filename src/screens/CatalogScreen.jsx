@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useCallback, forwardRef } from 'react'
+import { useState, useMemo, useEffect, useCallback, useRef, forwardRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Virtuoso, VirtuosoGrid } from 'react-virtuoso'
 import { checkProductFit, formatPrice } from '../utils/fitCheck.js'
@@ -87,7 +87,13 @@ export default function CatalogScreen() {
   const [q, setQ] = useState('')
   const [filter, setFilter] = useState('all')
   const [sort, setSort] = useState('fit')
-  const [viewMode, setViewMode] = useState('list')
+  const [viewMode, setViewMode] = useState(
+    () => sessionStorage.getItem('korset_catalog_view') || 'list'
+  )
+  const virtuosoRef = useRef(null)
+  const [initialScrollIndex] = useState(() =>
+    parseInt(sessionStorage.getItem('korset_catalog_scroll') || '0', 10)
+  )
 
   const [offlineCatalog, setOfflineCatalog] = useState([])
 
@@ -178,6 +184,13 @@ export default function CatalogScreen() {
 
   const handleNavigate = useCallback(
     (product) => {
+      if (virtuosoRef.current) {
+        virtuosoRef.current.getState((state) => {
+          if (state?.range?.startIndex != null) {
+            sessionStorage.setItem('korset_catalog_scroll', String(state.range.startIndex))
+          }
+        })
+      }
       navigate(buildProductPath(currentStore?.slug || null, product.ean), {
         state: { product },
       })
@@ -521,7 +534,11 @@ export default function CatalogScreen() {
             )}
           </div>
           <button
-            onClick={() => setViewMode(viewMode === 'list' ? 'grid' : 'list')}
+            onClick={() => {
+              const next = viewMode === 'list' ? 'grid' : 'list'
+              setViewMode(next)
+              sessionStorage.setItem('korset_catalog_view', next)
+            }}
             style={{
               width: 44,
               height: 44,
@@ -665,17 +682,21 @@ export default function CatalogScreen() {
       <div style={{ flex: 1, minHeight: 0 }}>
         {viewMode === 'grid' ? (
           <VirtuosoGrid
+            ref={virtuosoRef}
             data={list}
             components={gridComponents}
             itemContent={renderGridItem}
             overscan={600}
+            initialTopMostItemIndex={initialScrollIndex}
           />
         ) : (
           <Virtuoso
+            ref={virtuosoRef}
             data={list}
             itemContent={renderListItem}
             overscan={600}
             components={{ Footer: ListFooter }}
+            initialTopMostItemIndex={initialScrollIndex}
           />
         )}
       </div>
