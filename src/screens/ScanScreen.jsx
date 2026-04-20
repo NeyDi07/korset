@@ -47,6 +47,19 @@ function cleanupAudioContext() {
   }
 }
 
+function saveRecentScan(product) {
+  try {
+    const recent = JSON.parse(localStorage.getItem('korset_recent_scans') || '[]')
+    const updated = [
+      { ean: product.ean, name: product.name, image_url: product.image_url || null },
+      ...recent.filter((r) => r.ean !== product.ean),
+    ].slice(0, 5)
+    localStorage.setItem('korset_recent_scans', JSON.stringify(updated))
+  } catch {
+    /* noop */
+  }
+}
+
 // ─── Иконки ────────────────────────────────────────────────────────────────────
 function IconGallery({ size = 22 }) {
   return (
@@ -91,6 +104,15 @@ export default function ScanScreen() {
   const [focusPt, setFocusPt] = useState(null)
   const [galleryState, setGalleryState] = useState('idle')
   const [galleryError, setGalleryError] = useState(null)
+  const [recentScans] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('korset_recent_scans') || '[]')
+    } catch {
+      return []
+    }
+  })
+  const [manualInput, setManualInput] = useState('')
+  const [manualError, setManualError] = useState(null)
 
   const initCompare = Boolean(location.state?.compareMode)
   const initProductA = location.state?.productA || null
@@ -198,6 +220,7 @@ export default function ScanScreen() {
                 const pinned = pinnedProductRef.current
                 if (!pinned) {
                   // First scan in compare mode — pin product A
+                  saveRecentScan(scannedProduct)
                   pinnedProductRef.current = scannedProduct
                   setPinnedProduct(scannedProduct)
                   setSearching(false)
@@ -205,11 +228,13 @@ export default function ScanScreen() {
                   startScannerRef.current?.(cameraList, idx)
                 } else {
                   // Second scan — navigate to CompareScreen
+                  saveRecentScan(scannedProduct)
                   navigate(buildComparePath(slugRef.current, pinned.ean, scannedProduct.ean), {
                     state: { productA: pinned, productB: scannedProduct },
                   })
                 }
               } else {
+                saveRecentScan(scannedProduct)
                 navigate(buildProductPath(slugRef.current, scannedProduct?.ean || ean), {
                   state: { product: scannedProduct },
                 })
@@ -397,16 +422,19 @@ export default function ScanScreen() {
           if (compareModeRef.current) {
             const pinned = pinnedProductRef.current
             if (!pinned) {
+              saveRecentScan(scannedProduct)
               pinnedProductRef.current = scannedProduct
               setPinnedProduct(scannedProduct)
               setSearching(false)
               startScanner(cameras, camIdx)
             } else {
+              saveRecentScan(scannedProduct)
               navigate(buildComparePath(slugRef.current, pinned.ean, scannedProduct.ean), {
                 state: { productA: pinned, productB: scannedProduct },
               })
             }
           } else {
+            saveRecentScan(scannedProduct)
             navigate(buildProductPath(slugRef.current, scannedProduct?.ean || ean), {
               state: { product: scannedProduct },
             })
@@ -440,6 +468,45 @@ export default function ScanScreen() {
     [cameras, camIdx, navigate, stopScanner, startScanner]
   )
 
+  const toggleCompareMode = useCallback(() => {
+    const next = !compareModeActive
+    setCompareModeActive(next)
+    compareModeRef.current = next
+    if (!next) {
+      setPinnedProduct(null)
+      pinnedProductRef.current = null
+    }
+  }, [compareModeActive])
+
+  const handleManualSubmit = useCallback(
+    async (e) => {
+      e.preventDefault()
+      const raw = manualInput.trim()
+      if (raw.length !== 8 && raw.length !== 13) {
+        setManualError(t.scan.manualInvalid || 'Введите 8 или 13 цифр')
+        return
+      }
+      setManualError(null)
+      setManualInput('')
+      setSearching(true)
+      await stopScanner()
+      const result = await lookupProduct(raw, storeRef.current?.id || slugRef.current)
+      if (!mountedRef.current) return
+      if (result.type === 'local' || result.type === 'external') {
+        const p = result.product
+        saveRecentScan(p)
+        navigate(buildProductPath(slugRef.current, p?.ean || raw), { state: { product: p } })
+      } else {
+        setNotFoundEan(raw)
+        setSearching(false)
+        clearTimeout(nfTimer.current)
+        nfTimer.current = setTimeout(() => setNotFoundEan(null), 4000)
+        startScannerRef.current?.(cameras, camIdx)
+      }
+    },
+    [manualInput, stopScanner, navigate, cameras, camIdx, t]
+  )
+
   return (
     <div
       style={{
@@ -454,9 +521,74 @@ export default function ScanScreen() {
         zIndex: 10,
       }}
     >
-      {/* ── Видео-зона ── */}
+      {/* ── Шапка ── */}
       <div
-        style={{ flex: 1, position: 'relative', overflow: 'hidden', cursor: 'crosshair' }}
+        style={{
+          flexShrink: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          paddingTop: 'max(12px, env(safe-area-inset-top))',
+          paddingBottom: 10,
+          paddingLeft: 12,
+          paddingRight: 12,
+          background: 'rgba(5,5,15,0.8)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          borderBottom: '1px solid rgba(139,92,246,0.15)',
+          zIndex: 20,
+          gap: 8,
+        }}
+      >
+        <button
+          onClick={() => navigate(-1)}
+          style={{
+            width: 38,
+            height: 38,
+            borderRadius: 12,
+            background: 'rgba(255,255,255,0.06)',
+            border: '1px solid rgba(255,255,255,0.1)',
+            color: 'rgba(255,255,255,0.85)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            flexShrink: 0,
+          }}
+        >
+          <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
+            arrow_back
+          </span>
+        </button>
+
+        <div style={{ textAlign: 'center', flex: 1 }}>
+          <p style={{ fontSize: 16, fontWeight: 700, color: '#E8E8FF', lineHeight: 1.2 }}>
+            {t.scan.scanTitle || t.scan.title}
+          </p>
+          <p
+            style={{
+              fontSize: 11,
+              fontWeight: 600,
+              color: currentStore ? '#34D399' : '#F59E0B',
+              marginTop: 2,
+            }}
+          >
+            {currentStore ? `📍 ${currentStore.name}` : t.scan.globalMode}
+          </p>
+        </div>
+
+        <div style={{ width: 38, flexShrink: 0 }} />
+      </div>
+
+      {/* ── Видео-зона (60%) ── */}
+      <div
+        style={{
+          flex: 6,
+          position: 'relative',
+          overflow: 'hidden',
+          cursor: 'crosshair',
+          minHeight: 0,
+        }}
         onClick={handleTapFocus}
         onTouchEnd={handleTapFocus}
       >
@@ -673,30 +805,6 @@ export default function ScanScreen() {
           </div>
         )}
 
-        {/* Бейдж: режим магазина */}
-        {(status === 'ready' || status === 'starting') && !searching && (
-          <div
-            style={{
-              position: 'absolute',
-              top: 56,
-              left: '50%',
-              transform: 'translateX(-50%)',
-              background: currentStore ? 'rgba(52,211,153,0.15)' : 'rgba(245,158,11,0.12)',
-              border: `1px solid ${currentStore ? 'rgba(52,211,153,0.3)' : 'rgba(245,158,11,0.25)'}`,
-              borderRadius: 20,
-              padding: '5px 14px',
-              fontSize: 11,
-              fontWeight: 700,
-              color: currentStore ? '#34D399' : '#F59E0B',
-              whiteSpace: 'nowrap',
-              backdropFilter: 'blur(8px)',
-              pointerEvents: 'none',
-            }}
-          >
-            {currentStore ? `📍 ${currentStore.name}` : t.scan.globalMode}
-          </div>
-        )}
-
         {/* Toast: товар не найден */}
         {notFoundEan && (
           <div
@@ -751,7 +859,7 @@ export default function ScanScreen() {
           <div
             style={{
               position: 'absolute',
-              top: 110,
+              top: 12,
               left: '50%',
               transform: 'translateX(-50%)',
               zIndex: 40,
@@ -775,7 +883,7 @@ export default function ScanScreen() {
           <div
             style={{
               position: 'absolute',
-              top: pinnedProduct ? 56 : 56,
+              top: 8,
               left: 16,
               right: 16,
               zIndex: 31,
@@ -803,168 +911,300 @@ export default function ScanScreen() {
             </span>
           </div>
         )}
+      </div>
 
-        {/* Кнопки: фонарик + переключение камеры + compare toggle */}
-        {status !== 'error_permission' && !searching && (
-          <div
+      {/* ── Нижняя панель (40%) ── */}
+      <div
+        style={{
+          flex: 4,
+          background: 'rgba(7,7,15,0.97)',
+          borderTop: '1px solid rgba(139,92,246,0.15)',
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+          minHeight: 0,
+        }}
+      >
+        {/* Кнопки управления */}
+        <div style={{ display: 'flex', alignItems: 'stretch', gap: 8, padding: '12px 16px 0' }}>
+          <button
+            onClick={toggleTorch}
             style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              zIndex: 30,
+              flex: 1,
               display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'flex-start',
-              padding: '12px 16px 0',
-              pointerEvents: 'none',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 4,
+              padding: '10px 4px',
+              borderRadius: 14,
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              background: torchOn ? 'rgba(253,230,138,0.15)' : 'rgba(255,255,255,0.04)',
+              border: `1.5px solid ${torchOn ? 'rgba(253,230,138,0.5)' : 'rgba(255,255,255,0.08)'}`,
+              color: torchOn ? '#FDE68A' : 'rgba(180,180,220,0.8)',
+              boxShadow: torchOn ? '0 0 14px rgba(253,230,138,0.15)' : 'none',
             }}
           >
+            <IconTorch on={torchOn} size={20} />
+            <span style={{ fontSize: 10, fontWeight: 600, lineHeight: 1 }}>{t.scan.torch}</span>
+          </button>
+
+          <button
+            onClick={openGallery}
+            style={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 4,
+              padding: '10px 4px',
+              borderRadius: 14,
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              background:
+                galleryState === 'scanning' ? 'rgba(167,139,250,0.15)' : 'rgba(255,255,255,0.04)',
+              border: `1.5px solid ${galleryState === 'scanning' ? 'rgba(167,139,250,0.4)' : 'rgba(255,255,255,0.08)'}`,
+              color: galleryState === 'scanning' ? '#A78BFA' : 'rgba(180,180,220,0.8)',
+            }}
+          >
+            {galleryState === 'scanning' ? (
+              <div
+                style={{
+                  width: 20,
+                  height: 20,
+                  borderRadius: '50%',
+                  border: '2px solid rgba(167,139,250,0.25)',
+                  borderTop: '2px solid #A78BFA',
+                  animation: 'spin 0.8s linear infinite',
+                }}
+              />
+            ) : (
+              <IconGallery size={20} />
+            )}
+            <span style={{ fontSize: 10, fontWeight: 600, lineHeight: 1 }}>
+              {t.scan.gallery || 'Галерея'}
+            </span>
+          </button>
+
+          {cameras.length > 1 && (
             <button
-              onClick={toggleTorch}
+              onClick={switchCamera}
               style={{
-                pointerEvents: 'all',
-                width: 44,
-                height: 44,
-                borderRadius: 14,
-                cursor: 'pointer',
+                flex: 1,
                 display: 'flex',
+                flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                background: torchOn ? 'rgba(253,230,138,0.2)' : 'rgba(0,0,0,0.55)',
-                border: `1.5px solid ${torchOn ? 'rgba(253,230,138,0.7)' : 'rgba(255,255,255,0.18)'}`,
-                color: torchOn ? '#FDE68A' : 'rgba(255,255,255,0.8)',
-                backdropFilter: 'blur(8px)',
-                boxShadow: torchOn ? '0 0 18px rgba(253,230,138,0.35)' : 'none',
+                gap: 4,
+                padding: '10px 4px',
+                borderRadius: 14,
+                cursor: 'pointer',
                 transition: 'all 0.2s ease',
+                background: 'rgba(255,255,255,0.04)',
+                border: '1.5px solid rgba(255,255,255,0.08)',
+                color: 'rgba(180,180,220,0.8)',
               }}
             >
-              <IconTorch on={torchOn} size={22} />
+              <IconSwitchCamera size={20} />
+              <span style={{ fontSize: 10, fontWeight: 600, lineHeight: 1 }}>
+                {t.scan.cameraSwitch || 'Камера'}
+              </span>
             </button>
+          )}
 
-            <div style={{ display: 'flex', gap: 8, pointerEvents: 'all' }}>
-              <button
-                onClick={() => {
-                  const next = !compareModeActive
-                  setCompareModeActive(next)
-                  compareModeRef.current = next
-                  if (!next) {
-                    setPinnedProduct(null)
-                    pinnedProductRef.current = null
-                  }
-                }}
-                style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: 14,
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  background: compareModeActive ? 'rgba(124,58,237,0.35)' : 'rgba(0,0,0,0.55)',
-                  border: `1.5px solid ${compareModeActive ? 'rgba(167,139,250,0.7)' : 'rgba(255,255,255,0.18)'}`,
-                  color: compareModeActive ? '#C4B5FD' : 'rgba(255,255,255,0.7)',
-                  backdropFilter: 'blur(8px)',
-                  boxShadow: compareModeActive ? '0 0 14px rgba(124,58,237,0.35)' : 'none',
-                  transition: 'all 0.2s ease',
-                }}
-              >
-                <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
-                  compare_arrows
-                </span>
-              </button>
+          <button
+            onClick={toggleCompareMode}
+            style={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 4,
+              padding: '10px 4px',
+              borderRadius: 14,
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              background: compareModeActive ? 'rgba(124,58,237,0.2)' : 'rgba(255,255,255,0.04)',
+              border: `1.5px solid ${compareModeActive ? 'rgba(139,92,246,0.5)' : 'rgba(255,255,255,0.08)'}`,
+              color: compareModeActive ? '#C4B5FD' : 'rgba(180,180,220,0.8)',
+              boxShadow: compareModeActive ? '0 0 14px rgba(124,58,237,0.2)' : 'none',
+            }}
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
+              compare_arrows
+            </span>
+            <span style={{ fontSize: 10, fontWeight: 600, lineHeight: 1 }}>
+              {t.scan.compare || 'Сравнить'}
+            </span>
+          </button>
+        </div>
 
-              {cameras.length > 1 ? (
+        {/* Ручной ввод штрихкода */}
+        <form
+          onSubmit={handleManualSubmit}
+          style={{ display: 'flex', gap: 8, padding: '10px 16px 0', alignItems: 'center' }}
+        >
+          <div
+            style={{
+              flex: 1,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              background: 'rgba(255,255,255,0.05)',
+              border: `1px solid ${manualError ? 'rgba(248,113,113,0.4)' : 'rgba(255,255,255,0.09)'}`,
+              borderRadius: 12,
+              padding: '0 12px',
+              height: 42,
+            }}
+          >
+            <span
+              className="material-symbols-outlined"
+              style={{ fontSize: 17, color: 'rgba(150,150,200,0.5)', flexShrink: 0 }}
+            >
+              search
+            </span>
+            <input
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              placeholder={t.scan.manualInputPlaceholder || 'Штрихкод вручную'}
+              value={manualInput}
+              onChange={(e) => {
+                setManualInput(e.target.value.replace(/\D/g, ''))
+                setManualError(null)
+              }}
+              style={{
+                flex: 1,
+                background: 'none',
+                border: 'none',
+                outline: 'none',
+                color: '#E0E0FF',
+                fontSize: 14,
+                fontFamily: 'monospace',
+              }}
+            />
+          </div>
+          <button
+            type="submit"
+            style={{
+              width: 42,
+              height: 42,
+              borderRadius: 12,
+              background: 'rgba(167,139,250,0.15)',
+              border: '1.5px solid rgba(167,139,250,0.35)',
+              color: '#C4B5FD',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              flexShrink: 0,
+            }}
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
+              arrow_forward
+            </span>
+          </button>
+        </form>
+        {manualError && (
+          <p style={{ fontSize: 11, color: '#F87171', padding: '4px 16px 0', lineHeight: 1 }}>
+            {manualError}
+          </p>
+        )}
+
+        {/* История сканирований */}
+        {recentScans.length > 0 && (
+          <div style={{ flex: 1, minHeight: 0, overflow: 'hidden', marginTop: 10 }}>
+            <p
+              style={{
+                fontSize: 11,
+                color: 'rgba(120,120,180,0.7)',
+                fontWeight: 700,
+                letterSpacing: '0.06em',
+                textTransform: 'uppercase',
+                padding: '0 16px',
+                marginBottom: 8,
+              }}
+            >
+              {t.scan.recentScans || 'Недавние'}
+            </p>
+            <div
+              style={{
+                display: 'flex',
+                gap: 10,
+                overflowX: 'auto',
+                padding: '0 16px',
+                paddingBottom: 'max(10px, env(safe-area-inset-bottom))',
+                scrollbarWidth: 'none',
+              }}
+            >
+              {recentScans.map((scan) => (
                 <button
-                  onClick={switchCamera}
+                  key={scan.ean}
+                  onClick={() => navigate(buildProductPath(slugRef.current, scan.ean))}
                   style={{
-                    width: 44,
-                    height: 44,
-                    borderRadius: 14,
+                    flexShrink: 0,
+                    width: 60,
+                    background: 'none',
+                    border: 'none',
+                    padding: 0,
                     cursor: 'pointer',
                     display: 'flex',
+                    flexDirection: 'column',
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    background: 'rgba(0,0,0,0.55)',
-                    border: '1.5px solid rgba(255,255,255,0.18)',
-                    color: 'rgba(255,255,255,0.8)',
-                    backdropFilter: 'blur(8px)',
+                    gap: 5,
                   }}
                 >
-                  <IconSwitchCamera size={22} />
+                  <div
+                    style={{
+                      width: 56,
+                      height: 56,
+                      borderRadius: 12,
+                      overflow: 'hidden',
+                      background: 'rgba(255,255,255,0.06)',
+                      border: '1px solid rgba(255,255,255,0.08)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    {scan.image_url ? (
+                      <img
+                        src={scan.image_url}
+                        alt={scan.name}
+                        style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                      />
+                    ) : (
+                      <span
+                        className="material-symbols-outlined"
+                        style={{ fontSize: 22, color: '#3B3B6B' }}
+                      >
+                        barcode
+                      </span>
+                    )}
+                  </div>
+                  <p
+                    style={{
+                      fontSize: 10,
+                      color: 'rgba(170,170,210,0.8)',
+                      textAlign: 'center',
+                      width: '100%',
+                      overflow: 'hidden',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      lineHeight: 1.3,
+                    }}
+                  >
+                    {scan.name}
+                  </p>
                 </button>
-              ) : (
-                <div style={{ width: 44 }} />
-              )}
+              ))}
             </div>
           </div>
         )}
-      </div>
-
-      {/* ── Нижняя панель ── */}
-      <div
-        style={{
-          flexShrink: 0,
-          background: 'rgba(7,7,15,0.97)',
-          borderTop: '1px solid rgba(139,92,246,0.18)',
-          padding: '12px 20px',
-          paddingBottom: 'calc(80px + env(safe-area-inset-bottom))',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 12,
-        }}
-      >
-        <button
-          onClick={openGallery}
-          disabled={galleryState === 'scanning'}
-          style={{
-            flex: 1,
-            padding: '11px 16px',
-            borderRadius: 14,
-            cursor: 'pointer',
-            background: 'rgba(255,255,255,0.05)',
-            border: '1px solid rgba(255,255,255,0.09)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 9,
-            color: 'rgba(190,190,230,0.8)',
-            transition: 'opacity 0.2s ease',
-            opacity: galleryState === 'scanning' ? 0.6 : 1,
-          }}
-        >
-          {galleryState === 'scanning' ? (
-            <div
-              style={{
-                width: 17,
-                height: 17,
-                borderRadius: '50%',
-                border: '2px solid rgba(167,139,250,0.25)',
-                borderTop: '2px solid #A78BFA',
-                animation: 'spin 0.8s linear infinite',
-              }}
-            />
-          ) : (
-            <IconGallery size={17} />
-          )}
-          <span style={{ fontSize: 13, fontWeight: 600 }}>
-            {galleryState === 'scanning' ? t.scan.galleryScanning : t.scan.galleryBtn}
-          </span>
-        </button>
-
-        <div
-          style={{
-            fontSize: 9,
-            color: '#282840',
-            textAlign: 'right',
-            lineHeight: 1.6,
-            flexShrink: 0,
-          }}
-        >
-          EAN-13 · EAN-8
-          <br />
-          CODE128 · UPC
-        </div>
       </div>
 
       <input
