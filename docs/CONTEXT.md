@@ -70,7 +70,11 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 | **Удалить мусорные товары** | ✅ 17 деактивировано (электроника, стройматериалы, открытки) |
 | **Перевод инноязычного состава** | ✅ 100% русский состав (0 нерусских) |
 | **Batch upsert** | ✅ arbuz-catalog-parser переведён на batch (100x быстрее) |
-| **Импорт прайс-листа** (RetailImportScreen) | 🔜 |
+| **No-barcode-possible** | ✅ 209 продуктов помечены (202 Arbuz СТМ + 7 весовые) |
+| **Каталог: виртуализация Virtuoso** | ✅ рендерит только ~10-15 видимых вместо 3236 |
+| **Каталог: двухэтапная загрузка** | ✅ первые 50 мгновенно + фон догрузка всех |
+| **Каталог: light поля** | ✅ 14 полей вместо 30+, payload ~5x меньше |
+| **ProductScreen: ленивый fetch** | ✅ полные данные подгружаются при открытии карточки |
 | **БД-фиксы** (CASCADE, GIN) | 🔜 |
 | **Фронтенд: name_kz по языку** | 🔜 |
 | **USDA enrichment** | 🔜 457 продуктов без состава |
@@ -98,9 +102,31 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - **Русский состав: 2779/2779 (100%)** (было ~48%) ← 0 нерусских!
 - Arbuz primary: 2237 (было 26)
 - С реальными EAN: 1303/3236 (40%)
+- С arbuz_ EAN: 1933 (нужны реальные EAN или пометка "без штрихкода")
 - Без состава: 457
+- **209 помечены как "без штрихкода"** (202 Arbuz СТМ + 7 весовые/свежие)
+- **1724 реальных кандидата** для поиска EAN
 
-**НОВЫЕ СКРИПТЫ (созданы в этой сессии):**
+**EAN MATCHING — ИТОГИ ТЕСТИРОВАНИЯ:**
+- NPC + DDG + OFF кросс-валидация: 25% verified, 85% any EAN
+- DuckDuckGo — единственный работающий веб-поисковик (Google/Yandex/Bing/Ozon/WB — все 403)
+- NPC часто мэтчит НЕ ТОТ продукт (Barilla sauce → pasta EAN)
+- Все коммерческие API не работают без ключей
+
+**КАТАЛОГ — ВИРТУАЛИЗАЦИЯ (сессия 9):**
+- ✅ react-virtuoso установлен и интегрирован в CatalogScreen
+- Virtuoso (list) + VirtuosoGrid (grid) — рендерит только видимые ~10-15 карточек
+- Было: 3236 DOM-нод → стало: ~10-15. Рендер-лаг устранён.
+- Сетевой лаг остаётся: первый запрос грузит все 3236 из Supabase (~2-3МБ)
+
+**НОВЫЕ СКРИПТЫ (сессия 8):**
+- `scripts/test-ean-matching-methods.cjs` — v1: 8 методов, все 0%
+- `scripts/test-ean-matching-v2.cjs` — v2: NPC/OFF, NPC-translit 65%
+- `scripts/test-ean-web-search.cjs` — web search: DDG/Bing/Yandex/Google/Ozon/WB
+- `scripts/test-ean-cross-validate.cjs` — ЛУЧШИЙ: NPC+DDG+OFF кросс-валидация
+- `scripts/translate-composition.cjs` — ✅ перевод состава через OpenAI gpt-4o-mini
+
+**НОВЫЕ СКРИПТЫ (сессия 7):**
 - `scripts/translate-composition.cjs` — ✅ перевод состава через OpenAI gpt-4o-mini
 
 **⚠️ DB CONSTRAINTS:**
@@ -130,12 +156,14 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - 008 (`r2_image_columns`): ✅ ПРИМЕНЕНА
 
 **ПОРЯДОК ЗАДАЧ (следующий чат):**
-1. USDA enrichment на 457 продуктов без состава
-2. R2 upload для ~2000 новых картинок Arbuz
-3. Фронтенд: показывать name_kz когда user.lang === 'kz'
-4. Импорт прайс-листа (RetailImportScreen)
-5. БД-фиксы (CASCADE, GIN, duplicate arbuz_ EAN)
-6. Retry R2 failed картинок
+1. Почистить 330 групп дубликатов (958 продуктов)
+2. EAN enrichment на 1724 кандидата (NPC + DDG кросс-валидация)
+3. Серверная пагинация для каталога (`.range()` в Supabase запросе)
+4. USDA enrichment на 457 продуктов без состава
+5. R2 upload для ~2000 новых картинок Arbuz
+6. Фронтенд: показывать name_kz когда user.lang === 'kz'
+7. Импорт прайс-листа (RetailImportScreen)
+8. БД-фиксы (CASCADE, GIN, duplicate arbuz_ EAN)
 
 Офлайн-режим: ✅ ГОТОВО (6 слоёв, 85/100)
 

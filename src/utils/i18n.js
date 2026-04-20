@@ -133,7 +133,11 @@ export const dictionaries = {
       title: 'Каталог',
       productsCount: 'товаров в базе',
       search: 'Поиск продуктов...',
+      searchPlaceholder: 'Найти продукт...',
       nothingFound: 'Ничего не найдено',
+      loading: 'Загрузка...',
+      loadingMore: 'ещё загружается...',
+      loadingSearch: 'Каталог загружается...',
       filters: {
         all: 'Все',
         fit: 'Для вас',
@@ -519,7 +523,11 @@ export const dictionaries = {
       title: 'Каталог',
       productsCount: 'тауар базада',
       search: 'Тауар іздеу...',
+      searchPlaceholder: 'Тауар іздеу...',
       nothingFound: 'Ештеңе табылмады',
+      loading: 'Жүктелуде...',
+      loadingMore: 'жүктелуде...',
+      loadingSearch: 'Каталог жүктелуде...',
       filters: {
         all: 'Барлығы',
         fit: 'Сізге сай',

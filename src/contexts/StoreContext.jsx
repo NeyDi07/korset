@@ -23,6 +23,61 @@ const StoreContext = createContext(null)
 export const STORE_KEY = 'korset_store_slug'
 const STORE_CACHE_PREFIX = 'korset_store_data_'
 
+const LIGHT_FIELDS =
+  'ean, name, name_kz, brand, category, subcategory, quantity, image_url, allergens_json, diet_tags_json, halal_status, nutriscore, data_quality_score, group'
+
+const FULL_FIELDS =
+  'ean, name, name_kz, brand, category, subcategory, quantity, description, ingredients_raw, ingredients_kz, allergens_json, diet_tags_json, tags_json, additives_tags_json, traces_json, categories_tags_json, halal_status, nutriscore, nutriments_json, alcohol_100g, saturated_fat_100g, nova_group, image_ingredients_url, image_nutrition_url, image_url, images, manufacturer, country_of_origin, specs_json, data_quality_score, source_primary, source_confidence, is_verified, needs_review, group, alternate_eans'
+
+const INITIAL_PAGE_SIZE = 50
+
+function mapRowToProduct(row) {
+  const gp = row.global_products || {}
+  return {
+    ean: row.ean || gp.ean,
+    name: row.local_name || gp.name,
+    nameKz: gp.name_kz,
+    brand: gp.brand,
+    category: gp.category,
+    subcategory: gp.subcategory,
+    quantity: gp.quantity,
+    group: gp.group,
+    description: gp.description || undefined,
+    ingredients: gp.ingredients_raw || undefined,
+    ingredientsKz: gp.ingredients_kz || undefined,
+    allergens: parseJson(gp.allergens_json, []),
+    dietTags: parseJson(gp.diet_tags_json, []),
+    tags: parseJson(gp.tags_json, []),
+    additivesTags: parseJson(gp.additives_tags_json, []),
+    traces: parseJson(gp.traces_json, []),
+    categoriesTags: parseJson(gp.categories_tags_json, []),
+    halalStatus: gp.halal_status || 'unknown',
+    nutriscore: gp.nutriscore,
+    nutritionPer100: parseJson(gp.nutriments_json, {}),
+    alcohol100g: gp.alcohol_100g ?? null,
+    saturatedFat100g: gp.saturated_fat_100g ?? null,
+    novaGroup: gp.nova_group ?? null,
+    imageIngredientsUrl: gp.image_ingredients_url || null,
+    imageNutritionUrl: gp.image_nutrition_url || null,
+    image: getImageUrl(gp.image_url),
+    images: parseJson(gp.images, []),
+    manufacturer: gp.manufacturer ? { name: gp.manufacturer, country: gp.country_of_origin } : null,
+    specs: gp.specs_json || null,
+    qualityScore: gp.data_quality_score ?? 0,
+    sourceConfidence: gp.source_confidence ?? null,
+    sourcePrimary: gp.source_primary || null,
+    isVerified: gp.is_verified || false,
+    needsReview: gp.needs_review || false,
+    priceKzt: row.price_kzt,
+    shelf: row.shelf_zone,
+    stockStatus: row.stock_status,
+    storeProductId: row.id,
+    globalProductId: gp.id,
+    source: 'cache',
+    alternateEans: parseJson(gp.alternate_eans, []),
+  }
+}
+
 function getStoreSlugFromPath(pathname) {
   const appMatch = pathname.match(/^\/s\/([^/]+)/)
   if (appMatch) return appMatch[1]
@@ -74,6 +129,22 @@ async function fetchStoreBySlug(slug) {
   return local ? normalizeStore({ ...local, code: local.slug, is_active: local.isActive }) : null
 }
 
+export async function fetchFullProduct(storeId, ean) {
+  if (!storeId || !ean) return null
+  const { data, error } = await supabase
+    .from('store_products')
+    .select(
+      `ean, price_kzt, shelf_zone, stock_status, local_name, is_active, global_products!inner(${FULL_FIELDS})`
+    )
+    .eq('store_id', storeId)
+    .eq('is_active', true)
+    .eq('global_products.is_active', true)
+    .eq('ean', String(ean))
+    .maybeSingle()
+  if (error || !data) return null
+  return mapRowToProduct(data)
+}
+
 export function StoreProvider({ children }) {
   const location = useLocation()
   const pathStoreSlug = getStoreSlugFromPath(location.pathname)
@@ -90,6 +161,8 @@ export function StoreProvider({ children }) {
   const [isStoreLoading, setIsStoreLoading] = useState(() =>
     Boolean(storeSlug && !loadStoreFromCache(storeSlug))
   )
+  const [initialProducts, setInitialProducts] = useState([])
+  const [fullCatalog, setFullCatalog] = useState(null)
   const fetchAbortRef = useRef(null)
 
   useEffect(() => {
@@ -153,69 +226,72 @@ export function StoreProvider({ children }) {
 
   useEffect(() => {
     if (!currentStore?.id || !navigator.onLine) return
+    const storeId = currentStore.id
+
+    const aborted = { value: false }
+    setInitialProducts([])
+    setFullCatalog(null)
+
     supabase
       .from('store_products')
       .select(
-        'ean, price_kzt, shelf_zone, stock_status, local_name, is_active, global_products!inner(ean, name, name_kz, brand, category, subcategory, quantity, description, ingredients_raw, ingredients_kz, allergens_json, diet_tags_json, tags_json, additives_tags_json, traces_json, categories_tags_json, halal_status, nutriscore, nutriments_json, alcohol_100g, saturated_fat_100g, nova_group, image_ingredients_url, image_nutrition_url, image_url, images, manufacturer, country_of_origin, specs_json, data_quality_score, source_primary, source_confidence, is_verified, needs_review, group, alternate_eans)'
+        `ean, price_kzt, shelf_zone, stock_status, local_name, is_active, global_products!inner(${LIGHT_FIELDS})`
       )
-      .eq('store_id', currentStore.id)
+      .eq('store_id', storeId)
       .eq('is_active', true)
       .eq('global_products.is_active', true)
+      .range(0, INITIAL_PAGE_SIZE - 1)
+      .order('created_at', { ascending: false })
       .then(({ data }) => {
-        if (data && data.length > 0) {
-          const products = data.map((row) => {
-            const gp = row.global_products || {}
-            return {
-              ean: row.ean || gp.ean,
-              name: row.local_name || gp.name,
-              nameKz: gp.name_kz,
-              brand: gp.brand,
-              category: gp.category,
-              subcategory: gp.subcategory,
-              quantity: gp.quantity,
-              group: gp.group,
-              description: gp.description,
-              ingredients: gp.ingredients_raw,
-              ingredientsKz: gp.ingredients_kz,
-              allergens: parseJson(gp.allergens_json, []),
-              dietTags: parseJson(gp.diet_tags_json, []),
-              tags: parseJson(gp.tags_json, []),
-              additivesTags: parseJson(gp.additives_tags_json, []),
-              traces: parseJson(gp.traces_json, []),
-              categoriesTags: parseJson(gp.categories_tags_json, []),
-              halalStatus: gp.halal_status || 'unknown',
-              nutriscore: gp.nutriscore,
-              nutritionPer100: parseJson(gp.nutriments_json, {}),
-              alcohol100g: gp.alcohol_100g ?? null,
-              saturatedFat100g: gp.saturated_fat_100g ?? null,
-              novaGroup: gp.nova_group ?? null,
-              imageIngredientsUrl: gp.image_ingredients_url || null,
-              imageNutritionUrl: gp.image_nutrition_url || null,
-              image: getImageUrl(gp.image_url),
-              images: parseJson(gp.images, []),
-              manufacturer: gp.manufacturer
-                ? { name: gp.manufacturer, country: gp.country_of_origin }
-                : null,
-              specs: gp.specs_json || null,
-              qualityScore: gp.data_quality_score ?? 0,
-              sourceConfidence: gp.source_confidence ?? null,
-              sourcePrimary: gp.source_primary || null,
-              isVerified: gp.is_verified || false,
-              needsReview: gp.needs_review || false,
-              priceKzt: row.price_kzt,
-              shelf: row.shelf_zone,
-              stockStatus: row.stock_status,
-              storeProductId: row.id,
-              globalProductId: gp.id,
-              source: 'cache',
-              alternateEans: parseJson(gp.alternate_eans, []),
-            }
-          })
-          saveCatalogToIndexedDB(products, currentStore.id).catch(() => {})
-        }
+        if (aborted.value || !data) return
+        setInitialProducts(data.map(mapRowToProduct))
       })
       .catch(() => {})
+
+    async function loadRemaining() {
+      let offset = 0
+      const batchSize = 500
+      let allRows = []
+
+      while (true) {
+        if (aborted.value) return
+        const { data, error } = await supabase
+          .from('store_products')
+          .select(
+            `ean, price_kzt, shelf_zone, stock_status, local_name, is_active, global_products!inner(${LIGHT_FIELDS})`
+          )
+          .eq('store_id', storeId)
+          .eq('is_active', true)
+          .eq('global_products.is_active', true)
+          .range(offset, offset + batchSize - 1)
+          .order('created_at', { ascending: false })
+        if (error || !data || data.length === 0) break
+        allRows = allRows.concat(data)
+        if (data.length < batchSize) break
+        offset += batchSize
+      }
+
+      if (aborted.value) return
+      const products = allRows.map(mapRowToProduct)
+      setFullCatalog(products)
+      if (products.length > 0) {
+        saveCatalogToIndexedDB(products, storeId).catch(() => {})
+      }
+    }
+
+    loadRemaining()
+
+    return () => {
+      aborted.value = true
+    }
   }, [currentStore?.id])
+
+  const catalogProducts = useMemo(() => {
+    if (fullCatalog) return fullCatalog
+    return initialProducts
+  }, [initialProducts, fullCatalog])
+
+  const isCatalogReady = fullCatalog !== null
 
   const isStoreApp = /^\/s\/[^/]+/.test(location.pathname)
   const isStorePublic = /^\/stores\/[^/]+/.test(location.pathname)
@@ -241,6 +317,8 @@ export function StoreProvider({ children }) {
       storeId: currentStore?.id || null,
       currentStore,
       isStoreLoading,
+      catalogProducts,
+      isCatalogReady,
       isStoreApp,
       isStorePublic,
       isPublicMarketing,
@@ -277,6 +355,8 @@ export function StoreProvider({ children }) {
     [
       currentStore,
       isStoreLoading,
+      catalogProducts,
+      isCatalogReady,
       isStoreApp,
       isStorePublic,
       isPublicMarketing,
