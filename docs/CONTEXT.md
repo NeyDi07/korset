@@ -113,11 +113,20 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - NPC часто мэтчит НЕ ТОТ продукт (Barilla sauce → pasta EAN)
 - Все коммерческие API не работают без ключей
 
-**КАТАЛОГ — ВИРТУАЛИЗАЦИЯ (сессия 9):**
-- ✅ react-virtuoso установлен и интегрирован в CatalogScreen
-- Virtuoso (list) + VirtuosoGrid (grid) — рендерит только видимые ~10-15 карточек
-- Было: 3236 DOM-нод → стало: ~10-15. Рендер-лаг устранён.
-- Сетевой лаг остаётся: первый запрос грузит все 3236 из Supabase (~2-3МБ)
+**КАТАЛОГ — ВИРТУАЛИЗАЦИЯ + ДВУХЭТАПНАЯ ЗАГРУЗКА (сессия 9-10):**
+- ✅ react-virtuoso: Virtuoso (list) + VirtuosoGrid (grid), overscan=600
+- ✅ Двухэтапная загрузка: первые 50 (light поля) за 0.3 сек → фон догрузка всех
+- ✅ Light поля: 14 полей вместо 30+, payload ~5x меньше
+- ✅ ProductScreen: ленивый fetch полных данных при открытии
+- ✅ ImageCarousel: fallback на product.image если product.images пустой
+- ✅ viewMode сохраняется в sessionStorage
+- ✅ Scroll position сохраняется в sessionStorage (initialTopMostItemIndex)
+
+**GIT ЧИСТКА (сессия 10):**
+- ✅ git-filter-repo: .git 397МБ → 3.4МБ (удалены data/, public/products/, zip/xlsx/csv, node_modules/ из истории)
+- ✅ .gitignore обновлён: data/, .opencode/node_modules/
+- ✅ 5 дублирующих vault файлов удалено, RAG эмбеддинги обновлены (386 чанков)
+- ✅ 3453 store_products привязаны к магазину ERALY
 
 **НОВЫЕ СКРИПТЫ (сессия 8):**
 - `scripts/test-ean-matching-methods.cjs` — v1: 8 методов, все 0%
