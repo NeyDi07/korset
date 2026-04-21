@@ -6,6 +6,28 @@ import QRCode from 'react-qr-code'
 import { clearStoreCatalog } from '../utils/retailAnalytics.js'
 import ConfirmDangerModal from '../components/ConfirmDangerModal.jsx'
 
+// ── Phone mask utilities (defined outside component) ────────────
+// Store only 10 local digits (without country code) in state.
+// Format only for display.
+const initLocalPhone = (stored) => {
+  if (!stored) return ''
+  const d = stored.replace(/\D/g, '')
+  // If starts with 7 or 8 and has more than 10 digits — strip country code
+  if (d.length > 10 && (d.startsWith('7') || d.startsWith('8'))) return d.slice(1, 11)
+  return d.slice(0, 10)
+}
+
+const formatLocalPhone = (local) => {
+  if (!local) return ''
+  const d = local.slice(0, 10)
+  let r = '+7 (' + d.slice(0, Math.min(3, d.length))
+  if (d.length >= 3) r += ')'
+  if (d.length > 3) r += ' ' + d.slice(3, Math.min(6, d.length))
+  if (d.length > 6) r += '-' + d.slice(6, Math.min(8, d.length))
+  if (d.length > 8) r += '-' + d.slice(8, 10)
+  return r
+}
+
 export default function RetailSettingsScreen() {
   const { lang } = useI18n()
   const { currentStore, updateStoreSettings } = useStore()
@@ -14,11 +36,11 @@ export default function RetailSettingsScreen() {
   const [settings, setSettings] = useState({
     name: currentStore?.name || '',
     address: currentStore?.address || '',
-    phone: currentStore?.phone || '',
+    phone: initLocalPhone(currentStore?.phone),
     short_description: currentStore?.short_description || '',
     description: currentStore?.description || '',
     instagram_url: currentStore?.instagram_url || '',
-    whatsapp_number: currentStore?.whatsapp_number || '',
+    whatsapp_number: initLocalPhone(currentStore?.whatsapp_number),
     twogis_url: currentStore?.twogis_url || '',
     notifyMissing: currentStore?.notify_oos_enabled ?? true,
     notifyDaily: currentStore?.notify_daily_enabled ?? false,
@@ -33,8 +55,6 @@ export default function RetailSettingsScreen() {
   const [logoUrl, setLogoUrl] = useState(currentStore?.logo_url || null)
   const logoInputRef = useRef(null)
   const qrRef = useRef(null)
-  const prevPhoneLenRef = useRef((currentStore?.phone || '').length)
-  const prevWaLenRef = useRef((currentStore?.whatsapp_number || '').length)
 
   // Sync ALL fields when store data arrives from Supabase
   useEffect(() => {
@@ -43,11 +63,11 @@ export default function RetailSettingsScreen() {
         ...prev,
         name: currentStore.name || prev.name,
         address: currentStore.address || prev.address,
-        phone: currentStore.phone || prev.phone,
+        phone: initLocalPhone(currentStore.phone) || prev.phone,
         short_description: currentStore.short_description || prev.short_description,
         description: currentStore.description || prev.description,
         instagram_url: currentStore.instagram_url || prev.instagram_url,
-        whatsapp_number: currentStore.whatsapp_number || prev.whatsapp_number,
+        whatsapp_number: initLocalPhone(currentStore.whatsapp_number) || prev.whatsapp_number,
         twogis_url: currentStore.twogis_url || prev.twogis_url,
         notifyMissing: currentStore.notify_oos_enabled ?? prev.notifyMissing,
         notifyDaily: currentStore.notify_daily_enabled ?? prev.notifyDaily,
@@ -81,13 +101,11 @@ export default function RetailSettingsScreen() {
     const { error } = await updateStoreSettings({
       name: settings.name,
       address: settings.address,
-      phone: settings.phone || null,
+      phone: settings.phone ? '7' + settings.phone : null,
       short_description: settings.short_description || null,
       description: settings.description || null,
       instagram_url: settings.instagram_url || null,
-      whatsapp_number: settings.whatsapp_number
-        ? settings.whatsapp_number.replace(/\D/g, '')
-        : null,
+      whatsapp_number: settings.whatsapp_number ? '7' + settings.whatsapp_number : null,
       twogis_url: settings.twogis_url || null,
     })
     setIsSaving(false)
@@ -201,24 +219,26 @@ export default function RetailSettingsScreen() {
       alert(isKz ? 'Қателік орын алды: ' + e.message : 'Ошибка при удалении: ' + e.message)
     }
   }
-  const formatPhoneKz = (raw, isDeleting = false) => {
-    const digits = raw.replace(/\D/g, '')
-    if (!digits) return ''
-    let d = digits
-    if (d.startsWith('8')) d = '7' + d.slice(1)
-    else if (!d.startsWith('7')) d = '7' + d
-    d = d.slice(0, 11)
-    const local = d.slice(1) // 10 цифр без кода страны
-    if (!local) return ''
-    let r = '+7 (' + local.slice(0, Math.min(3, local.length))
-    // При вводе: закрываем скобку на 3й цифре; при удалении: только после 3й (чтобы не застревать)
-    if (isDeleting ? local.length > 3 : local.length >= 3) {
-      r += ')'
-      if (local.length > 3) r += ' ' + local.slice(3, Math.min(6, local.length))
-      if (local.length > 6) r += '-' + local.slice(6, Math.min(8, local.length))
-      if (local.length > 8) r += '-' + local.slice(8, 10)
+  // Handles phone input: add digit / delete / paste
+  const handlePhoneInput = (key, newDisplayValue) => {
+    const prevLocal = key === 'phone' ? settings.phone : settings.whatsapp_number
+    const expectedDisplay = formatLocalPhone(prevLocal)
+    if (newDisplayValue.length > expectedDisplay.length + 1) {
+      // Paste — extract all digits, strip country code if present
+      const all = newDisplayValue.replace(/\D/g, '')
+      const local =
+        all.length > 10 && (all.startsWith('7') || all.startsWith('8'))
+          ? all.slice(1, 11)
+          : all.slice(0, 10)
+      handleChange(key, local)
+    } else if (newDisplayValue.length > expectedDisplay.length) {
+      // Single digit added — take the last digit from the new string
+      const newChar = newDisplayValue.replace(/\D/g, '').slice(-1)
+      if (/\d/.test(newChar)) handleChange(key, (prevLocal + newChar).slice(0, 10))
+    } else {
+      // Deletion — remove last local digit
+      handleChange(key, prevLocal.slice(0, -1))
     }
-    return r
   }
 
   const SECTION_LABEL_STYLE = {
@@ -400,12 +420,8 @@ export default function RetailSettingsScreen() {
               <div style={FIELD_LABEL}>{isKz ? 'Телефон' : 'Телефон'}</div>
               <input
                 type="tel"
-                value={settings.phone}
-                onChange={(e) => {
-                  const isDeleting = e.target.value.length < prevPhoneLenRef.current
-                  prevPhoneLenRef.current = e.target.value.length
-                  handleChange('phone', formatPhoneKz(e.target.value, isDeleting))
-                }}
+                value={formatLocalPhone(settings.phone)}
+                onChange={(e) => handlePhoneInput('phone', e.target.value)}
                 placeholder="+7 (700) 000-00-00"
                 inputMode="numeric"
                 style={INPUT_STYLE}
@@ -537,15 +553,12 @@ export default function RetailSettingsScreen() {
                     </div>
                     <input
                       type={field.type}
-                      value={settings[field.key]}
+                      value={
+                        field.mask ? formatLocalPhone(settings[field.key]) : settings[field.key]
+                      }
                       onChange={(e) => {
-                        if (field.mask) {
-                          const isDeleting = e.target.value.length < prevWaLenRef.current
-                          prevWaLenRef.current = e.target.value.length
-                          handleChange(field.key, formatPhoneKz(e.target.value, isDeleting))
-                        } else {
-                          handleChange(field.key, e.target.value)
-                        }
+                        if (field.mask) handlePhoneInput(field.key, e.target.value)
+                        else handleChange(field.key, e.target.value)
                       }}
                       inputMode={field.mask ? 'numeric' : undefined}
                       placeholder={field.placeholder}

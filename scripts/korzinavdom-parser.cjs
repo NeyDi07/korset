@@ -14,15 +14,26 @@ const DB_BATCH = 50
 const OUT_DIR = path.join(__dirname, '..', 'data', 'korzinavdom')
 const PROGRESS_FILE = path.join(OUT_DIR, 'progress.json')
 
-const MILK_CATEGORIES = [
+const MILK_CATEGORIES = []
+
+const FOOD_CATEGORIES = [
+  { number: 7, name: 'Чай, кофе, кондитерские изделия' },
   { number: 3, name: 'Молочные продукты и сыры, яйцо' },
-]
-
-const SNACK_CATEGORIES = [
+  { number: 9, name: 'Напитки' },
+  { number: 8, name: 'Консервированные продукты' },
+  { number: 10, name: 'Макароны, крупы' },
+  { number: 11, name: 'Мука, соль, сахар, специи и приправы' },
+  { number: 12, name: 'Масла растительные, соусы, майонез, уксусы' },
+  { number: 291, name: 'EURO маркет' },
+  { number: 4, name: 'Мясо, мясо птицы, рыба' },
+  { number: 14, name: 'Продукты быстрого приготовления, каши, мюсли' },
   { number: 15, name: 'Снеки (чипсы, попкорн, семечки)' },
+  { number: 13, name: 'Хлеб, булочки, лепешки' },
+  { number: 6, name: 'Полуфабрикаты' },
+  { number: 5, name: 'Колбаса, сосиcки, сало, деликатесы из мяса' },
 ]
 
-const ALL_CATEGORIES = [...MILK_CATEGORIES, ...SNACK_CATEGORIES]
+const ALL_CATEGORIES = FOOD_CATEGORIES
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)) }
 
@@ -295,6 +306,7 @@ async function main() {
     const products = []
     for (let i = 0; i < limitItems.length; i++) {
       if (!details[i]) continue
+      if (details[i].ownProduction === true) continue
       const p = mapToGlobalProduct(limitItems[i], details[i])
       p.data_quality_score = calcQualityScore(p)
       products.push(p)
