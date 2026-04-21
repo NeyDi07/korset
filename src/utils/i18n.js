@@ -375,6 +375,10 @@ export const dictionaries = {
         openCard: 'Открыть карточку',
         allLoaded: (n) => `Все ${n} товаров загружены`,
         editProduct: 'Редактировать товар',
+        deleteProduct: 'Убрать из каталога',
+        deleteConfirm: 'Подтвердить удаление',
+        deleteCancel: 'Отмена',
+        deleteHint: 'Товар будет скрыт из каталога магазина',
       },
       dashboard: {
         title: 'Дашборд',
@@ -789,6 +793,10 @@ export const dictionaries = {
         openCard: 'Картаны ашу',
         allLoaded: (n) => `Барлық ${n} тауар жүктелді`,
         editProduct: 'Тауарды өңдеу',
+        deleteProduct: 'Каталогтан алып тастау',
+        deleteConfirm: 'Жоюды растау',
+        deleteCancel: 'Болдырмау',
+        deleteHint: 'Тауар дүкен каталогынан жасырылады',
       },
       dashboard: {
         title: 'Дашборд',

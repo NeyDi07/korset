@@ -10,6 +10,7 @@ import {
   updateProductPrice,
   updateProductStock,
   updateProductShelf,
+  deleteStoreProduct,
 } from '../utils/retailAnalytics.js'
 import RetailScannerModal from '../components/RetailScannerModal.jsx'
 import { buildProductPath } from '../utils/routes.js'
@@ -512,6 +513,7 @@ const ProductCard = memo(
     shelfMutation,
     stockMutation,
     setExpandedId,
+    onDeleteRequest,
   }) {
     const inStock = isInStock(product)
     const imgUrl = displayImage(product)
@@ -673,6 +675,31 @@ const ProductCard = memo(
               />
               <StockToggle product={product} label={tr.stockLabel} stockMutation={stockMutation} />
               <ReadonlyBlock product={product} p={tr} storeSlug={storeSlug} />
+
+              {/* Delete button */}
+              <button
+                onClick={() => onDeleteRequest?.(product.id)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  background: 'rgba(239,68,68,0.07)',
+                  border: '1px solid rgba(239,68,68,0.18)',
+                  borderRadius: 12,
+                  padding: '10px 14px',
+                  cursor: 'pointer',
+                  color: '#F87171',
+                  fontSize: 13,
+                  fontWeight: 600,
+                  width: '100%',
+                  fontFamily: 'var(--font-body)',
+                }}
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: 18 }}>
+                  delete
+                </span>
+                {tr.deleteProduct}
+              </button>
             </div>
           </div>
         </div>
@@ -813,6 +840,7 @@ function EditBottomSheet({
   shelfMutation,
   stockMutation,
   onClose,
+  onDeleteRequest,
 }) {
   if (!product) return null
 
@@ -972,6 +1000,146 @@ function EditBottomSheet({
             shelfMutation={shelfMutation}
           />
           <StockToggle product={product} label={tr.stockLabel} stockMutation={stockMutation} />
+
+          {/* Delete button */}
+          <button
+            onClick={() => onDeleteRequest?.(product.id)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              background: 'rgba(239,68,68,0.07)',
+              border: '1px solid rgba(239,68,68,0.18)',
+              borderRadius: 12,
+              padding: '12px 14px',
+              cursor: 'pointer',
+              color: '#F87171',
+              fontSize: 13,
+              fontWeight: 600,
+              width: '100%',
+              fontFamily: 'var(--font-body)',
+            }}
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>
+              delete
+            </span>
+            {tr.deleteProduct}
+          </button>
+        </div>
+      </div>
+    </div>,
+    document.body
+  )
+}
+
+// ── Confirm delete modal ────────────────────────────────────
+function ConfirmDeleteModal({ product, tr, deleteMutation, onClose }) {
+  if (!product) return null
+  const name = displayName(product)
+  return createPortal(
+    <div
+      onClick={onClose}
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 9995,
+        background: 'rgba(0,0,0,0.7)',
+        backdropFilter: 'blur(6px)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 20,
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          width: '100%',
+          maxWidth: 360,
+          background: 'linear-gradient(180deg, #1a1c33 0%, #111320 100%)',
+          borderRadius: 20,
+          padding: '24px 20px',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.6)',
+          border: '1px solid rgba(239,68,68,0.2)',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+          <div
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 12,
+              background: 'rgba(239,68,68,0.12)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+            }}
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: 22, color: '#F87171' }}>
+              delete
+            </span>
+          </div>
+          <div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: '#fff' }}>{tr.deleteProduct}</div>
+            <div style={{ fontSize: 12, color: 'var(--text-dim)', marginTop: 2 }}>
+              {tr.deleteHint}
+            </div>
+          </div>
+        </div>
+
+        <div
+          style={{
+            fontSize: 13,
+            color: 'var(--text-sub)',
+            background: 'rgba(255,255,255,0.03)',
+            borderRadius: 10,
+            padding: '10px 14px',
+            marginBottom: 20,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {name}
+        </div>
+
+        <div style={{ display: 'flex', gap: 10 }}>
+          <button
+            onClick={onClose}
+            style={{
+              flex: 1,
+              padding: '12px 0',
+              borderRadius: 12,
+              border: '1px solid rgba(255,255,255,0.1)',
+              background: 'rgba(255,255,255,0.05)',
+              color: 'var(--text-sub)',
+              fontSize: 14,
+              fontWeight: 600,
+              cursor: 'pointer',
+              fontFamily: 'var(--font-body)',
+            }}
+          >
+            {tr.deleteCancel}
+          </button>
+          <button
+            onClick={() => deleteMutation.mutate({ id: product.id })}
+            disabled={deleteMutation.isPending}
+            style={{
+              flex: 1,
+              padding: '12px 0',
+              borderRadius: 12,
+              border: 'none',
+              background: deleteMutation.isPending ? 'rgba(239,68,68,0.4)' : 'rgba(239,68,68,0.85)',
+              color: '#fff',
+              fontSize: 14,
+              fontWeight: 700,
+              cursor: deleteMutation.isPending ? 'not-allowed' : 'pointer',
+              fontFamily: 'var(--font-body)',
+            }}
+          >
+            {deleteMutation.isPending ? '...' : tr.deleteConfirm}
+          </button>
         </div>
       </div>
     </div>,
@@ -991,6 +1159,7 @@ export default function RetailProductsScreen() {
   const [debouncedSearch, setDebouncedSearch] = useState('')
   const [expandedId, setExpandedId] = useState(null)
   const [gridSelectedId, setGridSelectedId] = useState(null)
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null)
   const [scannerOpen, setScannerOpen] = useState(false)
   const [scanToast, setScanToast] = useState(null) // { type: 'found'|'not_found', label }
   const toastTimer = useRef(null)
@@ -1066,6 +1235,36 @@ export default function RetailProductsScreen() {
       await queryClient.cancelQueries({ queryKey: ['retail-products', storeId] })
       const prev = queryClient.getQueriesData({ queryKey: ['retail-products', storeId] })
       patchPages((item) => (item.id === id ? { ...item, price_kzt: price } : item))
+      return { prev }
+    },
+    onError: (_err, _vars, ctx) => {
+      if (ctx?.prev) ctx.prev.forEach(([key, val]) => queryClient.setQueryData(key, val))
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['retail-products', storeId] })
+    },
+  })
+
+  // ── Delete mutation (optimistic: remove from list) ─────────────
+  const deleteMutation = useMutation({
+    mutationFn: ({ id }) => deleteStoreProduct(id, storeId),
+    onMutate: async ({ id }) => {
+      await queryClient.cancelQueries({ queryKey: ['retail-products', storeId] })
+      const prev = queryClient.getQueriesData({ queryKey: ['retail-products', storeId] })
+      queryClient.setQueriesData({ queryKey: ['retail-products', storeId] }, (old) => {
+        if (!old?.pages) return old
+        return {
+          ...old,
+          pages: old.pages.map((pg) => ({
+            ...pg,
+            products: pg.products.filter((item) => item.id !== id),
+            total: Math.max(0, (pg.total ?? 0) - 1),
+          })),
+        }
+      })
+      setConfirmDeleteId(null)
+      setExpandedId(null)
+      setGridSelectedId(null)
       return { prev }
     },
     onError: (_err, _vars, ctx) => {
@@ -1427,6 +1626,7 @@ export default function RetailProductsScreen() {
                 shelfMutation={shelfMutation}
                 stockMutation={stockMutation}
                 setExpandedId={setExpandedId}
+                onDeleteRequest={(id) => setConfirmDeleteId(id)}
               />
             </div>
           )}
@@ -1518,9 +1718,18 @@ export default function RetailProductsScreen() {
             shelfMutation={shelfMutation}
             stockMutation={stockMutation}
             onClose={() => setGridSelectedId(null)}
+            onDeleteRequest={(id) => setConfirmDeleteId(id)}
           />
         </>
       )}
+
+      {/* ── Confirm delete modal ── */}
+      <ConfirmDeleteModal
+        product={filtered.find((pr) => pr.id === confirmDeleteId) ?? null}
+        tr={p}
+        deleteMutation={deleteMutation}
+        onClose={() => setConfirmDeleteId(null)}
+      />
 
       {/* ── Scanner modal ── */}
       {scannerOpen && (

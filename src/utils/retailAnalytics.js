@@ -105,9 +105,20 @@ export async function getStoreCatalogProducts(storeId, { page = 0, search = '' }
     .order('created_at', { ascending: false })
 
   if (search.trim()) {
-    query = query.or(
-      `local_name.ilike.%${search}%,ean.ilike.%${search}%,global_products.name.ilike.%${search}%,global_products.brand.ilike.%${search}%`
-    )
+    const s = search.trim()
+    // Step 1: find matching global_product IDs (PostgREST can't filter
+    // foreign tables inside .or(), so we do a separate query first)
+    const { data: gpMatches } = await supabase
+      .from('global_products')
+      .select('id')
+      .or(`name.ilike.%${s}%,brand.ilike.%${s}%`)
+
+    const gpIds = (gpMatches ?? []).map((g) => g.id)
+
+    // Step 2: OR filter on store_products columns + matched IDs
+    const orParts = [`local_name.ilike.%${s}%`, `ean.ilike.%${s}%`]
+    if (gpIds.length) orParts.push(`global_product_id.in.(${gpIds.join(',')})`)
+    query = query.or(orParts.join(','))
   }
 
   const { data, error, count } = await query.range(from, to)
@@ -146,6 +157,15 @@ export async function updateProductShelf(productId, storeId, shelfZone) {
     .select('id')
   if (error) throw new Error(error.message ?? error)
   if (!data || data.length === 0) throw new Error('Update blocked: RLS or row not found')
+}
+
+export async function deleteStoreProduct(productId, storeId) {
+  const { error } = await supabase
+    .from('store_products')
+    .update({ is_active: false, updated_at: new Date().toISOString() })
+    .eq('id', productId)
+    .eq('store_id', storeId)
+  if (error) throw new Error(error.message ?? error)
 }
 
 export async function clearStoreCatalog(storeId) {

@@ -958,19 +958,27 @@ export default function ProductScreen() {
   }, [ean, activeStoreSlug, location.state])
 
   const [fullProduct, setFullProduct] = useState(null)
+  const [fetchingFull, setFetchingFull] = useState(false)
+
   const needsFullFetch =
-    baseProduct &&
     navigator.onLine &&
     storeId &&
-    (!baseProduct.ingredients ||
+    ean &&
+    (!baseProduct ||
+      !baseProduct.ingredients ||
       !baseProduct.description ||
       Object.keys(baseProduct.nutritionPer100 || {}).length === 0)
 
   useEffect(() => {
     if (!needsFullFetch) return
     let aborted = false
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setFetchingFull(true)
     fetchFullProduct(storeId, ean).then((fp) => {
-      if (!aborted && fp) setFullProduct(fp)
+      if (!aborted) {
+        setFetchingFull(false)
+        if (fp) setFullProduct(fp)
+      }
     })
     return () => {
       aborted = true
@@ -995,6 +1003,30 @@ export default function ProductScreen() {
       return
     }
     await toggleFavorite(product)
+  }
+
+  if (!product && fetchingFull) {
+    return (
+      <div
+        className="screen"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '80vh',
+        }}
+      >
+        <div style={{ textAlign: 'center', color: 'var(--text-dim)' }}>
+          <span
+            className="material-symbols-outlined"
+            style={{ fontSize: 36, opacity: 0.5, display: 'block', marginBottom: 10 }}
+          >
+            hourglass_top
+          </span>
+          <p style={{ fontSize: 14 }}>{t.common.loading ?? 'Загрузка...'}</p>
+        </div>
+      </div>
+    )
   }
 
   if (!product) {
