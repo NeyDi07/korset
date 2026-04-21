@@ -1,5 +1,6 @@
-import { useState, useMemo, useRef, useCallback, useEffect } from 'react'
+import { useState, useMemo, useRef, useCallback, useEffect, memo } from 'react'
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { Virtuoso } from 'react-virtuoso'
 import { useI18n } from '../utils/i18n.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { getImageUrl } from '../utils/imageUrl.js'
@@ -136,6 +137,7 @@ function PriceField({ productId, initialPrice, p, priceMutation }) {
   useEffect(() => () => clearTimeout(timerRef.current), [])
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (saveState === 'idle') setDraft(initialPrice ?? '')
   }, [initialPrice]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -294,6 +296,7 @@ function ShelfField({ productId, initialShelf, p, shelfMutation }) {
   useEffect(() => () => clearTimeout(timerRef.current), [])
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (saveState === 'idle') setDraft(initialShelf ?? '')
   }, [initialShelf]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -495,6 +498,191 @@ function ReadonlyBlock({ product, p, lang }) {
   )
 }
 
+// ── Product card (memoized — re-renders only when product/expanded/search changes) ──
+const ProductCard = memo(
+  function ProductCard({
+    product,
+    isExpanded,
+    search,
+    tr,
+    lang,
+    priceMutation,
+    shelfMutation,
+    stockMutation,
+    setExpandedId,
+  }) {
+    const inStock = isInStock(product)
+    const imgUrl = displayImage(product)
+    const name = displayName(product)
+    const brand = displayBrand(product)
+
+    return (
+      <div
+        style={{
+          background: isExpanded ? 'rgba(56,189,248,0.05)' : 'rgba(255,255,255,0.03)',
+          border: `1px solid ${isExpanded ? 'rgba(56,189,248,0.28)' : 'rgba(255,255,255,0.06)'}`,
+          borderRadius: 18,
+          overflow: 'hidden',
+          transition: 'border-color 0.25s, background 0.25s',
+        }}
+      >
+        {/* ── Card header (tap to expand) ── */}
+        <div
+          onClick={() => setExpandedId((prev) => (prev === product.id ? null : product.id))}
+          style={{
+            padding: '13px 16px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 12,
+            cursor: 'pointer',
+          }}
+        >
+          {/* Thumb */}
+          <div
+            style={{
+              width: 48,
+              height: 48,
+              borderRadius: 12,
+              background: 'rgba(255,255,255,0.05)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              overflow: 'hidden',
+              flexShrink: 0,
+              opacity: inStock ? 1 : 0.4,
+            }}
+          >
+            {imgUrl ? (
+              <img
+                src={imgUrl}
+                alt={name}
+                style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 4 }}
+              />
+            ) : (
+              <span
+                className="material-symbols-outlined"
+                style={{ fontSize: 22, color: 'var(--text-dim)' }}
+              >
+                inventory_2
+              </span>
+            )}
+          </div>
+
+          {/* Info */}
+          <div style={{ flex: 1, minWidth: 0, opacity: inStock ? 1 : 0.55 }}>
+            <div
+              style={{
+                fontSize: 14,
+                fontWeight: 600,
+                color: '#fff',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              <Highlight text={name} q={search} />
+            </div>
+            {brand && (
+              <div style={{ fontSize: 12, color: 'var(--text-sub)', marginTop: 2 }}>
+                <Highlight text={brand} q={search} />
+              </div>
+            )}
+            <div
+              style={{
+                fontSize: 10,
+                color: 'rgba(255,255,255,0.18)',
+                marginTop: 2,
+                fontFamily: 'var(--font-display)',
+              }}
+            >
+              <Highlight text={product.ean} q={search} />
+            </div>
+          </div>
+
+          {/* Price + status */}
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-end',
+              gap: 5,
+              flexShrink: 0,
+            }}
+          >
+            <div
+              style={{
+                fontSize: 15,
+                fontWeight: 700,
+                fontFamily: 'var(--font-display)',
+                color: inStock ? '#38BDF8' : 'var(--text-dim)',
+                textDecoration: inStock ? 'none' : 'line-through',
+              }}
+            >
+              {product.price_kzt != null ? (
+                `${product.price_kzt.toLocaleString()} ₸`
+              ) : (
+                <span style={{ fontSize: 11, color: 'var(--text-dim)' }}>{tr.noPrice}</span>
+              )}
+            </div>
+            <StockBadge status={product.stock_status} p={tr} />
+          </div>
+
+          {/* Chevron */}
+          <span
+            className="material-symbols-outlined"
+            style={{
+              fontSize: 18,
+              color: 'var(--text-dim)',
+              flexShrink: 0,
+              transform: isExpanded ? 'rotate(180deg)' : 'none',
+              transition: 'transform 0.25s',
+            }}
+          >
+            expand_more
+          </span>
+        </div>
+
+        {/* ── Accordion editor ── */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateRows: isExpanded ? '1fr' : '0fr',
+            opacity: isExpanded ? 1 : 0,
+            transition: 'grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s',
+            background: 'rgba(0,0,0,0.18)',
+            borderTop: isExpanded ? '1px solid rgba(255,255,255,0.06)' : 'none',
+          }}
+        >
+          <div style={{ overflow: 'hidden' }}>
+            <div
+              style={{ padding: '16px 18px', display: 'flex', flexDirection: 'column', gap: 18 }}
+            >
+              <PriceField
+                productId={product.id}
+                initialPrice={product.price_kzt}
+                p={tr}
+                priceMutation={priceMutation}
+              />
+              <ShelfField
+                productId={product.id}
+                initialShelf={product.shelf_zone}
+                p={tr}
+                shelfMutation={shelfMutation}
+              />
+              <StockToggle product={product} label={tr.stockLabel} stockMutation={stockMutation} />
+              <ReadonlyBlock product={product} p={tr} lang={lang} />
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  },
+  (prev, next) =>
+    prev.product === next.product &&
+    prev.isExpanded === next.isExpanded &&
+    prev.search === next.search
+)
+
 // ── Main screen ────────────────────────────────────────────────────
 export default function RetailProductsScreen() {
   const { t, lang } = useI18n()
@@ -509,6 +697,12 @@ export default function RetailProductsScreen() {
   const [scanToast, setScanToast] = useState(null) // { type: 'found'|'not_found', label }
   const toastTimer = useRef(null)
   const searchTimer = useRef(null)
+  const [scrollParent, setScrollParent] = useState(null)
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setScrollParent(document.querySelector('.screen'))
+  }, [])
 
   // Debounce search 350ms
   useEffect(() => {
@@ -530,6 +724,7 @@ export default function RetailProductsScreen() {
       },
       enabled: Boolean(storeId),
       staleTime: 30_000,
+      gcTime: 10 * 60_000,
     })
 
   const products = useMemo(() => data?.pages.flatMap((p) => p.products) ?? [], [data])
@@ -626,236 +821,54 @@ export default function RetailProductsScreen() {
   // With server-side search, products is already filtered
   const filtered = products
 
-  // ── Render states ─────────────────────────────────────────────
-  const renderBody = () => {
-    if (isError) {
-      return (
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: 10,
-            padding: '32px 20px',
-            textAlign: 'center',
-          }}
-        >
-          <span
-            className="material-symbols-outlined"
-            style={{ fontSize: 36, color: '#F87171', opacity: 0.7 }}
-          >
-            error_outline
-          </span>
-          <div style={{ fontSize: 14, color: '#F87171' }}>{p.loadError}</div>
-          <button
-            onClick={() => refetch()}
-            style={{
-              marginTop: 4,
-              fontSize: 13,
-              color: '#38BDF8',
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              textDecoration: 'underline',
-            }}
-          >
-            {p.retry}
-          </button>
-        </div>
-      )
-    }
+  // ── Inline states (error / empty) ──────────────────────────────
+  const renderEmpty = () => (
+    <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-dim)' }}>
+      <span
+        className="material-symbols-outlined"
+        style={{ fontSize: 36, display: 'block', marginBottom: 10, opacity: 0.4 }}
+      >
+        {search ? 'search_off' : 'inventory_2'}
+      </span>
+      <div style={{ fontSize: 14 }}>{p.notFound}</div>
+      {search && <div style={{ fontSize: 12, marginTop: 4, opacity: 0.7 }}>{p.notFoundSub}</div>}
+    </div>
+  )
 
-    if (isLoading) {
-      return Array.from({ length: 6 }).map((_, i) => <SkeletonRow key={i} />)
-    }
-
-    if (filtered.length === 0) {
-      return (
-        <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-dim)' }}>
-          <span
-            className="material-symbols-outlined"
-            style={{ fontSize: 36, display: 'block', marginBottom: 10, opacity: 0.4 }}
-          >
-            {search ? 'search_off' : 'inventory_2'}
-          </span>
-          <div style={{ fontSize: 14 }}>{p.notFound}</div>
-          {search && (
-            <div style={{ fontSize: 12, marginTop: 4, opacity: 0.7 }}>{p.notFoundSub}</div>
-          )}
-        </div>
-      )
-    }
-
-    return filtered.map((product) => {
-      const isExpanded = expandedId === product.id
-      const inStock = isInStock(product)
-      const imgUrl = displayImage(product)
-      const name = displayName(product)
-      const brand = displayBrand(product)
-
-      return (
-        <div
-          key={product.id}
-          style={{
-            background: isExpanded ? 'rgba(56,189,248,0.05)' : 'rgba(255,255,255,0.03)',
-            border: `1px solid ${isExpanded ? 'rgba(56,189,248,0.28)' : 'rgba(255,255,255,0.06)'}`,
-            borderRadius: 18,
-            overflow: 'hidden',
-            transition: 'border-color 0.25s, background 0.25s',
-          }}
-        >
-          {/* ── Card header (tap to expand) ── */}
-          <div
-            onClick={() => setExpandedId((prev) => (prev === product.id ? null : product.id))}
-            style={{
-              padding: '13px 16px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 12,
-              cursor: 'pointer',
-            }}
-          >
-            {/* Thumb */}
-            <div
-              style={{
-                width: 48,
-                height: 48,
-                borderRadius: 12,
-                background: 'rgba(255,255,255,0.05)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                overflow: 'hidden',
-                flexShrink: 0,
-                opacity: inStock ? 1 : 0.4,
-              }}
-            >
-              {imgUrl ? (
-                <img
-                  src={imgUrl}
-                  alt={name}
-                  style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 4 }}
-                />
-              ) : (
-                <span
-                  className="material-symbols-outlined"
-                  style={{ fontSize: 22, color: 'var(--text-dim)' }}
-                >
-                  inventory_2
-                </span>
-              )}
-            </div>
-
-            {/* Info */}
-            <div style={{ flex: 1, minWidth: 0, opacity: inStock ? 1 : 0.55 }}>
-              <div
-                style={{
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: '#fff',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                }}
-              >
-                <Highlight text={name} q={search} />
-              </div>
-              {brand && (
-                <div style={{ fontSize: 12, color: 'var(--text-sub)', marginTop: 2 }}>
-                  <Highlight text={brand} q={search} />
-                </div>
-              )}
-              <div
-                style={{
-                  fontSize: 10,
-                  color: 'rgba(255,255,255,0.18)',
-                  marginTop: 2,
-                  fontFamily: 'var(--font-display)',
-                }}
-              >
-                <Highlight text={product.ean} q={search} />
-              </div>
-            </div>
-
-            {/* Price + status */}
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-end',
-                gap: 5,
-                flexShrink: 0,
-              }}
-            >
-              <div
-                style={{
-                  fontSize: 15,
-                  fontWeight: 700,
-                  fontFamily: 'var(--font-display)',
-                  color: inStock ? '#38BDF8' : 'var(--text-dim)',
-                  textDecoration: inStock ? 'none' : 'line-through',
-                }}
-              >
-                {product.price_kzt != null ? (
-                  `${product.price_kzt.toLocaleString()} ₸`
-                ) : (
-                  <span style={{ fontSize: 11, color: 'var(--text-dim)' }}>{p.noPrice}</span>
-                )}
-              </div>
-              <StockBadge status={product.stock_status} p={p} />
-            </div>
-
-            {/* Chevron */}
-            <span
-              className="material-symbols-outlined"
-              style={{
-                fontSize: 18,
-                color: 'var(--text-dim)',
-                flexShrink: 0,
-                transform: isExpanded ? 'rotate(180deg)' : 'none',
-                transition: 'transform 0.25s',
-              }}
-            >
-              expand_more
-            </span>
-          </div>
-
-          {/* ── Accordion editor ── */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateRows: isExpanded ? '1fr' : '0fr',
-              opacity: isExpanded ? 1 : 0,
-              transition: 'grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s',
-              background: 'rgba(0,0,0,0.18)',
-              borderTop: isExpanded ? '1px solid rgba(255,255,255,0.06)' : 'none',
-            }}
-          >
-            <div style={{ overflow: 'hidden' }}>
-              <div
-                style={{ padding: '16px 18px', display: 'flex', flexDirection: 'column', gap: 18 }}
-              >
-                <PriceField
-                  productId={product.id}
-                  initialPrice={product.price_kzt}
-                  p={p}
-                  priceMutation={priceMutation}
-                />
-                <ShelfField
-                  productId={product.id}
-                  initialShelf={product.shelf_zone}
-                  p={p}
-                  shelfMutation={shelfMutation}
-                />
-                <StockToggle product={product} label={p.stockLabel} stockMutation={stockMutation} />
-                <ReadonlyBlock product={product} p={p} lang={lang} />
-              </div>
-            </div>
-          </div>
-        </div>
-      )
-    })
-  }
+  const renderError = () => (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: 10,
+        padding: '32px 20px',
+        textAlign: 'center',
+      }}
+    >
+      <span
+        className="material-symbols-outlined"
+        style={{ fontSize: 36, color: '#F87171', opacity: 0.7 }}
+      >
+        error_outline
+      </span>
+      <div style={{ fontSize: 14, color: '#F87171' }}>{p.loadError}</div>
+      <button
+        onClick={() => refetch()}
+        style={{
+          marginTop: 4,
+          fontSize: 13,
+          color: '#38BDF8',
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          textDecoration: 'underline',
+        }}
+      >
+        {p.retry}
+      </button>
+    </div>
+  )
 
   return (
     <div style={{ paddingBottom: 8 }}>
@@ -1001,53 +1014,60 @@ export default function RetailProductsScreen() {
       )}
 
       {/* ── List ── */}
-      <div style={{ padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
-        {renderBody()}
-
-        {/* Load More */}
-        {hasNextPage && !isLoading && !isError && (
-          <button
-            onClick={() => fetchNextPage()}
-            disabled={isFetchingNextPage}
-            style={{
-              width: '100%',
-              padding: '13px 16px',
-              borderRadius: 14,
-              background: 'rgba(56,189,248,0.07)',
-              border: '1px solid rgba(56,189,248,0.18)',
-              color: '#38BDF8',
-              fontSize: 14,
-              fontWeight: 600,
-              cursor: isFetchingNextPage ? 'default' : 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 8,
-              opacity: isFetchingNextPage ? 0.6 : 1,
-              marginTop: 4,
-            }}
-          >
-            {isFetchingNextPage ? (
-              <>
-                <span
-                  className="material-symbols-outlined"
-                  style={{ fontSize: 18, animation: 'spin 0.9s linear infinite' }}
-                >
-                  progress_activity
-                </span>
-                {p.loading ?? 'Загрузка...'}
-              </>
-            ) : (
-              <>
-                <span className="material-symbols-outlined" style={{ fontSize: 18 }}>
-                  expand_more
-                </span>
-                {p.loadMore ?? 'Загрузить ещё'} ({totalCount - products.length})
-              </>
-            )}
-          </button>
-        )}
-      </div>
+      {isError ? (
+        <div style={{ padding: '0 16px' }}>{renderError()}</div>
+      ) : isLoading ? (
+        <div style={{ padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {Array.from({ length: 6 }).map((_, i) => (
+            <SkeletonRow key={i} />
+          ))}
+        </div>
+      ) : filtered.length === 0 ? (
+        renderEmpty()
+      ) : (
+        <Virtuoso
+          customScrollParent={scrollParent}
+          data={filtered}
+          increaseViewportBy={{ top: 600, bottom: 600 }}
+          endReached={() => {
+            if (hasNextPage && !isFetchingNextPage) fetchNextPage()
+          }}
+          itemContent={(_, product) => (
+            <div style={{ padding: '5px 16px' }}>
+              <ProductCard
+                product={product}
+                isExpanded={expandedId === product.id}
+                search={search}
+                tr={p}
+                lang={lang}
+                priceMutation={priceMutation}
+                shelfMutation={shelfMutation}
+                stockMutation={stockMutation}
+                setExpandedId={setExpandedId}
+              />
+            </div>
+          )}
+          components={{
+            Footer: () => (
+              <div style={{ padding: '4px 16px 12px' }}>
+                {isFetchingNextPage && <SkeletonRow />}
+                {!hasNextPage && filtered.length > 0 && (
+                  <div
+                    style={{
+                      textAlign: 'center',
+                      fontSize: 12,
+                      color: 'var(--text-dim)',
+                      padding: '12px 0',
+                    }}
+                  >
+                    {p.allLoaded ?? `${totalCount} товаров загружено`}
+                  </div>
+                )}
+              </div>
+            ),
+          }}
+        />
+      )}
 
       {/* ── Scanner modal ── */}
       {scannerOpen && (

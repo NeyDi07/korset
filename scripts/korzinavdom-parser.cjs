@@ -15,29 +15,14 @@ const OUT_DIR = path.join(__dirname, '..', 'data', 'korzinavdom')
 const PROGRESS_FILE = path.join(OUT_DIR, 'progress.json')
 
 const MILK_CATEGORIES = [
-  { number: 159, name: 'Молоко стерилизованное' },
-  { number: 221, name: 'Молоко короткого хранения' },
-  { number: 182, name: 'Кефир' },
-  { number: 222, name: 'Ряженка, катык' },
-  { number: 244, name: 'Снежок, Био-С, сладкий кефир' },
-  { number: 261, name: 'Курт, жент' },
-  { number: 276, name: 'Тан' },
-  { number: 175, name: 'Сливки' },
-  { number: 226, name: 'Молочные десерты' },
-  { number: 82, name: 'Сметана' },
-  { number: 185, name: 'Йогурты в стаканчиках' },
-  { number: 196, name: 'Йогурты питьевые' },
-  { number: 164, name: 'Творог' },
-  { number: 228, name: 'Десерты творожные, творожки' },
-  { number: 247, name: 'Творожные сырки' },
-  { number: 116, name: 'Масло сливочное, маргарин, спред' },
-  { number: 177, name: 'Сгущенное молоко' },
-  { number: 227, name: 'Концентрированное молоко' },
-  { number: 242, name: 'Молочные коктейли' },
-  { number: 124, name: 'Яйцо' },
-  { number: 127, name: 'Сыры' },
-  { number: 336, name: 'Растительные напитки' },
+  { number: 3, name: 'Молочные продукты и сыры, яйцо' },
 ]
+
+const SNACK_CATEGORIES = [
+  { number: 15, name: 'Снеки (чипсы, попкорн, семечки)' },
+]
+
+const ALL_CATEGORIES = [...MILK_CATEGORIES, ...SNACK_CATEGORIES]
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)) }
 
@@ -54,10 +39,10 @@ function parseArgs() {
   return result
 }
 
-async function fetchPage(catNumber, page) {
+async function fetchPage(catNumber, page, size = 500) {
   try {
-    const url = `${API_BASE}/showcases?categoryNumber=${catNumber}&pageSize=20&pageNumber=${page}`
-    const r = await fetch(url, { signal: AbortSignal.timeout(10000) })
+    const url = `${API_BASE}/showcases?categoryNumber=${catNumber}&size=${size}&page=${page}`
+    const r = await fetch(url, { signal: AbortSignal.timeout(15000) })
     if (!r.ok) return null
     const j = await r.json()
     return j.data?.page || null
@@ -68,14 +53,14 @@ async function fetchAllListItems(catNumber) {
   const allItems = []
   let page = 0
   while (true) {
-    const pageData = await fetchPage(catNumber, page)
+    const pageData = await fetchPage(catNumber, page, 500)
     if (!pageData || !pageData.content?.length) break
     allItems.push(...pageData.content)
+    if (pageData.last) break
     const totalPages = pageData.totalPages || 0
     if (totalPages > 0 && page >= totalPages - 1) break
-    if (page > totalPages && totalPages > 0) break
     page++
-    if (page > 50) break
+    if (page > 20) break
   }
   const seen = new Set()
   return allItems.filter(item => {
@@ -265,8 +250,8 @@ async function main() {
   console.log()
 
   const categories = opts.categories
-    ? MILK_CATEGORIES.filter(c => opts.categories.includes(c.number))
-    : MILK_CATEGORIES
+    ? ALL_CATEGORIES.filter(c => opts.categories.includes(c.number))
+    : ALL_CATEGORIES
 
   console.log(`Categories: ${categories.length}`)
   categories.forEach(c => console.log(`  #${c.number} ${c.name}`))
