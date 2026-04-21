@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef, useCallback, useEffect, memo } from 'react'
 import { createPortal } from 'react-dom'
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Virtuoso, VirtuosoGrid } from 'react-virtuoso'
+import { Virtuoso } from 'react-virtuoso'
 import { useI18n } from '../utils/i18n.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { getImageUrl } from '../utils/imageUrl.js'
@@ -711,11 +711,12 @@ function GridCard({ product, tr, onEdit }) {
     >
       <div
         style={{
+          height: 120,
+          flexShrink: 0,
           background: 'rgba(255,255,255,0.04)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          aspectRatio: '1 / 1',
           padding: 10,
         }}
       >
@@ -750,6 +751,7 @@ function GridCard({ product, tr, onEdit }) {
             fontWeight: 600,
             color: '#fff',
             lineHeight: 1.3,
+            minHeight: '2.6em',
             display: '-webkit-box',
             WebkitLineClamp: 2,
             WebkitBoxOrient: 'vertical',
@@ -758,23 +760,21 @@ function GridCard({ product, tr, onEdit }) {
         >
           {name}
         </div>
-        {brand && (
-          <div
-            style={{
-              fontSize: 11,
-              color: 'var(--text-dim)',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {brand}
-          </div>
-        )}
         <div
           style={{
-            marginTop: 'auto',
-            paddingTop: 7,
+            fontSize: 11,
+            color: 'var(--text-dim)',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            minHeight: '1.5em',
+          }}
+        >
+          {brand || ''}
+        </div>
+        <div
+          style={{
+            paddingTop: 6,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -1121,6 +1121,14 @@ export default function RetailProductsScreen() {
   // With server-side search, products is already filtered
   const filtered = products
 
+  const gridPairs = useMemo(() => {
+    const pairs = []
+    for (let i = 0; i < filtered.length; i += 2) {
+      pairs.push({ first: filtered[i], second: filtered[i + 1] ?? null })
+    }
+    return pairs
+  }, [filtered])
+
   const gridSelectedProduct = useMemo(
     () => (gridSelectedId ? (filtered.find((pr) => pr.id === gridSelectedId) ?? null) : null),
     [filtered, gridSelectedId]
@@ -1191,11 +1199,11 @@ export default function RetailProductsScreen() {
           zIndex: 10,
           background: 'rgba(8,12,24,0.96)',
           backdropFilter: 'blur(20px)',
-          padding: '12px 16px',
           borderBottom: '1px solid rgba(56,189,248,0.1)',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        {/* Row 1: search + scanner */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px 8px' }}>
           <div
             style={{
               flex: 1,
@@ -1241,31 +1249,7 @@ export default function RetailProductsScreen() {
             )}
           </div>
 
-          {/* View toggle */}
-          <button
-            onClick={toggleViewMode}
-            title={viewMode === 'list' ? p.viewGrid : p.viewList}
-            style={{
-              width: 44,
-              height: 44,
-              borderRadius: 14,
-              border: 'none',
-              cursor: 'pointer',
-              background: 'rgba(255,255,255,0.06)',
-              color: 'var(--text-sub)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0,
-              transition: 'background 0.2s',
-            }}
-          >
-            <span className="material-symbols-outlined" style={{ fontSize: 22 }}>
-              {viewMode === 'list' ? 'grid_view' : 'view_list'}
-            </span>
-          </button>
-
-          {/* Scanner Button */}
+          {/* Scanner */}
           <button
             onClick={() => setScannerOpen(true)}
             style={{
@@ -1289,14 +1273,78 @@ export default function RetailProductsScreen() {
           </button>
         </div>
 
-        {/* Count bar */}
-        {!isLoading && !isError && (
-          <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 7, paddingLeft: 2 }}>
-            {debouncedSearch
-              ? `${filtered.length} ${p.found ?? 'найдено'} / ${totalCount}`
-              : p.countLabel(totalCount)}
+        {/* Row 2: view toggle pills + count */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '0 16px 10px',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              background: 'rgba(255,255,255,0.05)',
+              borderRadius: 10,
+              padding: 3,
+              gap: 2,
+            }}
+          >
+            <button
+              onClick={() => viewMode !== 'list' && toggleViewMode()}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 5,
+                background: viewMode === 'list' ? 'rgba(56,189,248,0.14)' : 'transparent',
+                border: `1px solid ${viewMode === 'list' ? 'rgba(56,189,248,0.25)' : 'transparent'}`,
+                borderRadius: 8,
+                padding: '4px 11px',
+                cursor: 'pointer',
+                color: viewMode === 'list' ? '#38BDF8' : 'var(--text-dim)',
+                fontSize: 12,
+                fontWeight: 600,
+                transition: 'all 0.2s',
+                fontFamily: 'var(--font-body)',
+              }}
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: 15 }}>
+                view_list
+              </span>
+              {p.viewList}
+            </button>
+            <button
+              onClick={() => viewMode !== 'grid' && toggleViewMode()}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 5,
+                background: viewMode === 'grid' ? 'rgba(56,189,248,0.14)' : 'transparent',
+                border: `1px solid ${viewMode === 'grid' ? 'rgba(56,189,248,0.25)' : 'transparent'}`,
+                borderRadius: 8,
+                padding: '4px 11px',
+                cursor: 'pointer',
+                color: viewMode === 'grid' ? '#38BDF8' : 'var(--text-dim)',
+                fontSize: 12,
+                fontWeight: 600,
+                transition: 'all 0.2s',
+                fontFamily: 'var(--font-body)',
+              }}
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: 15 }}>
+                grid_view
+              </span>
+              {p.viewGrid}
+            </button>
           </div>
-        )}
+
+          {!isLoading && !isError && (
+            <div style={{ fontSize: 11, color: 'var(--text-dim)' }}>
+              {debouncedSearch ? `${filtered.length} / ${totalCount}` : p.countLabel(totalCount)}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* ── Scan toast ── */}
@@ -1404,31 +1452,46 @@ export default function RetailProductsScreen() {
         />
       ) : (
         <>
-          <VirtuosoGrid
+          <Virtuoso
             customScrollParent={scrollParent}
-            data={filtered}
-            overscanCount={20}
-            listClassName="retail-grid"
+            data={gridPairs}
+            increaseViewportBy={{ top: 800, bottom: 800 }}
             endReached={() => {
               if (hasNextPage && !isFetchingNextPage) fetchNextPage()
             }}
-            itemContent={(_, product) => (
-              <GridCard product={product} tr={p} onEdit={(prod) => setGridSelectedId(prod.id)} />
+            itemContent={(_, pair) => (
+              <div style={{ display: 'flex', gap: 10, padding: '5px 16px', alignItems: 'stretch' }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <GridCard
+                    product={pair.first}
+                    tr={p}
+                    onEdit={(prod) => setGridSelectedId(prod.id)}
+                  />
+                </div>
+                {pair.second ? (
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <GridCard
+                      product={pair.second}
+                      tr={p}
+                      onEdit={(prod) => setGridSelectedId(prod.id)}
+                    />
+                  </div>
+                ) : (
+                  <div style={{ flex: 1 }} />
+                )}
+              </div>
             )}
             components={{
               Footer: () => (
                 <div style={{ padding: '4px 16px 12px' }}>
                   {isFetchingNextPage && (
-                    <div
-                      style={{
-                        display: 'grid',
-                        gridTemplateColumns: '1fr 1fr',
-                        gap: 10,
-                        padding: '0 16px',
-                      }}
-                    >
-                      <SkeletonRow />
-                      <SkeletonRow />
+                    <div style={{ display: 'flex', gap: 10, padding: '0 16px' }}>
+                      <div style={{ flex: 1 }}>
+                        <SkeletonRow />
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <SkeletonRow />
+                      </div>
                     </div>
                   )}
                   {!hasNextPage && filtered.length > 0 && (
