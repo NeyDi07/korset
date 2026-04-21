@@ -387,28 +387,39 @@ export default function RetailDashboardScreen() {
   const enabled = Boolean(storeId)
   const periodLabel = period === 7 ? d.period7d : d.period30d
 
+  const STALE = 2 * 60_000 // 2 мин — не перезагружать при переключении вкладок
+  const GC = 10 * 60_000 // 10 мин — держать кэш в памяти после размонтирования
+
   const scansQ = useQuery({
     queryKey: ['retail-scans', storeId, period],
     queryFn: () => getScansCount(storeId, period),
     enabled,
+    staleTime: STALE,
+    gcTime: GC,
   })
 
   const uniqueQ = useQuery({
     queryKey: ['retail-unique-customers', storeId, period],
     queryFn: () => getUniqueCustomers(storeId, period),
     enabled,
+    staleTime: STALE,
+    gcTime: GC,
   })
 
   const lostQ = useQuery({
     queryKey: ['retail-lost-revenue', storeId, period],
     queryFn: () => getLostRevenue(storeId, period),
     enabled,
+    staleTime: STALE,
+    gcTime: GC,
   })
 
   const coverageQ = useQuery({
     queryKey: ['retail-coverage', storeId, period],
     queryFn: () => getScanCoverage(storeId, period),
     enabled,
+    staleTime: STALE,
+    gcTime: GC,
   })
 
   const totalQ = useQuery({
@@ -416,18 +427,23 @@ export default function RetailDashboardScreen() {
     queryFn: () => getTotalProducts(storeId),
     enabled,
     staleTime: 5 * 60_000,
+    gcTime: GC,
   })
 
   const topQ = useQuery({
     queryKey: ['retail-top', storeId, period],
     queryFn: () => getTopScannedProducts(storeId, period, 5),
     enabled,
+    staleTime: STALE,
+    gcTime: GC,
   })
 
   const missedQ = useQuery({
     queryKey: ['retail-missed', storeId, period],
     queryFn: () => getMissedOpportunities(storeId, period),
     enabled,
+    staleTime: STALE,
+    gcTime: GC,
   })
 
   const missedFiltered = (missedQ.data ?? []).filter(

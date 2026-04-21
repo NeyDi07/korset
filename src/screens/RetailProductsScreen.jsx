@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef, useCallback, useEffect } from 'react'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useI18n } from '../utils/i18n.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { getImageUrl } from '../utils/imageUrl.js'
@@ -503,76 +503,97 @@ export default function RetailProductsScreen() {
   const p = t.retail.products
 
   const [search, setSearch] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
   const [expandedId, setExpandedId] = useState(null)
   const [scannerOpen, setScannerOpen] = useState(false)
   const [scanToast, setScanToast] = useState(null) // { type: 'found'|'not_found', label }
   const toastTimer = useRef(null)
+  const searchTimer = useRef(null)
 
-  // ── Query ──────────────────────────────────────────────────────
-  const {
-    data: products = [],
-    isLoading,
-    isError,
-    refetch,
-  } = useQuery({
-    queryKey: ['retail-products', storeId],
-    queryFn: () => getStoreCatalogProducts(storeId),
-    enabled: Boolean(storeId),
-    staleTime: 0,
-    refetchOnWindowFocus: true,
-  })
+  // Debounce search 350ms
+  useEffect(() => {
+    clearTimeout(searchTimer.current)
+    searchTimer.current = setTimeout(() => setDebouncedSearch(search), 350)
+    return () => clearTimeout(searchTimer.current)
+  }, [search])
 
-  // ── Stock mutation (optimistic) ────────────────────────────────
+  // ── Infinite Query ───────────────────────────────────────
+  const { data, isLoading, isError, refetch, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery({
+      queryKey: ['retail-products', storeId, debouncedSearch],
+      queryFn: ({ pageParam = 0 }) =>
+        getStoreCatalogProducts(storeId, { page: pageParam, search: debouncedSearch }),
+      initialPageParam: 0,
+      getNextPageParam: (lastPage, allPages) => {
+        const loaded = allPages.reduce((acc, p) => acc + p.products.length, 0)
+        return loaded < lastPage.total ? allPages.length : undefined
+      },
+      enabled: Boolean(storeId),
+      staleTime: 30_000,
+    })
+
+  const products = useMemo(() => data?.pages.flatMap((p) => p.products) ?? [], [data])
+  const totalCount = data?.pages[0]?.total ?? 0
+
+  // Optimistic updater for infinite query pages
+  const patchPages = useCallback(
+    (patcher) => {
+      queryClient.setQueriesData({ queryKey: ['retail-products', storeId] }, (old) => {
+        if (!old?.pages) return old
+        return {
+          ...old,
+          pages: old.pages.map((pg) => ({ ...pg, products: pg.products.map(patcher) })),
+        }
+      })
+    },
+    [queryClient, storeId]
+  )
+
+  // ── Stock mutation (optimistic) ──────────────────────────────
   const stockMutation = useMutation({
     mutationFn: ({ id, status }) => updateProductStock(id, storeId, status),
     onMutate: async ({ id, status }) => {
       await queryClient.cancelQueries({ queryKey: ['retail-products', storeId] })
-      const prev = queryClient.getQueryData(['retail-products', storeId])
-      queryClient.setQueryData(['retail-products', storeId], (old) =>
-        old?.map((item) => (item.id === id ? { ...item, stock_status: status } : item))
-      )
+      const prev = queryClient.getQueriesData({ queryKey: ['retail-products', storeId] })
+      patchPages((item) => (item.id === id ? { ...item, stock_status: status } : item))
       return { prev }
     },
     onError: (_err, _vars, ctx) => {
-      if (ctx?.prev) queryClient.setQueryData(['retail-products', storeId], ctx.prev)
+      if (ctx?.prev) ctx.prev.forEach(([key, val]) => queryClient.setQueryData(key, val))
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['retail-products', storeId] })
     },
   })
 
-  // ── Price mutation (optimistic + rollback + invalidate) ─────────
+  // ── Price mutation (optimistic + rollback + invalidate) ───────────
   const priceMutation = useMutation({
     mutationFn: ({ id, price }) => updateProductPrice(id, storeId, price),
     onMutate: async ({ id, price }) => {
       await queryClient.cancelQueries({ queryKey: ['retail-products', storeId] })
-      const prev = queryClient.getQueryData(['retail-products', storeId])
-      queryClient.setQueryData(['retail-products', storeId], (old) =>
-        old?.map((item) => (item.id === id ? { ...item, price_kzt: price } : item))
-      )
+      const prev = queryClient.getQueriesData({ queryKey: ['retail-products', storeId] })
+      patchPages((item) => (item.id === id ? { ...item, price_kzt: price } : item))
       return { prev }
     },
     onError: (_err, _vars, ctx) => {
-      if (ctx?.prev) queryClient.setQueryData(['retail-products', storeId], ctx.prev)
+      if (ctx?.prev) ctx.prev.forEach(([key, val]) => queryClient.setQueryData(key, val))
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['retail-products', storeId] })
     },
   })
 
-  // ── Shelf mutation (optimistic + rollback + invalidate) ─────────
+  // ── Shelf mutation (optimistic + rollback + invalidate) ───────────
   const shelfMutation = useMutation({
     mutationFn: ({ id, shelfZone }) => updateProductShelf(id, storeId, shelfZone),
     onMutate: async ({ id, shelfZone }) => {
       await queryClient.cancelQueries({ queryKey: ['retail-products', storeId] })
-      const prev = queryClient.getQueryData(['retail-products', storeId])
-      queryClient.setQueryData(['retail-products', storeId], (old) =>
-        old?.map((item) => (item.id === id ? { ...item, shelf_zone: shelfZone } : item))
-      )
+      const prev = queryClient.getQueriesData({ queryKey: ['retail-products', storeId] })
+      patchPages((item) => (item.id === id ? { ...item, shelf_zone: shelfZone } : item))
       return { prev }
     },
     onError: (_err, _vars, ctx) => {
-      if (ctx?.prev) queryClient.setQueryData(['retail-products', storeId], ctx.prev)
+      if (ctx?.prev) ctx.prev.forEach(([key, val]) => queryClient.setQueryData(key, val))
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['retail-products', storeId] })
@@ -602,17 +623,8 @@ export default function RetailProductsScreen() {
 
   useEffect(() => () => clearTimeout(toastTimer.current), [])
 
-  // ── Filter ────────────────────────────────────────────────────
-  const filtered = useMemo(() => {
-    if (!search.trim()) return products
-    const q = search.toLowerCase()
-    return products.filter(
-      (item) =>
-        displayName(item).toLowerCase().includes(q) ||
-        (displayBrand(item) || '').toLowerCase().includes(q) ||
-        item.ean.includes(q)
-    )
-  }, [products, search])
+  // With server-side search, products is already filtered
+  const filtered = products
 
   // ── Render states ─────────────────────────────────────────────
   const renderBody = () => {
@@ -932,7 +944,9 @@ export default function RetailProductsScreen() {
         {/* Count bar */}
         {!isLoading && !isError && (
           <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 7, paddingLeft: 2 }}>
-            {search ? `${filtered.length} / ${products.length}` : p.countLabel(products.length)}
+            {debouncedSearch
+              ? `${filtered.length} ${p.found ?? 'найдено'} / ${totalCount}`
+              : p.countLabel(totalCount)}
           </div>
         )}
       </div>
@@ -989,6 +1003,50 @@ export default function RetailProductsScreen() {
       {/* ── List ── */}
       <div style={{ padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
         {renderBody()}
+
+        {/* Load More */}
+        {hasNextPage && !isLoading && !isError && (
+          <button
+            onClick={() => fetchNextPage()}
+            disabled={isFetchingNextPage}
+            style={{
+              width: '100%',
+              padding: '13px 16px',
+              borderRadius: 14,
+              background: 'rgba(56,189,248,0.07)',
+              border: '1px solid rgba(56,189,248,0.18)',
+              color: '#38BDF8',
+              fontSize: 14,
+              fontWeight: 600,
+              cursor: isFetchingNextPage ? 'default' : 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              opacity: isFetchingNextPage ? 0.6 : 1,
+              marginTop: 4,
+            }}
+          >
+            {isFetchingNextPage ? (
+              <>
+                <span
+                  className="material-symbols-outlined"
+                  style={{ fontSize: 18, animation: 'spin 0.9s linear infinite' }}
+                >
+                  progress_activity
+                </span>
+                {p.loading ?? 'Загрузка...'}
+              </>
+            ) : (
+              <>
+                <span className="material-symbols-outlined" style={{ fontSize: 18 }}>
+                  expand_more
+                </span>
+                {p.loadMore ?? 'Загрузить ещё'} ({totalCount - products.length})
+              </>
+            )}
+          </button>
+        )}
       </div>
 
       {/* ── Scanner modal ── */}

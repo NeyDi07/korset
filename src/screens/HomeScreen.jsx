@@ -128,6 +128,121 @@ export default function HomeScreen() {
                 </span>
                 {currentStore.city} · {currentStore.address}
               </div>
+              {currentStore.short_description && (
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: 'rgba(180,180,210,0.55)',
+                    marginTop: 5,
+                    lineHeight: 1.4,
+                  }}
+                >
+                  {currentStore.short_description}
+                </div>
+              )}
+              {(currentStore.phone ||
+                currentStore.whatsapp_number ||
+                currentStore.instagram_url) && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
+                  {currentStore.phone && (
+                    <a
+                      href={`tel:${currentStore.phone.replace(/[^\d+]/g, '')}`}
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 4,
+                        padding: '4px 9px',
+                        borderRadius: 8,
+                        background: 'rgba(74,222,128,0.08)',
+                        border: '1px solid rgba(74,222,128,0.2)',
+                        color: '#4ADE80',
+                        fontSize: 11,
+                        fontWeight: 600,
+                        textDecoration: 'none',
+                      }}
+                    >
+                      <span className="material-symbols-outlined" style={{ fontSize: 13 }}>
+                        call
+                      </span>
+                      {currentStore.phone}
+                    </a>
+                  )}
+                  {currentStore.whatsapp_number && (
+                    <a
+                      href={`https://wa.me/${currentStore.whatsapp_number.replace(/\D/g, '')}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 4,
+                        padding: '4px 9px',
+                        borderRadius: 8,
+                        background: 'rgba(37,211,102,0.08)',
+                        border: '1px solid rgba(37,211,102,0.2)',
+                        color: '#25D366',
+                        fontSize: 11,
+                        fontWeight: 600,
+                        textDecoration: 'none',
+                      }}
+                    >
+                      <span className="material-symbols-outlined" style={{ fontSize: 13 }}>
+                        chat
+                      </span>
+                      WhatsApp
+                    </a>
+                  )}
+                  {currentStore.instagram_url && (
+                    <a
+                      href={currentStore.instagram_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 4,
+                        padding: '4px 9px',
+                        borderRadius: 8,
+                        background: 'rgba(225,48,108,0.08)',
+                        border: '1px solid rgba(225,48,108,0.2)',
+                        color: '#E1306C',
+                        fontSize: 11,
+                        fontWeight: 600,
+                        textDecoration: 'none',
+                      }}
+                    >
+                      <span className="material-symbols-outlined" style={{ fontSize: 13 }}>
+                        photo_camera
+                      </span>
+                      Instagram
+                    </a>
+                  )}
+                </div>
+              )}
+              {(currentStore.description || currentStore.twogis_url) && (
+                <button
+                  onClick={() => navigate(routes.publicPage)}
+                  style={{
+                    marginTop: 7,
+                    padding: '4px 10px',
+                    borderRadius: 8,
+                    background: 'rgba(167,139,250,0.1)',
+                    border: '1px solid rgba(167,139,250,0.2)',
+                    color: 'rgba(167,139,250,0.85)',
+                    fontSize: 11,
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 4,
+                  }}
+                >
+                  <span className="material-symbols-outlined" style={{ fontSize: 12 }}>
+                    info
+                  </span>
+                  {lang === 'kz' ? 'Толығырақ' : 'Подробнее'}
+                </button>
+              )}
             </div>
           </div>
 

@@ -78,7 +78,7 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 | **БД-фиксы** (CASCADE, GIN) | 🔜 |
 | **Фронтенд: name_kz по языку** | 🔜 |
 | **USDA enrichment** | 🔜 457 продуктов без состава |
-| **R2 full migration** | ✅ 2571/2607 картинок в R2 CDN (36 неудаляемых) |
+| **Корзина дома парсер** | ✅ 387 молочных за 38с (93% состав, 98% нутриенты) |
 
 **ARBUZ CATALOG PARSER v2 — BATCH UPSERT:**
 
@@ -97,14 +97,12 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - **82 категорий** обойдены через search queries
 
 **ТЕКУЩИЕ СТАТИСТИКИ БД (2026-04-21):**
-- **2662 active** global_products (было 3236 — почищены дубли)
-- **Состав: ~86%** 
+- **~3030 active** global_products (было 2662 — +367 от Корзина)
+- **Состав: ~92%** (было ~86%)
 - **Русский состав: 100%**
-- Arbuz primary: ~1900
-- С реальными EAN: ~1300 (40%)
-- Без состава: ~457
-- **209 помечены как "без штрихкода"** (202 Arbuz СТМ + 7 весовые/свежие)
-- **0 дубликатов по имени**
+- **Нутриенты (ккал/белки/жиры): ~14% → ~25%** (Корзина дала нутриенты)
+- Korzinavdom source: 367 продуктов
+- Без состава: ~300 (было 457)
 
 **EAN MATCHING — ИТОГИ ТЕСТИРОВАНИЯ:**
 - NPC + DDG + OFF кросс-валидация: 25% verified, 85% any EAN
@@ -171,13 +169,33 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - ✅ `saveRecentScan` — сохраняет в `localStorage` (`korset_recent_scans`, 5 последних)
 - ✅ ESLint-фиксы: `startScannerRef` для рекурсии, `t.scan.offlineNotFound` вместо `lang`
 
+**RETAIL PHASE 1 ЗАВЕРШЁН (сессия 12, 2026-04-21):**
+- ✅ `supabase/migrations/009_store_profile_fields.sql` — новые поля stores (logo_url, short_description, instagram_url, whatsapp_number, twogis_url, website_url), Storage bucket `store-logos`, RLS политики, 3 RPC функции (get_unique_customers, get_lost_revenue, get_scan_coverage)
+- ✅ `src/components/ConfirmDangerModal.jsx` — новый modal с вводом слова СБРОС/ТАЗАРТУ перед удалением каталога
+- ✅ `src/screens/RetailSettingsScreen.jsx` — полный редизайн: лого upload, краткое/полное описание, контакты (Instagram, WhatsApp, 2GIS, сайт, телефон), фикс критического бага onClick-в-style
+- ✅ `src/utils/retailAnalytics.js` — getUniqueCustomers, getLostRevenue, getScanCoverage + серверная пагинация getStoreCatalogProducts (PAGE_SIZE=40)
+- ✅ `src/screens/RetailDashboardScreen.jsx` — новые метрики: Покупателей (зелёный), Упущённая выручка ~₸ (красный), Покрытие каталога % (прогресс-бар с цветом по порогам)
+- ✅ `src/screens/StorePublicScreen.jsx` — страница магазина для покупателей: лого, описание (аккордеон), контакты с ссылками, i18n
+- ✅ `src/screens/HomeScreen.jsx` — short_description под адресом + кнопка Подробнее → StorePublicScreen
+- ✅ `src/screens/RetailProductsScreen.jsx` — useInfiniteQuery + Load More кнопка + дебаунс поиска 350ms + серверный поиск через ilike + optimistic updates адаптированы для infinite query
+
 **ПОРЯДОК ЗАДАЧ (следующий чат):**
-1. EAN enrichment на кандидатов (NPC + DDG кросс-валидация)
-2. USDA enrichment на ~457 продуктов без состава
-3. Фронтенд: показывать name_kz когда user.lang === 'kz'
-4. Импорт прайс-листа (RetailImportScreen)
-5. БД-фиксы (CASCADE, GIN, duplicate arbuz_ EAN)
-6. Почистить 36 продуктов с мёртвыми image_url (заменить/удалить)
+1. Корзина дома: остальные категории (~14000 продуктов)
+2. R2 upload для Корзина картинки
+3. EAN enrichment на кандидатов (NPC + DDG)
+4. USDA enrichment на ~300 продуктов без состава
+5. Импорт прайс-листа (RetailImportScreen)
+6. БД-фиксы (CASCADE, GIN)
+7. Фронтенд: name_kz по языку
+
+**КОРЗИНА ДОМА (korzinavdom.kz) — API парсер:**
+- API: `https://api.korzinavdom.kz/client/` (открытый, без авторизации)
+- Скрипт: `scripts/korzinavdom-parser.cjs`
+- Метод: list API → 5 параллельных detail API → batch upsert
+- Скорость: ~10 продуктов/сек
+- Данные: название, состав, ккал/белки/жиры/углеводы, бренд, страна, картинка, халяль
+- Нет: EAN/штрихкод, аллергены
+- Молочка: ✅ 387 за 38с (93% состав, 98% нутриенты)
 
 Офлайн-режим: ✅ ГОТОВО (6 слоёв, 85/100)
 

@@ -20,28 +20,44 @@ VALUES (
   ARRAY['image/png', 'image/jpeg', 'image/webp']
 ) ON CONFLICT (id) DO NOTHING;
 
--- RLS: owners can upload/update their store logo
-CREATE POLICY IF NOT EXISTS "Store owners can upload logo"
+-- RLS: любой аутентифицированный владелец магазина может загружать логотип
+-- Проверяем: путь начинается с store_id пользователя
+DROP POLICY IF EXISTS "Store owners can upload logo" ON storage.objects;
+CREATE POLICY "Store owners can upload logo"
   ON storage.objects FOR INSERT
   TO authenticated
   WITH CHECK (
     bucket_id = 'store-logos'
-    AND auth.uid() IN (
-      SELECT owner_id FROM public.stores WHERE id::text = (storage.foldername(name))[1]
+    AND auth.uid() IN (SELECT owner_id FROM public.stores WHERE is_active = true)
+    AND split_part(name, '/', 1) IN (
+      SELECT id::text FROM public.stores WHERE owner_id = auth.uid()
     )
   );
 
-CREATE POLICY IF NOT EXISTS "Store owners can update logo"
+DROP POLICY IF EXISTS "Store owners can update logo" ON storage.objects;
+CREATE POLICY "Store owners can update logo"
   ON storage.objects FOR UPDATE
   TO authenticated
   USING (
     bucket_id = 'store-logos'
-    AND auth.uid() IN (
-      SELECT owner_id FROM public.stores WHERE id::text = (storage.foldername(name))[1]
+    AND split_part(name, '/', 1) IN (
+      SELECT id::text FROM public.stores WHERE owner_id = auth.uid()
     )
   );
 
-CREATE POLICY IF NOT EXISTS "Public logo read"
+DROP POLICY IF EXISTS "Store owners can delete logo" ON storage.objects;
+CREATE POLICY "Store owners can delete logo"
+  ON storage.objects FOR DELETE
+  TO authenticated
+  USING (
+    bucket_id = 'store-logos'
+    AND split_part(name, '/', 1) IN (
+      SELECT id::text FROM public.stores WHERE owner_id = auth.uid()
+    )
+  );
+
+DROP POLICY IF EXISTS "Public logo read" ON storage.objects;
+CREATE POLICY "Public logo read"
   ON storage.objects FOR SELECT
   TO public
   USING (bucket_id = 'store-logos');

@@ -82,8 +82,13 @@ export async function getScanCoverage(storeId, days) {
   return Number(data ?? 0)
 }
 
-export async function getStoreCatalogProducts(storeId) {
-  const { data, error } = await supabase
+const PRODUCTS_PAGE_SIZE = 40
+
+export async function getStoreCatalogProducts(storeId, { page = 0, search = '' } = {}) {
+  const from = page * PRODUCTS_PAGE_SIZE
+  const to = from + PRODUCTS_PAGE_SIZE - 1
+
+  let query = supabase
     .from('store_products')
     .select(
       `
@@ -92,13 +97,22 @@ export async function getStoreCatalogProducts(storeId) {
       global_products!store_products_global_product_id_fkey (
         name, brand, image_url, category, ingredients_raw, ingredients_kz, quantity
       )
-    `
+    `,
+      { count: 'exact' }
     )
     .eq('store_id', storeId)
     .eq('is_active', true)
     .order('created_at', { ascending: false })
+
+  if (search.trim()) {
+    query = query.or(
+      `local_name.ilike.%${search}%,ean.ilike.%${search}%,global_products.name.ilike.%${search}%,global_products.brand.ilike.%${search}%`
+    )
+  }
+
+  const { data, error, count } = await query.range(from, to)
   if (error) throw new Error(error.message ?? error)
-  return data ?? []
+  return { products: data ?? [], total: count ?? 0, page }
 }
 
 export async function updateProductPrice(productId, storeId, priceKzt) {

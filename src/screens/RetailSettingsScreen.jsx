@@ -20,7 +20,6 @@ export default function RetailSettingsScreen() {
     instagram_url: currentStore?.instagram_url || '',
     whatsapp_number: currentStore?.whatsapp_number || '',
     twogis_url: currentStore?.twogis_url || '',
-    website_url: currentStore?.website_url || '',
     notifyMissing: currentStore?.notify_oos_enabled ?? true,
     notifyDaily: currentStore?.notify_daily_enabled ?? false,
   })
@@ -48,7 +47,6 @@ export default function RetailSettingsScreen() {
         instagram_url: currentStore.instagram_url || prev.instagram_url,
         whatsapp_number: currentStore.whatsapp_number || prev.whatsapp_number,
         twogis_url: currentStore.twogis_url || prev.twogis_url,
-        website_url: currentStore.website_url || prev.website_url,
         notifyMissing: currentStore.notify_oos_enabled ?? prev.notifyMissing,
         notifyDaily: currentStore.notify_daily_enabled ?? prev.notifyDaily,
       }))
@@ -85,9 +83,10 @@ export default function RetailSettingsScreen() {
       short_description: settings.short_description || null,
       description: settings.description || null,
       instagram_url: settings.instagram_url || null,
-      whatsapp_number: settings.whatsapp_number || null,
+      whatsapp_number: settings.whatsapp_number
+        ? settings.whatsapp_number.replace(/\D/g, '')
+        : null,
       twogis_url: settings.twogis_url || null,
-      website_url: settings.website_url || null,
     })
     setIsSaving(false)
     setSaveStatus(error ? 'error' : 'ok')
@@ -97,25 +96,54 @@ export default function RetailSettingsScreen() {
   const handleLogoUpload = async (e) => {
     const file = e.target.files?.[0]
     if (!file || !currentStore?.id) return
-    const ext = file.name.split('.').pop()
+
+    // Client-side validation
+    const ALLOWED = ['image/png', 'image/jpeg', 'image/webp']
+    if (!ALLOWED.includes(file.type)) {
+      alert(
+        isKz ? 'Тек PNG, JPG, WEBP форматтары рұқсат етілген' : 'Разрешены только PNG, JPG, WEBP'
+      )
+      if (logoInputRef.current) logoInputRef.current.value = ''
+      return
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      alert(isKz ? 'Файл 2MB-тан аспауы керек' : 'Файл не должен превышать 2MB')
+      if (logoInputRef.current) logoInputRef.current.value = ''
+      return
+    }
+
+    const ext = file.type === 'image/webp' ? 'webp' : file.type === 'image/png' ? 'png' : 'jpg'
     const path = `${currentStore.id}/logo.${ext}`
     setLogoUploading(true)
+
     const { error: uploadError } = await supabase.storage
       .from('store-logos')
       .upload(path, file, { upsert: true, contentType: file.type })
+
     if (uploadError) {
       setLogoUploading(false)
-      alert(
-        isKz ? 'Жүктеу қатесі: ' + uploadError.message : 'Ошибка загрузки: ' + uploadError.message
-      )
+      if (logoInputRef.current) logoInputRef.current.value = ''
+      const msg = uploadError.message || uploadError.error || String(uploadError)
+      const isBucketMissing = msg.includes('Bucket not found') || msg.includes('bucket')
+      if (isBucketMissing) {
+        alert(
+          isKz
+            ? 'Bucket табылмады. Supabase Dashboard → Storage → "store-logos" bucket жасаңыз (Public: иә)'
+            : 'Bucket не найден. Создайте в Supabase Dashboard → Storage → New Bucket → name: "store-logos" (Public: вкл)'
+        )
+      } else {
+        alert(isKz ? 'Жүктеу қатесі: ' + msg : 'Ошибка загрузки: ' + msg)
+      }
       return
     }
+
     const { data: urlData } = supabase.storage.from('store-logos').getPublicUrl(path)
     const url = urlData?.publicUrl
     if (url) {
       await updateStoreSettings({ logo_url: url })
-      setLogoUrl(url)
+      setLogoUrl(url + '?t=' + Date.now()) // cache-bust
     }
+    if (logoInputRef.current) logoInputRef.current.value = ''
     setLogoUploading(false)
   }
 
@@ -171,6 +199,22 @@ export default function RetailSettingsScreen() {
       alert(isKz ? 'Қателік орын алды: ' + e.message : 'Ошибка при удалении: ' + e.message)
     }
   }
+  const formatPhoneKz = (raw) => {
+    const digits = raw.replace(/\D/g, '')
+    let d = digits
+    if (d.startsWith('8')) d = '7' + d.slice(1)
+    else if (d.length > 0 && !d.startsWith('7')) d = '7' + d
+    d = d.slice(0, 11)
+    if (!d) return ''
+    let r = '+7'
+    if (d.length > 1) r += ' (' + d.slice(1, Math.min(4, d.length))
+    if (d.length >= 4) r += ')'
+    if (d.length > 4) r += ' ' + d.slice(4, Math.min(7, d.length))
+    if (d.length > 7) r += '-' + d.slice(7, Math.min(9, d.length))
+    if (d.length > 9) r += '-' + d.slice(9, 11)
+    return r
+  }
+
   const SECTION_LABEL_STYLE = {
     fontSize: 12,
     fontWeight: 600,
@@ -351,8 +395,9 @@ export default function RetailSettingsScreen() {
               <input
                 type="tel"
                 value={settings.phone}
-                onChange={(e) => handleChange('phone', e.target.value)}
+                onChange={(e) => handleChange('phone', formatPhoneKz(e.target.value))}
                 placeholder="+7 (700) 000-00-00"
+                inputMode="numeric"
                 style={INPUT_STYLE}
               />
             </div>
@@ -434,8 +479,9 @@ export default function RetailSettingsScreen() {
                 label: 'WhatsApp',
                 icon: 'chat',
                 iconColor: '#25D366',
-                placeholder: '+77001234567',
+                placeholder: '+7 (700) 000-00-00',
                 type: 'tel',
+                mask: true,
               },
               {
                 key: 'twogis_url',
@@ -443,14 +489,6 @@ export default function RetailSettingsScreen() {
                 icon: 'location_on',
                 iconColor: '#2A6EDD',
                 placeholder: 'https://2gis.kz/...',
-                type: 'url',
-              },
-              {
-                key: 'website_url',
-                label: isKz ? 'Сайт' : 'Сайт',
-                icon: 'language',
-                iconColor: '#38BDF8',
-                placeholder: 'https://yourstore.kz',
                 type: 'url',
               },
             ].map((field, idx, arr) => (
@@ -490,7 +528,12 @@ export default function RetailSettingsScreen() {
                     <input
                       type={field.type}
                       value={settings[field.key]}
-                      onChange={(e) => handleChange(field.key, e.target.value)}
+                      onChange={(e) =>
+                        field.mask
+                          ? handleChange(field.key, formatPhoneKz(e.target.value))
+                          : handleChange(field.key, e.target.value)
+                      }
+                      inputMode={field.mask ? 'numeric' : undefined}
                       placeholder={field.placeholder}
                       style={{
                         ...INPUT_STYLE,
