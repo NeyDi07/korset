@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 
 /**
  * ConfirmDangerModal — destructive action confirmation modal
@@ -36,7 +37,7 @@ export default function ConfirmDangerModal({
 
   const matched = typed.trim().toUpperCase() === confirmWord.toUpperCase()
 
-  return (
+  return createPortal(
     <div
       onClick={onCancel}
       style={{
@@ -234,6 +235,7 @@ export default function ConfirmDangerModal({
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }

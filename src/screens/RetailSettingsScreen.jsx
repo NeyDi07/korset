@@ -33,6 +33,8 @@ export default function RetailSettingsScreen() {
   const [logoUrl, setLogoUrl] = useState(currentStore?.logo_url || null)
   const logoInputRef = useRef(null)
   const qrRef = useRef(null)
+  const prevPhoneLenRef = useRef((currentStore?.phone || '').length)
+  const prevWaLenRef = useRef((currentStore?.whatsapp_number || '').length)
 
   // Sync ALL fields when store data arrives from Supabase
   useEffect(() => {
@@ -199,19 +201,23 @@ export default function RetailSettingsScreen() {
       alert(isKz ? 'Қателік орын алды: ' + e.message : 'Ошибка при удалении: ' + e.message)
     }
   }
-  const formatPhoneKz = (raw) => {
+  const formatPhoneKz = (raw, isDeleting = false) => {
     const digits = raw.replace(/\D/g, '')
+    if (!digits) return ''
     let d = digits
     if (d.startsWith('8')) d = '7' + d.slice(1)
-    else if (d.length > 0 && !d.startsWith('7')) d = '7' + d
+    else if (!d.startsWith('7')) d = '7' + d
     d = d.slice(0, 11)
-    if (!d) return ''
-    let r = '+7'
-    if (d.length > 1) r += ' (' + d.slice(1, Math.min(4, d.length))
-    if (d.length >= 4) r += ')'
-    if (d.length > 4) r += ' ' + d.slice(4, Math.min(7, d.length))
-    if (d.length > 7) r += '-' + d.slice(7, Math.min(9, d.length))
-    if (d.length > 9) r += '-' + d.slice(9, 11)
+    const local = d.slice(1) // 10 цифр без кода страны
+    if (!local) return ''
+    let r = '+7 (' + local.slice(0, Math.min(3, local.length))
+    // При вводе: закрываем скобку на 3й цифре; при удалении: только после 3й (чтобы не застревать)
+    if (isDeleting ? local.length > 3 : local.length >= 3) {
+      r += ')'
+      if (local.length > 3) r += ' ' + local.slice(3, Math.min(6, local.length))
+      if (local.length > 6) r += '-' + local.slice(6, Math.min(8, local.length))
+      if (local.length > 8) r += '-' + local.slice(8, 10)
+    }
     return r
   }
 
@@ -395,7 +401,11 @@ export default function RetailSettingsScreen() {
               <input
                 type="tel"
                 value={settings.phone}
-                onChange={(e) => handleChange('phone', formatPhoneKz(e.target.value))}
+                onChange={(e) => {
+                  const isDeleting = e.target.value.length < prevPhoneLenRef.current
+                  prevPhoneLenRef.current = e.target.value.length
+                  handleChange('phone', formatPhoneKz(e.target.value, isDeleting))
+                }}
                 placeholder="+7 (700) 000-00-00"
                 inputMode="numeric"
                 style={INPUT_STYLE}
@@ -528,11 +538,15 @@ export default function RetailSettingsScreen() {
                     <input
                       type={field.type}
                       value={settings[field.key]}
-                      onChange={(e) =>
-                        field.mask
-                          ? handleChange(field.key, formatPhoneKz(e.target.value))
-                          : handleChange(field.key, e.target.value)
-                      }
+                      onChange={(e) => {
+                        if (field.mask) {
+                          const isDeleting = e.target.value.length < prevWaLenRef.current
+                          prevWaLenRef.current = e.target.value.length
+                          handleChange(field.key, formatPhoneKz(e.target.value, isDeleting))
+                        } else {
+                          handleChange(field.key, e.target.value)
+                        }
+                      }}
                       inputMode={field.mask ? 'numeric' : undefined}
                       placeholder={field.placeholder}
                       style={{

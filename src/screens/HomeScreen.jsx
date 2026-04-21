@@ -219,7 +219,9 @@ export default function HomeScreen() {
                   )}
                 </div>
               )}
-              {(currentStore.description || currentStore.twogis_url) && (
+              {(currentStore.short_description ||
+                currentStore.description ||
+                currentStore.twogis_url) && (
                 <button
                   onClick={() => navigate(routes.publicPage)}
                   style={{
