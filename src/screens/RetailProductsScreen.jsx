@@ -1,6 +1,7 @@
 import { useState, useMemo, useRef, useCallback, useEffect, memo } from 'react'
+import { createPortal } from 'react-dom'
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Virtuoso } from 'react-virtuoso'
+import { Virtuoso, VirtuosoGrid } from 'react-virtuoso'
 import { useI18n } from '../utils/i18n.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { getImageUrl } from '../utils/imageUrl.js'
@@ -11,6 +12,7 @@ import {
   updateProductShelf,
 } from '../utils/retailAnalytics.js'
 import RetailScannerModal from '../components/RetailScannerModal.jsx'
+import { buildProductPath } from '../utils/routes.js'
 
 // ── Helpers ────────────────────────────────────────────────────────
 function displayName(p) {
@@ -384,11 +386,9 @@ function ShelfField({ productId, initialShelf, p, shelfMutation }) {
 }
 
 // ── Readonly Block ─────────────────────────────────────────────────
-function ReadonlyBlock({ product, p, lang }) {
+function ReadonlyBlock({ product, p, storeSlug }) {
   const gp = product.global_products
   if (!gp) return null
-
-  const ingredients = lang === 'kz' ? gp.ingredients_kz || gp.ingredients_raw : gp.ingredients_raw
 
   return (
     <div
@@ -400,19 +400,6 @@ function ReadonlyBlock({ product, p, lang }) {
         marginTop: 8,
       }}
     >
-      <div
-        style={{
-          fontSize: 11,
-          fontWeight: 600,
-          color: 'var(--text-dim)',
-          textTransform: 'uppercase',
-          letterSpacing: 0.5,
-          marginBottom: 12,
-        }}
-      >
-        Global Data
-      </div>
-
       <div style={{ display: 'flex', gap: 14 }}>
         <div
           style={{
@@ -444,21 +431,30 @@ function ReadonlyBlock({ product, p, lang }) {
           )}
         </div>
 
-        <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 6 }}>
-          {gp.category && (
-            <div>
-              <span style={{ fontSize: 11, color: 'var(--text-dim)', marginRight: 6 }}>
-                {p.categoryLabel}:
-              </span>
-              <span style={{ fontSize: 13, color: '#fff' }}>{gp.category}</span>
-            </div>
-          )}
+        <div
+          style={{
+            flex: 1,
+            minWidth: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 6,
+            justifyContent: 'center',
+          }}
+        >
           {gp.brand && (
             <div>
               <span style={{ fontSize: 11, color: 'var(--text-dim)', marginRight: 6 }}>
                 {p.brandLabel}:
               </span>
               <span style={{ fontSize: 13, color: '#fff' }}>{gp.brand}</span>
+            </div>
+          )}
+          {gp.category && (
+            <div>
+              <span style={{ fontSize: 11, color: 'var(--text-dim)', marginRight: 6 }}>
+                {p.categoryLabel}:
+              </span>
+              <span style={{ fontSize: 13, color: '#fff' }}>{gp.category}</span>
             </div>
           )}
           {gp.quantity && (
@@ -472,26 +468,32 @@ function ReadonlyBlock({ product, p, lang }) {
         </div>
       </div>
 
-      {ingredients && (
+      {storeSlug && (
         <div
-          style={{ marginTop: 12, borderTop: '1px dashed rgba(255,255,255,0.05)', paddingTop: 10 }}
+          style={{ marginTop: 12, borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: 10 }}
         >
-          <div style={{ fontSize: 11, color: 'var(--text-dim)', marginBottom: 4 }}>
-            {p.ingredientsLabel}:
-          </div>
-          <div
+          <a
+            href={buildProductPath(storeSlug, product.ean)}
+            target="_blank"
+            rel="noopener noreferrer"
             style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
               fontSize: 12,
-              color: 'var(--text-sub)',
-              lineHeight: 1.4,
-              display: '-webkit-box',
-              WebkitLineClamp: 3,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
+              color: '#38BDF8',
+              textDecoration: 'none',
+              background: 'rgba(56,189,248,0.07)',
+              border: '1px solid rgba(56,189,248,0.18)',
+              borderRadius: 8,
+              padding: '5px 11px',
             }}
           >
-            {ingredients}
-          </div>
+            <span className="material-symbols-outlined" style={{ fontSize: 13 }}>
+              open_in_new
+            </span>
+            {p.openCard}
+          </a>
         </div>
       )}
     </div>
@@ -505,7 +507,7 @@ const ProductCard = memo(
     isExpanded,
     search,
     tr,
-    lang,
+    storeSlug,
     priceMutation,
     shelfMutation,
     stockMutation,
@@ -670,7 +672,7 @@ const ProductCard = memo(
                 shelfMutation={shelfMutation}
               />
               <StockToggle product={product} label={tr.stockLabel} stockMutation={stockMutation} />
-              <ReadonlyBlock product={product} p={tr} lang={lang} />
+              <ReadonlyBlock product={product} p={tr} storeSlug={storeSlug} />
             </div>
           </div>
         </div>
@@ -680,19 +682,315 @@ const ProductCard = memo(
   (prev, next) =>
     prev.product === next.product &&
     prev.isExpanded === next.isExpanded &&
-    prev.search === next.search
+    prev.search === next.search &&
+    prev.storeSlug === next.storeSlug
 )
+
+// ── Grid card ──────────────────────────────────────────────────────
+function GridCard({ product, tr, onEdit }) {
+  const inStock = isInStock(product)
+  const imgUrl = displayImage(product)
+  const name = displayName(product)
+  const brand = displayBrand(product)
+
+  return (
+    <div
+      onClick={() => onEdit(product)}
+      style={{
+        background: 'rgba(255,255,255,0.03)',
+        border: '1px solid rgba(255,255,255,0.07)',
+        borderRadius: 16,
+        overflow: 'hidden',
+        cursor: 'pointer',
+        display: 'flex',
+        flexDirection: 'column',
+        opacity: inStock ? 1 : 0.65,
+        transition: 'border-color 0.2s, background 0.2s',
+        WebkitTapHighlightColor: 'transparent',
+      }}
+    >
+      <div
+        style={{
+          background: 'rgba(255,255,255,0.04)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          aspectRatio: '1 / 1',
+          padding: 10,
+        }}
+      >
+        {imgUrl ? (
+          <img
+            src={imgUrl}
+            alt={name}
+            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+          />
+        ) : (
+          <span
+            className="material-symbols-outlined"
+            style={{ fontSize: 32, color: 'var(--text-dim)' }}
+          >
+            inventory_2
+          </span>
+        )}
+      </div>
+
+      <div
+        style={{
+          padding: '8px 10px 10px',
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 3,
+        }}
+      >
+        <div
+          style={{
+            fontSize: 12,
+            fontWeight: 600,
+            color: '#fff',
+            lineHeight: 1.3,
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+          }}
+        >
+          {name}
+        </div>
+        {brand && (
+          <div
+            style={{
+              fontSize: 11,
+              color: 'var(--text-dim)',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {brand}
+          </div>
+        )}
+        <div
+          style={{
+            marginTop: 'auto',
+            paddingTop: 7,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: 4,
+          }}
+        >
+          <div
+            style={{
+              fontSize: 13,
+              fontWeight: 700,
+              fontFamily: 'var(--font-display)',
+              color: inStock ? '#38BDF8' : 'var(--text-dim)',
+              textDecoration: inStock ? 'none' : 'line-through',
+            }}
+          >
+            {product.price_kzt != null ? (
+              `${product.price_kzt.toLocaleString()} ₸`
+            ) : (
+              <span style={{ fontSize: 10, color: 'var(--text-dim)' }}>{tr.noPrice}</span>
+            )}
+          </div>
+          <StockBadge status={product.stock_status} p={tr} />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ── Edit bottom sheet (grid mode) ─────────────────────────────────
+function EditBottomSheet({
+  product,
+  tr,
+  storeSlug,
+  priceMutation,
+  shelfMutation,
+  stockMutation,
+  onClose,
+}) {
+  if (!product) return null
+
+  const imgUrl = displayImage(product)
+  const name = displayName(product)
+  const brand = displayBrand(product)
+
+  return createPortal(
+    <div
+      onClick={onClose}
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 9990,
+        background: 'rgba(0,0,0,0.72)',
+        backdropFilter: 'blur(6px)',
+        display: 'flex',
+        alignItems: 'flex-end',
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          width: '100%',
+          maxWidth: 520,
+          margin: '0 auto',
+          background: 'linear-gradient(180deg, #14162a 0%, #0d0f1e 100%)',
+          borderRadius: '20px 20px 0 0',
+          maxHeight: '88vh',
+          overflowY: 'auto',
+          boxShadow: '0 -8px 40px rgba(0,0,0,0.5)',
+        }}
+      >
+        {/* Sheet handle */}
+        <div
+          style={{ display: 'flex', justifyContent: 'center', paddingTop: 10, paddingBottom: 4 }}
+        >
+          <div
+            style={{ width: 36, height: 4, borderRadius: 2, background: 'rgba(255,255,255,0.12)' }}
+          />
+        </div>
+
+        {/* Header */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 20px 0' }}>
+          <div
+            style={{
+              width: 52,
+              height: 52,
+              borderRadius: 12,
+              background: 'rgba(255,255,255,0.05)',
+              overflow: 'hidden',
+              flexShrink: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: 4,
+            }}
+          >
+            {imgUrl ? (
+              <img
+                src={imgUrl}
+                alt=""
+                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+              />
+            ) : (
+              <span
+                className="material-symbols-outlined"
+                style={{ fontSize: 24, color: 'var(--text-dim)' }}
+              >
+                inventory_2
+              </span>
+            )}
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div
+              style={{
+                fontSize: 15,
+                fontWeight: 700,
+                color: '#fff',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {name}
+            </div>
+            {brand && (
+              <div style={{ fontSize: 12, color: 'var(--text-sub)', marginTop: 2 }}>{brand}</div>
+            )}
+          </div>
+          <button
+            onClick={onClose}
+            style={{
+              background: 'rgba(255,255,255,0.08)',
+              border: 'none',
+              borderRadius: 10,
+              padding: 8,
+              cursor: 'pointer',
+              flexShrink: 0,
+              color: 'var(--text-dim)',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
+              close
+            </span>
+          </button>
+        </div>
+
+        {/* Open card link */}
+        {storeSlug && (
+          <div style={{ padding: '10px 20px 0' }}>
+            <a
+              href={buildProductPath(storeSlug, product.ean)}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                fontSize: 12,
+                color: '#38BDF8',
+                textDecoration: 'none',
+                background: 'rgba(56,189,248,0.07)',
+                border: '1px solid rgba(56,189,248,0.18)',
+                borderRadius: 8,
+                padding: '5px 11px',
+              }}
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: 13 }}>
+                open_in_new
+              </span>
+              {tr.openCard}
+            </a>
+          </div>
+        )}
+
+        {/* Divider */}
+        <div style={{ height: 1, background: 'rgba(255,255,255,0.06)', margin: '14px 20px 0' }} />
+
+        {/* Editor fields */}
+        <div
+          style={{ padding: '16px 20px 40px', display: 'flex', flexDirection: 'column', gap: 20 }}
+        >
+          <PriceField
+            productId={product.id}
+            initialPrice={product.price_kzt}
+            p={tr}
+            priceMutation={priceMutation}
+          />
+          <ShelfField
+            productId={product.id}
+            initialShelf={product.shelf_zone}
+            p={tr}
+            shelfMutation={shelfMutation}
+          />
+          <StockToggle product={product} label={tr.stockLabel} stockMutation={stockMutation} />
+        </div>
+      </div>
+    </div>,
+    document.body
+  )
+}
 
 // ── Main screen ────────────────────────────────────────────────────
 export default function RetailProductsScreen() {
-  const { t, lang } = useI18n()
-  const { storeId } = useStore()
+  const { t } = useI18n()
+  const { storeId, currentStore } = useStore()
   const queryClient = useQueryClient()
   const p = t.retail.products
 
+  const [viewMode, setViewMode] = useState(() => localStorage.getItem('retail_view_mode') || 'list')
   const [search, setSearch] = useState('')
   const [debouncedSearch, setDebouncedSearch] = useState('')
   const [expandedId, setExpandedId] = useState(null)
+  const [gridSelectedId, setGridSelectedId] = useState(null)
   const [scannerOpen, setScannerOpen] = useState(false)
   const [scanToast, setScanToast] = useState(null) // { type: 'found'|'not_found', label }
   const toastTimer = useRef(null)
@@ -818,8 +1116,21 @@ export default function RetailProductsScreen() {
 
   useEffect(() => () => clearTimeout(toastTimer.current), [])
 
+  const storeSlug = currentStore?.slug ?? null
+
   // With server-side search, products is already filtered
   const filtered = products
+
+  const gridSelectedProduct = useMemo(
+    () => (gridSelectedId ? (filtered.find((pr) => pr.id === gridSelectedId) ?? null) : null),
+    [filtered, gridSelectedId]
+  )
+
+  const toggleViewMode = useCallback(() => {
+    const next = viewMode === 'list' ? 'grid' : 'list'
+    setViewMode(next)
+    localStorage.setItem('retail_view_mode', next)
+  }, [viewMode])
 
   // ── Inline states (error / empty) ──────────────────────────────
   const renderEmpty = () => (
@@ -930,6 +1241,30 @@ export default function RetailProductsScreen() {
             )}
           </div>
 
+          {/* View toggle */}
+          <button
+            onClick={toggleViewMode}
+            title={viewMode === 'list' ? p.viewGrid : p.viewList}
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 14,
+              border: 'none',
+              cursor: 'pointer',
+              background: 'rgba(255,255,255,0.06)',
+              color: 'var(--text-sub)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+              transition: 'background 0.2s',
+            }}
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: 22 }}>
+              {viewMode === 'list' ? 'grid_view' : 'view_list'}
+            </span>
+          </button>
+
           {/* Scanner Button */}
           <button
             onClick={() => setScannerOpen(true)}
@@ -1024,7 +1359,7 @@ export default function RetailProductsScreen() {
         </div>
       ) : filtered.length === 0 ? (
         renderEmpty()
-      ) : (
+      ) : viewMode === 'list' ? (
         <Virtuoso
           customScrollParent={scrollParent}
           data={filtered}
@@ -1039,7 +1374,7 @@ export default function RetailProductsScreen() {
                 isExpanded={expandedId === product.id}
                 search={search}
                 tr={p}
-                lang={lang}
+                storeSlug={storeSlug}
                 priceMutation={priceMutation}
                 shelfMutation={shelfMutation}
                 stockMutation={stockMutation}
@@ -1060,13 +1395,68 @@ export default function RetailProductsScreen() {
                       padding: '12px 0',
                     }}
                   >
-                    {p.allLoaded ?? `${totalCount} товаров загружено`}
+                    {p.allLoaded(totalCount)}
                   </div>
                 )}
               </div>
             ),
           }}
         />
+      ) : (
+        <>
+          <VirtuosoGrid
+            customScrollParent={scrollParent}
+            data={filtered}
+            overscanCount={20}
+            listClassName="retail-grid"
+            endReached={() => {
+              if (hasNextPage && !isFetchingNextPage) fetchNextPage()
+            }}
+            itemContent={(_, product) => (
+              <GridCard product={product} tr={p} onEdit={(prod) => setGridSelectedId(prod.id)} />
+            )}
+            components={{
+              Footer: () => (
+                <div style={{ padding: '4px 16px 12px' }}>
+                  {isFetchingNextPage && (
+                    <div
+                      style={{
+                        display: 'grid',
+                        gridTemplateColumns: '1fr 1fr',
+                        gap: 10,
+                        padding: '0 16px',
+                      }}
+                    >
+                      <SkeletonRow />
+                      <SkeletonRow />
+                    </div>
+                  )}
+                  {!hasNextPage && filtered.length > 0 && (
+                    <div
+                      style={{
+                        textAlign: 'center',
+                        fontSize: 12,
+                        color: 'var(--text-dim)',
+                        padding: '12px 0',
+                      }}
+                    >
+                      {p.allLoaded(totalCount)}
+                    </div>
+                  )}
+                </div>
+              ),
+            }}
+          />
+          <EditBottomSheet
+            product={gridSelectedProduct}
+            tr={p}
+            storeSlug={storeSlug}
+            priceMutation={priceMutation}
+            shelfMutation={shelfMutation}
+            stockMutation={stockMutation}
+            onClose={() => setGridSelectedId(null)}
+          />
+        </>
       )}
 
       {/* ── Scanner modal ── */}

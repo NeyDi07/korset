@@ -14,8 +14,6 @@ const DB_BATCH = 50
 const OUT_DIR = path.join(__dirname, '..', 'data', 'korzinavdom')
 const PROGRESS_FILE = path.join(OUT_DIR, 'progress.json')
 
-const MILK_CATEGORIES = []
-
 const FOOD_CATEGORIES = [
   { number: 7, name: 'Чай, кофе, кондитерские изделия' },
   { number: 3, name: 'Молочные продукты и сыры, яйцо' },

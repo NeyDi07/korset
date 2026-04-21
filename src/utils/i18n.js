@@ -370,6 +370,11 @@ export const dictionaries = {
         quantityLabel: 'Объём',
         scanFound: 'Товар найден',
         scanNotFound: 'Нет в каталоге',
+        viewList: 'Список',
+        viewGrid: 'Сетка',
+        openCard: 'Открыть карточку',
+        allLoaded: (n) => `Все ${n} товаров загружены`,
+        editProduct: 'Редактировать товар',
       },
       dashboard: {
         title: 'Дашборд',
@@ -779,6 +784,11 @@ export const dictionaries = {
         noPrice: 'Баға көрсетілмеген',
         scanFound: 'Тауар табылды',
         scanNotFound: 'Каталогта жоқ',
+        viewList: 'Тізім',
+        viewGrid: 'Тор',
+        openCard: 'Картаны ашу',
+        allLoaded: (n) => `Барлық ${n} тауар жүктелді`,
+        editProduct: 'Тауарды өңдеу',
       },
       dashboard: {
         title: 'Дашборд',
