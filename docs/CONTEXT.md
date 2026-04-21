@@ -64,7 +64,7 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 |-------|--------|
 | **Arbuz catalog import** | ✅ 2228 продуктов из Arbuz → 3236 активных в DB |
 | **Каталог: русские имена** | ✅ NPC --fix-names |
-| **R2 CDN миграция** | ✅ ЗАВЕРШЕНА — 580/620 картинок в R2 |
+| **R2 CDN миграция** | ✅ ЗАВЕРШЕНА — 2571/2607 картинок в R2 |
 | **Data Moat Pipeline** | ✅ NPC + Arbuz + USDA — все работают |
 | **NPC EAN enrichment** | ✅ 1320/3236 (40%) реальных EAN |
 | **Удалить мусорные товары** | ✅ 17 деактивировано (электроника, стройматериалы, открытки) |
@@ -78,7 +78,7 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 | **БД-фиксы** (CASCADE, GIN) | 🔜 |
 | **Фронтенд: name_kz по языку** | 🔜 |
 | **USDA enrichment** | 🔜 457 продуктов без состава |
-| **R2 upload для новых продуктов** | 🔜 ~2000 картинок нужно загрузить |
+| **R2 full migration** | ✅ 2571/2607 картинок в R2 CDN (36 неудаляемых) |
 
 **ARBUZ CATALOG PARSER v2 — BATCH UPSERT:**
 
@@ -96,16 +96,15 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - **NPC name search** = даёт EAN для ~40% продуктов
 - **82 категорий** обойдены через search queries
 
-**ТЕКУЩИЕ СТАТИСТИКИ БД (2026-04-19):**
-- **3236 active** global_products (было 685)
-- **Состав: 2779/3236 (86%)** (было ~75%)
-- **Русский состав: 2779/2779 (100%)** (было ~48%) ← 0 нерусских!
-- Arbuz primary: 2237 (было 26)
-- С реальными EAN: 1303/3236 (40%)
-- С arbuz_ EAN: 1933 (нужны реальные EAN или пометка "без штрихкода")
-- Без состава: 457
+**ТЕКУЩИЕ СТАТИСТИКИ БД (2026-04-21):**
+- **2662 active** global_products (было 3236 — почищены дубли)
+- **Состав: ~86%** 
+- **Русский состав: 100%**
+- Arbuz primary: ~1900
+- С реальными EAN: ~1300 (40%)
+- Без состава: ~457
 - **209 помечены как "без штрихкода"** (202 Arbuz СТМ + 7 весовые/свежие)
-- **1724 реальных кандидата** для поиска EAN
+- **0 дубликатов по имени**
 
 **EAN MATCHING — ИТОГИ ТЕСТИРОВАНИЯ:**
 - NPC + DDG + OFF кросс-валидация: 25% verified, 85% any EAN
@@ -164,19 +163,26 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - 007 (`add_pipeline_sources`): ✅ ПРИМЕНЕНА
 - 008 (`r2_image_columns`): ✅ ПРИМЕНЕНА
 
+**ScanScreen РЕДИЗАЙН (сессия 11, 2026-04-21):**
+- ✅ Blur-шапка: кнопка Назад + заголовок + бейдж магазина
+- ✅ Камера (60%) — `flex: 6, minHeight: 0`
+- ✅ Нижняя панель (40%) — 4 кнопки (Фонарик/Галерея/Камера/Сравнить), ручной ввод EAN, история последних 5 сканов
+- ✅ i18n ключи: scanTitle, gallery, compare, cameraSwitch, manualInputPlaceholder, manualInvalid, recentScans (RU + KZ)
+- ✅ `saveRecentScan` — сохраняет в `localStorage` (`korset_recent_scans`, 5 последних)
+- ✅ ESLint-фиксы: `startScannerRef` для рекурсии, `t.scan.offlineNotFound` вместо `lang`
+
 **ПОРЯДОК ЗАДАЧ (следующий чат):**
-1. Почистить 330 групп дубликатов (958 продуктов)
-2. EAN enrichment на 1724 кандидата (NPC + DDG кросс-валидация)
-3. Серверная пагинация для каталога (`.range()` в Supabase запросе)
-4. USDA enrichment на 457 продуктов без состава
-5. R2 upload для ~2000 новых картинок Arbuz
-6. Фронтенд: показывать name_kz когда user.lang === 'kz'
-7. Импорт прайс-листа (RetailImportScreen)
-8. БД-фиксы (CASCADE, GIN, duplicate arbuz_ EAN)
+1. EAN enrichment на кандидатов (NPC + DDG кросс-валидация)
+2. USDA enrichment на ~457 продуктов без состава
+3. Фронтенд: показывать name_kz когда user.lang === 'kz'
+4. Импорт прайс-листа (RetailImportScreen)
+5. БД-фиксы (CASCADE, GIN, duplicate arbuz_ EAN)
+6. Почистить 36 продуктов с мёртвыми image_url (заменить/удалить)
 
 Офлайн-режим: ✅ ГОТОВО (6 слоёв, 85/100)
 
 **R2 CDN:**
 - R2 bucket `korset-images` (EEUR), custom domain `cdn.korset.app` ✅
-- 580/620 картинок мигрировано (40 — плейсхолдеры/недоступные)
+- **2571/2607 картинок мигрировано** (36 неудаляемых: 7 Kaspi блокировка, ~17 локальных путей, ~5 Unsplash, 7 Kaspi gallery)
 - `getImageUrl()` интегрирован, Cloudflare Image Transformations НЕ работают (платный план)
+- Скрипт миграции: `scripts/migrate-images-to-r2.mjs` (обновлён: сохраняет original URL + фильтр по r2_key)

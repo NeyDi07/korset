@@ -5,10 +5,12 @@ import { useStore } from '../contexts/StoreContext.jsx'
 import { getImageUrl } from '../utils/imageUrl.js'
 import {
   getScansCount,
-  getUniqueProductsScanned,
+  getUniqueCustomers,
   getTotalProducts,
   getTopScannedProducts,
   getMissedOpportunities,
+  getLostRevenue,
+  getScanCoverage,
 } from '../utils/retailAnalytics.js'
 
 // ── Skeleton placeholder ───────────────────────────────────────────
@@ -21,6 +23,7 @@ const CARD_THEME = {
   blue: { bg: 'rgba(56,189,248,0.08)', border: 'rgba(56,189,248,0.2)', color: '#38BDF8' },
   amber: { bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.2)', color: '#F59E0B' },
   green: { bg: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.2)', color: '#10B981' },
+  red: { bg: 'rgba(248,113,113,0.08)', border: 'rgba(248,113,113,0.2)', color: '#F87171' },
   neutral: { bg: 'rgba(255,255,255,0.03)', border: 'rgba(255,255,255,0.08)', color: '#fff' },
 }
 
@@ -391,8 +394,20 @@ export default function RetailDashboardScreen() {
   })
 
   const uniqueQ = useQuery({
-    queryKey: ['retail-unique', storeId, period],
-    queryFn: () => getUniqueProductsScanned(storeId, period),
+    queryKey: ['retail-unique-customers', storeId, period],
+    queryFn: () => getUniqueCustomers(storeId, period),
+    enabled,
+  })
+
+  const lostQ = useQuery({
+    queryKey: ['retail-lost-revenue', storeId, period],
+    queryFn: () => getLostRevenue(storeId, period),
+    enabled,
+  })
+
+  const coverageQ = useQuery({
+    queryKey: ['retail-coverage', storeId, period],
+    queryFn: () => getScanCoverage(storeId, period),
     enabled,
   })
 
@@ -495,11 +510,11 @@ export default function RetailDashboardScreen() {
           loading={scansQ.isLoading}
         />
         <MetricCard
-          label={d.uniqueProducts}
+          label={d.uniqueCustomers ?? 'Покупателей'}
           sub={periodLabel}
           value={uniqueQ.isError ? '—' : (uniqueQ.data ?? 0).toLocaleString()}
-          icon="package_2"
-          accent="neutral"
+          icon="group"
+          accent="green"
           loading={uniqueQ.isLoading}
         />
         <MetricCard
@@ -514,9 +529,139 @@ export default function RetailDashboardScreen() {
           label={d.totalProducts}
           value={totalQ.isError ? '—' : (totalQ.data ?? 0).toLocaleString()}
           icon="inventory_2"
-          accent="green"
+          accent="neutral"
           loading={totalQ.isLoading}
         />
+      </div>
+
+      {/* ── Lost Revenue card (full width) ── */}
+      <div
+        style={{
+          background: 'rgba(248,113,113,0.07)',
+          border: '1px solid rgba(248,113,113,0.18)',
+          borderRadius: 16,
+          padding: '14px 16px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: 12,
+        }}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 5,
+              fontSize: 12,
+              color: 'var(--text-dim)',
+            }}
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: 14, color: '#F87171' }}>
+              trending_down
+            </span>
+            {d.lostRevenue ?? 'Упущённая выручка'}
+          </div>
+          {lostQ.isLoading ? (
+            <div className="retail-skel" style={{ height: 28, width: 120, borderRadius: 6 }} />
+          ) : (
+            <div
+              style={{
+                fontSize: 24,
+                fontWeight: 700,
+                fontFamily: 'var(--font-display)',
+                color: '#F87171',
+                lineHeight: 1.2,
+              }}
+            >
+              {lostQ.isError ? '—' : `~${(lostQ.data ?? 0).toLocaleString('ru-KZ')} ₸`}
+            </div>
+          )}
+          <div style={{ fontSize: 11, color: 'var(--text-dim)' }}>
+            {periodLabel} · {d.lostRevenueHint ?? 'Оценочно — товары искали, но не нашли'}
+          </div>
+        </div>
+        <span
+          className="material-symbols-outlined"
+          style={{ fontSize: 36, color: 'rgba(248,113,113,0.25)', flexShrink: 0 }}
+        >
+          money_off
+        </span>
+      </div>
+
+      {/* ── Scan coverage progress bar ── */}
+      <div
+        style={{
+          background: 'rgba(255,255,255,0.03)',
+          border: '1px solid rgba(255,255,255,0.07)',
+          borderRadius: 14,
+          padding: '12px 14px',
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: 8,
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 5,
+              fontSize: 12,
+              color: 'var(--text-dim)',
+            }}
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: 14, color: '#38BDF8' }}>
+              fact_check
+            </span>
+            {d.catalogCoverage ?? 'Покрытие каталога'}
+          </div>
+          <div
+            style={{
+              fontSize: 15,
+              fontWeight: 700,
+              fontFamily: 'var(--font-display)',
+              color: (() => {
+                const v = coverageQ.data ?? 0
+                if (v >= 70) return '#10B981'
+                if (v >= 40) return '#F59E0B'
+                return '#F87171'
+              })(),
+            }}
+          >
+            {coverageQ.isLoading ? '...' : coverageQ.isError ? '—' : `${coverageQ.data ?? 0}%`}
+          </div>
+        </div>
+        <div
+          style={{
+            height: 6,
+            borderRadius: 3,
+            background: 'rgba(255,255,255,0.06)',
+            overflow: 'hidden',
+          }}
+        >
+          <div
+            style={{
+              height: '100%',
+              width: coverageQ.isLoading ? '0%' : `${Math.min(coverageQ.data ?? 0, 100)}%`,
+              borderRadius: 3,
+              background: (() => {
+                const v = coverageQ.data ?? 0
+                if (v >= 70) return 'linear-gradient(90deg, #10B981, #34D399)'
+                if (v >= 40) return 'linear-gradient(90deg, #F59E0B, #FBBF24)'
+                return 'linear-gradient(90deg, #F87171, #FCA5A5)'
+              })(),
+              transition: 'width 0.6s ease',
+            }}
+          />
+        </div>
+        <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 5 }}>
+          {d.catalogCoverageHint ?? 'Доля сканов где товар нашёлся в наличии'}
+        </div>
       </div>
 
       {/* ── Top-5 Products ── */}

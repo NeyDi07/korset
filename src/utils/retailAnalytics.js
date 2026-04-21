@@ -55,6 +55,33 @@ export async function getMissedOpportunities(storeId, days) {
   return data ?? []
 }
 
+export async function getUniqueCustomers(storeId, days) {
+  const { data, error } = await supabase.rpc('get_unique_customers', {
+    p_store_id: storeId,
+    p_days_back: days,
+  })
+  if (error) throw new Error(error.message ?? error)
+  return Number(data ?? 0)
+}
+
+export async function getLostRevenue(storeId, days) {
+  const { data, error } = await supabase.rpc('get_lost_revenue', {
+    p_store_id: storeId,
+    p_days_back: days,
+  })
+  if (error) throw new Error(error.message ?? error)
+  return Number(data ?? 0)
+}
+
+export async function getScanCoverage(storeId, days) {
+  const { data, error } = await supabase.rpc('get_scan_coverage', {
+    p_store_id: storeId,
+    p_days_back: days,
+  })
+  if (error) throw new Error(error.message ?? error)
+  return Number(data ?? 0)
+}
+
 export async function getStoreCatalogProducts(storeId) {
   const { data, error } = await supabase
     .from('store_products')

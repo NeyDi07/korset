@@ -159,6 +159,9 @@ async function processProduct(product) {
   if (product.image_url) {
     const r = await migrateImage(ean, product.image_url, 'main')
     if (r) {
+      if (!alreadyOnR2(product.image_url)) {
+        updates.original_image_url = product.image_url
+      }
       updates.image_url = r.publicUrl
       updates.r2_key = r.r2Key
       updates.image_source = r.source
@@ -167,12 +170,22 @@ async function processProduct(product) {
 
   if (product.image_ingredients_url) {
     const r = await migrateImage(ean, product.image_ingredients_url, 'ingredients')
-    if (r) updates.image_ingredients_url = r.publicUrl
+    if (r) {
+      if (!alreadyOnR2(product.image_ingredients_url)) {
+        updates.original_image_ingredients_url = product.image_ingredients_url
+      }
+      updates.image_ingredients_url = r.publicUrl
+    }
   }
 
   if (product.image_nutrition_url) {
     const r = await migrateImage(ean, product.image_nutrition_url, 'nutrition')
-    if (r) updates.image_nutrition_url = r.publicUrl
+    if (r) {
+      if (!alreadyOnR2(product.image_nutrition_url)) {
+        updates.original_image_nutrition_url = product.image_nutrition_url
+      }
+      updates.image_nutrition_url = r.publicUrl
+    }
   }
 
   if (product.images && Array.isArray(product.images)) {
@@ -223,6 +236,8 @@ async function run() {
       .select('id, ean, image_url, image_ingredients_url, image_nutrition_url, images')
       .eq('is_active', true)
       .not('image_url', 'is', null)
+      .neq('image_url', '')
+      .is('r2_key', null)
       .range(offset, offset + BATCH_SIZE - 1)
       .order('ean')
 
