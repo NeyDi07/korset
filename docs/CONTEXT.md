@@ -97,11 +97,11 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - **82 категорий** обойдены через search queries
 
 **ТЕКУЩИЕ СТАТИСТИКИ БД (2026-04-21):**
-- **~6468 active** global_products (korzinavdom: 5462 + arbuz: 305 + другие)
-- **Состав: ~93%** (Корзина дала состав на 93%)
-- **Нутриенты (ккал/белки/жиры/углеводы): ~88%**
-- **1656 Arbuz продуктов потеряны** (ошибочно удалены arbuz_ EAN — НЕ СТМ, а брендовые без штрихкода) — НУЖНО ВОССТАНОВИТЬ
-- Без состава: ~450
+- **~8218 active** global_products (arbuz: 2055 + korzinavdom: 5462 + другие: ~701)
+- **Состав: ~90%**
+- **Нутриенты: ~85%**
+- Arbuz СТМ удалены, брендовые восстановлены
+- store_products для ERALY: 8760
 
 **EAN MATCHING — ИТОГИ ТЕСТИРОВАНИЯ:**
 - NPC + DDG + OFF кросс-валидация: 25% verified, 85% any EAN
@@ -179,9 +179,9 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - ✅ `src/screens/RetailProductsScreen.jsx` — useInfiniteQuery + Load More кнопка + дебаунс поиска 350ms + серверный поиск через ilike + optimistic updates адаптированы для infinite query
 
 **ПОРЯДОК ЗАДАЧ (следующий чат):**
-1. **Восстановить 1656 Arbuz продуктов** (ошибочно удалены — запустить arbuz-catalog-parser.cjs)
-2. Удалить ТОЛЬКО Arbuz Select СТМ (brand contains "Arbuz") — ~14 продуктов
-3. R2 upload для Корзина картинки
+1. R2 upload для ~8000 картинок (Корзина + Arbuz)
+2. Объединить дубликаты arbuz↔korzinavdom (по имени — взять лучший состав)
+3. EAN enrichment на кандидатов (NPC + DDG)
 3. EAN enrichment на кандидатов (NPC + DDG)
 4. USDA enrichment на ~300 продуктов без состава
 5. Импорт прайс-листа (RetailImportScreen)

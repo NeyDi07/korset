@@ -1153,7 +1153,7 @@ export default function ProductScreen() {
             justifyContent: 'center',
             cursor: 'pointer',
             flexShrink: 0,
-            transition: 'all 0.2s',
+            transition: 'background 0.15s, border-color 0.15s',
           }}
         >
           <HeartIcon
