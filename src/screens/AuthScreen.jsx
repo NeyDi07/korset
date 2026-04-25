@@ -41,8 +41,6 @@ function validatePassword(pw, lang) {
   return errors
 }
 
-const fontAdvent = "'Advent Pro', sans-serif"
-
 function EyeBtn({ show, onToggle }) {
   return (
     <button
@@ -229,7 +227,7 @@ export default function AuthScreen() {
     borderRadius: 14,
     color: '#fff',
     fontSize: 14,
-    fontFamily: fontAdvent,
+    fontFamily: 'var(--font-display)',
     width: '100%',
     outline: 'none',
     transition: 'border 0.2s',
@@ -389,7 +387,7 @@ export default function AuthScreen() {
             />
             <h1
               style={{
-                fontFamily: fontAdvent,
+                fontFamily: 'var(--font-display)',
                 fontSize: 'clamp(24px, 6vw, 28px)',
                 fontWeight: 700,
                 color: '#fff',
@@ -402,7 +400,7 @@ export default function AuthScreen() {
             </h1>
             <p
               style={{
-                fontFamily: fontAdvent,
+                fontFamily: 'var(--font-display)',
                 fontSize: 14,
                 color: 'rgba(255,255,255,0.4)',
                 marginTop: 8,
@@ -447,7 +445,7 @@ export default function AuthScreen() {
                   padding: '12px 16px',
                   borderRadius: 12,
                   fontSize: 13,
-                  fontFamily: fontAdvent,
+                  fontFamily: 'var(--font-display)',
                   marginBottom: 18,
                   textAlign: 'center',
                   lineHeight: 1.45,
@@ -467,7 +465,7 @@ export default function AuthScreen() {
                   padding: '12px 16px',
                   borderRadius: 12,
                   fontSize: 13,
-                  fontFamily: fontAdvent,
+                  fontFamily: 'var(--font-display)',
                   marginBottom: 18,
                   textAlign: 'center',
                   display: 'flex',
@@ -503,7 +501,7 @@ export default function AuthScreen() {
                   padding: '12px 16px',
                   borderRadius: 12,
                   fontSize: 13,
-                  fontFamily: fontAdvent,
+                  fontFamily: 'var(--font-display)',
                   marginBottom: 18,
                   textAlign: 'center',
                   display: 'flex',
@@ -552,7 +550,7 @@ export default function AuthScreen() {
                         textAlign: 'center',
                         fontSize: 22,
                         fontWeight: 700,
-                        fontFamily: fontAdvent,
+                        fontFamily: 'var(--font-display)',
                         background: 'rgba(255,255,255,0.04)',
                         border: '1.5px solid rgba(124,58,237,0.2)',
                         borderRadius: 12,
@@ -574,7 +572,7 @@ export default function AuthScreen() {
                     borderRadius: 14,
                     fontSize: 15,
                     fontWeight: 600,
-                    fontFamily: fontAdvent,
+                    fontFamily: 'var(--font-display)',
                     cursor: 'pointer',
                     opacity: loading || otp.join('').length < 6 ? 0.5 : 1,
                     transition: 'opacity 0.2s',
@@ -613,7 +611,7 @@ export default function AuthScreen() {
                     borderRadius: 14,
                     fontSize: 15,
                     fontWeight: 600,
-                    fontFamily: fontAdvent,
+                    fontFamily: 'var(--font-display)',
                     cursor: 'pointer',
                     opacity: loading || !canSubmit() ? 0.5 : 1,
                     marginTop: 4,
@@ -629,7 +627,7 @@ export default function AuthScreen() {
                     border: 'none',
                     color: '#A78BFA',
                     fontSize: 13,
-                    fontFamily: fontAdvent,
+                    fontFamily: 'var(--font-display)',
                     cursor: 'pointer',
                     marginTop: 4,
                   }}
@@ -733,7 +731,7 @@ export default function AuthScreen() {
                         <span
                           style={{
                             fontSize: 11,
-                            fontFamily: fontAdvent,
+                            fontFamily: 'var(--font-display)',
                             color: rule.ok ? '#34D399' : 'rgba(255,255,255,0.3)',
                           }}
                         >
@@ -775,7 +773,7 @@ export default function AuthScreen() {
                           fontSize: 11,
                           color: '#F87171',
                           marginTop: 4,
-                          fontFamily: fontAdvent,
+                          fontFamily: 'var(--font-display)',
                           paddingLeft: 2,
                         }}
                       >
@@ -796,7 +794,7 @@ export default function AuthScreen() {
                         border: 'none',
                         color: 'rgba(255,255,255,0.3)',
                         fontSize: 12,
-                        fontFamily: fontAdvent,
+                        fontFamily: 'var(--font-display)',
                         cursor: 'pointer',
                       }}
                     >
@@ -817,7 +815,7 @@ export default function AuthScreen() {
                     borderRadius: 14,
                     fontSize: 15,
                     fontWeight: 600,
-                    fontFamily: fontAdvent,
+                    fontFamily: 'var(--font-display)',
                     cursor: 'pointer',
                     opacity: loading || !canSubmit() ? 0.5 : 1,
                     marginTop: 6,
@@ -846,7 +844,7 @@ export default function AuthScreen() {
                     style={{
                       fontSize: 11,
                       color: 'rgba(255,255,255,0.25)',
-                      fontFamily: fontAdvent,
+                      fontFamily: 'var(--font-display)',
                       textTransform: 'uppercase',
                       letterSpacing: 1,
                     }}
@@ -871,7 +869,7 @@ export default function AuthScreen() {
                     borderRadius: 14,
                     fontSize: 14,
                     fontWeight: 500,
-                    fontFamily: fontAdvent,
+                    fontFamily: 'var(--font-display)',
                     cursor: 'pointer',
                     transition: 'background 0.15s',
                   }}
@@ -913,7 +911,7 @@ export default function AuthScreen() {
                 style={{
                   fontSize: 13,
                   color: 'rgba(255,255,255,0.3)',
-                  fontFamily: fontAdvent,
+                  fontFamily: 'var(--font-display)',
                   margin: 0,
                 }}
               >
@@ -933,7 +931,7 @@ export default function AuthScreen() {
                   color: '#A78BFA',
                   fontSize: 14,
                   fontWeight: 600,
-                  fontFamily: fontAdvent,
+                  fontFamily: 'var(--font-display)',
                   cursor: 'pointer',
                   marginTop: 6,
                 }}
@@ -956,7 +954,7 @@ export default function AuthScreen() {
                 style={{
                   fontSize: 11,
                   color: 'rgba(255,255,255,0.2)',
-                  fontFamily: fontAdvent,
+                  fontFamily: 'var(--font-display)',
                   lineHeight: 1.5,
                 }}
               >

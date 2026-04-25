@@ -4,27 +4,77 @@ import { supabase } from '../utils/supabase.js'
 import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import { useStore } from '../contexts/StoreContext.jsx'
-import { clearLocalScanHistory, buildHistoryOwnerKey, readLocalScanHistory } from '../utils/localHistory.js'
-import { DEFAULT_PRIVACY_SETTINGS, loadPrivacySettings, notifyPrivacyChanged } from '../utils/privacySettings.js'
-
-const fontDisplay = '"Bebas Neue", "Arial Narrow", sans-serif'
-const fontBody = 'Space Grotesk, system-ui, sans-serif'
+import {
+  clearLocalScanHistory,
+  buildHistoryOwnerKey,
+  readLocalScanHistory,
+} from '../utils/localHistory.js'
+import {
+  DEFAULT_PRIVACY_SETTINGS,
+  loadPrivacySettings,
+  notifyPrivacyChanged,
+} from '../utils/privacySettings.js'
 
 function Section({ title, children }) {
   return (
     <div style={{ padding: '0 22px 18px' }}>
-      <div style={{ fontFamily: fontBody, fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.28)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 1.5 }}>{title}</div>
-      <div className="glass-card" style={{ padding: 0 }}>{children}</div>
+      <div
+        style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 11,
+          fontWeight: 700,
+          color: 'rgba(255,255,255,0.28)',
+          marginBottom: 8,
+          textTransform: 'uppercase',
+          letterSpacing: 1.5,
+        }}
+      >
+        {title}
+      </div>
+      <div className="glass-card" style={{ padding: 0 }}>
+        {children}
+      </div>
     </div>
   )
 }
 
 function Row({ label, description, right, danger = false, onClick }) {
   return (
-    <div onClick={onClick} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, padding: '15px 18px', cursor: onClick ? 'pointer' : 'default' }}>
+    <div
+      onClick={onClick}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: 16,
+        padding: '15px 18px',
+        cursor: onClick ? 'pointer' : 'default',
+      }}
+    >
       <div style={{ minWidth: 0 }}>
-        <div style={{ fontFamily: fontBody, fontSize: 14, fontWeight: 600, color: danger ? '#FCA5A5' : '#fff' }}>{label}</div>
-        {description ? <div style={{ fontFamily: fontBody, fontSize: 12, lineHeight: 1.45, color: 'rgba(255,255,255,0.45)', marginTop: 4 }}>{description}</div> : null}
+        <div
+          style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 14,
+            fontWeight: 600,
+            color: danger ? '#FCA5A5' : '#fff',
+          }}
+        >
+          {label}
+        </div>
+        {description ? (
+          <div
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 12,
+              lineHeight: 1.45,
+              color: 'rgba(255,255,255,0.45)',
+              marginTop: 4,
+            }}
+          >
+            {description}
+          </div>
+        ) : null}
       </div>
       <div style={{ flexShrink: 0 }}>{right}</div>
     </div>
@@ -36,7 +86,10 @@ function Toggle({ checked, onChange, disabled = false }) {
     <button
       type="button"
       disabled={disabled}
-      onClick={(e) => { e.stopPropagation(); if (!disabled) onChange(!checked) }}
+      onClick={(e) => {
+        e.stopPropagation()
+        if (!disabled) onChange(!checked)
+      }}
       style={{
         width: 50,
         height: 30,
@@ -51,7 +104,15 @@ function Toggle({ checked, onChange, disabled = false }) {
         opacity: disabled ? 0.5 : 1,
       }}
     >
-      <span style={{ width: 22, height: 22, borderRadius: '50%', background: '#fff', boxShadow: checked ? '0 0 20px rgba(139,92,246,0.35)' : 'none' }} />
+      <span
+        style={{
+          width: 22,
+          height: 22,
+          borderRadius: '50%',
+          background: '#fff',
+          boxShadow: checked ? '0 0 20px rgba(139,92,246,0.35)' : 'none',
+        }}
+      />
     </button>
   )
 }
@@ -69,7 +130,7 @@ function ActionButton({ label, danger = false, onClick, disabled = false }) {
         padding: '14px 16px',
         background: danger ? 'rgba(239,68,68,0.12)' : 'rgba(124,58,237,0.14)',
         color: danger ? '#FCA5A5' : '#DDD6FE',
-        fontFamily: fontBody,
+        fontFamily: 'var(--font-body)',
         fontSize: 14,
         fontWeight: 700,
         cursor: disabled ? 'not-allowed' : 'pointer',
@@ -90,11 +151,14 @@ export default function PrivacySettingsScreen() {
   const [busy, setBusy] = useState(false)
   const [statusText, setStatusText] = useState('')
 
-  const privacy = useMemo(() => ({
-    ...DEFAULT_PRIVACY_SETTINGS,
-    ...loadPrivacySettings(),
-    ...(profile?.privacy || {}),
-  }), [profile])
+  const privacy = useMemo(
+    () => ({
+      ...DEFAULT_PRIVACY_SETTINGS,
+      ...loadPrivacySettings(),
+      ...(profile?.privacy || {}),
+    }),
+    [profile]
+  )
 
   const localHistoryCount = useMemo(() => {
     return readLocalScanHistory(buildHistoryOwnerKey(user)).length
@@ -109,7 +173,9 @@ export default function PrivacySettingsScreen() {
 
   async function handleLocalHistoryToggle(value) {
     if (!value) {
-      const ok = window.confirm('Отключить локальную историю и удалить уже сохранённые сканы на этом устройстве?')
+      const ok = window.confirm(
+        'Отключить локальную историю и удалить уже сохранённые сканы на этом устройстве?'
+      )
       if (!ok) return
       clearLocalScanHistory(buildHistoryOwnerKey(user))
       window.dispatchEvent(new CustomEvent('korset:scan_added'))
@@ -137,7 +203,9 @@ export default function PrivacySettingsScreen() {
       setStatusText('Войдите в аккаунт, чтобы управлять облачной историей.')
       return
     }
-    const ok = window.confirm('Удалить облачную историю сканов из аккаунта Körset? Это действие необратимо.')
+    const ok = window.confirm(
+      'Удалить облачную историю сканов из аккаунта Körset? Это действие необратимо.'
+    )
     if (!ok) return
     try {
       setBusy(true)
@@ -162,16 +230,69 @@ export default function PrivacySettingsScreen() {
   }
 
   return (
-    <div className="screen" style={{ paddingTop: 'max(16px, env(safe-area-inset-top))', paddingBottom: 'calc(110px + env(safe-area-inset-bottom))', overflowY: 'auto' }}>
+    <div
+      className="screen"
+      style={{
+        paddingTop: 'max(16px, env(safe-area-inset-top))',
+        paddingBottom: 'calc(110px + env(safe-area-inset-bottom))',
+        overflowY: 'auto',
+      }}
+    >
       <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '0 22px 16px' }}>
-        <button onClick={() => navigate(-1)} aria-label="Назад" style={{ width: 44, height: 44, borderRadius: 14, border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.04)', color: '#fff', cursor: 'pointer', display: 'grid', placeItems: 'center', flexShrink: 0 }}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
-        <div style={{ fontFamily: fontDisplay, fontSize: 28, letterSpacing: 1, color: '#fff' }}>Приватность</div>
+        <button
+          onClick={() => navigate(-1)}
+          aria-label="Назад"
+          style={{
+            width: 44,
+            height: 44,
+            borderRadius: 14,
+            border: '1px solid rgba(255,255,255,0.08)',
+            background: 'rgba(255,255,255,0.04)',
+            color: '#fff',
+            cursor: 'pointer',
+            display: 'grid',
+            placeItems: 'center',
+            flexShrink: 0,
+          }}
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M15 18l-6-6 6-6" />
+          </svg>
+        </button>
+        <div
+          style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: 28,
+            letterSpacing: 1,
+            color: '#fff',
+          }}
+        >
+          Приватность
+        </div>
       </div>
 
       <div style={{ padding: '0 22px 18px' }}>
         <div className="glass-card" style={{ padding: 18 }}>
-          <div style={{ fontFamily: fontBody, fontSize: 14, lineHeight: 1.55, color: 'rgba(255,255,255,0.72)' }}>
-            Здесь ты контролируешь, что Körset хранит на устройстве, что синхронизирует с аккаунтом и можно ли использовать данные для персонализации. Без лишней драмы и тумана, который любят писать в политиках конфиденциальности.
+          <div
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 14,
+              lineHeight: 1.55,
+              color: 'rgba(255,255,255,0.72)',
+            }}
+          >
+            Здесь ты контролируешь, что Körset хранит на устройстве, что синхронизирует с аккаунтом
+            и можно ли использовать данные для персонализации. Без лишней драмы и тумана, который
+            любят писать в политиках конфиденциальности.
           </div>
         </div>
       </div>
@@ -180,13 +301,23 @@ export default function PrivacySettingsScreen() {
         <Row
           label="Персонализированные рекомендации"
           description="Использовать историю сканов, избранное и предпочтения для более точных подсказок и AI-ответов."
-          right={<Toggle checked={privacy.personalizationEnabled} onChange={(value) => updatePrivacy({ personalizationEnabled: value })} />}
+          right={
+            <Toggle
+              checked={privacy.personalizationEnabled}
+              onChange={(value) => updatePrivacy({ personalizationEnabled: value })}
+            />
+          }
         />
         <div style={{ height: 1, background: 'rgba(255,255,255,0.04)', margin: '0 18px' }} />
         <Row
           label="Анонимная аналитика"
           description="Разрешить отправку событий сканирования для улучшения качества сервиса и аналитики магазина."
-          right={<Toggle checked={privacy.analyticsEnabled} onChange={(value) => updatePrivacy({ analyticsEnabled: value })} />}
+          right={
+            <Toggle
+              checked={privacy.analyticsEnabled}
+              onChange={(value) => updatePrivacy({ analyticsEnabled: value })}
+            />
+          }
         />
       </Section>
 
@@ -194,33 +325,63 @@ export default function PrivacySettingsScreen() {
         <Row
           label="Локальная история сканов"
           description={`Хранить историю на этом устройстве для быстрого доступа. Сейчас записей: ${localHistoryCount}.`}
-          right={<Toggle checked={privacy.localHistoryEnabled} onChange={handleLocalHistoryToggle} />}
+          right={
+            <Toggle checked={privacy.localHistoryEnabled} onChange={handleLocalHistoryToggle} />
+          }
         />
         <div style={{ height: 1, background: 'rgba(255,255,255,0.04)', margin: '0 18px' }} />
         <Row
           label="Запоминать выбранный магазин"
           description="Сохранять последний магазин на этом устройстве, чтобы не выбирать его заново при следующем заходе."
-          right={<Toggle checked={privacy.rememberStoreEnabled} onChange={handleRememberStoreToggle} />}
+          right={
+            <Toggle checked={privacy.rememberStoreEnabled} onChange={handleRememberStoreToggle} />
+          }
         />
       </Section>
 
       <Section title="Управление данными">
         <div style={{ padding: 18, display: 'grid', gap: 10 }}>
           <ActionButton label="Очистить историю на этом устройстве" onClick={clearDeviceHistory} />
-          <ActionButton label="Удалить облачную историю аккаунта" danger onClick={clearCloudHistory} disabled={!user || busy} />
-          <ActionButton label="Сбросить настройки приватности" onClick={resetPrivacySettings} disabled={busy} />
+          <ActionButton
+            label="Удалить облачную историю аккаунта"
+            danger
+            onClick={clearCloudHistory}
+            disabled={!user || busy}
+          />
+          <ActionButton
+            label="Сбросить настройки приватности"
+            onClick={resetPrivacySettings}
+            disabled={busy}
+          />
         </div>
       </Section>
 
       <Section title="Что это значит на практике">
-        <Row label="Если отключить анонимную аналитику" description="Körset перестанет отправлять серверные события сканирования для аналитики. Локальная история на устройстве при этом может остаться включённой." right={null} />
+        <Row
+          label="Если отключить анонимную аналитику"
+          description="Körset перестанет отправлять серверные события сканирования для аналитики. Локальная история на устройстве при этом может остаться включённой."
+          right={null}
+        />
         <div style={{ height: 1, background: 'rgba(255,255,255,0.04)', margin: '0 18px' }} />
-        <Row label="Если отключить локальную историю" description="Новые сканы не будут сохраняться в памяти этого устройства, а уже сохранённые локальные записи будут удалены после подтверждения." right={null} />
+        <Row
+          label="Если отключить локальную историю"
+          description="Новые сканы не будут сохраняться в памяти этого устройства, а уже сохранённые локальные записи будут удалены после подтверждения."
+          right={null}
+        />
       </Section>
 
       {statusText ? (
         <div style={{ padding: '0 22px 24px' }}>
-          <div className="glass-card" style={{ padding: '14px 16px', fontFamily: fontBody, fontSize: 13, lineHeight: 1.5, color: 'rgba(255,255,255,0.68)' }}>
+          <div
+            className="glass-card"
+            style={{
+              padding: '14px 16px',
+              fontFamily: 'var(--font-body)',
+              fontSize: 13,
+              lineHeight: 1.5,
+              color: 'rgba(255,255,255,0.68)',
+            }}
+          >
             {statusText}
           </div>
         </div>

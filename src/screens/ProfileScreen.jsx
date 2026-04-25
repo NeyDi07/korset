@@ -314,8 +314,6 @@ export default function ProfileScreen() {
   const totalPref = dietCount + allergenCount
   const tr = (val) => (typeof val === 'object' ? val[lang] || val.ru : val)
 
-  const fontAdvent = "'Advent Pro', sans-serif"
-
   return (
     <>
       <style>{`
@@ -427,7 +425,7 @@ export default function ProfileScreen() {
           >
             <h1
               style={{
-                fontFamily: fontAdvent,
+                fontFamily: 'var(--font-display)',
                 fontSize: 24,
                 fontWeight: 500,
                 color: '#fff',
@@ -448,7 +446,7 @@ export default function ProfileScreen() {
                   color: '#A78BFA',
                   fontSize: 12,
                   fontWeight: 600,
-                  fontFamily: fontAdvent,
+                  fontFamily: 'var(--font-display)',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
@@ -534,7 +532,7 @@ export default function ProfileScreen() {
               <>
                 <h2
                   style={{
-                    fontFamily: fontAdvent,
+                    fontFamily: 'var(--font-display)',
                     fontSize: 26,
                     fontWeight: 700,
                     color: '#fff',
@@ -546,7 +544,11 @@ export default function ProfileScreen() {
                   {displayName || user?.user_metadata?.full_name || 'Körset User'}
                 </h2>
                 <div
-                  style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)', fontFamily: fontAdvent }}
+                  style={{
+                    fontSize: 13,
+                    color: 'rgba(255,255,255,0.3)',
+                    fontFamily: 'var(--font-display)',
+                  }}
                 >
                   {user.email || ''}
                 </div>
@@ -555,7 +557,7 @@ export default function ProfileScreen() {
               <>
                 <h2
                   style={{
-                    fontFamily: fontAdvent,
+                    fontFamily: 'var(--font-display)',
                     fontSize: 28,
                     fontWeight: 700,
                     color: '#fff',
@@ -580,7 +582,7 @@ export default function ProfileScreen() {
                     border: '1.5px solid rgba(255,255,255,0.2)',
                     color: '#fff',
                     fontSize: 13,
-                    fontFamily: fontAdvent,
+                    fontFamily: 'var(--font-display)',
                     fontWeight: 500,
                     padding: '10px 28px',
                     borderRadius: 12,
@@ -642,7 +644,7 @@ export default function ProfileScreen() {
               >
                 <div
                   style={{
-                    fontFamily: fontAdvent,
+                    fontFamily: 'var(--font-display)',
                     fontSize: 42,
                     fontWeight: 600,
                     color: '#fff',
@@ -659,7 +661,7 @@ export default function ProfileScreen() {
                     fontSize: 11,
                     color: 'rgba(255,255,255,0.4)',
                     marginTop: 8,
-                    fontFamily: fontAdvent,
+                    fontFamily: 'var(--font-display)',
                     fontWeight: 500,
                   }}
                 >
@@ -727,7 +729,7 @@ export default function ProfileScreen() {
               >
                 <div
                   style={{
-                    fontFamily: fontAdvent,
+                    fontFamily: 'var(--font-display)',
                     fontSize: 42,
                     fontWeight: 600,
                     color: '#fff',
@@ -744,7 +746,7 @@ export default function ProfileScreen() {
                     fontSize: 11,
                     color: 'rgba(255,255,255,0.4)',
                     marginTop: 8,
-                    fontFamily: fontAdvent,
+                    fontFamily: 'var(--font-display)',
                     fontWeight: 500,
                   }}
                 >
@@ -807,7 +809,7 @@ export default function ProfileScreen() {
               >
                 <div
                   style={{
-                    fontFamily: fontAdvent,
+                    fontFamily: 'var(--font-display)',
                     fontSize: 42,
                     fontWeight: 600,
                     color: '#fff',
@@ -824,7 +826,7 @@ export default function ProfileScreen() {
                     fontSize: 11,
                     color: 'rgba(255,255,255,0.4)',
                     marginTop: 8,
-                    fontFamily: fontAdvent,
+                    fontFamily: 'var(--font-display)',
                     fontWeight: 500,
                   }}
                 >
@@ -854,7 +856,7 @@ export default function ProfileScreen() {
                     />
                     <span
                       style={{
-                        fontFamily: fontAdvent,
+                        fontFamily: 'var(--font-display)',
                         fontSize: 13,
                         fontWeight: 600,
                         color: '#34D399',
@@ -895,7 +897,7 @@ export default function ProfileScreen() {
                       </svg>
                       <span
                         style={{
-                          fontFamily: fontAdvent,
+                          fontFamily: 'var(--font-display)',
                           fontSize: 13,
                           fontWeight: 500,
                           color: profile.halal ? '#10B981' : 'rgba(255,255,255,0.4)',
@@ -925,7 +927,7 @@ export default function ProfileScreen() {
                           <DietIcon name={d.icon} size={24} />
                           <span
                             style={{
-                              fontFamily: fontAdvent,
+                              fontFamily: 'var(--font-display)',
                               fontSize: 13,
                               fontWeight: 500,
                               color: a ? '#C4B5FD' : 'rgba(255,255,255,0.4)',
@@ -951,7 +953,7 @@ export default function ProfileScreen() {
                     />
                     <span
                       style={{
-                        fontFamily: fontAdvent,
+                        fontFamily: 'var(--font-display)',
                         fontSize: 13,
                         fontWeight: 600,
                         color: '#F87171',
@@ -983,7 +985,7 @@ export default function ProfileScreen() {
                           <DietIcon name={al.icon} size={14} />
                           <span
                             style={{
-                              fontFamily: fontAdvent,
+                              fontFamily: 'var(--font-display)',
                               fontSize: 12,
                               fontWeight: 500,
                               color: a ? '#FCA5A5' : 'rgba(255,255,255,0.4)',
@@ -1010,7 +1012,7 @@ export default function ProfileScreen() {
                         padding: '10px 14px',
                         color: '#fff',
                         fontSize: 12,
-                        fontFamily: fontAdvent,
+                        fontFamily: 'var(--font-display)',
                         outline: 'none',
                       }}
                     />
@@ -1024,7 +1026,7 @@ export default function ProfileScreen() {
                         color: '#fff',
                         fontSize: 12,
                         fontWeight: 600,
-                        fontFamily: fontAdvent,
+                        fontFamily: 'var(--font-display)',
                         cursor: 'pointer',
                       }}
                     >
@@ -1046,7 +1048,7 @@ export default function ProfileScreen() {
                             color: '#FCA5A5',
                             border: '1px solid rgba(239,68,68,0.2)',
                             fontSize: 11,
-                            fontFamily: fontAdvent,
+                            fontFamily: 'var(--font-display)',
                           }}
                         >
                           {val}
@@ -1179,7 +1181,7 @@ export default function ProfileScreen() {
                             borderRadius: 8,
                             fontSize: 12,
                             fontWeight: 600,
-                            fontFamily: fontAdvent,
+                            fontFamily: 'var(--font-display)',
                             cursor: 'pointer',
                           }}
                         >
@@ -1209,7 +1211,7 @@ export default function ProfileScreen() {
                       style={{
                         fontSize: 10,
                         color: 'rgba(255,255,255,0.25)',
-                        fontFamily: fontAdvent,
+                        fontFamily: 'var(--font-display)',
                         background: 'rgba(255,255,255,0.05)',
                         padding: '3px 8px',
                         borderRadius: 6,
@@ -1304,7 +1306,7 @@ export default function ProfileScreen() {
             <div key={gi} style={{ padding: '0 22px 14px' }}>
               <div
                 style={{
-                  fontFamily: fontAdvent,
+                  fontFamily: 'var(--font-display)',
                   fontSize: 11,
                   fontWeight: 600,
                   color: 'rgba(255,255,255,0.2)',
@@ -1346,7 +1348,7 @@ export default function ProfileScreen() {
                         </div>
                         <span
                           style={{
-                            fontFamily: fontAdvent,
+                            fontFamily: 'var(--font-display)',
                             fontSize: 14,
                             fontWeight: 500,
                             color: '#fff',
@@ -1430,7 +1432,7 @@ export default function ProfileScreen() {
                     </div>
                     <span
                       style={{
-                        fontFamily: fontAdvent,
+                        fontFamily: 'var(--font-display)',
                         fontSize: 14,
                         fontWeight: 600,
                         color: '#38BDF8',
@@ -1484,7 +1486,12 @@ export default function ProfileScreen() {
                   </svg>
                 </div>
                 <span
-                  style={{ fontFamily: fontAdvent, fontSize: 14, fontWeight: 500, color: '#fff' }}
+                  style={{
+                    fontFamily: 'var(--font-display)',
+                    fontSize: 14,
+                    fontWeight: 500,
+                    color: '#fff',
+                  }}
                 >
                   {t.profile.restartOnboarding}
                 </span>
@@ -1535,7 +1542,7 @@ export default function ProfileScreen() {
                     </div>
                     <span
                       style={{
-                        fontFamily: fontAdvent,
+                        fontFamily: 'var(--font-display)',
                         fontSize: 14,
                         fontWeight: 500,
                         color: '#F87171',
@@ -1553,7 +1560,7 @@ export default function ProfileScreen() {
           <div style={{ textAlign: 'center', padding: '16px 22px 30px' }}>
             <div
               style={{
-                fontFamily: fontAdvent,
+                fontFamily: 'var(--font-display)',
                 fontSize: 11,
                 color: 'rgba(255,255,255,0.1)',
                 fontWeight: 400,

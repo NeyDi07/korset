@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Advent+Pro:wght@300;400;500;600;700;800&family=Syne:wght@400;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Outfit:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Advent+Pro:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
   --bg: #07070f;
@@ -22,8 +22,16 @@
   --text: #e8e8ff;
   --text-sub: #c9c9e8;
   --text-dim: #8e8eb6;
-  --font-display: 'Space Grotesk', sans-serif;
-  --font-body: 'Outfit', sans-serif;
+  --font-display: 'Advent Pro', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-h1: 700 28px/1.1 var(--font-display);
+  --font-h2: 700 24px/1.15 var(--font-display);
+  --font-h3: 600 20px/1.2 var(--font-display);
+  --font-body-base: 400 15px/1.5 var(--font-body);
+  --font-body-sm: 400 13px/1.45 var(--font-body);
+  --font-body-xs: 400 11px/1.4 var(--font-body);
+  --font-label: 600 13px/1.2 var(--font-display);
+  --font-button: 600 15px/1 var(--font-display);
   --radius-sm: 10px;
   --radius: 14px;
   --radius-lg: 20px;

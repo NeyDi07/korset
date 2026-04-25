@@ -69,6 +69,7 @@ function inferSource(url) {
   if (url.includes('arbuz.kz')) return 'arbuz'
   if (url.includes('ean-db.com')) return 'ean-db'
   if (url.includes('/products/')) return 'local'
+  if (url.includes('korzinavdom.kz')) return 'korzinavdom'
   if (url.includes('cdn.korset.app')) return 'r2'
   return 'other'
 }
@@ -164,7 +165,8 @@ async function processProduct(product) {
       }
       updates.image_url = r.publicUrl
       updates.r2_key = r.r2Key
-      updates.image_source = r.source
+      const validSources = ['openfoodfacts', 'kaspi', 'arbuz', 'ean-db', 'local', 'other']
+      if (validSources.includes(r.source)) updates.image_source = r.source
     }
   }
 
@@ -222,13 +224,13 @@ async function run() {
 
   await verifyBucket()
 
-  let offset = 0
   let total = 0
   let migrated = 0
   let skipped = 0
   let failed = 0
   let alreadyR2 = 0
   const log = []
+  let batchNum = 0
 
   while (true) {
     const { data, error } = await sb
@@ -238,7 +240,7 @@ async function run() {
       .not('image_url', 'is', null)
       .neq('image_url', '')
       .is('r2_key', null)
-      .range(offset, offset + BATCH_SIZE - 1)
+      .range(0, BATCH_SIZE - 1)
       .order('ean')
 
     if (error) {
@@ -247,7 +249,7 @@ async function run() {
     }
     if (!data || data.length === 0) break
 
-    console.log(`\nBatch ${offset}-${offset + data.length - 1} (${data.length} products)`)
+    console.log(`\nBatch ${batchNum} (${data.length} products)`)
 
     for (let i = 0; i < data.length; i += CONCURRENCY) {
       const chunk = data.slice(i, i + CONCURRENCY)
@@ -280,7 +282,12 @@ async function run() {
       if (!DRY_RUN) await sleep(200)
     }
 
-    offset += BATCH_SIZE
+    const prevMigrated = migrated
+    batchNum++
+    if (migrated === prevMigrated && skipped > 0) {
+      console.log(`\nNo progress — stopping (remaining products can't be downloaded)`)
+      break
+    }
   }
 
   console.log('\n═══════════════════════════════════════════')

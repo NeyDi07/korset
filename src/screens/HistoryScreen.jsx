@@ -19,8 +19,6 @@ import {
 import { loadPrivacySettings, PRIVACY_EVENT } from '../utils/privacySettings.js'
 import { buildAuthNavigateState } from '../utils/authFlow.js'
 
-const fontAdvent = "'Advent Pro', sans-serif"
-
 function toDate(value) {
   if (!value) return null
   if (value instanceof Date) return Number.isNaN(value.getTime()) ? null : value
@@ -281,7 +279,14 @@ export default function HistoryScreen() {
             <circle cx="12" cy="7" r="4" />
           </svg>
         </div>
-        <h2 style={{ fontSize: 20, fontFamily: fontAdvent, color: '#fff', marginBottom: 8 }}>
+        <h2
+          style={{
+            fontSize: 20,
+            fontFamily: 'var(--font-display)',
+            color: '#fff',
+            marginBottom: 8,
+          }}
+        >
           {lang === 'kz' ? 'Тарихты көру үшін кіріңіз' : 'Войдите, чтобы видеть историю'}
         </h2>
         <p
@@ -290,7 +295,7 @@ export default function HistoryScreen() {
             color: 'var(--text-dim)',
             marginBottom: 24,
             lineHeight: 1.5,
-            fontFamily: fontAdvent,
+            fontFamily: 'var(--font-display)',
           }}
         >
           {lang === 'kz'
@@ -317,7 +322,7 @@ export default function HistoryScreen() {
             borderRadius: 14,
             fontSize: 15,
             fontWeight: 600,
-            fontFamily: fontAdvent,
+            fontFamily: 'var(--font-display)',
             cursor: 'pointer',
           }}
         >
@@ -369,7 +374,14 @@ export default function HistoryScreen() {
               <path d="M15 18l-6-6 6-6" />
             </svg>
           </button>
-          <div style={{ fontSize: 20, fontWeight: 700, fontFamily: fontAdvent, color: '#fff' }}>
+          <div
+            style={{
+              fontSize: 20,
+              fontWeight: 700,
+              fontFamily: 'var(--font-display)',
+              color: '#fff',
+            }}
+          >
             {lang === 'kz' ? 'Менің тауарларым' : 'Мои товары'}
           </div>
         </div>
@@ -392,7 +404,7 @@ export default function HistoryScreen() {
               borderRadius: 9,
               fontSize: 13,
               fontWeight: 600,
-              fontFamily: fontAdvent,
+              fontFamily: 'var(--font-display)',
               border: 'none',
               background: tab === 'history' ? 'rgba(124,58,237,0.16)' : 'transparent',
               color: tab === 'history' ? '#C4B5FD' : 'var(--text-dim)',
@@ -439,7 +451,7 @@ export default function HistoryScreen() {
               borderRadius: 9,
               fontSize: 13,
               fontWeight: 600,
-              fontFamily: fontAdvent,
+              fontFamily: 'var(--font-display)',
               border: 'none',
               background: tab === 'favorites' ? 'rgba(239,68,68,0.15)' : 'transparent',
               color: tab === 'favorites' ? '#FCA5A5' : 'var(--text-dim)',
@@ -481,7 +493,7 @@ export default function HistoryScreen() {
               textAlign: 'center',
               marginTop: 40,
               color: 'var(--text-dim)',
-              fontFamily: fontAdvent,
+              fontFamily: 'var(--font-display)',
             }}
           >
             <div
@@ -529,7 +541,13 @@ export default function HistoryScreen() {
                 <HeartIcon filled={false} size={28} color="rgba(255,255,255,0.2)" />
               )}
             </div>
-            <p style={{ fontFamily: fontAdvent, fontSize: 14, color: 'rgba(255,255,255,0.3)' }}>
+            <p
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 14,
+                color: 'rgba(255,255,255,0.3)',
+              }}
+            >
               {tab === 'history'
                 ? lang === 'kz'
                   ? 'Сіз әлі ештеңе сканерлемедіңіз'
@@ -597,7 +615,7 @@ export default function HistoryScreen() {
                     style={{
                       fontSize: 14,
                       fontWeight: 600,
-                      fontFamily: fontAdvent,
+                      fontFamily: 'var(--font-display)',
                       color: '#fff',
                       whiteSpace: 'nowrap',
                       overflow: 'hidden',
@@ -608,7 +626,13 @@ export default function HistoryScreen() {
                     {product.name}
                   </div>
                   {product.brand && (
-                    <div style={{ fontSize: 12, color: 'var(--text-dim)', fontFamily: fontAdvent }}>
+                    <div
+                      style={{
+                        fontSize: 12,
+                        color: 'var(--text-dim)',
+                        fontFamily: 'var(--font-display)',
+                      }}
+                    >
                       {product.brand}
                     </div>
                   )}
@@ -619,7 +643,7 @@ export default function HistoryScreen() {
                           fontSize: 10,
                           color: 'rgba(255,255,255,0.2)',
                           marginTop: 3,
-                          fontFamily: fontAdvent,
+                          fontFamily: 'var(--font-display)',
                         }}
                       >
                         {formatDate(
@@ -634,7 +658,7 @@ export default function HistoryScreen() {
                         fontSize: 10,
                         color: 'rgba(255,255,255,0.2)',
                         marginTop: 3,
-                        fontFamily: fontAdvent,
+                        fontFamily: 'var(--font-display)',
                       }}
                     >
                       {formatDate(product.favDate || product.added_at, lang)}

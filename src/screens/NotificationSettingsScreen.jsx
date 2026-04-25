@@ -11,24 +11,66 @@ import {
   urlBase64ToUint8Array,
 } from '../utils/notificationSettings.js'
 
-const fontDisplay = '"Bebas Neue", "Arial Narrow", sans-serif'
-const fontBody = 'Space Grotesk, system-ui, sans-serif'
-
 function Section({ title, children }) {
   return (
     <div style={{ padding: '0 22px 18px' }}>
-      <div style={{ fontFamily: fontBody, fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.28)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 1.5 }}>{title}</div>
-      <div className="glass-card" style={{ padding: 0 }}>{children}</div>
+      <div
+        style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 11,
+          fontWeight: 700,
+          color: 'rgba(255,255,255,0.28)',
+          marginBottom: 8,
+          textTransform: 'uppercase',
+          letterSpacing: 1.5,
+        }}
+      >
+        {title}
+      </div>
+      <div className="glass-card" style={{ padding: 0 }}>
+        {children}
+      </div>
     </div>
   )
 }
 
 function Row({ label, description, right, danger = false, onClick }) {
   return (
-    <div onClick={onClick} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, padding: '15px 18px', cursor: onClick ? 'pointer' : 'default' }}>
+    <div
+      onClick={onClick}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: 16,
+        padding: '15px 18px',
+        cursor: onClick ? 'pointer' : 'default',
+      }}
+    >
       <div style={{ minWidth: 0 }}>
-        <div style={{ fontFamily: fontBody, fontSize: 14, fontWeight: 600, color: danger ? '#FCA5A5' : '#fff' }}>{label}</div>
-        {description ? <div style={{ fontFamily: fontBody, fontSize: 12, lineHeight: 1.45, color: 'rgba(255,255,255,0.45)', marginTop: 4 }}>{description}</div> : null}
+        <div
+          style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 14,
+            fontWeight: 600,
+            color: danger ? '#FCA5A5' : '#fff',
+          }}
+        >
+          {label}
+        </div>
+        {description ? (
+          <div
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 12,
+              lineHeight: 1.45,
+              color: 'rgba(255,255,255,0.45)',
+              marginTop: 4,
+            }}
+          >
+            {description}
+          </div>
+        ) : null}
       </div>
       <div style={{ flexShrink: 0 }}>{right}</div>
     </div>
@@ -40,7 +82,10 @@ function Toggle({ checked, onChange, disabled = false }) {
     <button
       type="button"
       disabled={disabled}
-      onClick={(e) => { e.stopPropagation(); if (!disabled) onChange(!checked) }}
+      onClick={(e) => {
+        e.stopPropagation()
+        if (!disabled) onChange(!checked)
+      }}
       style={{
         width: 50,
         height: 30,
@@ -55,7 +100,15 @@ function Toggle({ checked, onChange, disabled = false }) {
         opacity: disabled ? 0.5 : 1,
       }}
     >
-      <span style={{ width: 22, height: 22, borderRadius: '50%', background: '#fff', boxShadow: checked ? '0 0 20px rgba(168,85,247,0.35)' : 'none' }} />
+      <span
+        style={{
+          width: 22,
+          height: 22,
+          borderRadius: '50%',
+          background: '#fff',
+          boxShadow: checked ? '0 0 20px rgba(168,85,247,0.35)' : 'none',
+        }}
+      />
     </button>
   )
 }
@@ -78,7 +131,13 @@ export default function NotificationSettingsScreen() {
   useEffect(() => {
     const fromProfile = profile?.notifications || {}
     const fromLocal = loadNotificationSettings()
-    setSettings(prev => ({ ...prev, ...DEFAULT_NOTIFICATION_SETTINGS, ...fromProfile, ...fromLocal, ...browserNotificationStatus() }))
+    setSettings((prev) => ({
+      ...prev,
+      ...DEFAULT_NOTIFICATION_SETTINGS,
+      ...fromProfile,
+      ...fromLocal,
+      ...browserNotificationStatus(),
+    }))
   }, [profile])
 
   const permissionLabel = useMemo(() => {
@@ -107,9 +166,18 @@ export default function NotificationSettingsScreen() {
     try {
       setBusy(true)
       const result = await Notification.requestPermission()
-      const next = { ...settings, status: result, enabled: result === 'granted', lastPermissionCheckAt: new Date().toISOString() }
+      const next = {
+        ...settings,
+        status: result,
+        enabled: result === 'granted',
+        lastPermissionCheckAt: new Date().toISOString(),
+      }
       await persist(next)
-      setStatusText(result === 'granted' ? 'Доступ к уведомлениям разрешён.' : 'Пользовательский доступ к уведомлениям не выдан.')
+      setStatusText(
+        result === 'granted'
+          ? 'Доступ к уведомлениям разрешён.'
+          : 'Пользовательский доступ к уведомлениям не выдан.'
+      )
       if (result === 'granted') {
         await subscribeDevice(next)
       }
@@ -185,7 +253,11 @@ export default function NotificationSettingsScreen() {
         await fetch('/api/push/unsubscribe', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ endpoint: subscription.endpoint, authUserId: user?.id || null, deviceId }),
+          body: JSON.stringify({
+            endpoint: subscription.endpoint,
+            authUserId: user?.id || null,
+            deviceId,
+          }),
         })
         await subscription.unsubscribe()
       }
@@ -203,7 +275,11 @@ export default function NotificationSettingsScreen() {
   async function sendTestPush() {
     try {
       setBusy(true)
-      const res = await fetch('/api/push/send-test', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ authUserId: user?.id || null, deviceId }) })
+      const res = await fetch('/api/push/send-test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ authUserId: user?.id || null, deviceId }),
+      })
       const data = await res.json().catch(() => ({}))
       if (!res.ok) throw new Error(data.error || 'send_test_failed')
       setStatusText('Тестовое push-уведомление отправлено.')
@@ -216,62 +292,279 @@ export default function NotificationSettingsScreen() {
   }
 
   return (
-    <div className="screen" style={{ paddingTop: 'max(16px, env(safe-area-inset-top))', paddingBottom: 'calc(110px + env(safe-area-inset-bottom))', overflowY: 'auto' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 22px 16px' }}>
-        <button onClick={() => navigate(-1)} aria-label="Назад" style={{ width: 44, height: 44, borderRadius: 14, border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.04)', color: '#fff', cursor: 'pointer', display: 'grid', placeItems: 'center', flexShrink: 0 }}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
-        <div style={{ fontFamily: fontDisplay, fontSize: 28, letterSpacing: 1, color: '#fff' }}>Уведомления</div>
+    <div
+      className="screen"
+      style={{
+        paddingTop: 'max(16px, env(safe-area-inset-top))',
+        paddingBottom: 'calc(110px + env(safe-area-inset-bottom))',
+        overflowY: 'auto',
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '0 22px 16px',
+        }}
+      >
+        <button
+          onClick={() => navigate(-1)}
+          aria-label="Назад"
+          style={{
+            width: 44,
+            height: 44,
+            borderRadius: 14,
+            border: '1px solid rgba(255,255,255,0.08)',
+            background: 'rgba(255,255,255,0.04)',
+            color: '#fff',
+            cursor: 'pointer',
+            display: 'grid',
+            placeItems: 'center',
+            flexShrink: 0,
+          }}
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M15 18l-6-6 6-6" />
+          </svg>
+        </button>
+        <div
+          style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: 28,
+            letterSpacing: 1,
+            color: '#fff',
+          }}
+        >
+          Уведомления
+        </div>
         <div style={{ width: 44 }} />
       </div>
 
       <div style={{ padding: '0 22px 18px' }}>
         <div className="glass-card" style={{ padding: 18 }}>
-          <div style={{ fontFamily: fontBody, fontSize: 14, lineHeight: 1.55, color: 'rgba(255,255,255,0.72)' }}>
-            В v1 оставляем только полезные push-уведомления: системные, по избранному, по наличию, по акциям и еженедельную сводку. Без навязчивого мусора, потому что люди и так живут под артобстрелом уведомлений.
+          <div
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 14,
+              lineHeight: 1.55,
+              color: 'rgba(255,255,255,0.72)',
+            }}
+          >
+            В v1 оставляем только полезные push-уведомления: системные, по избранному, по наличию,
+            по акциям и еженедельную сводку. Без навязчивого мусора, потому что люди и так живут под
+            артобстрелом уведомлений.
           </div>
         </div>
       </div>
 
       <Section title="Статус">
-        <Row label="Push-уведомления" description={`Доступ: ${permissionLabel}`} right={<Toggle checked={settings.enabled} disabled={busy || !settings.pushSupported} onChange={(checked) => checked ? requestPermission() : unsubscribeDevice()} />} />
+        <Row
+          label="Push-уведомления"
+          description={`Доступ: ${permissionLabel}`}
+          right={
+            <Toggle
+              checked={settings.enabled}
+              disabled={busy || !settings.pushSupported}
+              onChange={(checked) => (checked ? requestPermission() : unsubscribeDevice())}
+            />
+          }
+        />
         <div style={{ height: 1, background: 'rgba(255,255,255,0.04)', margin: '0 18px' }} />
-        <Row label="Подписка устройства" description={settings.subscriptionActive ? 'Устройство подписано и готово получать push.' : 'Подписка ещё не создана.'} right={<span style={{ fontFamily: fontBody, fontSize: 12, color: settings.subscriptionActive ? '#86EFAC' : 'rgba(255,255,255,0.45)' }}>{settings.subscriptionActive ? 'Активна' : 'Нет'}</span>} />
+        <Row
+          label="Подписка устройства"
+          description={
+            settings.subscriptionActive
+              ? 'Устройство подписано и готово получать push.'
+              : 'Подписка ещё не создана.'
+          }
+          right={
+            <span
+              style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 12,
+                color: settings.subscriptionActive ? '#86EFAC' : 'rgba(255,255,255,0.45)',
+              }}
+            >
+              {settings.subscriptionActive ? 'Активна' : 'Нет'}
+            </span>
+          }
+        />
         {statusText ? (
           <>
             <div style={{ height: 1, background: 'rgba(255,255,255,0.04)', margin: '0 18px' }} />
-            <div style={{ padding: '12px 18px', fontFamily: fontBody, fontSize: 12, color: 'rgba(255,255,255,0.55)' }}>{statusText}</div>
+            <div
+              style={{
+                padding: '12px 18px',
+                fontFamily: 'var(--font-body)',
+                fontSize: 12,
+                color: 'rgba(255,255,255,0.55)',
+              }}
+            >
+              {statusText}
+            </div>
           </>
         ) : null}
       </Section>
 
       <Section title="Типы уведомлений">
-        <Row label="Системные" description="Критичные сервисные и продуктовые сообщения." right={<Toggle checked={settings.system} onChange={(value) => updatePartial({ system: value })} />} />
+        <Row
+          label="Системные"
+          description="Критичные сервисные и продуктовые сообщения."
+          right={
+            <Toggle
+              checked={settings.system}
+              onChange={(value) => updatePartial({ system: value })}
+            />
+          }
+        />
         <div style={{ height: 1, background: 'rgba(255,255,255,0.04)', margin: '0 18px' }} />
-        <Row label="По избранному" description="Изменения по вашим сохранённым товарам." right={<Toggle checked={settings.favorites} onChange={(value) => updatePartial({ favorites: value })} />} />
+        <Row
+          label="По избранному"
+          description="Изменения по вашим сохранённым товарам."
+          right={
+            <Toggle
+              checked={settings.favorites}
+              onChange={(value) => updatePartial({ favorites: value })}
+            />
+          }
+        />
         <div style={{ height: 1, background: 'rgba(255,255,255,0.04)', margin: '0 18px' }} />
-        <Row label="Появилось в наличии" description="Когда нужный товар снова доступен." right={<Toggle checked={settings.restock} onChange={(value) => updatePartial({ restock: value })} />} />
+        <Row
+          label="Появилось в наличии"
+          description="Когда нужный товар снова доступен."
+          right={
+            <Toggle
+              checked={settings.restock}
+              onChange={(value) => updatePartial({ restock: value })}
+            />
+          }
+        />
         <div style={{ height: 1, background: 'rgba(255,255,255,0.04)', margin: '0 18px' }} />
-        <Row label="Акции и скидки" description="Только по магазинам и товарам, где это действительно полезно." right={<Toggle checked={settings.promo} onChange={(value) => updatePartial({ promo: value })} />} />
+        <Row
+          label="Акции и скидки"
+          description="Только по магазинам и товарам, где это действительно полезно."
+          right={
+            <Toggle
+              checked={settings.promo}
+              onChange={(value) => updatePartial({ promo: value })}
+            />
+          }
+        />
         <div style={{ height: 1, background: 'rgba(255,255,255,0.04)', margin: '0 18px' }} />
-        <Row label="Еженедельная сводка" description="Короткий weekly digest без мусора." right={<Toggle checked={settings.weekly} onChange={(value) => updatePartial({ weekly: value })} />} />
+        <Row
+          label="Еженедельная сводка"
+          description="Короткий weekly digest без мусора."
+          right={
+            <Toggle
+              checked={settings.weekly}
+              onChange={(value) => updatePartial({ weekly: value })}
+            />
+          }
+        />
       </Section>
 
       <Section title="Тихие часы">
-        <Row label="Включить тихие часы" description="В это время push не отправляются, кроме системных." right={<Toggle checked={settings.quietHoursEnabled} onChange={(value) => updatePartial({ quietHoursEnabled: value })} />} />
+        <Row
+          label="Включить тихие часы"
+          description="В это время push не отправляются, кроме системных."
+          right={
+            <Toggle
+              checked={settings.quietHoursEnabled}
+              onChange={(value) => updatePartial({ quietHoursEnabled: value })}
+            />
+          }
+        />
         <div style={{ height: 1, background: 'rgba(255,255,255,0.04)', margin: '0 18px' }} />
         <div style={{ display: 'flex', gap: 12, padding: '15px 18px' }}>
-          <label style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6, fontFamily: fontBody, fontSize: 12, color: 'rgba(255,255,255,0.55)' }}>
+          <label
+            style={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 6,
+              fontFamily: 'var(--font-body)',
+              fontSize: 12,
+              color: 'rgba(255,255,255,0.55)',
+            }}
+          >
             С
-            <input type="time" value={settings.quietFrom} onChange={(e) => updatePartial({ quietFrom: e.target.value })} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12, padding: '12px 14px', color: '#fff', fontFamily: fontBody }} />
+            <input
+              type="time"
+              value={settings.quietFrom}
+              onChange={(e) => updatePartial({ quietFrom: e.target.value })}
+              style={{
+                background: 'rgba(255,255,255,0.05)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                borderRadius: 12,
+                padding: '12px 14px',
+                color: '#fff',
+                fontFamily: 'var(--font-body)',
+              }}
+            />
           </label>
-          <label style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6, fontFamily: fontBody, fontSize: 12, color: 'rgba(255,255,255,0.55)' }}>
+          <label
+            style={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 6,
+              fontFamily: 'var(--font-body)',
+              fontSize: 12,
+              color: 'rgba(255,255,255,0.55)',
+            }}
+          >
             До
-            <input type="time" value={settings.quietTo} onChange={(e) => updatePartial({ quietTo: e.target.value })} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12, padding: '12px 14px', color: '#fff', fontFamily: fontBody }} />
+            <input
+              type="time"
+              value={settings.quietTo}
+              onChange={(e) => updatePartial({ quietTo: e.target.value })}
+              style={{
+                background: 'rgba(255,255,255,0.05)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                borderRadius: 12,
+                padding: '12px 14px',
+                color: '#fff',
+                fontFamily: 'var(--font-body)',
+              }}
+            />
           </label>
         </div>
       </Section>
 
       <Section title="Отладка">
-        <Row label="Отправить тестовое уведомление" description="Серверный тест для этого устройства." right={<button onClick={sendTestPush} disabled={busy || !settings.subscriptionActive} style={{ border: 'none', background: 'linear-gradient(135deg,#7C3AED,#EC4899)', color: '#fff', padding: '10px 14px', borderRadius: 12, fontFamily: fontBody, fontWeight: 700, cursor: busy ? 'wait' : 'pointer', opacity: busy || !settings.subscriptionActive ? 0.55 : 1 }}>Тест</button>} />
+        <Row
+          label="Отправить тестовое уведомление"
+          description="Серверный тест для этого устройства."
+          right={
+            <button
+              onClick={sendTestPush}
+              disabled={busy || !settings.subscriptionActive}
+              style={{
+                border: 'none',
+                background: 'linear-gradient(135deg,#7C3AED,#EC4899)',
+                color: '#fff',
+                padding: '10px 14px',
+                borderRadius: 12,
+                fontFamily: 'var(--font-body)',
+                fontWeight: 700,
+                cursor: busy ? 'wait' : 'pointer',
+                opacity: busy || !settings.subscriptionActive ? 0.55 : 1,
+              }}
+            >
+              Тест
+            </button>
+          }
+        />
       </Section>
     </div>
   )
