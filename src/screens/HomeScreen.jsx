@@ -577,8 +577,7 @@ export default function HomeScreen() {
           z-index: 200;
           overflow-y: auto;
           overflow-x: hidden;
-          font-family: 'Manrope', sans-serif;
-          background-color: var(--bg);
+          font-family: var(--font-body);          background-color: var(--bg);
           color: #e4e1e7;
           scrollbar-width: thin;
           scrollbar-color: rgba(124,58,237,0.3) transparent;
@@ -588,7 +587,7 @@ export default function HomeScreen() {
         .landing-page::-webkit-scrollbar-thumb { background: rgba(124,58,237,0.3); border-radius: 3px; }
         
         .font-headline { font-family: 'Advent Pro', sans-serif; }
-        .font-label { font-family: 'Manrope', sans-serif; }
+        .font-label { font-family: var(--font-body); }
         
         .glass { 
           background: rgba(53, 52, 57, 0.4); 
@@ -926,8 +925,7 @@ export default function HomeScreen() {
           text-transform: uppercase;
           color: rgba(255, 255, 255, 0.3);
           margin: 0 0 4px;
-          font-family: 'Manrope', sans-serif;
-        }
+          font-family: var(--font-body);        }
         .landing-footer__link {
           background: none;
           border: none;
@@ -937,8 +935,7 @@ export default function HomeScreen() {
           cursor: pointer;
           text-align: left;
           transition: color 0.2s;
-          font-family: 'Manrope', sans-serif;
-        }
+          font-family: var(--font-body);        }
         .landing-footer__link:hover { color: #A78BFA; }
         .landing-footer__bottom {
           position: relative;
@@ -1508,7 +1505,7 @@ export default function HomeScreen() {
                 textTransform: 'uppercase',
                 letterSpacing: '0.15em',
                 color: '#38BDF8',
-                fontFamily: 'Manrope, sans-serif',
+                fontFamily: 'var(--font-body)',
               }}
             >
               Для бизнеса
@@ -1587,7 +1584,7 @@ export default function HomeScreen() {
                       fontSize: 14,
                       fontWeight: 600,
                       color: '#fff',
-                      fontFamily: 'Manrope, sans-serif',
+                      fontFamily: 'var(--font-body)',
                     }}
                   >
                     {label}

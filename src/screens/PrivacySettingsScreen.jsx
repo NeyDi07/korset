@@ -4,6 +4,7 @@ import { supabase } from '../utils/supabase.js'
 import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import { useStore } from '../contexts/StoreContext.jsx'
+import { useI18n } from '../utils/i18n.js'
 import {
   clearLocalScanHistory,
   buildHistoryOwnerKey,
@@ -148,6 +149,7 @@ export default function PrivacySettingsScreen() {
   const { profile, updateProfile } = useProfile()
   const { user, internalUserId } = useAuth()
   const { clearRememberedStore } = useStore()
+  const { t } = useI18n()
   const [busy, setBusy] = useState(false)
   const [statusText, setStatusText] = useState('')
 
@@ -168,14 +170,12 @@ export default function PrivacySettingsScreen() {
     const next = { ...privacy, ...patch }
     await updateProfile({ privacy: next })
     notifyPrivacyChanged()
-    setStatusText('Настройки приватности сохранены.')
+    setStatusText(t.privacy.saved)
   }
 
   async function handleLocalHistoryToggle(value) {
     if (!value) {
-      const ok = window.confirm(
-        'Отключить локальную историю и удалить уже сохранённые сканы на этом устройстве?'
-      )
+      const ok = window.confirm(t.privacy.confirmDisableLocal)
       if (!ok) return
       clearLocalScanHistory(buildHistoryOwnerKey(user))
       window.dispatchEvent(new CustomEvent('korset:scan_added'))
@@ -191,42 +191,40 @@ export default function PrivacySettingsScreen() {
   }
 
   async function clearDeviceHistory() {
-    const ok = window.confirm('Удалить всю локальную историю сканов на этом устройстве?')
+    const ok = window.confirm(t.privacy.confirmClearDevice)
     if (!ok) return
     clearLocalScanHistory(buildHistoryOwnerKey(user))
     window.dispatchEvent(new CustomEvent('korset:scan_added'))
-    setStatusText('Локальная история на устройстве очищена.')
+    setStatusText(t.privacy.deviceHistoryCleared)
   }
 
   async function clearCloudHistory() {
     if (!user || !internalUserId) {
-      setStatusText('Войдите в аккаунт, чтобы управлять облачной историей.')
+      setStatusText(t.privacy.loginForCloud)
       return
     }
-    const ok = window.confirm(
-      'Удалить облачную историю сканов из аккаунта Körset? Это действие необратимо.'
-    )
+    const ok = window.confirm(t.privacy.confirmClearCloud)
     if (!ok) return
     try {
       setBusy(true)
       const { error } = await supabase.from('scan_events').delete().eq('user_id', internalUserId)
       if (error) throw error
       window.dispatchEvent(new CustomEvent('korset:scan_added'))
-      setStatusText('Облачная история удалена.')
+      setStatusText(t.privacy.cloudHistoryDeleted)
     } catch (error) {
       console.error(error)
-      setStatusText('Не удалось удалить облачную историю. Проверь доступы и RLS.')
+      setStatusText(t.privacy.cloudDeleteFailed)
     } finally {
       setBusy(false)
     }
   }
 
   async function resetPrivacySettings() {
-    const ok = window.confirm('Сбросить настройки приватности к рекомендуемым значениям?')
+    const ok = window.confirm(t.privacy.confirmReset)
     if (!ok) return
     await updateProfile({ privacy: { ...DEFAULT_PRIVACY_SETTINGS } })
     notifyPrivacyChanged()
-    setStatusText('Настройки приватности сброшены к значениям по умолчанию.')
+    setStatusText(t.privacy.resetDone)
   }
 
   return (
@@ -241,7 +239,7 @@ export default function PrivacySettingsScreen() {
       <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '0 22px 16px' }}>
         <button
           onClick={() => navigate(-1)}
-          aria-label="Назад"
+          aria-label={t.common.back}
           style={{
             width: 44,
             height: 44,
@@ -276,7 +274,7 @@ export default function PrivacySettingsScreen() {
             color: '#fff',
           }}
         >
-          Приватность
+          {t.privacy.title}
         </div>
       </div>
 
@@ -290,17 +288,15 @@ export default function PrivacySettingsScreen() {
               color: 'rgba(255,255,255,0.72)',
             }}
           >
-            Здесь ты контролируешь, что Körset хранит на устройстве, что синхронизирует с аккаунтом
-            и можно ли использовать данные для персонализации. Без лишней драмы и тумана, который
-            любят писать в политиках конфиденциальности.
+            {t.privacy.intro}
           </div>
         </div>
       </div>
 
-      <Section title="Персонализация и аналитика">
+      <Section title={t.privacy.sectionPersonalization}>
         <Row
-          label="Персонализированные рекомендации"
-          description="Использовать историю сканов, избранное и предпочтения для более точных подсказок и AI-ответов."
+          label={t.privacy.personalizedRecommendations}
+          description={t.privacy.personalizedRecommendationsDesc}
           right={
             <Toggle
               checked={privacy.personalizationEnabled}
@@ -310,8 +306,8 @@ export default function PrivacySettingsScreen() {
         />
         <div style={{ height: 1, background: 'rgba(255,255,255,0.04)', margin: '0 18px' }} />
         <Row
-          label="Анонимная аналитика"
-          description="Разрешить отправку событий сканирования для улучшения качества сервиса и аналитики магазина."
+          label={t.privacy.anonymousAnalytics}
+          description={t.privacy.anonymousAnalyticsDesc}
           right={
             <Toggle
               checked={privacy.analyticsEnabled}
@@ -321,51 +317,51 @@ export default function PrivacySettingsScreen() {
         />
       </Section>
 
-      <Section title="Это устройство">
+      <Section title={t.privacy.sectionDevice}>
         <Row
-          label="Локальная история сканов"
-          description={`Хранить историю на этом устройстве для быстрого доступа. Сейчас записей: ${localHistoryCount}.`}
+          label={t.privacy.localHistory}
+          description={t.privacy.localHistoryDesc(localHistoryCount)}
           right={
             <Toggle checked={privacy.localHistoryEnabled} onChange={handleLocalHistoryToggle} />
           }
         />
         <div style={{ height: 1, background: 'rgba(255,255,255,0.04)', margin: '0 18px' }} />
         <Row
-          label="Запоминать выбранный магазин"
-          description="Сохранять последний магазин на этом устройстве, чтобы не выбирать его заново при следующем заходе."
+          label={t.privacy.rememberStore}
+          description={t.privacy.rememberStoreDesc}
           right={
             <Toggle checked={privacy.rememberStoreEnabled} onChange={handleRememberStoreToggle} />
           }
         />
       </Section>
 
-      <Section title="Управление данными">
+      <Section title={t.privacy.sectionData}>
         <div style={{ padding: 18, display: 'grid', gap: 10 }}>
-          <ActionButton label="Очистить историю на этом устройстве" onClick={clearDeviceHistory} />
+          <ActionButton label={t.privacy.clearDeviceHistory} onClick={clearDeviceHistory} />
           <ActionButton
-            label="Удалить облачную историю аккаунта"
+            label={t.privacy.clearCloudHistory}
             danger
             onClick={clearCloudHistory}
             disabled={!user || busy}
           />
           <ActionButton
-            label="Сбросить настройки приватности"
+            label={t.privacy.resetPrivacy}
             onClick={resetPrivacySettings}
             disabled={busy}
           />
         </div>
       </Section>
 
-      <Section title="Что это значит на практике">
+      <Section title={t.privacy.sectionPractical}>
         <Row
-          label="Если отключить анонимную аналитику"
-          description="Körset перестанет отправлять серверные события сканирования для аналитики. Локальная история на устройстве при этом может остаться включённой."
+          label={t.privacy.ifAnalyticsOff}
+          description={t.privacy.ifAnalyticsOffDesc}
           right={null}
         />
         <div style={{ height: 1, background: 'rgba(255,255,255,0.04)', margin: '0 18px' }} />
         <Row
-          label="Если отключить локальную историю"
-          description="Новые сканы не будут сохраняться в памяти этого устройства, а уже сохранённые локальные записи будут удалены после подтверждения."
+          label={t.privacy.ifLocalHistoryOff}
+          description={t.privacy.ifLocalHistoryOffDesc}
           right={null}
         />
       </Section>

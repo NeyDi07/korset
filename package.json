@@ -13,6 +13,7 @@
     "lint:fix": "eslint src --fix",
     "format": "prettier --write src",
     "memory:save": "node scripts/memory-save.mjs",
+    "task:update": "node scripts/update-task-board.mjs",
     "prepare": "husky"
   },
   "lint-staged": {

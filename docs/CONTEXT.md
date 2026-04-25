@@ -12,7 +12,7 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 
 **Стек:** React 18 + Vite + Supabase + Vercel Serverless + OpenAI
 **Код:** JavaScript (не TypeScript), Vanilla CSS (не Tailwind)
-**Стиль:** Dark Premium Glassmorphism, Advent Pro + Manrope, Material Symbols Only
+**Стиль:** Dark Premium Glassmorphism, Advent Pro + Inter, Material Symbols опционально
 
 ---
 
@@ -55,6 +55,7 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 6. Не переписывать стили на светлые.
 7. Новый текст → через `useI18n` (RU/KZ обязательно).
 8. Оценивай через B2B: «Помогает ли это продать подписку?»
+9. **AI-координация:** 3 модели (Codex / GLM 5.1 / Kimi 2.6) работают по `docs/AI_COLLAB_PROTOCOL.md`. Максимум 2 активных писателя, каждая в своей write-zone. Перед стартом → `AI_TASK_BOARD.md`, после → `AI_HANDOFF.md`.
 
 ---
 
@@ -226,7 +227,24 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - Важно по архитектуре: V1 обновляет только уже существующие `store_products`. Неизвестные EAN не создаются автоматически, а попадают в отчёт для Data Moat, чтобы не загрязнять `global_products`.
 - Новый UI-текст вынесен в `src/utils/i18n.js` (`retail.import`) на RU/KZ, компонент использует `useI18n`.
 - Проверки: `npm run lint` проходит с прежними 46 warning; `npm test` — 4/4; `npm run build` — OK. Build добавляет отдельный lazy chunk `xlsx-D_0l8YDs.js` (~143KB gzip), но PWA precache вырос до ~1800 KiB.
-- Рекомендуемый следующий фокус: добавить шаблон CSV/XLSX для импорта, затем bulk RPC/Data Moat flow для неизвестных EAN, подтвердить миграцию 011 и перейти к БД/search/scaling fixes.
+- Рекомендуемый следующий фокус: bulk RPC/Data Moat flow для неизвестных EAN, подтвердить миграцию 011 и перейти к БД/search/scaling fixes.
+
+## Заметка сессии — 2026-04-25 RetailImport V1.1
+
+- `src/screens/RetailImportScreen.jsx` получил B2B-friendly UX: скачивание шаблона CSV/XLSX, понятные счётчики, отдельные секции для `unknown EAN` и ошибок обновления.
+- Чистая логика импорта вынесена в `src/utils/retailImportCore.js`; добавлен unit-тест `tests/unit/retailImportCore.test.mjs` на шаблон, preview-валидацию и разделение known/unknown EAN.
+- `src/utils/retailImport.js` теперь использует core-модуль и умеет выгружать CSV-отчёт по `unknown EAN` для Data Moat handoff.
+- `src/utils/i18n.js` расширен по `retail.import` на RU/KZ под новый flow шаблона и отчёта.
+- Проверки на 2026-04-25: `node --test tests/unit/retailImportCore.test.mjs` — 3/3; `npm run lint` — без новых ошибок, прежние 46 warning; `npm test` — 4/4; `npm run build` — OK.
+- Следующий оптимальный фокус: staging/bulk RPC flow для `unknown EAN`, затем ручное подтверждение миграции `011_add_korzinavdom_image_source.sql`, потом DB fixes (`CASCADE`, `GIN`) и search/scaling.
+
+## Заметка сессии — 2026-04-25 multi-LLM coordination
+
+- Добавлен минимальный coordination layer для совместной работы Codex, GLM 5.1 и Kimi 2.6 без лишней бюрократии.
+- Новый протокол: `docs/AI_COLLAB_PROTOCOL.md` — роли моделей, write-zone, правило «максимум 2 активных писателя», базовое распределение задач.
+- Новая доска: `docs/AI_TASK_BOARD.md` — task_id, owner, status, scope, write-zone, первичное распределение backlog.
+- Новый handoff-файл: `docs/AI_HANDOFF.md` — готовые промпты для Codex / GLM 5.1 / Kimi 2.6 и шаблон передачи работы.
+- Рекомендованный режим для Körset: Codex как интегратор, GLM 5.1 на data/DB/perf, Kimi 2.6 на UI/UX; одновременно писать код должны максимум 2 модели и только в разные write-zone.
 
 ## Заметка сессии — 2026-04-24 стабилизация проверок
 

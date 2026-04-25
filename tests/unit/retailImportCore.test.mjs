@@ -21,7 +21,7 @@ test('buildRetailImportPreview normalizes rows and reports duplicate and invalid
     ['EAN', 'Цена', 'Наличие', 'Полка', 'Название'],
     ['4870201234567', '1 290', 'есть', 'A-1', 'Молоко'],
     ['4870201234567', '1450', 'мало', 'A-2', 'Молоко дубль'],
-    ['short', '0', 'нет', '', 'Плохая строка'],
+    ['12345', '0', 'нет', '', 'Плохая строка'],
   ])
 
   assert.equal(preview.rows.length, 1)

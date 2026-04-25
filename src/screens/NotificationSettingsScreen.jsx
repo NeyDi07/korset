@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useAuth } from '../contexts/AuthContext.jsx'
+import { useI18n } from '../utils/i18n.js'
 import {
   browserNotificationStatus,
   DEFAULT_NOTIFICATION_SETTINGS,
@@ -118,6 +119,7 @@ export default function NotificationSettingsScreen() {
   const { storeSlug } = useParams()
   const { profile, updateProfile } = useProfile()
   const { user } = useAuth()
+  const { t } = useI18n()
   const deviceId = typeof window !== 'undefined' ? localStorage.getItem('korset_device_id') : null
   const [settings, setSettings] = useState(() => ({
     ...DEFAULT_NOTIFICATION_SETTINGS,
@@ -141,11 +143,11 @@ export default function NotificationSettingsScreen() {
   }, [profile])
 
   const permissionLabel = useMemo(() => {
-    if (settings.status === 'granted') return 'Разрешены'
-    if (settings.status === 'denied') return 'Запрещены'
-    if (settings.status === 'unsupported') return 'Не поддерживаются'
-    return 'Не запрошены'
-  }, [settings.status])
+    if (settings.status === 'granted') return t.notification.permissionGranted
+    if (settings.status === 'denied') return t.notification.permissionDenied
+    if (settings.status === 'unsupported') return t.notification.permissionUnsupported
+    return t.notification.permissionNotRequested
+  }, [settings.status, t])
 
   async function persist(next) {
     setSettings(next)
@@ -160,7 +162,7 @@ export default function NotificationSettingsScreen() {
 
   async function requestPermission() {
     if (!settings.pushSupported) {
-      setStatusText('На этом устройстве web push не поддерживается.')
+      setStatusText(t.notification.pushUnsupported)
       return
     }
     try {
@@ -174,15 +176,13 @@ export default function NotificationSettingsScreen() {
       }
       await persist(next)
       setStatusText(
-        result === 'granted'
-          ? 'Доступ к уведомлениям разрешён.'
-          : 'Пользовательский доступ к уведомлениям не выдан.'
+        result === 'granted' ? t.notification.accessGranted : t.notification.accessNotGranted
       )
       if (result === 'granted') {
         await subscribeDevice(next)
       }
     } catch (err) {
-      setStatusText('Не удалось запросить разрешение.')
+      setStatusText(t.notification.requestFailed)
       console.error(err)
     } finally {
       setBusy(false)
@@ -194,7 +194,7 @@ export default function NotificationSettingsScreen() {
       setBusy(true)
       const vapidPublicKey = import.meta.env.VITE_VAPID_PUBLIC_KEY
       if (!vapidPublicKey) {
-        setStatusText('Не задан VITE_VAPID_PUBLIC_KEY.')
+        setStatusText(t.notification.vapidNotSet)
         return
       }
 
@@ -235,10 +235,10 @@ export default function NotificationSettingsScreen() {
 
       const next = { ...baseSettings, enabled: true, status: 'granted', subscriptionActive: true }
       await persist(next)
-      setStatusText('Устройство подписано на push-уведомления.')
+      setStatusText(t.notification.deviceSubscribed)
     } catch (err) {
       console.error(err)
-      setStatusText('Не удалось подписать устройство на push-уведомления.')
+      setStatusText(t.notification.subscribeFailed)
     } finally {
       setBusy(false)
     }
@@ -263,10 +263,10 @@ export default function NotificationSettingsScreen() {
       }
       const next = { ...settings, enabled: false, subscriptionActive: false }
       await persist(next)
-      setStatusText('Подписка на push-уведомления отключена.')
+      setStatusText(t.notification.unsubscribed)
     } catch (err) {
       console.error(err)
-      setStatusText('Не удалось отключить push-подписку.')
+      setStatusText(t.notification.unsubscribeFailed)
     } finally {
       setBusy(false)
     }
@@ -282,10 +282,10 @@ export default function NotificationSettingsScreen() {
       })
       const data = await res.json().catch(() => ({}))
       if (!res.ok) throw new Error(data.error || 'send_test_failed')
-      setStatusText('Тестовое push-уведомление отправлено.')
+      setStatusText(t.notification.testSent)
     } catch (err) {
       console.error(err)
-      setStatusText('Не удалось отправить тестовое уведомление.')
+      setStatusText(t.notification.testFailed)
     } finally {
       setBusy(false)
     }
@@ -310,7 +310,7 @@ export default function NotificationSettingsScreen() {
       >
         <button
           onClick={() => navigate(-1)}
-          aria-label="Назад"
+          aria-label={t.common.back}
           style={{
             width: 44,
             height: 44,
@@ -345,7 +345,7 @@ export default function NotificationSettingsScreen() {
             color: '#fff',
           }}
         >
-          Уведомления
+          {t.notification.title}
         </div>
         <div style={{ width: 44 }} />
       </div>
@@ -360,17 +360,15 @@ export default function NotificationSettingsScreen() {
               color: 'rgba(255,255,255,0.72)',
             }}
           >
-            В v1 оставляем только полезные push-уведомления: системные, по избранному, по наличию,
-            по акциям и еженедельную сводку. Без навязчивого мусора, потому что люди и так живут под
-            артобстрелом уведомлений.
+            {t.notification.intro}
           </div>
         </div>
       </div>
 
-      <Section title="Статус">
+      <Section title={t.notification.sectionStatus}>
         <Row
-          label="Push-уведомления"
-          description={`Доступ: ${permissionLabel}`}
+          label={t.notification.pushNotifications}
+          description={`${t.notification.accessLabel} ${permissionLabel}`}
           right={
             <Toggle
               checked={settings.enabled}
@@ -381,11 +379,11 @@ export default function NotificationSettingsScreen() {
         />
         <div style={{ height: 1, background: 'rgba(255,255,255,0.04)', margin: '0 18px' }} />
         <Row
-          label="Подписка устройства"
+          label={t.notification.deviceSubscription}
           description={
             settings.subscriptionActive
-              ? 'Устройство подписано и готово получать push.'
-              : 'Подписка ещё не создана.'
+              ? t.notification.subscribedReady
+              : t.notification.subscriptionNotCreated
           }
           right={
             <span
@@ -395,7 +393,7 @@ export default function NotificationSettingsScreen() {
                 color: settings.subscriptionActive ? '#86EFAC' : 'rgba(255,255,255,0.45)',
               }}
             >
-              {settings.subscriptionActive ? 'Активна' : 'Нет'}
+              {settings.subscriptionActive ? t.notification.active : t.notification.no}
             </span>
           }
         />
@@ -416,10 +414,10 @@ export default function NotificationSettingsScreen() {
         ) : null}
       </Section>
 
-      <Section title="Типы уведомлений">
+      <Section title={t.notification.sectionTypes}>
         <Row
-          label="Системные"
-          description="Критичные сервисные и продуктовые сообщения."
+          label={t.notification.system}
+          description={t.notification.systemDesc}
           right={
             <Toggle
               checked={settings.system}
@@ -429,8 +427,8 @@ export default function NotificationSettingsScreen() {
         />
         <div style={{ height: 1, background: 'rgba(255,255,255,0.04)', margin: '0 18px' }} />
         <Row
-          label="По избранному"
-          description="Изменения по вашим сохранённым товарам."
+          label={t.notification.favorites}
+          description={t.notification.favoritesDesc}
           right={
             <Toggle
               checked={settings.favorites}
@@ -440,8 +438,8 @@ export default function NotificationSettingsScreen() {
         />
         <div style={{ height: 1, background: 'rgba(255,255,255,0.04)', margin: '0 18px' }} />
         <Row
-          label="Появилось в наличии"
-          description="Когда нужный товар снова доступен."
+          label={t.notification.restock}
+          description={t.notification.restockDesc}
           right={
             <Toggle
               checked={settings.restock}
@@ -451,8 +449,8 @@ export default function NotificationSettingsScreen() {
         />
         <div style={{ height: 1, background: 'rgba(255,255,255,0.04)', margin: '0 18px' }} />
         <Row
-          label="Акции и скидки"
-          description="Только по магазинам и товарам, где это действительно полезно."
+          label={t.notification.promo}
+          description={t.notification.promoDesc}
           right={
             <Toggle
               checked={settings.promo}
@@ -462,8 +460,8 @@ export default function NotificationSettingsScreen() {
         />
         <div style={{ height: 1, background: 'rgba(255,255,255,0.04)', margin: '0 18px' }} />
         <Row
-          label="Еженедельная сводка"
-          description="Короткий weekly digest без мусора."
+          label={t.notification.weekly}
+          description={t.notification.weeklyDesc}
           right={
             <Toggle
               checked={settings.weekly}
@@ -473,10 +471,10 @@ export default function NotificationSettingsScreen() {
         />
       </Section>
 
-      <Section title="Тихие часы">
+      <Section title={t.notification.sectionQuiet}>
         <Row
-          label="Включить тихие часы"
-          description="В это время push не отправляются, кроме системных."
+          label={t.notification.enableQuiet}
+          description={t.notification.quietDesc}
           right={
             <Toggle
               checked={settings.quietHoursEnabled}
@@ -497,7 +495,7 @@ export default function NotificationSettingsScreen() {
               color: 'rgba(255,255,255,0.55)',
             }}
           >
-            С
+            {t.notification.from}
             <input
               type="time"
               value={settings.quietFrom}
@@ -523,7 +521,7 @@ export default function NotificationSettingsScreen() {
               color: 'rgba(255,255,255,0.55)',
             }}
           >
-            До
+            {t.notification.to}
             <input
               type="time"
               value={settings.quietTo}
@@ -541,10 +539,10 @@ export default function NotificationSettingsScreen() {
         </div>
       </Section>
 
-      <Section title="Отладка">
+      <Section title={t.notification.sectionDebug}>
         <Row
-          label="Отправить тестовое уведомление"
-          description="Серверный тест для этого устройства."
+          label={t.notification.sendTest}
+          description={t.notification.sendTestDesc}
           right={
             <button
               onClick={sendTestPush}
@@ -561,7 +559,7 @@ export default function NotificationSettingsScreen() {
                 opacity: busy || !settings.subscriptionActive ? 0.55 : 1,
               }}
             >
-              Тест
+              {t.notification.testBtn}
             </button>
           }
         />

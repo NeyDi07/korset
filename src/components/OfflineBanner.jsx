@@ -23,7 +23,7 @@ export default function OfflineBanner() {
         padding: '5px 12px',
         fontSize: '12px',
         fontWeight: 500,
-        fontFamily: 'Manrope, sans-serif',
+        fontFamily: 'var(--font-body)',
         backdropFilter: 'blur(8px)',
         WebkitBackdropFilter: 'blur(8px)',
         letterSpacing: '0.01em',
