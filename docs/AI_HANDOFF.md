@@ -5,42 +5,38 @@
 
 ---
 
-## Current Handoff — Kimi 2.6
+## Current Handoff — Kimi 2.6 (Previous: KOR-KIMI-001)
 
 Дата: 2026-04-25
 Модель: Kimi 2.6
 Task ID: KOR-KIMI-001
 
 Сделано:
-- Полная типографическая система: Advent Pro (display) + Inter (body)
-- CSS-переменные: --font-display, --font-body, --font-h1...--font-button
-- Рефакторинг 6 экранов: AuthScreen, ProfileScreen, HistoryScreen, NotificationSettings, PrivacySettings, + все fontFamily на CSS vars
-- Удалены старые шрифты: Syne, Space Grotesk, Outfit, Bebas Neue
-
-Изменённые файлы:
-- src/index.css (CSS vars типографики)
-- index.html (Google Fonts Inter)
-- src/screens/AuthScreen.jsx (19 замен fontAdvent)
-- src/screens/ProfileScreen.jsx (28 замен)
-- src/screens/HistoryScreen.jsx (12 замен)
-- src/screens/NotificationSettingsScreen.jsx (замена fontBody/fontDisplay)
-- src/screens/PrivacySettingsScreen.jsx (аналогично)
+- Полная типографическая система: Advent Pro + Inter
+- CSS-переменные в index.css
+- Рефакторинг 6 экранов (fontFamily на CSS vars)
 
 Проверено:
-- npm run build — OK
-- git push a00768a
+- npm run build — OK (eeb7384)
+- git status — clean
 
-Осталось:
-- Применить CSS vars (font: var(--font-h1)) вместо inline fontSize/fontWeight
-- Рефакторинг остальных экранов (Home, Scan, Product, Retail...)
+Задача закрыта. Переход к KOR-KIMI-002.
 
-Не трогать:
-- src/utils/retailImport.js (зона GLM/Codex)
-- supabase/migrations/**
+---
 
-Риски / замечания:
-- CSS переменные --font-h1 и т.д. возвращены в index.css, но пока не используются в экранах (только --font-display/--font-body)
-- CONTEXT.md уже обновлен (Advent Pro + Inter, без Manrope)
+## Next Task — Kimi 2.6
+
+Task ID: KOR-KIMI-002
+Scope: ProductScreen UI Redesign — интеграция компонентов
+
+Что делать:
+- Интегрировать компоненты в ProductScreen.jsx: DietBadge, NutriScoreBadge, NovaBadge, NutritionPanel, NutriMeter, SpecsGrid
+- Если компонентов нет в репо — создать на основе существующего дизайн-системы (Advent Pro + Inter, glassmorphism)
+- Фикс sticky bottom bar overlap
+- Uppercase category label
+- Новый текст через useI18n (RU/KZ)
+
+Write zone: src/screens/ProductScreen.jsx, src/components/** (только UI-компоненты)
 
 ---
 
