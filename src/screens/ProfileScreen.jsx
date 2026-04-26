@@ -377,7 +377,7 @@ export default function ProfileScreen() {
   const { lang, t } = useI18n()
   const allergenInputRef = useRef(null)
   const { profile, updateProfile: setProfile } = useProfile()
-  const { user, displayName, avatarId, bannerUrl, internalUserId, logout } = useAuth()
+  const { user, displayName, avatarId, bannerUrl, internalUserId } = useAuth()
   const { favoritesCount, scanCount } = useUserData()
   const { currentStore } = useStore()
   const { theme, toggleTheme } = useTheme()
@@ -1544,63 +1544,6 @@ export default function ProfileScreen() {
                   {t.profile.restartOnboarding}
                 </span>
               </div>
-              {user && (
-                <>
-                  <div
-                    style={{ height: 1, background: 'var(--glass-soft-border)', margin: '0 18px' }}
-                  />
-                  <div
-                    className="settings-item"
-                    onClick={async () => {
-                      await logout()
-                      navigate(buildProfilePath(currentStore?.slug || null), { replace: true })
-                    }}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 14,
-                      padding: '14px 18px',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: 34,
-                        height: 34,
-                        borderRadius: 10,
-                        background: 'rgba(220,38,38,0.1)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                    >
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="#F87171"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                      >
-                        <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
-                        <polyline points="16 17 21 12 16 7" />
-                        <line x1="21" y1="12" x2="9" y2="12" />
-                      </svg>
-                    </div>
-                    <span
-                      style={{
-                        fontFamily: 'var(--font-display)',
-                        fontSize: 14,
-                        fontWeight: 500,
-                        color: '#F87171',
-                      }}
-                    >
-                      {t.profile.logout}
-                    </span>
-                  </div>
-                </>
-              )}
             </div>
           </div>
 
@@ -1615,25 +1558,7 @@ export default function ProfileScreen() {
               }}
             >
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                Körset v1.0.0
-                <svg width="14" height="10" viewBox="0 0 60 30" aria-hidden="true">
-                  <rect width="60" height="30" fill="#00afca" />
-                  <rect y="10" width="60" height="10" fill="#fec50c" />
-                  <path
-                    d="M30 6.5 l1.2 3.7 h3.8 l-3.1 2.2 1.2 3.7 -3.1-2.2 -3.1 2.2 1.2-3.7 -3.1-2.2 h3.8 z"
-                    fill="#fec50c"
-                  />
-                  <path
-                    d="M30 6.5 l1.2 3.7 h3.8 l-3.1 2.2 1.2 3.7 -3.1-2.2 -3.1 2.2 1.2-3.7 -3.1-2.2 h3.8 z"
-                    fill="#fec50c"
-                    transform="translate(-12,0)"
-                  />
-                  <path
-                    d="M30 6.5 l1.2 3.7 h3.8 l-3.1 2.2 1.2 3.7 -3.1-2.2 -3.1 2.2 1.2-3.7 -3.1-2.2 h3.8 z"
-                    fill="#fec50c"
-                    transform="translate(12,0)"
-                  />
-                </svg>
+                Körset v1.0.0 · kz
               </span>
             </div>
           </div>

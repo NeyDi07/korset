@@ -140,6 +140,9 @@ export default function AccountScreen() {
   const [resetSent, setResetSent] = useState(false)
   const [resetError, setResetError] = useState('')
   const [resetLoading, setResetLoading] = useState(false)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [deleteLoading, setDeleteLoading] = useState(false)
+  const [deleteError, setDeleteError] = useState('')
 
   if (!user) {
     navigate('/auth', { replace: true })
@@ -171,6 +174,37 @@ export default function AccountScreen() {
   const handleLogout = async () => {
     await logout()
     navigate(buildProfilePath(currentStore?.slug || null), { replace: true })
+  }
+
+  const handleDeleteAccount = async () => {
+    setDeleteLoading(true)
+    setDeleteError('')
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
+      const token = session?.access_token
+      if (!token) throw new Error('not_authenticated')
+
+      const res = await fetch('/api/delete-user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      const result = await res.json()
+      if (!res.ok) throw new Error(result.details || result.error || 'delete_failed')
+
+      // Clear local state and redirect
+      await logout()
+      navigate('/', { replace: true })
+      window.location.reload()
+    } catch (err) {
+      setDeleteError(err?.message || tr(t.account?.deleteError) || 'Ошибка удаления')
+    } finally {
+      setDeleteLoading(false)
+    }
   }
 
   const backTarget = buildProfilePath(currentStore?.slug || null)
@@ -280,7 +314,6 @@ export default function AccountScreen() {
             label={tr(t.account?.joinedLabel) || 'Дата регистрации'}
             value={formatDate(createdAt, lang)}
           />
-          <FieldRow label={tr(t.account?.idLabel) || 'ID пользователя'} value={userId} monospace />
         </div>
 
         {/* Store Status */}
@@ -408,8 +441,190 @@ export default function AccountScreen() {
             danger
             onClick={handleLogout}
           />
+
+          <ActionRow
+            icon={
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="var(--error-bright)"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <path d="M3 6h18" />
+                <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6" />
+                <path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2" />
+                <line x1="10" y1="11" x2="10" y2="17" />
+                <line x1="14" y1="11" x2="14" y2="17" />
+              </svg>
+            }
+            label={tr(t.account?.deleteAccount) || 'Удалить аккаунт'}
+            danger
+            onClick={() => {
+              setDeleteError('')
+              setShowDeleteConfirm(true)
+            }}
+          />
         </div>
       </div>
+
+      {/* Delete Account Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 100,
+            display: 'flex',
+            alignItems: 'flex-end',
+            justifyContent: 'center',
+            background: 'rgba(0,0,0,0.6)',
+            backdropFilter: 'blur(4px)',
+          }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setShowDeleteConfirm(false)
+          }}
+        >
+          <div
+            style={{
+              width: '100%',
+              maxWidth: 420,
+              background: 'var(--bg-surface)',
+              borderRadius: '24px 24px 0 0',
+              border: '1px solid var(--glass-border)',
+              borderBottom: 'none',
+              padding: '28px 24px 32px',
+              animation: 'slideUp 0.2s ease-out',
+            }}
+          >
+            <div
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 12,
+                background: 'var(--error-dim)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: 16,
+              }}
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="var(--error-bright)"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+            </div>
+
+            <div
+              style={{
+                fontSize: 18,
+                fontWeight: 700,
+                color: 'var(--text)',
+                fontFamily: 'var(--font-display)',
+                marginBottom: 8,
+              }}
+            >
+              {tr(t.account?.deleteConfirmTitle) || 'Удалить аккаунт?'}
+            </div>
+
+            <div
+              style={{
+                fontSize: 14,
+                color: 'var(--text-sub)',
+                lineHeight: 1.5,
+                marginBottom: 20,
+              }}
+            >
+              {tr(t.account?.deleteConfirmBody) ||
+                'Ваш аккаунт и все данные профиля будут удалены безвозвратно. Это действие нельзя отменить.'}
+            </div>
+
+            <div
+              style={{
+                fontSize: 13,
+                color: 'var(--text-dim)',
+                lineHeight: 1.5,
+                marginBottom: 24,
+                padding: '12px 14px',
+                borderRadius: 12,
+                background: 'var(--glass-bg)',
+                border: '1px solid var(--glass-border)',
+              }}
+            >
+              {tr(t.account?.deleteConfirmDetail) ||
+                'Ваши избранные товары, история сканирований и настройки профиля исчезнут навсегда. Данные магазина, если вы владелец, сохраняются.'}
+            </div>
+
+            {deleteError && (
+              <div
+                style={{
+                  fontSize: 13,
+                  color: 'var(--error-bright)',
+                  marginBottom: 16,
+                  padding: '10px 12px',
+                  borderRadius: 10,
+                  background: 'var(--error-dim)',
+                }}
+              >
+                {deleteError}
+              </div>
+            )}
+
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                disabled={deleteLoading}
+                style={{
+                  flex: 1,
+                  padding: '14px 16px',
+                  borderRadius: 14,
+                  border: '1px solid var(--glass-border)',
+                  background: 'var(--glass-bg)',
+                  color: 'var(--text)',
+                  fontSize: 14,
+                  fontWeight: 600,
+                  fontFamily: 'var(--font-display)',
+                  cursor: 'pointer',
+                }}
+              >
+                {tr(t.account?.deleteCancel) || 'Отмена'}
+              </button>
+              <button
+                onClick={handleDeleteAccount}
+                disabled={deleteLoading}
+                style={{
+                  flex: 1,
+                  padding: '14px 16px',
+                  borderRadius: 14,
+                  border: 'none',
+                  background: '#DC2626',
+                  color: '#fff',
+                  fontSize: 14,
+                  fontWeight: 600,
+                  fontFamily: 'var(--font-display)',
+                  cursor: 'pointer',
+                  opacity: deleteLoading ? 0.6 : 1,
+                }}
+              >
+                {deleteLoading
+                  ? tr(t.account?.deleteDeleting) || 'Удаление...'
+                  : tr(t.account?.deleteConfirmBtn) || 'Удалить навсегда'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
