@@ -3,8 +3,10 @@ import { supabase } from '../utils/supabase.js'
 import {
   getOrCreateDeviceId,
   readCachedProfileAvatar,
+  readCachedProfileBanner,
   readCachedProfileName,
   writeCachedProfileAvatar,
+  writeCachedProfileBanner,
   writeCachedProfileName,
 } from '../utils/userIdentity.js'
 
@@ -28,15 +30,32 @@ function extractMetadataAvatar(authUser) {
   )
 }
 
-async function loadOrCreateUserRow(authUser, preferredName) {
+// Select extended profile columns; gracefully falls back if migration 016 not yet applied.
+async function selectUserRow(authId) {
   const { data, error } = await supabase
     .from('users')
-    .select('id, name')
-    .eq('auth_id', authUser.id)
+    .select('id, name, avatar_id, banner_url')
+    .eq('auth_id', authId)
     .maybeSingle()
+  if (error) {
+    // Column does not exist (migration 016 not applied) — retry minimal select.
+    if (/column .* does not exist/i.test(error.message || '')) {
+      const fallback = await supabase
+        .from('users')
+        .select('id, name')
+        .eq('auth_id', authId)
+        .maybeSingle()
+      if (fallback.error) throw fallback.error
+      return fallback.data || null
+    }
+    throw error
+  }
+  return data
+}
 
-  if (error) throw error
-  if (data?.id) return data
+async function loadOrCreateUserRow(authUser, preferredName) {
+  const existing = await selectUserRow(authUser.id)
+  if (existing?.id) return existing
 
   const deviceId = getOrCreateDeviceId()
   const { data: inserted, error: upsertError } = await supabase
@@ -55,14 +74,7 @@ async function loadOrCreateUserRow(authUser, preferredName) {
   if (upsertError) throw upsertError
   if (inserted?.id) return inserted
 
-  const { data: fallbackRow, error: fallbackError } = await supabase
-    .from('users')
-    .select('id, name')
-    .eq('auth_id', authUser.id)
-    .maybeSingle()
-
-  if (fallbackError) throw fallbackError
-  return fallbackRow || null
+  return (await selectUserRow(authUser.id)) || null
 }
 
 export function AuthProvider({ children }) {
@@ -72,6 +84,7 @@ export function AuthProvider({ children }) {
   const [internalUserId, setInternalUserId] = useState(null)
   const [displayName, setDisplayName] = useState(null)
   const [avatarId, setAvatarId] = useState(null)
+  const [bannerUrl, setBannerUrl] = useState(null)
 
   const mountedRef = useRef(true)
   const userRef = useRef(null)
@@ -85,6 +98,7 @@ export function AuthProvider({ children }) {
     setInternalUserId(null)
     setDisplayName(null)
     setAvatarId(null)
+    setBannerUrl(null)
   }, [])
 
   const applyProfileSnapshot = useCallback((authId, snapshot = {}) => {
@@ -97,6 +111,10 @@ export function AuthProvider({ children }) {
       writeCachedProfileAvatar(authId, snapshot.avatarId)
       setAvatarId(snapshot.avatarId)
     }
+    if (Object.prototype.hasOwnProperty.call(snapshot, 'bannerUrl')) {
+      writeCachedProfileBanner(authId, snapshot.bannerUrl)
+      setBannerUrl(snapshot.bannerUrl || null)
+    }
   }, [])
 
   const refreshAccountProfile = useCallback(async (authUserArg = null) => {
@@ -108,19 +126,24 @@ export function AuthProvider({ children }) {
       setInternalUserId(null)
       setDisplayName(null)
       setAvatarId(null)
+      setBannerUrl(null)
       return null
     }
 
     const cachedName = readCachedProfileName(authUser.id)
     const cachedAvatar = readCachedProfileAvatar(authUser.id)
+    const cachedBanner = readCachedProfileBanner(authUser.id)
     const metadataName = authUser.user_metadata?.full_name || authUser.user_metadata?.name || null
     const metadataAvatar = extractMetadataAvatar(authUser)
+    const metadataBanner = authUser.user_metadata?.banner_url || null
     const optimisticName = cachedName || metadataName || buildFallbackName(authUser)
     const optimisticAvatar = cachedAvatar || metadataAvatar || null
+    const optimisticBanner = cachedBanner || metadataBanner || null
 
     if (mountedRef.current) {
       setDisplayName((prev) => prev || optimisticName)
       setAvatarId((prev) => prev || optimisticAvatar)
+      setBannerUrl((prev) => prev || optimisticBanner)
     }
 
     try {
@@ -128,13 +151,16 @@ export function AuthProvider({ children }) {
       if (!mountedRef.current || seq !== refreshSeqRef.current) return row
 
       const resolvedName = row?.name || optimisticName
-      const resolvedAvatar = optimisticAvatar
+      const resolvedAvatar = row?.avatar_id || optimisticAvatar
+      const resolvedBanner = row?.banner_url || optimisticBanner
 
       setInternalUserId(row?.id || null)
       setDisplayName(resolvedName)
       setAvatarId(resolvedAvatar)
+      setBannerUrl(resolvedBanner)
       writeCachedProfileName(authUser.id, resolvedName)
       if (resolvedAvatar) writeCachedProfileAvatar(authUser.id, resolvedAvatar)
+      if (resolvedBanner) writeCachedProfileBanner(authUser.id, resolvedBanner)
 
       return row
     } catch (err) {
@@ -143,6 +169,7 @@ export function AuthProvider({ children }) {
       setInternalUserId(null)
       setDisplayName(optimisticName)
       setAvatarId(optimisticAvatar)
+      setBannerUrl(optimisticBanner)
       return null
     }
   }, [])
@@ -210,6 +237,7 @@ export function AuthProvider({ children }) {
         loading,
         displayName,
         avatarId,
+        bannerUrl,
         refreshAccountProfile,
         applyProfileSnapshot,
         logout,

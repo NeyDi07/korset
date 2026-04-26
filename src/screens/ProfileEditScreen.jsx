@@ -1,0 +1,693 @@
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext.jsx'
+import { useStore } from '../contexts/StoreContext.jsx'
+import { useI18n } from '../utils/i18n.js'
+import { supabase } from '../utils/supabase.js'
+import { buildProfilePath } from '../utils/routes.js'
+import {
+  getOrCreateDeviceId,
+  writeCachedProfileAvatar,
+  writeCachedProfileBanner,
+  writeCachedProfileName,
+} from '../utils/userIdentity.js'
+import ProfileAvatar from '../components/ProfileAvatar.jsx'
+import { AVATAR_PRESETS } from '../constants/avatarPresets.js'
+import { BANNER_PRESETS, resolveBannerSrc } from '../constants/bannerPresets.js'
+
+const MAX_FILE_BYTES = 5 * 1024 * 1024
+const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp']
+const NAME_MAX = 40
+
+/* global FileReader, Image */
+// Resize banner to <=1200x540, JPEG 0.85 quality
+function compressBanner(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = (event) => {
+      const img = new Image()
+      img.onload = () => {
+        const MAX_W = 1200
+        const MAX_H = 540
+        let { width, height } = img
+        const ratio = Math.min(MAX_W / width, MAX_H / height, 1)
+        width = Math.round(width * ratio)
+        height = Math.round(height * ratio)
+        const canvas = document.createElement('canvas')
+        canvas.width = width
+        canvas.height = height
+        const ctx = canvas.getContext('2d')
+        ctx.drawImage(img, 0, 0, width, height)
+        canvas.toBlob(
+          (blob) => (blob ? resolve(blob) : reject(new Error('blob_failed'))),
+          'image/jpeg',
+          0.85
+        )
+      }
+      img.onerror = () => reject(new Error('image_load_failed'))
+      img.src = event.target.result
+    }
+    reader.onerror = () => reject(new Error('file_read_failed'))
+  })
+}
+
+function isPresetBanner(value) {
+  return typeof value === 'string' && value.startsWith('preset:')
+}
+
+function bannerToStoredValue(selection) {
+  if (!selection) return null
+  if (selection.type === 'preset') return `preset:${selection.id}`
+  if (selection.type === 'url') return selection.url
+  return null
+}
+
+export default function ProfileEditScreen() {
+  const navigate = useNavigate()
+  const { currentStore } = useStore()
+  const { user, displayName, avatarId, bannerUrl, applyProfileSnapshot, refreshAccountProfile } =
+    useAuth()
+  const { lang, t } = useI18n()
+  const fileInputRef = useRef(null)
+
+  const backTarget = buildProfilePath(currentStore?.slug || null)
+
+  const initialBannerSelection = useMemo(() => {
+    const value = bannerUrl || user?.user_metadata?.banner_url || null
+    if (!value) return { type: 'preset', id: BANNER_PRESETS[0].id }
+    if (isPresetBanner(value)) return { type: 'preset', id: value.slice(7) }
+    if (/^https?:/i.test(value)) return { type: 'url', url: value }
+    return { type: 'preset', id: BANNER_PRESETS[0].id }
+  }, [bannerUrl, user])
+
+  const [name, setName] = useState('')
+  const [nameError, setNameError] = useState('')
+  const [selectedAvatarId, setSelectedAvatarId] = useState(AVATAR_PRESETS[0].id)
+  const [bannerSelection, setBannerSelection] = useState(initialBannerSelection)
+  const [uploading, setUploading] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    if (!user) return
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setName(displayName || user.user_metadata?.full_name || '')
+    const initialAvatar = avatarId || user.user_metadata?.avatar_id || AVATAR_PRESETS[0].id
+    setSelectedAvatarId(
+      typeof initialAvatar === 'string' && /^https?:/i.test(initialAvatar)
+        ? initialAvatar
+        : initialAvatar || AVATAR_PRESETS[0].id
+    )
+    setBannerSelection(initialBannerSelection)
+  }, [user, displayName, avatarId, initialBannerSelection])
+
+  if (!user) {
+    // Not authenticated — bounce back.
+    navigate('/auth', { replace: true })
+    return null
+  }
+
+  const trimmedName = name.trim()
+  const canSave =
+    trimmedName.length >= 2 && trimmedName.length <= NAME_MAX && !nameError && !saving && !uploading
+
+  const handleNameChange = (e) => {
+    const value = e.target.value
+    setName(value)
+    if (value.trim().length > NAME_MAX) {
+      setNameError(t.profile.edit.nameTooLong)
+    } else {
+      setNameError('')
+    }
+  }
+
+  const handleBannerUpload = async (file) => {
+    setError('')
+    if (!file) return
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      setError(t.profile.edit.uploadInvalid)
+      return
+    }
+    if (file.size > MAX_FILE_BYTES) {
+      setError(t.profile.edit.uploadTooLarge)
+      return
+    }
+    if (!navigator.onLine) {
+      setError(t.profile.edit.offline)
+      return
+    }
+    setUploading(true)
+    try {
+      const blob = await compressBanner(file)
+      const path = `${user.id}/${Date.now()}.jpg`
+      const { error: uploadError } = await supabase.storage
+        .from('profile-banners')
+        .upload(path, blob, { contentType: 'image/jpeg', upsert: true })
+      if (uploadError) throw uploadError
+      const { data } = supabase.storage.from('profile-banners').getPublicUrl(path)
+      const url = data?.publicUrl
+      if (!url) throw new Error('no_public_url')
+      // Cache-bust to force refresh
+      const cacheBusted = `${url}?t=${Date.now()}`
+      setBannerSelection({ type: 'url', url: cacheBusted })
+    } catch (err) {
+      console.warn('[ProfileEdit] banner upload failed', err)
+      setError(t.profile.edit.uploadFailed)
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  const onFileChange = (event) => {
+    const file = event.target.files?.[0]
+    if (event.target) event.target.value = ''
+    if (file) handleBannerUpload(file)
+  }
+
+  const handleSave = async () => {
+    if (!canSave) return
+    setError('')
+    setSaving(true)
+    const avatarValue = selectedAvatarId
+    const bannerValue = bannerToStoredValue(bannerSelection)
+    const deviceId = getOrCreateDeviceId()
+
+    try {
+      // Upsert into public.users (cross-device sync). Includes avatar_id + banner_url
+      // — gracefully degrades if migration 016 not applied yet.
+      const userPayload = {
+        auth_id: user.id,
+        device_id: deviceId,
+        name: trimmedName,
+        avatar_id: avatarValue,
+        banner_url: bannerValue,
+      }
+      let { error: dbError } = await supabase
+        .from('users')
+        .upsert(userPayload, { onConflict: 'auth_id' })
+      if (dbError && /column .* does not exist/i.test(dbError.message || '')) {
+        // Fallback for stores without migration 016
+        const fallback = await supabase
+          .from('users')
+          .upsert(
+            { auth_id: user.id, device_id: deviceId, name: trimmedName },
+            { onConflict: 'auth_id' }
+          )
+        dbError = fallback.error
+      }
+      if (dbError) throw dbError
+
+      // Mirror to auth.user_metadata so other devices see banner immediately on login.
+      try {
+        await supabase.auth.updateUser({
+          data: {
+            full_name: trimmedName,
+            avatar_id: avatarValue,
+            banner_url: bannerValue,
+          },
+        })
+      } catch (metaErr) {
+        console.warn('[ProfileEdit] auth metadata update failed', metaErr)
+      }
+
+      writeCachedProfileName(user.id, trimmedName)
+      writeCachedProfileAvatar(user.id, avatarValue)
+      writeCachedProfileBanner(user.id, bannerValue)
+      applyProfileSnapshot(user.id, {
+        name: trimmedName,
+        avatarId: avatarValue,
+        bannerUrl: bannerValue,
+      })
+      refreshAccountProfile(user).catch(() => {})
+      navigate(backTarget, { replace: true })
+    } catch (err) {
+      console.error('[ProfileEdit] save failed', err)
+      setError(err?.message || t.profile.edit.uploadFailed)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const previewBannerSrc =
+    bannerSelection?.type === 'url'
+      ? bannerSelection.url
+      : resolveBannerSrc(`preset:${bannerSelection?.id || BANNER_PRESETS[0].id}`)
+
+  return (
+    <div
+      className="screen"
+      style={{
+        paddingBottom: 'calc(120px + env(safe-area-inset-bottom, 0px))',
+        background: 'var(--bg-app)',
+        minHeight: '100vh',
+      }}
+    >
+      {/* Header */}
+      <div
+        style={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 10,
+          background: 'rgba(12,12,14,0.85)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          borderBottom: '1px solid rgba(255,255,255,0.06)',
+          padding: '14px 20px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: 12,
+        }}
+      >
+        <button
+          onClick={() => navigate(backTarget)}
+          aria-label={t.common.back}
+          style={{
+            width: 38,
+            height: 38,
+            borderRadius: 12,
+            border: '1px solid rgba(255,255,255,0.1)',
+            background: 'rgba(255,255,255,0.05)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            flexShrink: 0,
+          }}
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="rgba(255,255,255,0.9)"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+          >
+            <path d="M15 18l-6-6 6-6" />
+          </svg>
+        </button>
+        <div
+          style={{
+            flex: 1,
+            minWidth: 0,
+            textAlign: 'center',
+            fontSize: 15,
+            fontWeight: 700,
+            fontFamily: 'var(--font-display)',
+            color: '#fff',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+          }}
+        >
+          {t.profile.edit.title}
+        </div>
+        <button
+          onClick={handleSave}
+          disabled={!canSave}
+          style={{
+            padding: '9px 16px',
+            borderRadius: 12,
+            border: 'none',
+            background: canSave
+              ? 'linear-gradient(135deg, #7C3AED, #6D28D9)'
+              : 'rgba(124,58,237,0.25)',
+            color: '#fff',
+            fontFamily: 'var(--font-display)',
+            fontSize: 13,
+            fontWeight: 700,
+            cursor: canSave ? 'pointer' : 'not-allowed',
+            opacity: canSave ? 1 : 0.6,
+            flexShrink: 0,
+            boxShadow: canSave ? '0 6px 18px rgba(124,58,237,0.35)' : 'none',
+          }}
+        >
+          {saving ? t.profile.edit.saving : t.profile.edit.save}
+        </button>
+      </div>
+
+      {/* Content */}
+      <div style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 22 }}>
+        {/* Banner preview */}
+        <div
+          style={{
+            position: 'relative',
+            width: '100%',
+            aspectRatio: '16 / 8',
+            maxHeight: 220,
+            minHeight: 170,
+            borderRadius: 24,
+            overflow: 'hidden',
+            background: 'linear-gradient(135deg, #1E0A3C 0%, #6D28D9 100%)',
+            boxShadow: '0 12px 40px rgba(0,0,0,0.35)',
+          }}
+        >
+          <img
+            src={previewBannerSrc}
+            alt=""
+            aria-hidden="true"
+            style={{
+              position: 'absolute',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              pointerEvents: 'none',
+            }}
+          />
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.55) 100%)',
+              pointerEvents: 'none',
+            }}
+          />
+          <div
+            style={{
+              position: 'absolute',
+              left: '50%',
+              top: '22%',
+              transform: 'translateX(-50%)',
+              width: 96,
+              height: 96,
+              borderRadius: '50%',
+              border: '3px solid #7C3AED',
+              padding: 3,
+              background: 'rgba(12,10,30,0.55)',
+              boxShadow: '0 6px 24px rgba(124,58,237,0.45)',
+              boxSizing: 'border-box',
+            }}
+          >
+            <ProfileAvatar
+              avatarId={selectedAvatarId}
+              name={trimmedName || displayName}
+              rounded="circle"
+            />
+          </div>
+          <div
+            style={{
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              bottom: 14,
+              display: 'flex',
+              justifyContent: 'center',
+              padding: '0 16px',
+              pointerEvents: 'none',
+            }}
+          >
+            <div
+              style={{
+                maxWidth: '85%',
+                padding: '6px 16px',
+                borderRadius: 12,
+                background: 'rgba(15,10,30,0.55)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                backdropFilter: 'blur(6px)',
+                WebkitBackdropFilter: 'blur(6px)',
+                fontFamily: 'var(--font-display)',
+                fontSize: 22,
+                fontWeight: 800,
+                color: '#fff',
+                textTransform: 'uppercase',
+                letterSpacing: 1.2,
+                lineHeight: 1.1,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              {trimmedName || displayName || 'Körset User'}
+            </div>
+          </div>
+        </div>
+
+        {/* Name */}
+        <Section label={t.profile.edit.nameLabel}>
+          <input
+            type="text"
+            value={name}
+            onChange={handleNameChange}
+            placeholder={t.profile.edit.namePlaceholder}
+            maxLength={NAME_MAX + 5}
+            style={{
+              width: '100%',
+              padding: '14px 16px',
+              borderRadius: 14,
+              background: 'rgba(255,255,255,0.04)',
+              border: `1px solid ${nameError ? 'rgba(239,68,68,0.5)' : 'rgba(255,255,255,0.08)'}`,
+              color: '#fff',
+              fontSize: 15,
+              fontFamily: 'var(--font-display)',
+              outline: 'none',
+              boxSizing: 'border-box',
+            }}
+          />
+          {nameError && (
+            <div style={{ fontSize: 12, color: '#EF4444', marginTop: 6 }}>{nameError}</div>
+          )}
+        </Section>
+
+        {/* Avatar */}
+        <Section label={t.profile.edit.avatarLabel}>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(72px, 1fr))',
+              gap: 10,
+            }}
+          >
+            {AVATAR_PRESETS.map((preset) => {
+              const selected = selectedAvatarId === preset.id
+              return (
+                <button
+                  key={preset.id}
+                  type="button"
+                  onClick={() => setSelectedAvatarId(preset.id)}
+                  aria-pressed={selected}
+                  style={{
+                    appearance: 'none',
+                    background: 'transparent',
+                    border: 'none',
+                    padding: 0,
+                    aspectRatio: '1 / 1',
+                    cursor: 'pointer',
+                    position: 'relative',
+                  }}
+                >
+                  <div
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      borderRadius: 18,
+                      overflow: 'hidden',
+                      border: selected ? '2px solid #7C3AED' : '1px solid rgba(255,255,255,0.08)',
+                      boxShadow: selected ? '0 6px 18px rgba(124,58,237,0.35)' : 'none',
+                    }}
+                  >
+                    <ProfileAvatar avatarId={preset.id} name="" rounded="square" />
+                  </div>
+                  {selected && <SelectedDot />}
+                </button>
+              )
+            })}
+          </div>
+        </Section>
+
+        {/* Banner */}
+        <Section label={t.profile.edit.bannerLabel}>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+              gap: 10,
+            }}
+          >
+            {BANNER_PRESETS.map((preset) => {
+              const selected =
+                bannerSelection?.type === 'preset' && bannerSelection.id === preset.id
+              return (
+                <button
+                  key={preset.id}
+                  type="button"
+                  onClick={() => setBannerSelection({ type: 'preset', id: preset.id })}
+                  aria-pressed={selected}
+                  style={{
+                    appearance: 'none',
+                    background: 'transparent',
+                    border: 'none',
+                    padding: 0,
+                    aspectRatio: '16 / 8',
+                    cursor: 'pointer',
+                    position: 'relative',
+                  }}
+                >
+                  <div
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      borderRadius: 16,
+                      overflow: 'hidden',
+                      border: selected ? '2px solid #7C3AED' : '1px solid rgba(255,255,255,0.08)',
+                      boxShadow: selected ? '0 6px 18px rgba(124,58,237,0.35)' : 'none',
+                    }}
+                  >
+                    <img
+                      src={preset.src}
+                      alt={preset.label[lang] || preset.label.ru}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        display: 'block',
+                      }}
+                    />
+                  </div>
+                  {selected && <SelectedDot />}
+                </button>
+              )
+            })}
+
+            {/* Upload tile */}
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading}
+              style={{
+                appearance: 'none',
+                padding: 0,
+                aspectRatio: '16 / 8',
+                cursor: uploading ? 'wait' : 'pointer',
+                position: 'relative',
+                background: 'rgba(124,58,237,0.08)',
+                border:
+                  bannerSelection?.type === 'url'
+                    ? '2px solid #7C3AED'
+                    : '1px dashed rgba(167,139,250,0.4)',
+                borderRadius: 16,
+                color: '#A78BFA',
+                fontFamily: 'var(--font-display)',
+                fontSize: 12,
+                fontWeight: 600,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 6,
+                overflow: 'hidden',
+              }}
+            >
+              {bannerSelection?.type === 'url' ? (
+                <img
+                  src={bannerSelection.url}
+                  alt=""
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                />
+              ) : (
+                <>
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M12 4v16M4 12h16" />
+                  </svg>
+                  <span style={{ textAlign: 'center', padding: '0 6px' }}>
+                    {uploading ? t.profile.edit.saving : t.profile.edit.uploadOwn}
+                  </span>
+                </>
+              )}
+              {bannerSelection?.type === 'url' && <SelectedDot />}
+            </button>
+          </div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            onChange={onFileChange}
+            style={{ display: 'none' }}
+          />
+        </Section>
+
+        {error && (
+          <div
+            style={{
+              padding: '12px 14px',
+              borderRadius: 12,
+              background: 'rgba(239,68,68,0.1)',
+              border: '1px solid rgba(239,68,68,0.3)',
+              color: '#FCA5A5',
+              fontSize: 13,
+              fontFamily: 'var(--font-display)',
+            }}
+          >
+            {error}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function Section({ label, children }) {
+  return (
+    <div>
+      <div
+        style={{
+          fontSize: 11,
+          fontWeight: 700,
+          letterSpacing: '0.1em',
+          color: 'var(--text-dim)',
+          textTransform: 'uppercase',
+          marginBottom: 10,
+          paddingLeft: 4,
+        }}
+      >
+        {label}
+      </div>
+      {children}
+    </div>
+  )
+}
+
+function SelectedDot() {
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        right: -6,
+        top: -6,
+        width: 22,
+        height: 22,
+        borderRadius: '50%',
+        background: '#10B981',
+        border: '2.5px solid #0c0c0e',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        boxShadow: '0 4px 10px rgba(16,185,129,0.4)',
+      }}
+    >
+      <svg
+        width="10"
+        height="10"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#fff"
+        strokeWidth="3.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <polyline points="20 6 9 17 4 12" />
+      </svg>
+    </div>
+  )
+}

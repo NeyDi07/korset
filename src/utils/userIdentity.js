@@ -130,3 +130,30 @@ export function writeCachedProfileAvatar(authId, avatarId) {
     /* quota exceeded */
   }
 }
+
+export function getProfileBannerCacheKey(authId) {
+  return authId ? `korset_profile_banner_${authId}` : null
+}
+
+export function readCachedProfileBanner(authId) {
+  try {
+    const key = getProfileBannerCacheKey(authId)
+    return key ? localStorage.getItem(key) : null
+  } catch {
+    return null
+  }
+}
+
+export function writeCachedProfileBanner(authId, bannerUrl) {
+  try {
+    const key = getProfileBannerCacheKey(authId)
+    if (!key) return
+    if (bannerUrl) {
+      localStorage.setItem(key, bannerUrl)
+    } else {
+      localStorage.removeItem(key)
+    }
+  } catch {
+    /* quota exceeded */
+  }
+}

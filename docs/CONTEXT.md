@@ -281,6 +281,19 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - Проверки на 2026-04-25: `node --test tests/unit/retailImportCore.test.mjs` — 3/3; `npm run lint` — без новых ошибок, прежние 46 warning; `npm test` — 4/4; `npm run build` — OK.
 - Следующий оптимальный фокус: staging/bulk RPC flow для `unknown EAN`, затем ручное подтверждение миграции `011_add_korzinavdom_image_source.sql`, потом DB fixes (`CASCADE`, `GIN`) и search/scaling.
 
+## Заметка сессии — 2026-04-26 ProfileEdit + Storage (Этап 2)
+
+- Новый экран `src/screens/ProfileEditScreen.jsx` (`/s/:slug/profile/edit`): смена имени, выбор аватара (9 пресетов из `avatarPresets.js`), выбор баннера (5 пресетов + загрузка своего фото). Превью карточки баннера в реальном времени.
+- Загрузка фото: resize до 1200×540 → JPEG 0.85 → upload в Supabase Storage `profile-banners/{auth_id}/{ts}.jpg` → получаем publicUrl → cache-busted. Лимиты: ≤5 МБ, JPG/PNG/WebP. Проверка офлайна.
+- Миграция `supabase/migrations/016_profile_avatar_banner.sql`: `users.avatar_id`, `users.banner_url` + bucket `profile-banners` (public read, owner-only write/update/delete по `auth.uid() = path[0]`). **Применить вручную через Supabase SQL Editor.**
+- `AuthContext` расширен: `bannerUrl` в state, чтение `avatar_id`/`banner_url` из `users` + `user_metadata` + localStorage. Graceful fallback если миграция не применена (regex `column .* does not exist` → ретрай минимальным select).
+- `userIdentity.js`: `read/writeCachedProfileBanner` (новая пара).
+- `routes.js`: `buildProfileEditPath()`.
+- `ProfileScreen`: карандаш теперь ведёт на `/profile/edit`, баннер берётся из `bannerUrl` (с fallback на metadata и preset:sunset).
+- `App.jsx`: добавлен Route `/s/:storeSlug/profile/edit`.
+- Зеркалирование: при сохранении пишем в `users` ТАБЛИЦУ + `auth.user_metadata` (для других устройств).
+- Проверки: `npm run build` OK, eslint на изменённых файлах — 0 errors / 0 новых warnings.
+
 ## Заметка сессии — 2026-04-26 ProfileScreen Banner (Этап 1)
 
 - Редизайн верхней части `src/screens/ProfileScreen.jsx`: убран email, компактный header (Профиль + edit-карандаш-кнопка 38×38), добавлена баннер-карточка `aspect-ratio 16/8` с фоновой картинкой, аватарка 96px по центру, имя в стеклянной "плашке" внизу баннера (UPPERCASE).

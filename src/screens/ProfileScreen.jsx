@@ -8,6 +8,7 @@ import {
   buildHistoryPath,
   buildNotificationSettingsPath,
   buildPrivacyPath,
+  buildProfileEditPath,
   buildProfilePath,
 } from '../utils/routes.js'
 import ProfileAvatar from '../components/ProfileAvatar.jsx'
@@ -310,7 +311,7 @@ export default function ProfileScreen() {
   const { lang, t } = useI18n()
   const allergenInputRef = useRef(null)
   const { profile, updateProfile: setProfile } = useProfile()
-  const { user, displayName, avatarId, logout } = useAuth()
+  const { user, displayName, avatarId, bannerUrl, logout } = useAuth()
   const { favoritesCount, scanCount } = useUserData()
   const { currentStore } = useStore()
   const { theme, toggleTheme } = useTheme()
@@ -469,7 +470,7 @@ export default function ProfileScreen() {
             </h1>
             {user && (
               <button
-                onClick={() => navigate('/setup-profile?mode=edit')}
+                onClick={() => navigate(buildProfileEditPath(currentStore?.slug || null))}
                 aria-label={t.profile.editBtn}
                 style={{
                   width: 38,
@@ -516,7 +517,7 @@ export default function ProfileScreen() {
               }}
             >
               <img
-                src={resolveBannerSrc(user?.user_metadata?.banner_url || null)}
+                src={resolveBannerSrc(bannerUrl || user?.user_metadata?.banner_url || null)}
                 alt=""
                 aria-hidden="true"
                 style={{

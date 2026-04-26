@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Routes, Route, useLocation, Navigate, useNavigate } from 'react-router-dom'
 import HomeScreen from './screens/HomeScreen.jsx'
 import ProfileScreen from './screens/ProfileScreen.jsx'
+import ProfileEditScreen from './screens/ProfileEditScreen.jsx'
 import CatalogScreen from './screens/CatalogScreen.jsx'
 import ScanScreen from './screens/ScanScreen.jsx'
 import ProductScreen from './screens/ProductScreen.jsx'
@@ -95,6 +96,7 @@ function AppInner() {
         <Route path="/s/:storeSlug/ai" element={<AIAssistantScreen />} />
         <Route path="/s/:storeSlug/history" element={<HistoryScreen />} />
         <Route path="/s/:storeSlug/profile" element={<ProfileScreen />} />
+        <Route path="/s/:storeSlug/profile/edit" element={<ProfileEditScreen />} />
         <Route path="/s/:storeSlug/notifications" element={<NotificationSettingsScreen />} />
         <Route path="/s/:storeSlug/privacy" element={<PrivacySettingsScreen />} />
         <Route path="/s/:storeSlug/product/ext/:ean" element={<ExternalProductScreen />} />
