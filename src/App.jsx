@@ -29,6 +29,7 @@ import RetailEntryScreen from './screens/RetailEntryScreen.jsx'
 import RetailProductsScreen from './screens/RetailProductsScreen.jsx'
 import RetailImportScreen from './screens/RetailImportScreen.jsx'
 import RetailSettingsScreen from './screens/RetailSettingsScreen.jsx'
+import EanRecoveryScreen from './screens/EanRecoveryScreen.jsx'
 import CompareScreen from './screens/CompareScreen.jsx'
 import ProductMockScreen from './screens/_mock/ProductMockScreen.jsx'
 import { SpeedInsights } from '@vercel/speed-insights/react'
@@ -123,6 +124,7 @@ function AppInner() {
           <Route path="dashboard" element={<RetailDashboardScreen />} />
           <Route path="products" element={<RetailProductsScreen />} />
           <Route path="import" element={<RetailImportScreen />} />
+          <Route path="ean-recovery" element={<EanRecoveryScreen />} />
           <Route path="settings" element={<RetailSettingsScreen />} />
           <Route index element={<Navigate to="dashboard" replace />} />
         </Route>

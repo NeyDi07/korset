@@ -1520,6 +1520,29 @@ export default function RetailProductsScreen() {
               upload_file
             </span>
           </button>
+
+          {/* EAN Recovery */}
+          <button
+            onClick={() => navigate(`/retail/${storeSlug}/ean-recovery`)}
+            title="EAN Recovery — fix products without barcode"
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 14,
+              border: '1px solid rgba(251,146,60,0.3)',
+              cursor: 'pointer',
+              background: 'rgba(251,146,60,0.12)',
+              color: '#FB923C',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+            }}
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: 22 }}>
+              qr_code_scanner
+            </span>
+          </button>
         </div>
 
         {/* Row 2: view toggle pills + count */}

@@ -116,7 +116,13 @@
  * bottom border so its silhouette merges into the panel beneath. The
  * background gets a subtle tone tint so it visually "lights up" without
  * needing its own glow (the unified drop-shadow on the merged wrapper
- * already covers the whole silhouette including this card). */
+ * already covers the whole silhouette including this card).
+ *
+ * The card is also extended downward by a few pixels via padding-bottom
+ * so its body physically reaches into the panel area. Combined with the
+ * negative panel margin below this guarantees there is NO sliver of
+ * background showing through at the seam — the two elements paint into
+ * exactly the same row of pixels. */
 .stat-card.is-active {
   background:
     linear-gradient(180deg, var(--tone-tint) 0%, transparent 70%),
@@ -124,6 +130,7 @@
   border-bottom-color: transparent;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
+  padding-bottom: 22px;
 }
 
 .stat-card__icon-wrap {
@@ -190,23 +197,69 @@
 .stats-tabs__panel-wrap {
   position: relative;
   z-index: 1;
-  margin-top: -1px; /* overlap by 1px so the active card's flat bottom seamlessly merges */
+  /* Bigger overlap (3px) so the active card's flat bottom paints OVER the
+   * panel's top edge — there is literally no row of pixels where you can
+   * see two separate borders, the silhouette is continuous. */
+  margin-top: -3px;
 }
 
 .stats-tabs__panel {
   border: 1.5px solid var(--glass-border);
+  /* Default: all 4 top corners rounded. Below we override the corners that
+   * sit DIRECTLY UNDER the active card, so the panel visually "opens up"
+   * into that card and the two shapes share one continuous border. */
   border-radius: 22px;
   background: var(--glass-bg);
   backdrop-filter: blur(28px);
   -webkit-backdrop-filter: blur(28px);
   padding: 22px 18px 24px;
-  transition: border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  /* Spring-like transition on the radii so the corner morphs feel
+   * organic rather than snappy when switching tabs. */
+  transition:
+    border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-top-left-radius 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    border-top-right-radius 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+ * DYNAMIC PANEL CORNERS — the heart of the "opens into the card" effect.
+ *
+ * The panel always spans the full row width. When a card is active we
+ * straighten the two top corners that sit under that card so its border
+ * line continues uninterrupted from the card's left/right edge straight
+ * down into the panel. The opposite corner stays rounded, which keeps
+ * the inactive cards visually distinct.
+ *
+ * - Favorites (left tab):    flatten top-LEFT only
+ * - Preferences (centre):    flatten BOTH top corners — panel reads as
+ *                            a wide open mouth under the centre card
+ * - History (right tab):     flatten top-RIGHT only
+ * ─────────────────────────────────────────────────────────────────────────*/
+.stats-tabs__panel.tone-favorites {
+  border-top-left-radius: 0;
+}
+.stats-tabs__panel.tone-history {
+  border-top-right-radius: 0;
+}
+.stats-tabs__panel.tone-preferences {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
 
 @media (min-width: 600px) {
   .stats-tabs__panel {
     padding: 26px 22px;
     border-radius: 26px;
+  }
+  .stats-tabs__panel.tone-favorites {
+    border-top-left-radius: 0;
+  }
+  .stats-tabs__panel.tone-history {
+    border-top-right-radius: 0;
+  }
+  .stats-tabs__panel.tone-preferences {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
   }
 }
 
