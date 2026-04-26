@@ -509,9 +509,9 @@ export default function ProfileScreen() {
               style={{
                 position: 'relative',
                 width: '100%',
-                aspectRatio: '16 / 9',
-                maxHeight: 260,
-                minHeight: 200,
+                aspectRatio: '16 / 8.5',
+                maxHeight: 247,
+                minHeight: 190,
                 borderRadius: 24,
                 overflow: 'hidden',
                 background: 'linear-gradient(135deg, #1E0A3C 0%, #6D28D9 100%)',
@@ -547,8 +547,8 @@ export default function ProfileScreen() {
                   left: '50%',
                   top: '8%',
                   transform: 'translateX(-50%)',
-                  width: 128,
-                  height: 128,
+                  width: 115,
+                  height: 115,
                   borderRadius: '50%',
                   border: '3px solid #7C3AED',
                   padding: 3,
@@ -577,8 +577,8 @@ export default function ProfileScreen() {
                     }}
                   >
                     <svg
-                      width="56"
-                      height="56"
+                      width="50"
+                      height="50"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="#fff"

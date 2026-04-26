@@ -31,6 +31,7 @@ import RetailImportScreen from './screens/RetailImportScreen.jsx'
 import RetailSettingsScreen from './screens/RetailSettingsScreen.jsx'
 import CompareScreen from './screens/CompareScreen.jsx'
 import ProductMockScreen from './screens/_mock/ProductMockScreen.jsx'
+import { SpeedInsights } from '@vercel/speed-insights/react'
 import { AuthProvider, useAuth } from './contexts/AuthContext.jsx'
 import { ProfileProvider } from './contexts/ProfileContext.jsx'
 import { StoreProvider, useStore } from './contexts/StoreContext.jsx'
@@ -154,6 +155,7 @@ export default function App() {
             <StoreProvider>
               <ProfileProvider>
                 <AppInner />
+                <SpeedInsights />
               </ProfileProvider>
             </StoreProvider>
           </OfflineProvider>
