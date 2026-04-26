@@ -152,8 +152,8 @@ async function main() {
   }).filter(p => p.brand && p.brand.length > 1 && p.brand !== '?')
     .filter(p => {
       if (!p.alternate_eans || p.alternate_eans.length === 0) return true
-      const hasRealGtin = p.alternate_eans.some(e => { const c = classifyBarcode(e); return c.valid && c.type === 'gtin' })
-      return !hasRealGtin
+      const hasValidEan = p.alternate_eans.some(e => { const c = classifyBarcode(e); return c.valid })
+      return !hasValidEan
     })
 
   const withExistingGtin = allProducts.filter(p => {
@@ -161,7 +161,7 @@ async function main() {
     if (!p.ean.startsWith('arbuz_') && !p.ean.startsWith('kaspi_') && !p.ean.startsWith('korzinavdom_')) return false
     const bc = classifyBarcode(p.ean)
     if (bc.valid) return false
-    return p.alternate_eans && p.alternate_eans.some(e => { const c = classifyBarcode(e); return c.valid && c.type === 'gtin' })
+    return p.alternate_eans && p.alternate_eans.some(e => { const c = classifyBarcode(e); return c.valid })
   }).filter(p => p.brand && p.brand.length > 1 && p.brand !== '?')
 
   console.log(`Need EAN enrichment (with brand): ${needsEan.length} (+ ${withExistingGtin.length} already have GTIN in alt, skipped)`)

@@ -480,12 +480,12 @@ export default function AIScreen() {
               borderRadius: '50%',
               border: 'none',
               cursor: input.trim() ? 'pointer' : 'default',
-              background: 'linear-gradient(135deg, #7C3AED, #6D28D9)',
+              background: 'linear-gradient(135deg, var(--primary), var(--primary-mid))',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               flexShrink: 0,
-              boxShadow: '0 4px 16px rgba(124,58,237,0.4)',
+              boxShadow: '0 4px 16px var(--primary-glow)',
               transition: 'all 0.2s ease',
             }}
           >
