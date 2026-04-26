@@ -16,3 +16,6 @@ yarn-debug.log*
 data/
 .opencode/
 test-results/
+# Banner source files & generated thumbs (optimized WebP stays tracked)
+public/banners/raw/
+public/banners/thumbs/

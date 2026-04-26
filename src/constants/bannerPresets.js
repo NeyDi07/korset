@@ -2,6 +2,63 @@
 // Stored as `preset:<id>` in users.banner_url. URLs are public assets in /public/banners/.
 
 export const BANNER_PRESETS = [
+  /* ── New photo banners (WebP, 1200×450, optimized) ── */
+  {
+    id: 'golden-samurai',
+    src: '/banners/golden-samurai.webp',
+    thumb: '/banners/thumbs/golden-samurai.webp',
+    label: { ru: 'Золотой закат', kz: 'Алтын күн батуы' },
+  },
+  {
+    id: 'starlit-observatory',
+    src: '/banners/starlit-observatory.webp',
+    thumb: '/banners/thumbs/starlit-observatory.webp',
+    label: { ru: 'Звёздная ночь', kz: 'Жұлдызды түн' },
+  },
+  {
+    id: 'witching-hour',
+    src: '/banners/witching-hour.webp',
+    thumb: '/banners/thumbs/witching-hour.webp',
+    label: { ru: 'Ведьмин час', kz: 'Сиқыршы сағаты' },
+  },
+  {
+    id: 'teal-moonlight',
+    src: '/banners/teal-moonlight.webp',
+    thumb: '/banners/thumbs/teal-moonlight.webp',
+    label: { ru: 'Бирюзовая луна', kz: 'Көкжасын ай' },
+  },
+  {
+    id: 'crescent-nightingale',
+    src: '/banners/crescent-nightingale.webp',
+    thumb: '/banners/thumbs/crescent-nightingale.webp',
+    label: { ru: 'Полумесяц', kz: 'Жарты ай' },
+  },
+  {
+    id: 'dawn-ronin',
+    src: '/banners/dawn-ronin.webp',
+    thumb: '/banners/thumbs/dawn-ronin.webp',
+    label: { ru: 'Рассветный ронин', kz: 'Таңғы ронин' },
+  },
+  /* ── Placeholders for next batch (drop images + run optimize:banners) ── */
+  {
+    id: 'midnight-grove',
+    src: '/banners/midnight-grove.webp',
+    thumb: '/banners/thumbs/midnight-grove.webp',
+    label: { ru: 'Полночная роща', kz: 'Түнгі орман' },
+  },
+  {
+    id: 'astral-dream',
+    src: '/banners/astral-dream.webp',
+    thumb: '/banners/thumbs/astral-dream.webp',
+    label: { ru: 'Астральный сон', kz: 'Астралдық түс' },
+  },
+  {
+    id: 'ember-field',
+    src: '/banners/ember-field.webp',
+    thumb: '/banners/thumbs/ember-field.webp',
+    label: { ru: 'Поле углей', kz: 'Қызыл өріс' },
+  },
+  /* ── Legacy vector banners (kept for old user profiles) ── */
   {
     id: 'sunset',
     src: '/banners/sunset.svg',
@@ -29,7 +86,7 @@ export const BANNER_PRESETS = [
   },
 ]
 
-export const DEFAULT_BANNER_ID = 'sunset'
+export const DEFAULT_BANNER_ID = 'golden-samurai'
 
 /**
  * Resolve a stored banner value (preset id or full URL) to an image src.
