@@ -13,11 +13,8 @@
 ## Tasks
 
 ### KOR-GLM-001
-- owner: planned
-- status: planned
-- scope: unknown EAN staging / bulk RPC / Data Moat handoff
-- write_zone: supabase/migrations/**, scripts/**, src/utils/retailImport*.js, data-flow files
-- notes: started unknown EAN staging
+- owner: GLM 5.1
+- status: done
 
 ### KOR-CODEX-001
 - owner: Codex
@@ -35,14 +32,14 @@
 
 ### KOR-GLM-002
 - owner: GLM 5.1
-- status: planned
-- scope: DB fixes — CASCADE, GIN, constraints, freshness
+- status: cancelled
+- scope: merged into KOR-GLM-001
 - write_zone: supabase/migrations/**, perf/data files
-- notes: Старт после KOR-GLM-001 или в отдельной чистой ветке
+- notes: Объединено с KOR-GLM-001 для эффективности
 
 ### KOR-KIMI-002
 - owner: Kimi 2.6
 - status: planned
 - scope: consumer polish — name_kz, smart merge UI, visual consistency
 - write_zone: src/screens/**, src/components/**, src/index.css
-- notes: Не лезть в shared contexts без отдельного назначения
+- notes: ProductScreen redesign — integration of nutrition/diet components

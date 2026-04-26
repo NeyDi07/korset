@@ -101,7 +101,7 @@ async function fetchExistingProducts(storeId, eans) {
   return map
 }
 
-export async function applyRetailImport(storeId, rows) {
+export async function applyRetailImport(storeId, rows, _fileName) {
   if (!storeId) throw new Error('Store is not loaded')
 
   const existing = await fetchExistingProducts(
@@ -112,41 +112,78 @@ export async function applyRetailImport(storeId, rows) {
   const { knownRows, unknownRows } = partitionRetailImportRows(rows, existing)
   const result = {
     updated: 0,
+    staged: 0,
+    autoResolved: 0,
     skipped: unknownRows,
     unknownRows,
     failed: [],
   }
 
-  const batchSize = 20
-  for (let i = 0; i < knownRows.length; i += batchSize) {
-    const batch = knownRows.slice(i, i + batchSize)
-    const updates = await Promise.all(
-      batch.map(async (row) => {
-        const product = existing.get(row.ean)
-        const payload = {
-          price_kzt: row.priceKzt,
-          stock_status: row.stockStatus,
-          shelf_zone: row.shelfZone || null,
-          updated_at: new Date().toISOString(),
-        }
-        const { data, error } = await supabase
-          .from('store_products')
-          .update(payload)
-          .eq('id', product.id)
-          .eq('store_id', storeId)
-          .select('id')
-
-        if (error || !data?.length) {
-          return { ok: false, row, reason: error?.message || 'RLS или строка не найдена' }
-        }
-        return { ok: true }
-      })
-    )
-
-    updates.forEach((item) => {
-      if (item.ok) result.updated += 1
-      else result.failed.push({ ...item.row, reason: item.reason })
+  if (knownRows.length > 0) {
+    const { data: updated, error: bulkError } = await supabase.rpc('bulk_update_store_products', {
+      p_store_id: storeId,
+      p_eans: knownRows.map((r) => r.ean),
+      p_price_kzts: knownRows.map((r) => r.priceKzt),
+      p_stock_statuses: knownRows.map((r) => r.stockStatus),
+      p_shelf_zones: knownRows.map((r) => r.shelfZone || ''),
     })
+
+    if (bulkError) {
+      const batchSize = 20
+      for (let i = 0; i < knownRows.length; i += batchSize) {
+        const batch = knownRows.slice(i, i + batchSize)
+        const updates = await Promise.all(
+          batch.map(async (row) => {
+            const product = existing.get(row.ean)
+            const payload = {
+              price_kzt: row.priceKzt,
+              stock_status: row.stockStatus,
+              shelf_zone: row.shelfZone || null,
+              updated_at: new Date().toISOString(),
+            }
+            const { data, error } = await supabase
+              .from('store_products')
+              .update(payload)
+              .eq('id', product.id)
+              .eq('store_id', storeId)
+              .select('id')
+
+            if (error || !data?.length) {
+              return { ok: false, row, reason: error?.message || 'RLS или строка не найдена' }
+            }
+            return { ok: true }
+          })
+        )
+
+        updates.forEach((item) => {
+          if (item.ok) result.updated += 1
+          else result.failed.push({ ...item.row, reason: item.reason })
+        })
+      }
+    } else {
+      result.updated = updated || 0
+    }
+  }
+
+  if (unknownRows.length > 0) {
+    const { data: staged, error: stageError } = await supabase.rpc('stage_unknown_eans', {
+      p_store_id: storeId,
+      p_eans: unknownRows.map((r) => r.ean),
+      p_local_names: unknownRows.map((r) => r.localName || ''),
+      p_price_kzts: unknownRows.map((r) => r.priceKzt),
+      p_stock_statuses: unknownRows.map((r) => r.stockStatus),
+      p_shelf_zones: unknownRows.map((r) => r.shelfZone || ''),
+    })
+
+    result.staged = staged || 0
+
+    if (!stageError) {
+      const { data: resolved } = await supabase.rpc('resolve_unknown_eans', {
+        p_store_id: storeId,
+        p_limit: unknownRows.length,
+      })
+      result.autoResolved = resolved || 0
+    }
   }
 
   return result

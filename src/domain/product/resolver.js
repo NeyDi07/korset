@@ -147,10 +147,12 @@ async function findGlobalProductById(id) {
 
 async function findCacheProduct(ean) {
   try {
+    const now = new Date().toISOString()
     const { data, error } = await supabase
       .from('external_product_cache')
       .select('*')
       .eq('ean', ean)
+      .or(`ttl_expires_at.is.null,ttl_expires_at.gt.${now}`)
       .maybeSingle()
 
     if (error || !data) return null

@@ -164,7 +164,8 @@ export default function RetailImportScreen() {
   const statCards = result
     ? [
         { label: t.updated, value: result.updated, color: '#34D399' },
-        { label: t.unknownRows, value: unknownRows.length, color: '#FBBF24' },
+        { label: t.autoResolved, value: result.autoResolved || 0, color: '#38BDF8' },
+        { label: t.staged, value: result.staged || 0, color: '#FBBF24' },
         { label: t.failedRows, value: failedRows.length, color: '#F87171' },
       ]
     : [
@@ -428,7 +429,7 @@ export default function RetailImportScreen() {
           : status === 'applying'
             ? t.applying
             : result
-              ? `${t.updated}: ${result.updated}`
+              ? `${t.updated}: ${result.updated} / ${t.autoResolved}: ${result.autoResolved || 0}`
               : t.apply}
       </button>
     </div>

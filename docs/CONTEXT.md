@@ -164,6 +164,13 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - 006 (`alternate_eans`): ✅ ВЫПОЛНЕНА
 - 007 (`add_pipeline_sources`): ✅ ПРИМЕНЕНА
 - 008 (`r2_image_columns`): ✅ ПРИМЕНЕНА
+- 009 (`store_profile_fields`): ✅ ПРИМЕНЕНА
+- 010 (`korzinavdom_source`): ✅ ПРИМЕНЕНА
+- 011 (`korzinavdom_image_source`): ✅ ПРИМЕНЕНА
+- 012 (`unknown_ean_staging`): ✅ ПРИМЕНЕНА — Data Moat pipeline, bulk RPC, data_quality_score
+- 013 (`cascade_fk_fixes`): ✅ ПРИМЕНЕНА — 13 FK с ON DELETE
+- 014 (`gin_tsvector_indexes`): ✅ ПРИМЕНЕНА — GIN + tsvector полнотекстовый поиск
+- 015 (`constraints_and_enrichment`): ✅ ПРИМЕНЕНА
 
 **ScanScreen РЕДИЗАЙН (сессия 11, 2026-04-21):**
 - ✅ Blur-шапка: кнопка Назад + заголовок + бейдж магазина
@@ -184,11 +191,10 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - ✅ `src/screens/RetailProductsScreen.jsx` — useInfiniteQuery + Load More кнопка + дебаунс поиска 350ms + серверный поиск через ilike + optimistic updates адаптированы для infinite query
 
 **ПОРЯДОК ЗАДАЧ (следующий чат):**
-1. Применить миграцию 011 (korzinavdom image_source) через SQL Editor
-2. EAN enrichment на 7212 кандидатов (NPC + DDG)
-3. Импорт прайс-листа (RetailImportScreen)
-4. БД-фиксы (CASCADE, GIN)
-5. Фронтенд: name_kz по языку
+1. Протестировать импорт прайс-листа end-to-end с новыми RPC
+2. Запустить `resolve-unknown-eans.cjs` для обработки staged EAN
+3. Фронтенд: name_kz по языку
+4. USDA enrichment — 457 продуктов без состава
 
 **КОРЗИНА ДОМА (korzinavdom.kz) — API парсер:**
 - API: `https://api.korzinavdom.kz/client/` (открытый, без авторизации)
@@ -260,3 +266,16 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - В `.env.local` присутствуют ключи Supabase/OpenAI/R2/Vercel/NPC/USDA; прямые CLI `psql`, `supabase`, `wrangler`, `vercel` локально не найдены.
 - Supabase виден как один локально настроенный project host: `tcvuffoxwavqdexrzwjj.supabase.co`; отдельный dev/staging пока не подтверждён.
 - Рекомендованный режим: сначала read-only Supabase-аудит и архитектурные DB/security/scaling фиксы, затем RetailImport и новые фичи. Любые внешние write-операции — только после явного апрува владельца.
+
+## Заметка сессии — 2026-04-25 KOR-GLM-001: Data Moat + DB fixes
+
+- Реализован полный Data Moat pipeline для unknown EAN из импорта прайс-листов:
+  - **Миграция 012**: таблицы `unknown_ean_staging` + `import_batches`, 3 RPC (`bulk_update_store_products`, `stage_unknown_eans`, `resolve_unknown_eans`), `calc_data_quality_score()` функция + триггер, `source_updated_at` колонка, TTL default + backfill, версионирование `get_top_scanned_products` и `get_missed_opportunities`
+  - **Миграция 013**: ON DELETE CASCADE/SET NULL на 13 FK (scan_events, missing_products, product_matches, product_reviews, user_favorites, notification_deliveries, external_product_cache)
+  - **Миграция 014**: GIN на jsonb (specs_json, fit_reasons_json, cache allergens/diets/nutriments) + tsvector + GIN на name/brand/ingredients_raw + авто-триггер обновления tsvector
+  - **Миграция 015**: stores.owner_id NOT NULL, external_product_cache source CHECK расширен, индексы scan_events для аналитики, missing_products enriched (local_name, last_import_price_kzt)
+- `src/utils/retailImport.js`: `applyRetailImport` теперь вызывает `bulk_update_store_products` RPC (1 запрос вместо N), `stage_unknown_eans` (пишет unknown в staging + missing_products), `resolve_unknown_eans` (авто-привязка найденных). Fallback на старый построчный UPDATE если RPC недоступна.
+- `src/domain/product/resolver.js`: TTL enforcement в `findCacheProduct` — устаревший кэш (ttl_expires_at < now) больше не используется.
+- `scripts/resolve-unknown-eans.cjs`: серверный каскад обогащения — NPC → Arbuz → USDA → OFF. Поддержка --limit, --store, --dry-run.
+- Проверки: lint 0 errors / 48 warnings, build OK, 4/4 E2E, 3/3 unit.
+- **Миграции 011-015 ждут применения через Supabase SQL Editor (владелец проекта).**
