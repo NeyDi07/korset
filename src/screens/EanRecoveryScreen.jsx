@@ -1,7 +1,11 @@
 import { useState, useCallback, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { useI18n } from '../utils/i18n.js'
 import { supabase } from '../utils/supabase.js'
 import { getImageUrl } from '../utils/imageUrl.js'
+import { useStore } from '../contexts/StoreContext.jsx'
+import { buildProductPath } from '../utils/routes.js'
+import RetailScannerModal from '../components/RetailScannerModal.jsx'
 
 const PAGE_SIZE = 50
 
@@ -25,13 +29,20 @@ function isValidEan(code) {
 export default function EanRecoveryScreen() {
   const { t } = useI18n()
   const p = t.retail.products
+  const { currentStore } = useStore()
+  const storeSlug = currentStore?.slug || currentStore?.code || 'store-one'
+
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(null)
   const [editingId, setEditingId] = useState(null)
   const [editEan, setEditEan] = useState('')
+  const [editingNameId, setEditingNameId] = useState(null)
+  const [editName, setEditName] = useState('')
+  const [scannerForId, setScannerForId] = useState(null)
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState(null)
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null)
   const [filter, setFilter] = useState('all')
   const [search, setSearch] = useState('')
   const [initialTotal, setInitialTotal] = useState(0)
@@ -40,7 +51,7 @@ export default function EanRecoveryScreen() {
     setLoading(true)
     const all = []
     for (let page = 0; page < 20; page++) {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('global_products')
         .select(
           'id, ean, name, name_kz, brand, category, image_url, ingredients_raw, source_primary'
@@ -88,13 +99,11 @@ export default function EanRecoveryScreen() {
       return
     }
 
-    const { error: _spError } = await supabase
+    await supabase
       .from('store_products')
       .update({ ean: code })
       .eq('global_product_id', product.id)
       .eq('is_active', true)
-
-    if (_spError) console.log('store_products ean update:', _spError.message)
 
     setProducts((prev) => prev.filter((pr) => pr.id !== product.id))
     setEditingId(null)
@@ -104,16 +113,56 @@ export default function EanRecoveryScreen() {
     setTimeout(() => setSuccess(null), 2500)
   }
 
-  const handleDeactivate = async (product) => {
+  const handleSaveName = async (product) => {
+    const name = editName.trim()
+    if (!name || name === product.name) {
+      setEditingNameId(null)
+      return
+    }
+
     setSaving(product.id)
-    await supabase.from('global_products').update({ is_active: false }).eq('id', product.id)
-    await supabase
-      .from('store_products')
-      .update({ is_active: false })
-      .eq('global_product_id', product.id)
-      .eq('is_active', true)
+    const { error: dbError } = await supabase
+      .from('global_products')
+      .update({ name })
+      .eq('id', product.id)
+
+    if (dbError) {
+      setError(dbError.message)
+      setSaving(null)
+      return
+    }
+
+    setProducts((prev) => prev.map((pr) => (pr.id === product.id ? { ...pr, name } : pr)))
+    setEditingNameId(null)
+    setEditName('')
+    setSaving(null)
+  }
+
+  const handleFullDelete = async (product) => {
+    setSaving(product.id)
+
+    await supabase.from('store_products').delete().eq('global_product_id', product.id)
+
+    const { error: dbError } = await supabase.from('global_products').delete().eq('id', product.id)
+
+    if (dbError) {
+      setError('Ошибка удаления: ' + dbError.message)
+      setSaving(null)
+      setConfirmDeleteId(null)
+      return
+    }
+
     setProducts((prev) => prev.filter((pr) => pr.id !== product.id))
     setSaving(null)
+    setConfirmDeleteId(null)
+  }
+
+  const handleScanEan = (ean) => {
+    setScannerForId(null)
+    if (!ean) return
+    setEditingId(scannerForId)
+    setEditEan(ean)
+    setError(null)
   }
 
   const filtered = products.filter((pr) => {
@@ -131,9 +180,132 @@ export default function EanRecoveryScreen() {
   })
 
   const resolved = initialTotal - products.length
+  const confirmProduct = products.find((pr) => pr.id === confirmDeleteId)
 
   return (
     <div style={{ minHeight: '100dvh', background: 'var(--retail-bg)', paddingBottom: 90 }}>
+      {/* Scanner modal */}
+      {scannerForId && (
+        <RetailScannerModal onScan={handleScanEan} onClose={() => setScannerForId(null)} />
+      )}
+
+      {/* Confirm delete modal */}
+      {confirmProduct &&
+        createPortal(
+          <div
+            onClick={() => setConfirmDeleteId(null)}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              zIndex: 9995,
+              background: 'rgba(0,0,0,0.7)',
+              backdropFilter: 'blur(6px)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: 20,
+            }}
+          >
+            <div
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                width: '100%',
+                maxWidth: 360,
+                background: 'var(--glass-bg)',
+                borderRadius: 20,
+                padding: '24px 20px',
+                boxShadow: '0 20px 60px rgba(0,0,0,0.6)',
+                border: '1px solid rgba(239,68,68,0.2)',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+                <div
+                  style={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: 12,
+                    background: 'rgba(239,68,68,0.12)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                  }}
+                >
+                  <span
+                    className="material-symbols-outlined"
+                    style={{ fontSize: 22, color: '#F87171' }}
+                  >
+                    delete_forever
+                  </span>
+                </div>
+                <div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)' }}>
+                    Полное удаление
+                  </div>
+                  <div style={{ fontSize: 12, color: 'var(--text-dim)', marginTop: 2 }}>
+                    Товар будет удалён из всей базы Körset
+                  </div>
+                </div>
+              </div>
+              <div
+                style={{
+                  fontSize: 13,
+                  color: 'var(--text-sub)',
+                  background: 'var(--glass-subtle)',
+                  borderRadius: 10,
+                  padding: '10px 14px',
+                  marginBottom: 20,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {confirmProduct.name}
+              </div>
+              <div style={{ display: 'flex', gap: 10 }}>
+                <button
+                  onClick={() => setConfirmDeleteId(null)}
+                  style={{
+                    flex: 1,
+                    padding: '12px 0',
+                    borderRadius: 12,
+                    border: '1px solid var(--glass-border)',
+                    background: 'var(--glass-bg)',
+                    color: 'var(--text-sub)',
+                    fontSize: 14,
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    fontFamily: 'var(--font-body)',
+                  }}
+                >
+                  Отмена
+                </button>
+                <button
+                  onClick={() => handleFullDelete(confirmProduct)}
+                  disabled={saving === confirmProduct.id}
+                  style={{
+                    flex: 1,
+                    padding: '12px 0',
+                    borderRadius: 12,
+                    border: 'none',
+                    background:
+                      saving === confirmProduct.id ? 'rgba(239,68,68,0.4)' : 'rgba(239,68,68,0.85)',
+                    color: '#fff',
+                    fontSize: 14,
+                    fontWeight: 700,
+                    cursor: saving === confirmProduct.id ? 'not-allowed' : 'pointer',
+                    fontFamily: 'var(--font-body)',
+                  }}
+                >
+                  {saving === confirmProduct.id ? '...' : 'Удалить навсегда'}
+                </button>
+              </div>
+            </div>
+          </div>,
+          document.body
+        )}
+
+      {/* Sticky header */}
       <div
         style={{
           position: 'sticky',
@@ -293,7 +465,12 @@ export default function EanRecoveryScreen() {
               }}
             >
               <div style={{ display: 'flex', gap: 12 }}>
-                <div
+                {/* Image — tap to open product card */}
+                <a
+                  href={buildProductPath(storeSlug, pr.ean)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
                   style={{
                     width: 48,
                     height: 48,
@@ -304,6 +481,7 @@ export default function EanRecoveryScreen() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
+                    textDecoration: 'none',
                   }}
                 >
                   {pr.image_url ? (
@@ -320,22 +498,118 @@ export default function EanRecoveryScreen() {
                       image_not_supported
                     </span>
                   )}
-                </div>
+                </a>
 
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div
-                    style={{
-                      fontSize: 14,
-                      fontWeight: 600,
-                      color: 'var(--text)',
-                      lineHeight: 1.3,
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {pr.name || '—'}
-                  </div>
+                  {/* Name — editable */}
+                  {editingNameId === pr.id ? (
+                    <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                      <input
+                        type="text"
+                        value={editName}
+                        onChange={(e) => setEditName(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') handleSaveName(pr)
+                          if (e.key === 'Escape') setEditingNameId(null)
+                        }}
+                        autoFocus
+                        style={{
+                          flex: 1,
+                          fontSize: 14,
+                          fontWeight: 600,
+                          color: 'var(--text)',
+                          background: 'var(--input-bg)',
+                          border: '2px solid var(--retail-accent)',
+                          borderRadius: 8,
+                          padding: '4px 8px',
+                          outline: 'none',
+                          fontFamily: 'var(--font-body)',
+                        }}
+                      />
+                      <button
+                        onClick={() => handleSaveName(pr)}
+                        disabled={saving === pr.id}
+                        style={{
+                          padding: '4px 10px',
+                          fontSize: 12,
+                          fontWeight: 700,
+                          background: 'var(--retail-accent)',
+                          color: '#fff',
+                          border: 'none',
+                          borderRadius: 8,
+                          cursor: 'pointer',
+                        }}
+                      >
+                        OK
+                      </button>
+                      <button
+                        onClick={() => setEditingNameId(null)}
+                        style={{
+                          padding: '4px 8px',
+                          fontSize: 12,
+                          background: 'var(--glass-bg)',
+                          color: 'var(--text-sub)',
+                          border: '1px solid var(--glass-border)',
+                          borderRadius: 8,
+                          cursor: 'pointer',
+                        }}
+                      >
+                        X
+                      </button>
+                    </div>
+                  ) : (
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 4,
+                      }}
+                    >
+                      <a
+                        href={buildProductPath(storeSlug, pr.ean)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 600,
+                          color: 'var(--text)',
+                          lineHeight: 1.3,
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                          textDecoration: 'none',
+                          flex: 1,
+                          minWidth: 0,
+                        }}
+                      >
+                        {pr.name || '—'}
+                      </a>
+                      <button
+                        onClick={() => {
+                          setEditingNameId(pr.id)
+                          setEditName(pr.name || '')
+                        }}
+                        title="Редактировать название"
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          cursor: 'pointer',
+                          padding: 2,
+                          display: 'flex',
+                          alignItems: 'center',
+                          flexShrink: 0,
+                        }}
+                      >
+                        <span
+                          className="material-symbols-outlined"
+                          style={{ fontSize: 16, color: 'var(--text-dim)' }}
+                        >
+                          edit
+                        </span>
+                      </button>
+                    </div>
+                  )}
                   <div style={{ fontSize: 12, color: 'var(--text-sub)', marginTop: 2 }}>
                     {pr.brand || <span style={{ color: 'var(--text-disabled)' }}>без бренда</span>}
                     <span style={{ color: 'var(--text-disabled)', marginLeft: 8 }}>
@@ -354,10 +628,11 @@ export default function EanRecoveryScreen() {
                   </div>
                 </div>
 
+                {/* Full delete button */}
                 <button
-                  onClick={() => handleDeactivate(pr)}
+                  onClick={() => setConfirmDeleteId(pr.id)}
                   disabled={saving === pr.id}
-                  title="Удалить (штрихкод невозможен)"
+                  title="Удалить из базы Körset навсегда"
                   style={{
                     background: 'rgba(239,68,68,0.1)',
                     border: '1px solid rgba(239,68,68,0.25)',
@@ -375,16 +650,17 @@ export default function EanRecoveryScreen() {
                     className="material-symbols-outlined"
                     style={{ fontSize: 18, color: '#F87171' }}
                   >
-                    delete
+                    delete_forever
                   </span>
                 </button>
               </div>
 
+              {/* EAN edit section */}
               {editingId === pr.id ? (
                 <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
                   <input
                     type="text"
-                    placeholder="Вставь EAN-13 штрихкод..."
+                    placeholder="Вставь или отсканируй EAN-13..."
                     value={editEan}
                     onChange={(e) => setEditEan(e.target.value)}
                     onKeyDown={(e) => {
@@ -443,34 +719,57 @@ export default function EanRecoveryScreen() {
                   </button>
                 </div>
               ) : (
-                <button
-                  onClick={() => {
-                    setEditingId(pr.id)
-                    setEditEan('')
-                    setError(null)
-                  }}
-                  style={{
-                    marginTop: 8,
-                    width: '100%',
-                    padding: '8px 0',
-                    fontSize: 13,
-                    fontWeight: 600,
-                    background: 'rgba(56,189,248,0.08)',
-                    color: '#38BDF8',
-                    border: '1px solid rgba(56,189,248,0.2)',
-                    borderRadius: 10,
-                    cursor: 'pointer',
-                    fontFamily: 'var(--font-body)',
-                  }}
-                >
-                  <span
-                    className="material-symbols-outlined"
-                    style={{ fontSize: 16, verticalAlign: -3, marginRight: 4 }}
+                <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+                  <button
+                    onClick={() => {
+                      setEditingId(pr.id)
+                      setEditEan('')
+                      setError(null)
+                    }}
+                    style={{
+                      flex: 1,
+                      padding: '8px 0',
+                      fontSize: 13,
+                      fontWeight: 600,
+                      background: 'rgba(56,189,248,0.08)',
+                      color: '#38BDF8',
+                      border: '1px solid rgba(56,189,248,0.2)',
+                      borderRadius: 10,
+                      cursor: 'pointer',
+                      fontFamily: 'var(--font-body)',
+                    }}
                   >
-                    edit
-                  </span>
-                  {p.addBarcode}
-                </button>
+                    <span
+                      className="material-symbols-outlined"
+                      style={{ fontSize: 16, verticalAlign: -3, marginRight: 4 }}
+                    >
+                      edit
+                    </span>
+                    Ввести штрихкод
+                  </button>
+                  <button
+                    onClick={() => setScannerForId(pr.id)}
+                    style={{
+                      padding: '8px 14px',
+                      fontSize: 13,
+                      fontWeight: 600,
+                      background: 'rgba(251,146,60,0.1)',
+                      color: '#FB923C',
+                      border: '1px solid rgba(251,146,60,0.25)',
+                      borderRadius: 10,
+                      cursor: 'pointer',
+                      fontFamily: 'var(--font-body)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 4,
+                    }}
+                  >
+                    <span className="material-symbols-outlined" style={{ fontSize: 16 }}>
+                      barcode_scanner
+                    </span>
+                    Сканировать
+                  </button>
+                </div>
               )}
             </div>
           ))}
