@@ -270,8 +270,11 @@ export const dictionaries = {
       authRequiredPDataMsg:
         'Сначала войдите в аккаунт, чтобы видеть и редактировать личные данные.',
       loginBtn: 'Войти в аккаунт',
-      guestBannerHint: 'Войдите, чтобы поставить баннер',
-      guestAvatarHint: 'Войдите, чтобы выбрать аватар',
+      authPromptTitle: 'Нужен аккаунт',
+      authPromptDesc:
+        'Чтобы настроить баннер, аватар и сохранить профиль, войдите или создайте аккаунт. Это бесплатно и займёт меньше минуты.',
+      authPromptConfirm: 'Войти / Создать',
+      authPromptCancel: 'Не сейчас',
       sectionMain: 'Основное',
       sectionPersonal: 'Личные данные',
       sectionNotifications: 'Уведомления',
@@ -849,8 +852,11 @@ export const dictionaries = {
       authRequiredMsg: 'Профиль баптауларын пайдалану үшін аккаунтқа кіріңіз.',
       authRequiredPDataMsg: 'Жеке деректерді көру және өзгерту үшін аккаунтқа кіріңіз.',
       loginBtn: 'Аккаунтқа кіру',
-      guestBannerHint: 'Баннер қою үшін кіріңіз',
-      guestAvatarHint: 'Аватар таңдау үшін кіріңіз',
+      authPromptTitle: 'Аккаунт қажет',
+      authPromptDesc:
+        'Баннер, аватар орнату және профильді сақтау үшін аккаунтқа кіріңіз немесе тіркеліңіз. Тегін, бір минуттан аз уақыт алады.',
+      authPromptConfirm: 'Кіру / Тіркелу',
+      authPromptCancel: 'Қазір емес',
       sectionMain: 'Негізгі',
       sectionPersonal: 'Жеке деректер',
       sectionNotifications: 'Хабарландырулар',

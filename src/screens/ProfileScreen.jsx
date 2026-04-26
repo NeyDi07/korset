@@ -20,6 +20,7 @@ import {
   buildProfilePath,
 } from '../utils/routes.js'
 import ProfileAvatar from '../components/ProfileAvatar.jsx'
+import AuthPromptModal from '../components/AuthPromptModal.jsx'
 import { ALLERGENS } from '../constants/allergens.js'
 import { DIET_GOALS } from '../constants/dietGoals.js'
 import { buildAuthNavigateState } from '../utils/authFlow.js'
@@ -326,6 +327,9 @@ export default function ProfileScreen() {
   const [allergenInput, setAllergenInput] = useState('')
   // Active stats tab: 'favorites' | 'preferences' | 'history' | null
   const [activeTab, setActiveTab] = useState(null)
+  // Auth-required prompt modal (shown when a guest clicks elements that
+  // need an account — banner, avatar slot, etc.).
+  const [authPromptOpen, setAuthPromptOpen] = useState(false)
 
   // Lazy-loaded mini-grids for favorites/history tabs (top 6 each).
   // null = not loaded yet, [] = loaded but empty, [items] = loaded with content.
@@ -600,43 +604,23 @@ export default function ProfileScreen() {
             )}
           </div>
 
-          {/* ── BANNER CARD (background image + avatar + name overlay) ──
-            For GUESTS we deliberately do NOT show the colourful preset
-            banner: it would suggest the slot is already filled. Instead we
-            render a neutral, slightly textured gradient with a "sign in to
-            set a banner" hint, and make the entire card a button that
-            navigates to /auth. Avatar slot behaves the same way. This is a
-            deliberate hook — the visual void invites the user to register. */}
+          {/* ── BANNER CARD ──────────────────────────────────────────────
+            Two distinct rendering paths:
+
+            • AUTHENTICATED: full preset banner image + avatar + name pill,
+              same as before. The whole card is decorative (not clickable);
+              edit happens via the pencil button in the header.
+
+            • GUEST: a clean, theme-aware placeholder (NO patterns or
+              stripes — those looked busy). The card itself + the avatar
+              circle are buttons that open the AuthPromptModal. The "Войти"
+              CTA at the bottom navigates straight to /auth (preserving
+              the previous behaviour the user had). All colours come from
+              CSS theme variables so the placeholder reads correctly in
+              both light and dark themes — no more avatar-blends-into-bg.
+            ────────────────────────────────────────────────────────────── */}
           <div style={{ padding: '0 16px 0' }}>
             <div
-              role={user ? undefined : 'button'}
-              tabIndex={user ? undefined : 0}
-              onClick={
-                user
-                  ? undefined
-                  : () =>
-                      navigate('/auth', {
-                        state: buildAuthNavigateState(location, {
-                          reason: 'profile_required',
-                          message: t.profile.authRequiredMsg,
-                        }),
-                      })
-              }
-              onKeyDown={
-                user
-                  ? undefined
-                  : (e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault()
-                        navigate('/auth', {
-                          state: buildAuthNavigateState(location, {
-                            reason: 'profile_required',
-                            message: t.profile.authRequiredMsg,
-                          }),
-                        })
-                      }
-                    }
-              }
               style={{
                 position: 'relative',
                 width: '100%',
@@ -647,10 +631,9 @@ export default function ProfileScreen() {
                 overflow: 'hidden',
                 background: user
                   ? 'linear-gradient(135deg, #1E0A3C 0%, #6D28D9 100%)'
-                  : 'linear-gradient(135deg, var(--glass-bg) 0%, var(--glass-subtle) 100%)',
-                boxShadow: user ? '0 12px 40px rgba(0,0,0,0.35)' : '0 8px 24px rgba(0,0,0,0.18)',
-                border: user ? 'none' : '1px solid var(--glass-soft-border)',
-                cursor: user ? 'default' : 'pointer',
+                  : 'var(--bg-card)',
+                boxShadow: user ? '0 12px 40px rgba(0,0,0,0.35)' : '0 8px 24px rgba(0,0,0,0.10)',
+                border: user ? 'none' : '1px solid var(--glass-border)',
               }}
             >
               {user ? (
@@ -680,78 +663,102 @@ export default function ProfileScreen() {
                   />
                 </>
               ) : (
-                /* Subtle diagonal-stripe texture so the placeholder doesn't
-                   read as "broken" or "loading", but as "intentionally
-                   empty, click to fill". */
-                <div
-                  aria-hidden="true"
+                /* Guest backdrop: a soft radial highlight in the upper
+                   area gives the placeholder a sense of depth without
+                   reading as "broken". A single click anywhere on this
+                   layer opens the auth prompt. */
+                <button
+                  type="button"
+                  onClick={() => setAuthPromptOpen(true)}
+                  aria-label={t.profile.authPromptTitle}
                   style={{
                     position: 'absolute',
                     inset: 0,
-                    backgroundImage:
-                      'repeating-linear-gradient(135deg, transparent 0px, transparent 14px, rgba(255,255,255,0.025) 14px, rgba(255,255,255,0.025) 28px)',
-                    pointerEvents: 'none',
+                    width: '100%',
+                    height: '100%',
+                    border: 'none',
+                    padding: 0,
+                    margin: 0,
+                    cursor: 'pointer',
+                    background:
+                      'radial-gradient(ellipse 70% 60% at 50% 28%, var(--bg-card-hover) 0%, transparent 75%)',
                   }}
                 />
               )}
 
-              {/* Avatar — centered, raised toward upper area */}
-              <div
-                style={{
-                  position: 'absolute',
-                  left: '50%',
-                  top: '8%',
-                  transform: 'translateX(-50%)',
-                  width: 115,
-                  height: 115,
-                  borderRadius: '50%',
-                  border: user ? '3px solid #7C3AED' : '2px dashed var(--glass-border)',
-                  padding: 3,
-                  background: user ? 'rgba(12,10,30,0.55)' : 'var(--glass-subtle)',
-                  boxShadow: user
-                    ? '0 6px 24px rgba(124,58,237,0.45), inset 0 0 14px rgba(124,58,237,0.18)'
-                    : 'none',
-                  boxSizing: 'border-box',
-                }}
-              >
-                {user ? (
+              {/* Avatar — centered, raised toward upper area.
+                For guests this is a separate button (stops propagation
+                so it doesn't double-fire with the backdrop button). */}
+              {user ? (
+                <div
+                  style={{
+                    position: 'absolute',
+                    left: '50%',
+                    top: '8%',
+                    transform: 'translateX(-50%)',
+                    width: 115,
+                    height: 115,
+                    borderRadius: '50%',
+                    border: '3px solid #7C3AED',
+                    padding: 3,
+                    background: 'rgba(12,10,30,0.55)',
+                    boxShadow:
+                      '0 6px 24px rgba(124,58,237,0.45), inset 0 0 14px rgba(124,58,237,0.18)',
+                    boxSizing: 'border-box',
+                  }}
+                >
                   <ProfileAvatar
                     avatarId={avatarId || user?.user_metadata?.avatar_id}
                     name={displayName || user?.user_metadata?.full_name}
                     rounded="circle"
                   />
-                ) : (
-                  <div
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      borderRadius: '50%',
-                      background: 'transparent',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: 'var(--text-dim)',
-                    }}
-                    aria-label={t.profile.guestAvatarHint}
-                    title={t.profile.guestAvatarHint}
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setAuthPromptOpen(true)
+                  }}
+                  aria-label={t.profile.authPromptTitle}
+                  style={{
+                    position: 'absolute',
+                    left: '50%',
+                    top: '8%',
+                    transform: 'translateX(-50%)',
+                    width: 115,
+                    height: 115,
+                    borderRadius: '50%',
+                    border: '2px solid var(--glass-border)',
+                    padding: 3,
+                    background: 'var(--bg-surface)',
+                    boxShadow: '0 4px 14px rgba(0,0,0,0.10)',
+                    boxSizing: 'border-box',
+                    cursor: 'pointer',
+                    color: 'var(--text-dim)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <svg
+                    width="48"
+                    height="48"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
                   >
-                    <svg
-                      width="46"
-                      height="46"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.6"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
-                      <circle cx="12" cy="7" r="4" />
-                    </svg>
-                  </div>
-                )}
-              </div>
-              {/* Name pill — bottom center */}
+                    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                </button>
+              )}
+
+              {/* Bottom slot: name pill (auth) or Login button (guest) */}
               <div
                 style={{
                   position: 'absolute',
@@ -789,47 +796,45 @@ export default function ProfileScreen() {
                     {displayName || user?.user_metadata?.full_name || 'Körset User'}
                   </div>
                 ) : (
-                  /* Non-interactive hint pill — the surrounding banner card
-                     itself is the button (see role="button" above), so we
-                     don't double up clickable areas. The pill explains why
-                     the banner is empty. */
-                  <div
+                  /* "Войти" CTA — same behaviour as before: navigates
+                     directly to /auth. The backdrop / avatar click open
+                     the prompt modal as a softer pre-step. */
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      navigate('/auth', {
+                        state: buildAuthNavigateState(location, {
+                          reason: 'profile_required',
+                          message: t.profile.authRequiredMsg,
+                        }),
+                      })
+                    }}
                     style={{
-                      pointerEvents: 'none',
-                      background: 'var(--glass-bg)',
-                      border: '1px solid var(--glass-soft-border)',
-                      color: 'var(--text-sub)',
-                      fontSize: 13,
+                      pointerEvents: 'auto',
+                      background: 'linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%)',
+                      border: 'none',
+                      color: '#fff',
+                      fontSize: 14,
                       fontFamily: 'var(--font-display)',
-                      fontWeight: 500,
-                      padding: '8px 16px',
+                      fontWeight: 700,
+                      padding: '10px 26px',
                       borderRadius: 12,
-                      letterSpacing: 0.2,
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: 8,
+                      cursor: 'pointer',
+                      letterSpacing: 0.4,
+                      boxShadow: '0 6px 18px rgba(124,58,237,0.32)',
                     }}
                   >
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      aria-hidden="true"
-                    >
-                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                      <path d="M7 11V7a5 5 0 0110 0v4" />
-                    </svg>
-                    {t.profile.guestBannerHint}
-                  </div>
+                    {t.profile.loginBtn}
+                  </button>
                 )}
               </div>
             </div>
           </div>
+
+          {/* Modal: shown when a guest clicks the banner backdrop or the
+              avatar slot (NOT when they click the explicit Login button). */}
+          <AuthPromptModal open={authPromptOpen} onClose={() => setAuthPromptOpen(false)} />
 
           {/* ── STATS TABS (favorites / preferences / history) ── */}
           <div style={{ padding: '38px 20px 28px' }}>

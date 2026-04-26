@@ -71,10 +71,16 @@
   justify-content: flex-end;
   gap: 6px;
   padding: 30px 8px 18px;
-  /* Both aspect-ratio and min-height are set so the card never collapses,
-   * even in browsers that don't support aspect-ratio (very old Safari). */
-  aspect-ratio: 1 / 1.4;
-  min-height: 132px;
+  /*
+   * IMPORTANT — fixed height instead of aspect-ratio.
+   *
+   * The previous version used `aspect-ratio: 1 / 1.4 + min-height: 132px`,
+   * but Firefox renders aspect-ratio differently for grid items defined
+   * with `minmax(0, 1fr)`: it gave taller cards than Chromium, which made
+   * the value digits look small inside a lot of empty space. A fixed pixel
+   * height renders pixel-perfectly identical in every engine.
+   */
+  height: 148px;
   border: 1.5px solid var(--glass-border);
   border-radius: 22px;
   background: var(--glass-bg);
@@ -165,6 +171,10 @@
 /* Smaller phones (≤360px width — iPhone SE, older Androids): scale down a
  * bit so the big number still fits without ellipsis on narrow viewports. */
 @media (max-width: 360px) {
+  .stat-card {
+    height: 138px;
+    padding: 28px 6px 16px;
+  }
   .stat-card__value {
     font-size: 40px;
   }
@@ -176,8 +186,8 @@
 /* Tablets and up: bigger, more impactful. */
 @media (min-width: 600px) {
   .stat-card {
+    height: 172px;
     padding: 36px 12px 20px;
-    min-height: 156px;
     border-radius: 26px;
   }
   .stat-card__icon-wrap {

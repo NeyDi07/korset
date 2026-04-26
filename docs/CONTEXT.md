@@ -102,10 +102,10 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - **82 категорий** обойдены через search queries
 
 **ТЕКУЩИЕ СТАТИСТИКИ БД (2026-04-26):**
-- **7142 active** global_products (-1011 дублей/весовых/не-продуктов деактивировано)
-- **Реальные EAN: 6984** (97.8%) — было 6297 (77%)
-- **Fake EAN:** arbuz_ 44 + kaspi_ 1 + korzinavdom_ 109 = 154
-- **Состав: 87.4%** (6241/7142)
+- **7104 active** global_products
+- **Реальные EAN: 7031** (99.0%) — было 6984 (97.8%) в начале сессии
+- **Fake EAN: 73** — arbuz_ 29 + kaspi_ 0 + korzinavdom_ 44
+- **Состав: 87.6%** (6233/7104)
 - **Нутриенты: ~81%** (5767)
 - **R2 CDN: 8115/8118** (99.96% продуктов с картинками)
 - store_products для ERALY: 8760
@@ -430,3 +430,37 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 
 **Следующий фокус:** 
 - Вернуться к продуктовым задачам B2B (data moat, bulk RPC, неизвестные EAN), как планировалось ранее. Светлая тема внедрена.
+
+## Заметка сессии — 2026-04-26 EAN Coverage Final Push (97.8% → 99.0%)
+
+- **Цель:** 100% EAN coverage, избавиться от всех fake EAN (arbuz_/kaspi_/korzinavdom_)
+- **Результат:** 99.0% (7031/7104 реальных EAN), 73 fake EAN остались
+- **Что сделано:**
+  - Resolver v2: промотировал уникальные GTIN из alternate_eans, деактивировал дубли + мердж ингредиентов
+  - Resolver v3 (`scripts/resolve-v3.cjs`): расслабил 200-299 range (реальные KZ коды), NPC name search для no-alt продуктов
+  - OFF harvest (`scripts/off-ean-harvest.cjs`): brand+name поиск в Open Food Facts — 14 EAN найдено
+  - OFF broad search (`scripts/off-broad-search.cjs`): keyword-based поиск — 25 EAN найдено
+  - UPCitemdb (`scripts/upc-db-search.cjs`): 0 результатов (KZ-специфичные продукты)
+  - Деактивировано: 22 весовых товара (нет штрихкода по определению)
+  - Очищено: все kaspi_ EAN (был 1, теперь 0)
+  - NPC verification: alternate_eans с 0200/2500 prefix НЕ найдены в NPC — это внутренние/нерабочие коды
+- **Автоматизированные подходы полностью исчерпаны:** NPC (3 раунда), OFF (2 раунда), UPCitemdb, alternate_eans verification
+- **73 оставшихся fake EAN** требуют ручного ввода через EAN Recovery screen:
+  - 29 arbuz_ (Arbuz СТМ, нишевый импорт: Donckels, Alnatura, Edeka)
+  - 44 korzinavdom_ (локальные KZ бренды: Дәмді ет, Еткон, Ролли, Рамай, etc.)
+  - 37 имеют alternate_eans (все 0200-prefix, НЕ верифицированы в NPC)
+- **EAN Recovery screen** (`src/screens/EanRecoveryScreen.jsx`) построен и готов к использованию
+- **EAN Coverage Journey:**
+  | Stage | Active | Real EAN | Fake EAN | Coverage |
+  |-------|--------|----------|----------|----------|
+  | Start of session | 8153 | 6297 | 1852 | 77.2% |
+  | After resolver v2 | 7237 | 6921 | 316 | 95.6% |
+  | After NPC + cleanup | 7142 | 6984 | 154 | 97.8% |
+  | After resolver v3 | 7126 | 6992 | 134 | 98.1% |
+  | After OFF + weight cleanup | 7104 | 7031 | 73 | 99.0% |
+- **Новые скрипты:**
+  - `scripts/resolve-v3.cjs` — KZ-aware resolver + NPC name search
+  - `scripts/off-ean-harvest.cjs` — OFF brand+name search
+  - `scripts/off-broad-search.cjs` — OFF keyword-based search
+  - `scripts/upc-db-search.cjs` — UPCitemdb search (0 results)
+- **Следующий шаг:** пользователь вносит штрихкоды вручную через EAN Recovery screen, затем — переход к следующим проектным этапам
