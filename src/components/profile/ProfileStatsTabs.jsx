@@ -1,13 +1,29 @@
-import { AnimatePresence, motion } from 'framer-motion'
 import { HeartIcon } from '../icons/HeartIcon.jsx'
 import ProductMiniCard from '../ProductMiniCard.jsx'
 import './ProfileStatsTabs.css'
 
 /**
- * Liquid-morph tabbed stats block for the profile screen.
- * Three pressable cards (Favorites / Preferences / History) share a single
- * expandable panel beneath them. Cards + panel are wrapped together so a
- * single `filter: drop-shadow` traces the whole silhouette as one shape.
+ * Tabbed stats block for the profile screen.
+ *
+ * THREE separate visual blocks per the mock-ups:
+ *   1. Row of three pressable cards (Favorites / Preferences / History).
+ *   2. Visible gap (~12px).
+ *   3. Single expandable panel beneath, rounded all four corners, content
+ *      morphs based on the active tab.
+ *
+ * Notable cross-browser concerns (and how we handle them):
+ *
+ * - FRAMER-MOTION + height:'auto' has a long-standing Firefox bug where
+ *   the wrapper occasionally collapses to height=0 on first render, hiding
+ *   tab content entirely (this is exactly what you observed). We avoid it
+ *   by using a CSS grid-template-rows transition (`0fr ↔ 1fr`) which works
+ *   identically in Chromium, Firefox, WebKit, and the iOS WebView.
+ * - AnimatePresence with mode="popLayout" requires layout measurements that
+ *   sometimes fail in Firefox under certain transform parents. We use a
+ *   plain key-based crossfade with regular CSS animation here.
+ * - backdrop-filter: blur() has a graceful fallback applied via @supports
+ *   in the .css file; older Firefox falls back to a slightly more opaque
+ *   solid background so the cards remain readable.
  *
  * Accepts pre-rendered `preferencesContent` so the parent owns its complex
  * Diet/Allergens form state.
@@ -98,10 +114,6 @@ export default function ProfileStatsTabs({
     },
   ]
 
-  // Spring preset for the panel's auto-height expansion. Tuned so the
-  // motion feels weighty but settles fast (no perceptible bounce on iOS).
-  const heightSpring = { type: 'spring', stiffness: 320, damping: 36, mass: 0.8 }
-
   const renderTabBody = () => {
     if (activeTab === 'preferences') return preferencesContent
 
@@ -168,75 +180,77 @@ export default function ProfileStatsTabs({
     return null
   }
 
+  const tone = activeTab || 'none'
+
   return (
     <div className={`stats-tabs ${activeTab ? `stats-tabs--open tone-${activeTab}` : ''}`}>
-      {/*
-        The "merged" wrapper is the trick that makes the cards-row and the
-        expandable panel look like ONE physical object. A single
-        `filter: drop-shadow(...)` is applied to this wrapper. Because that
-        filter draws a shadow around the alpha silhouette of all descendants,
-        the resulting glow follows the perimeter of {3 cards + (open) panel}
-        as a single fused shape — including the rounded corners — instead of
-        producing two overlapping rectangular shadows that meet at a seam.
-      */}
-      <div className="stats-tabs__merged">
-        <div className="stats-tabs__row">
-          {tabs.map((tab) => {
-            const isActive = activeTab === tab.id
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                className={`stat-card ${isActive ? `is-active is-${tab.tone}` : ''}`}
-                onClick={() => toggleTab(tab.id)}
-                aria-expanded={isActive}
-                aria-controls="profile-stats-panel"
+      {/* Row of three cards. Each is a fully rounded button with its own
+          subtle border. The active card lights up via tone-coloured border
+          + a faint background tint (per the mock-ups). */}
+      <div className="stats-tabs__row">
+        {tabs.map((tab) => {
+          const isActive = activeTab === tab.id
+          return (
+            <button
+              key={tab.id}
+              type="button"
+              className={`stat-card ${isActive ? `is-active is-${tab.tone}` : ''}`}
+              onClick={() => toggleTab(tab.id)}
+              aria-expanded={isActive}
+              aria-controls="profile-stats-panel"
+            >
+              <span
+                className="stat-card__icon-wrap"
+                style={{
+                  background: tab.iconBg,
+                  borderColor: tab.iconBorder,
+                  boxShadow: tab.iconShadow,
+                }}
               >
-                <span
-                  className="stat-card__icon-wrap"
-                  style={{
-                    background: tab.iconBg,
-                    borderColor: tab.iconBorder,
-                    boxShadow: tab.iconShadow,
-                  }}
-                >
-                  {tab.icon}
-                </span>
-                <span className="stat-card__value">{tab.value}</span>
-                <span className="stat-card__label">{tab.label}</span>
-              </button>
-            )
-          })}
-        </div>
+                {tab.icon}
+              </span>
+              <span className="stat-card__value">{tab.value}</span>
+              <span className="stat-card__label">{tab.label}</span>
+            </button>
+          )
+        })}
+      </div>
 
-        <motion.div
-          id="profile-stats-panel"
-          className={`stats-tabs__panel-wrap ${activeTab ? 'is-open' : ''}`}
-          initial={false}
-          animate={{
-            height: activeTab ? 'auto' : 0,
-            opacity: activeTab ? 1 : 0,
-          }}
-          transition={heightSpring}
-          style={{ overflow: 'hidden' }}
-        >
-          <div className={`stats-tabs__panel tone-${activeTab || 'none'}`}>
-            <AnimatePresence mode="popLayout" initial={false}>
-              {activeTab && (
-                <motion.div
-                  key={activeTab}
-                  initial={{ opacity: 0, y: 10, filter: 'blur(6px)' }}
-                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                  exit={{ opacity: 0, y: -8, filter: 'blur(6px)' }}
-                  transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-                  className="stats-tabs__panel-content"
-                >
-                  {renderTabBody()}
-                </motion.div>
-              )}
-            </AnimatePresence>
+      {/*
+        Expandable panel.
+
+        Why a plain <div> instead of motion.div with height:'auto'?
+        Because that combo collapses to height=0 in Firefox on initial
+        render and on tab switching for some users — the exact symptom
+        reported ("в Firefox нет блоков, иногда даже избранного нет").
+        We use a CSS grid-template-rows transition (0fr ↔ 1fr) which is
+        rock-solid across all engines.
+
+        We always render the inner panel even when no tab is active so the
+        CSS transition can animate from a real DOM tree (transitioning
+        from `display: none` doesn't animate). The panel is hidden via
+        grid-rows + opacity in `.stats-tabs__panel-wrap` below.
+      */}
+      <div
+        id="profile-stats-panel"
+        className={`stats-tabs__panel-wrap ${activeTab ? 'is-open' : 'is-closed'}`}
+        aria-hidden={!activeTab}
+      >
+        <div className="stats-tabs__panel-clip">
+          <div className={`stats-tabs__panel tone-${tone}`}>
+            {/*
+              Key on activeTab so a fresh element mounts whenever the tab
+              changes. CSS animation `panel-content-enter` plays once on
+              mount → smooth fade-in without framer-motion's
+              AnimatePresence (which had compat issues in Firefox).
+            */}
+            {activeTab ? (
+              <div key={activeTab} className="stats-tabs__panel-content">
+                {renderTabBody()}
+              </div>
+            ) : null}
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   )

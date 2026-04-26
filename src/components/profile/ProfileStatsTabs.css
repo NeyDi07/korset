@@ -1,58 +1,50 @@
 /* ==========================================================================
- * ProfileStatsTabs — liquid morph tabs (favorites / preferences / history)
+ * ProfileStatsTabs — three-tab stats block (favorites / preferences / history)
  *
- * Layout target ratios (mobile-first):
- *   - Card: width auto (1fr), height ~ 1.45× width via aspect-ratio.
- *   - Value font: clamp() so it scales smoothly between phones and tablets.
- *   - Active card has its bottom rounded corners flattened to merge into the
- *     shared panel beneath via a 1px overlap (no visible seam).
- *   - All colours use CSS custom properties so dark + light themes both work.
+ * Visual layout follows the user's mock-ups exactly:
+ *
+ *   ┌──────┐ ┌──────┐ ┌──────┐         ← row of three rounded cards
+ *   │  5   │ │  3   │ │  8   │           (each with its own border)
+ *   └──────┘ └──────┘ └──────┘
+ *           ↕ 12px gap
+ *   ┌──────────────────────────┐       ← single rounded panel below
+ *   │  expandable content       │
+ *   └──────────────────────────┘
+ *
+ * Two SEPARATE blocks — no fused silhouette, no overlap, no morph.
+ *
+ * Cross-browser notes baked into this file:
+ *   • Panel expansion uses CSS grid-template-rows 0fr↔1fr (Chromium 118+,
+ *     Firefox 121+, Safari 17.4+). Older engines: panel still toggles
+ *     correctly via opacity + min-height; only the height transition is
+ *     skipped, no functional regression.
+ *   • backdrop-filter fallback under @supports keeps cards readable in
+ *     Firefox versions that don't support it (FF<103).
+ *   • aspect-ratio + min-height are both set so layout never collapses
+ *     when one isn't supported.
+ *   • All colours come from theme variables → light + dark both work.
  * ==========================================================================*/
 
 .stats-tabs {
   position: relative;
-  /* Default neutral glow — used when no tab is active. */
-  --tone-glow: rgba(120, 100, 200, 0.18);
-  --tone-tint: transparent;
 }
 
+/* Per-tab tone variables — used for the active card's border / tint and for
+ * the spinner colour inside the panel. */
 .stats-tabs.tone-favorites {
-  --tone-glow: rgba(220, 38, 38, 0.32);
-  --tone-tint: rgba(248, 113, 113, 0.10);
+  --tone-color: rgba(248, 113, 113, 0.55);
+  --tone-tint: rgba(248, 113, 113, 0.08);
+  --tone-color-strong: #f87171;
 }
 .stats-tabs.tone-preferences {
-  --tone-glow: rgba(124, 58, 237, 0.36);
-  --tone-tint: rgba(167, 139, 250, 0.12);
+  --tone-color: rgba(167, 139, 250, 0.55);
+  --tone-tint: rgba(167, 139, 250, 0.10);
+  --tone-color-strong: #a78bfa;
 }
 .stats-tabs.tone-history {
-  --tone-glow: rgba(16, 185, 129, 0.30);
-  --tone-tint: rgba(52, 211, 153, 0.10);
-}
-
-/* ──────────────────────────────────────────────────────────────────────────
- * MERGED WRAPPER — the heart of the "single fused shape" effect.
- *
- * `filter: drop-shadow(...)` differs from `box-shadow` in a critical way:
- *   - box-shadow is drawn per element, around its rectangular border-box.
- *     Two adjacent elements each get their own shadow → a visible double
- *     edge along the seam, plus square artifacts at outer corners when the
- *     shadow consists of multiple offset rectangles.
- *   - drop-shadow is computed against the alpha silhouette of the entire
- *     subtree. The browser composites all descendants first, then draws ONE
- *     shadow tracing the outer contour of that combined shape — including
- *     each rounded corner — pixel-perfectly.
- *
- * So by placing the row of cards and the expanding panel inside the same
- * `.stats-tabs__merged` and shadowing only this wrapper, we get exactly
- * what the mock-up shows: a single uninterrupted glow hugging the whole
- * silhouette of {3 cards + panel} as if it were one solid object.
- *
- * Performance: drop-shadow is GPU-accelerated on every modern engine and
- * we use a single layer, so this remains cheap even on low-end phones.
- * ─────────────────────────────────────────────────────────────────────────*/
-.stats-tabs__merged {
-  filter: drop-shadow(0 12px 28px var(--tone-glow));
-  transition: filter 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  --tone-color: rgba(52, 211, 153, 0.55);
+  --tone-tint: rgba(52, 211, 153, 0.08);
+  --tone-color-strong: #34d399;
 }
 
 /* ─── Row of three cards ───────────────────────────────────────────────── */
@@ -61,8 +53,6 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
-  position: relative;
-  z-index: 2;
 }
 
 @media (min-width: 600px) {
@@ -75,33 +65,37 @@
 
 .stat-card {
   position: relative;
-  isolation: isolate;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
   gap: 6px;
   padding: 30px 8px 18px;
-  /* Slightly less elongated than before per user feedback ("сократи длину") */
+  /* Both aspect-ratio and min-height are set so the card never collapses,
+   * even in browsers that don't support aspect-ratio (very old Safari). */
   aspect-ratio: 1 / 1.4;
   min-height: 132px;
   border: 1.5px solid var(--glass-border);
   border-radius: 22px;
   background: var(--glass-bg);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
   cursor: pointer;
   outline: none;
   font-family: var(--font-display);
   color: inherit;
-  /* Animate ONLY properties that don't repaint the drop-shadow contour, so
-   * the merged glow stays stable while colours/tints transition. */
   transition:
-    border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    background 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    border-bottom-left-radius 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    border-bottom-right-radius 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    border-bottom-color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    border-color 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.15s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Glass blur is purely decorative; without it the solid --glass-bg is
+ * already perfectly readable, so we apply it only when the engine supports
+ * it. Older Firefox / WebView builds simply get a flat translucent panel. */
+@supports (backdrop-filter: blur(8px)) or (-webkit-backdrop-filter: blur(8px)) {
+  .stat-card {
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+  }
 }
 
 .stat-card:active {
@@ -109,28 +103,16 @@
 }
 
 .stat-card:focus-visible {
-  border-color: rgba(167, 139, 250, 0.6);
+  border-color: var(--tone-color, rgba(167, 139, 250, 0.6));
 }
 
-/* When the card is the active tab — flatten bottom corners and hide the
- * bottom border so its silhouette merges into the panel beneath. The
- * background gets a subtle tone tint so it visually "lights up" without
- * needing its own glow (the unified drop-shadow on the merged wrapper
- * already covers the whole silhouette including this card).
- *
- * The card is also extended downward by a few pixels via padding-bottom
- * so its body physically reaches into the panel area. Combined with the
- * negative panel margin below this guarantees there is NO sliver of
- * background showing through at the seam — the two elements paint into
- * exactly the same row of pixels. */
+/* Active card: tone-coloured border + faint background tint, exactly like
+ * the mock-ups. Shape stays fully rounded (no flat corners). */
 .stat-card.is-active {
+  border-color: var(--tone-color);
   background:
-    linear-gradient(180deg, var(--tone-tint) 0%, transparent 70%),
+    linear-gradient(180deg, var(--tone-tint) 0%, transparent 75%),
     var(--glass-bg);
-  border-bottom-color: transparent;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-  padding-bottom: 22px;
 }
 
 .stat-card__icon-wrap {
@@ -150,7 +132,6 @@
 }
 
 .stat-card__value {
-  /* Big, expressive number — clamp scales smoothly from small phones to tablets */
   font-size: clamp(38px, 13vw, 52px);
   font-weight: 700;
   line-height: 1;
@@ -190,82 +171,105 @@
 }
 
 /* ─── Panel beneath ──────────────────────────────────────────────────────
- * Note the absence of any box-shadow / filter on the panel itself: the
- * unified glow comes from the parent `.stats-tabs__merged` only. The panel
- * keeps a soft, neutral border that visually continues the cards' border. */
+ *
+ * Firefox-safe expansion via CSS grid-template-rows.
+ *
+ * The wrapper is a 1-row grid; we transition between `0fr` (collapsed) and
+ * `1fr` (expanded). The inner `__panel-clip` carries `overflow: hidden` and
+ * `min-height: 0` (required for the row to actually shrink to 0 in Firefox).
+ *
+ * This pattern works identically in Chromium, Firefox, WebKit, and the iOS
+ * WebView. It avoids the framer-motion height:'auto' bug that was causing
+ * tabs to render as empty space in Firefox for some users.
+ *
+ * For browsers that don't support transitioning grid-template-rows (very
+ * old Safari, FF <121), the panel still toggles correctly — it just snaps
+ * open instead of animating, which is a perfectly acceptable fallback.
+ * ─────────────────────────────────────────────────────────────────────────*/
 
 .stats-tabs__panel-wrap {
-  position: relative;
-  z-index: 1;
-  /* Bigger overlap (3px) so the active card's flat bottom paints OVER the
-   * panel's top edge — there is literally no row of pixels where you can
-   * see two separate borders, the silhouette is continuous. */
-  margin-top: -3px;
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  margin-top: 0;
+  transition:
+    grid-template-rows 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    margin-top 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.stats-tabs__panel-wrap.is-open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  margin-top: 12px;
+}
+
+.stats-tabs__panel-clip {
+  /* Required for Firefox: a grid item must have min-height: 0 to shrink
+   * below its content's intrinsic min-height. */
+  min-height: 0;
+  overflow: hidden;
 }
 
 .stats-tabs__panel {
   border: 1.5px solid var(--glass-border);
-  /* Default: all 4 top corners rounded. Below we override the corners that
-   * sit DIRECTLY UNDER the active card, so the panel visually "opens up"
-   * into that card and the two shapes share one continuous border. */
   border-radius: 22px;
   background: var(--glass-bg);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
   padding: 22px 18px 24px;
-  /* Spring-like transition on the radii so the corner morphs feel
-   * organic rather than snappy when switching tabs. */
-  transition:
-    border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    border-top-left-radius 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-    border-top-right-radius 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: border-color 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* ──────────────────────────────────────────────────────────────────────────
- * DYNAMIC PANEL CORNERS — the heart of the "opens into the card" effect.
- *
- * The panel always spans the full row width. When a card is active we
- * straighten the two top corners that sit under that card so its border
- * line continues uninterrupted from the card's left/right edge straight
- * down into the panel. The opposite corner stays rounded, which keeps
- * the inactive cards visually distinct.
- *
- * - Favorites (left tab):    flatten top-LEFT only
- * - Preferences (centre):    flatten BOTH top corners — panel reads as
- *                            a wide open mouth under the centre card
- * - History (right tab):     flatten top-RIGHT only
- * ─────────────────────────────────────────────────────────────────────────*/
-.stats-tabs__panel.tone-favorites {
-  border-top-left-radius: 0;
+@supports (backdrop-filter: blur(8px)) or (-webkit-backdrop-filter: blur(8px)) {
+  .stats-tabs__panel {
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+  }
 }
+
+.stats-tabs__panel.tone-favorites,
+.stats-tabs__panel.tone-preferences,
 .stats-tabs__panel.tone-history {
-  border-top-right-radius: 0;
-}
-.stats-tabs__panel.tone-preferences {
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
+  border-color: var(--tone-color);
 }
 
 @media (min-width: 600px) {
+  .stats-tabs__panel-wrap.is-open {
+    margin-top: 14px;
+  }
   .stats-tabs__panel {
     padding: 26px 22px;
     border-radius: 26px;
   }
-  .stats-tabs__panel.tone-favorites {
-    border-top-left-radius: 0;
+}
+
+/* ─── Panel content fade-in ─────────────────────────────────────────────
+ * The inner content fades + lifts gently when a tab is opened or switched.
+ * Keyed on activeTab in JSX → fresh element mounts on each switch and the
+ * animation plays once. Pure CSS keyframes, no framer-motion. */
+
+.stats-tabs__panel-content {
+  animation: panel-content-enter 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes panel-content-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
   }
-  .stats-tabs__panel.tone-history {
-    border-top-right-radius: 0;
-  }
-  .stats-tabs__panel.tone-preferences {
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-.stats-tabs__panel-content {
-  /* will-change tells the browser to hardware-accelerate the transform/blur */
-  will-change: opacity, transform, filter;
+@media (prefers-reduced-motion: reduce) {
+  .stats-tabs__panel-wrap,
+  .stats-tabs__panel-wrap.is-open,
+  .stat-card,
+  .stats-tabs__panel-content {
+    transition: none !important;
+    animation: none !important;
+  }
 }
 
 /* ─── Loading state ──────────────────────────────────────────────────────
@@ -492,6 +496,7 @@
   line-height: 1.25;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
