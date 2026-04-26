@@ -459,11 +459,12 @@ export default function ProfileScreen() {
             <h1
               style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: 24,
+                fontSize: 30,
                 fontWeight: 500,
                 color: 'var(--text)',
                 margin: 0,
                 lineHeight: 1,
+                letterSpacing: 0.2,
               }}
             >
               {t.profile.title}
@@ -473,12 +474,13 @@ export default function ProfileScreen() {
                 onClick={() => navigate(buildProfileEditPath(currentStore?.slug || null))}
                 aria-label={t.profile.editBtn}
                 style={{
-                  width: 38,
-                  height: 38,
-                  borderRadius: 12,
-                  background: 'rgba(124,58,237,0.12)',
-                  border: '1px solid rgba(124,58,237,0.22)',
-                  color: '#A78BFA',
+                  width: 36,
+                  height: 36,
+                  borderRadius: 0,
+                  background: 'transparent',
+                  border: 'none',
+                  padding: 0,
+                  color: 'var(--text)',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
@@ -486,8 +488,8 @@ export default function ProfileScreen() {
                 }}
               >
                 <svg
-                  width="16"
-                  height="16"
+                  width="22"
+                  height="22"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -502,14 +504,14 @@ export default function ProfileScreen() {
           </div>
 
           {/* ── BANNER CARD (background image + avatar + name overlay) ── */}
-          <div style={{ padding: '0 16px 8px' }}>
+          <div style={{ padding: '0 16px 0' }}>
             <div
               style={{
                 position: 'relative',
                 width: '100%',
-                aspectRatio: '16 / 8',
-                maxHeight: 220,
-                minHeight: 170,
+                aspectRatio: '16 / 9',
+                maxHeight: 260,
+                minHeight: 200,
                 borderRadius: 24,
                 overflow: 'hidden',
                 background: 'linear-gradient(135deg, #1E0A3C 0%, #6D28D9 100%)',
@@ -538,15 +540,15 @@ export default function ProfileScreen() {
                   pointerEvents: 'none',
                 }}
               />
-              {/* Avatar — centered, slightly above bottom */}
+              {/* Avatar — centered, raised toward upper area */}
               <div
                 style={{
                   position: 'absolute',
                   left: '50%',
-                  top: '22%',
+                  top: '8%',
                   transform: 'translateX(-50%)',
-                  width: 96,
-                  height: 96,
+                  width: 128,
+                  height: 128,
                   borderRadius: '50%',
                   border: '3px solid #7C3AED',
                   padding: 3,
@@ -575,8 +577,8 @@ export default function ProfileScreen() {
                     }}
                   >
                     <svg
-                      width="40"
-                      height="40"
+                      width="56"
+                      height="56"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="#fff"
@@ -615,10 +617,10 @@ export default function ProfileScreen() {
                       WebkitBackdropFilter: 'blur(6px)',
                       fontFamily: 'var(--font-display)',
                       fontSize: 22,
-                      fontWeight: 800,
+                      fontWeight: 600,
                       color: '#fff',
                       textTransform: 'uppercase',
-                      letterSpacing: 1.2,
+                      letterSpacing: 1,
                       lineHeight: 1.1,
                       whiteSpace: 'nowrap',
                       overflow: 'hidden',
@@ -666,7 +668,7 @@ export default function ProfileScreen() {
               display: 'flex',
               justifyContent: 'center',
               gap: 12,
-              padding: '30px 20px 28px',
+              padding: '14px 20px 22px',
             }}
           >
             {/* Favorites */}
