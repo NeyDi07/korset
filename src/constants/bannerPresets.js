@@ -45,19 +45,6 @@ export const BANNER_PRESETS = [
     thumb: '/banners/thumbs/midnight-grove.webp',
     label: { ru: 'Полночная роща', kz: 'Түнгі орман' },
   },
-  {
-    id: 'arctic-whisper',
-    src: '/banners/arctic-whisper.webp',
-    thumb: '/banners/thumbs/arctic-whisper.webp',
-    label: { ru: 'Арктический шёпот', kz: 'Арктикалық сыбыр' },
-  },
-  /* ── Placeholder for future 9th banner ── */
-  {
-    id: 'astral-dream',
-    src: '/banners/astral-dream.webp',
-    thumb: '/banners/thumbs/astral-dream.webp',
-    label: { ru: 'Астральный сон', kz: 'Астралдық түс' },
-  },
 ]
 
 export const DEFAULT_BANNER_ID = 'golden-samurai'
