@@ -6,8 +6,8 @@ import './ProfileStatsTabs.css'
 /**
  * Liquid-morph tabbed stats block for the profile screen.
  * Three pressable cards (Favorites / Preferences / History) share a single
- * expandable panel beneath them. The active card visually merges with the
- * panel via a shared `layoutId` glow that morphs between positions.
+ * expandable panel beneath them. Cards + panel are wrapped together so a
+ * single `filter: drop-shadow` traces the whole silhouette as one shape.
  *
  * Accepts pre-rendered `preferencesContent` so the parent owns its complex
  * Diet/Allergens form state.
@@ -98,8 +98,8 @@ export default function ProfileStatsTabs({
     },
   ]
 
-  // Spring presets shared across animations for a cohesive feel.
-  const liquidSpring = { type: 'spring', stiffness: 360, damping: 34, mass: 0.7 }
+  // Spring preset for the panel's auto-height expansion. Tuned so the
+  // motion feels weighty but settles fast (no perceptible bounce on iOS).
   const heightSpring = { type: 'spring', stiffness: 320, damping: 36, mass: 0.8 }
 
   const renderTabBody = () => {
@@ -170,72 +170,74 @@ export default function ProfileStatsTabs({
 
   return (
     <div className={`stats-tabs ${activeTab ? `stats-tabs--open tone-${activeTab}` : ''}`}>
-      <div className="stats-tabs__row">
-        {tabs.map((tab) => {
-          const isActive = activeTab === tab.id
-          return (
-            <button
-              key={tab.id}
-              type="button"
-              className={`stat-card ${isActive ? `is-active is-${tab.tone}` : ''}`}
-              onClick={() => toggleTab(tab.id)}
-              aria-expanded={isActive}
-              aria-controls="profile-stats-panel"
-            >
-              {/* Liquid glow that morphs between the active card positions */}
-              {isActive && (
-                <motion.span
-                  layoutId="stats-active-glow"
-                  className={`stat-card__glow tone-${tab.tone}`}
-                  transition={liquidSpring}
-                  aria-hidden="true"
-                />
-              )}
-              <span
-                className="stat-card__icon-wrap"
-                style={{
-                  background: tab.iconBg,
-                  borderColor: tab.iconBorder,
-                  boxShadow: tab.iconShadow,
-                }}
+      {/*
+        The "merged" wrapper is the trick that makes the cards-row and the
+        expandable panel look like ONE physical object. A single
+        `filter: drop-shadow(...)` is applied to this wrapper. Because that
+        filter draws a shadow around the alpha silhouette of all descendants,
+        the resulting glow follows the perimeter of {3 cards + (open) panel}
+        as a single fused shape — including the rounded corners — instead of
+        producing two overlapping rectangular shadows that meet at a seam.
+      */}
+      <div className="stats-tabs__merged">
+        <div className="stats-tabs__row">
+          {tabs.map((tab) => {
+            const isActive = activeTab === tab.id
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                className={`stat-card ${isActive ? `is-active is-${tab.tone}` : ''}`}
+                onClick={() => toggleTab(tab.id)}
+                aria-expanded={isActive}
+                aria-controls="profile-stats-panel"
               >
-                {tab.icon}
-              </span>
-              <span className="stat-card__value">{tab.value}</span>
-              <span className="stat-card__label">{tab.label}</span>
-            </button>
-          )
-        })}
-      </div>
-
-      <motion.div
-        id="profile-stats-panel"
-        className={`stats-tabs__panel-wrap ${activeTab ? 'is-open' : ''}`}
-        initial={false}
-        animate={{
-          height: activeTab ? 'auto' : 0,
-          opacity: activeTab ? 1 : 0,
-        }}
-        transition={heightSpring}
-        style={{ overflow: 'hidden' }}
-      >
-        <div className={`stats-tabs__panel tone-${activeTab || 'none'}`}>
-          <AnimatePresence mode="popLayout" initial={false}>
-            {activeTab && (
-              <motion.div
-                key={activeTab}
-                initial={{ opacity: 0, y: 10, filter: 'blur(6px)' }}
-                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                exit={{ opacity: 0, y: -8, filter: 'blur(6px)' }}
-                transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-                className="stats-tabs__panel-content"
-              >
-                {renderTabBody()}
-              </motion.div>
-            )}
-          </AnimatePresence>
+                <span
+                  className="stat-card__icon-wrap"
+                  style={{
+                    background: tab.iconBg,
+                    borderColor: tab.iconBorder,
+                    boxShadow: tab.iconShadow,
+                  }}
+                >
+                  {tab.icon}
+                </span>
+                <span className="stat-card__value">{tab.value}</span>
+                <span className="stat-card__label">{tab.label}</span>
+              </button>
+            )
+          })}
         </div>
-      </motion.div>
+
+        <motion.div
+          id="profile-stats-panel"
+          className={`stats-tabs__panel-wrap ${activeTab ? 'is-open' : ''}`}
+          initial={false}
+          animate={{
+            height: activeTab ? 'auto' : 0,
+            opacity: activeTab ? 1 : 0,
+          }}
+          transition={heightSpring}
+          style={{ overflow: 'hidden' }}
+        >
+          <div className={`stats-tabs__panel tone-${activeTab || 'none'}`}>
+            <AnimatePresence mode="popLayout" initial={false}>
+              {activeTab && (
+                <motion.div
+                  key={activeTab}
+                  initial={{ opacity: 0, y: 10, filter: 'blur(6px)' }}
+                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                  exit={{ opacity: 0, y: -8, filter: 'blur(6px)' }}
+                  transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                  className="stats-tabs__panel-content"
+                >
+                  {renderTabBody()}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </motion.div>
+      </div>
     </div>
   )
 }

@@ -11,25 +11,48 @@
 
 .stats-tabs {
   position: relative;
-  --tone-color: rgba(167, 139, 250, 0.5);
-  --tone-color-strong: rgba(124, 58, 237, 0.55);
-  --tone-glow: rgba(124, 58, 237, 0.32);
+  /* Default neutral glow — used when no tab is active. */
+  --tone-glow: rgba(120, 100, 200, 0.18);
+  --tone-tint: transparent;
 }
 
 .stats-tabs.tone-favorites {
-  --tone-color: rgba(248, 113, 113, 0.45);
-  --tone-color-strong: rgba(248, 113, 113, 0.6);
-  --tone-glow: rgba(220, 38, 38, 0.28);
+  --tone-glow: rgba(220, 38, 38, 0.32);
+  --tone-tint: rgba(248, 113, 113, 0.10);
 }
 .stats-tabs.tone-preferences {
-  --tone-color: rgba(167, 139, 250, 0.5);
-  --tone-color-strong: rgba(167, 139, 250, 0.65);
-  --tone-glow: rgba(124, 58, 237, 0.34);
+  --tone-glow: rgba(124, 58, 237, 0.36);
+  --tone-tint: rgba(167, 139, 250, 0.12);
 }
 .stats-tabs.tone-history {
-  --tone-color: rgba(52, 211, 153, 0.45);
-  --tone-color-strong: rgba(52, 211, 153, 0.6);
-  --tone-glow: rgba(16, 185, 129, 0.28);
+  --tone-glow: rgba(16, 185, 129, 0.30);
+  --tone-tint: rgba(52, 211, 153, 0.10);
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+ * MERGED WRAPPER — the heart of the "single fused shape" effect.
+ *
+ * `filter: drop-shadow(...)` differs from `box-shadow` in a critical way:
+ *   - box-shadow is drawn per element, around its rectangular border-box.
+ *     Two adjacent elements each get their own shadow → a visible double
+ *     edge along the seam, plus square artifacts at outer corners when the
+ *     shadow consists of multiple offset rectangles.
+ *   - drop-shadow is computed against the alpha silhouette of the entire
+ *     subtree. The browser composites all descendants first, then draws ONE
+ *     shadow tracing the outer contour of that combined shape — including
+ *     each rounded corner — pixel-perfectly.
+ *
+ * So by placing the row of cards and the expanding panel inside the same
+ * `.stats-tabs__merged` and shadowing only this wrapper, we get exactly
+ * what the mock-up shows: a single uninterrupted glow hugging the whole
+ * silhouette of {3 cards + panel} as if it were one solid object.
+ *
+ * Performance: drop-shadow is GPU-accelerated on every modern engine and
+ * we use a single layer, so this remains cheap even on low-end phones.
+ * ─────────────────────────────────────────────────────────────────────────*/
+.stats-tabs__merged {
+  filter: drop-shadow(0 12px 28px var(--tone-glow));
+  transition: filter 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* ─── Row of three cards ───────────────────────────────────────────────── */
@@ -57,13 +80,13 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  gap: 8px;
-  padding: 36px 8px 22px;
-  /* Aspect ratio gives the visually elongated portrait shape */
-  aspect-ratio: 1 / 1.55;
-  min-height: 156px;
+  gap: 6px;
+  padding: 30px 8px 18px;
+  /* Slightly less elongated than before per user feedback ("сократи длину") */
+  aspect-ratio: 1 / 1.4;
+  min-height: 132px;
   border: 1.5px solid var(--glass-border);
-  border-radius: 24px;
+  border-radius: 22px;
   background: var(--glass-bg);
   backdrop-filter: blur(28px);
   -webkit-backdrop-filter: blur(28px);
@@ -71,6 +94,8 @@
   outline: none;
   font-family: var(--font-display);
   color: inherit;
+  /* Animate ONLY properties that don't repaint the drop-shadow contour, so
+   * the merged glow stays stable while colours/tints transition. */
   transition:
     border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
     background 0.35s cubic-bezier(0.22, 1, 0.36, 1),
@@ -84,80 +109,30 @@
 }
 
 .stat-card:focus-visible {
-  border-color: var(--tone-color-strong);
-  box-shadow: 0 0 0 3px var(--tone-glow);
+  border-color: rgba(167, 139, 250, 0.6);
 }
 
-/* When the card is the active tab — flatten bottom corners to merge into
- * the panel beneath. Border bottom is hidden so the seam disappears. */
+/* When the card is the active tab — flatten bottom corners and hide the
+ * bottom border so its silhouette merges into the panel beneath. The
+ * background gets a subtle tone tint so it visually "lights up" without
+ * needing its own glow (the unified drop-shadow on the merged wrapper
+ * already covers the whole silhouette including this card). */
 .stat-card.is-active {
-  border-color: var(--tone-color);
+  background:
+    linear-gradient(180deg, var(--tone-tint) 0%, transparent 70%),
+    var(--glass-bg);
   border-bottom-color: transparent;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }
 
-/* ──────────────────────────────────────────────────────────────────────────
- * Morphing glow — sits BEHIND the active card, cloned via framer-motion's
- * shared layoutId so that switching tabs animates its position fluidly.
- *
- * KEY TRICK FOR THE "MERGED SHAPE" EFFECT:
- *   The card and the panel below are two separate DOM elements that abut at
- *   a -1px overlap. Using normal box-shadow on both produces a visible
- *   double-glow at the seam. Instead we apply box-shadows ONLY on three
- *   sides per element:
- *     - card glow: top + left + right (NO bottom shadow)
- *     - panel:     bottom + left + right (NO top shadow)
- *   Where they meet, neither casts a shadow → the seam disappears and the
- *   combined glow visually traces the perimeter of the whole T-shape as if
- *   it were a single object.
- * ─────────────────────────────────────────────────────────────────────────*/
-.stat-card__glow {
-  position: absolute;
-  inset: -1px -1px 0 -1px; /* extend just past card border so it merges */
-  border-radius: inherit;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-  pointer-events: none;
-  z-index: -1;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.05) 0%,
-    rgba(255, 255, 255, 0) 60%
-  );
-  border: 1.5px solid var(--tone-color-strong);
-  border-bottom: 0;
-  /* THREE-SIDED glow: top, left, right. NO bottom shadow → seamless merge. */
-  box-shadow:
-    0 -10px 32px -4px var(--tone-glow),
-    -12px 0 32px -4px var(--tone-glow),
-    12px 0 32px -4px var(--tone-glow),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
-}
-
-.stat-card__glow.tone-favorites {
-  background:
-    linear-gradient(180deg, rgba(248, 113, 113, 0.18) 0%, rgba(248, 113, 113, 0) 75%),
-    var(--glass-bg);
-}
-.stat-card__glow.tone-preferences {
-  background:
-    linear-gradient(180deg, rgba(167, 139, 250, 0.22) 0%, rgba(167, 139, 250, 0) 75%),
-    var(--glass-bg);
-}
-.stat-card__glow.tone-history {
-  background:
-    linear-gradient(180deg, rgba(52, 211, 153, 0.18) 0%, rgba(52, 211, 153, 0) 75%),
-    var(--glass-bg);
-}
-
 .stat-card__icon-wrap {
   position: absolute;
-  top: -24px;
+  top: -22px;
   left: 50%;
   transform: translateX(-50%);
-  width: 54px;
-  height: 54px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -169,7 +144,7 @@
 
 .stat-card__value {
   /* Big, expressive number — clamp scales smoothly from small phones to tablets */
-  font-size: clamp(40px, 14vw, 56px);
+  font-size: clamp(38px, 13vw, 52px);
   font-weight: 700;
   line-height: 1;
   color: var(--text);
@@ -179,7 +154,7 @@
 }
 
 .stat-card__label {
-  font-size: clamp(12px, 3.4vw, 14px);
+  font-size: clamp(12px, 3.3vw, 14px);
   font-weight: 600;
   color: var(--text-sub);
   letter-spacing: 0.2px;
@@ -193,49 +168,39 @@
 
 @media (min-width: 600px) {
   .stat-card {
-    padding: 42px 12px 24px;
-    min-height: 180px;
-    border-radius: 28px;
+    padding: 36px 12px 20px;
+    min-height: 156px;
+    border-radius: 26px;
   }
   .stat-card__icon-wrap {
-    width: 62px;
-    height: 62px;
-    top: -28px;
+    width: 58px;
+    height: 58px;
+    top: -26px;
   }
   .stat-card__label {
     font-size: 15px;
   }
 }
 
-/* ─── Panel beneath ────────────────────────────────────────────────────── */
+/* ─── Panel beneath ──────────────────────────────────────────────────────
+ * Note the absence of any box-shadow / filter on the panel itself: the
+ * unified glow comes from the parent `.stats-tabs__merged` only. The panel
+ * keeps a soft, neutral border that visually continues the cards' border. */
 
 .stats-tabs__panel-wrap {
   position: relative;
   z-index: 1;
-  margin-top: -1px; /* overlap by 1px → no visible seam with the active card */
+  margin-top: -1px; /* overlap by 1px so the active card's flat bottom seamlessly merges */
 }
 
 .stats-tabs__panel {
-  border: 1.5px solid var(--tone-color-strong);
-  border-radius: 24px;
+  border: 1.5px solid var(--glass-border);
+  border-radius: 22px;
   background: var(--glass-bg);
   backdrop-filter: blur(28px);
   -webkit-backdrop-filter: blur(28px);
-  padding: 24px 20px;
-  /* THREE-SIDED glow: bottom, left, right. NO top shadow → seamless merge
-   * with the active card's three-sided top glow above. */
-  box-shadow:
-    0 14px 40px -4px var(--tone-glow),
-    -12px 0 32px -4px var(--tone-glow),
-    12px 0 32px -4px var(--tone-glow);
-  transition:
-    border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.stats-tabs__panel.tone-none {
-  border-color: var(--glass-border);
-  box-shadow: none;
+  padding: 22px 18px 24px;
+  transition: border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @media (min-width: 600px) {
