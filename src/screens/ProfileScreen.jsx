@@ -910,6 +910,7 @@ export default function ProfileScreen() {
               onViewAllHistory={() =>
                 navigate(buildHistoryPath(currentStore?.slug || null, 'history'))
               }
+              onAuthPrompt={() => setAuthPromptOpen(true)}
               t={t}
               isGuest={!user}
               preferencesContent={

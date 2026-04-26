@@ -40,6 +40,7 @@ export default function ProfileStatsTabs({
   preferencesContent,
   onViewAllFavorites,
   onViewAllHistory,
+  onAuthPrompt,
   t,
   isGuest,
 }) {
@@ -144,6 +145,7 @@ export default function ProfileStatsTabs({
           tone="favorites"
           title={isGuest ? t.profile.favoritesEmptyGuest : t.profile.favoritesEmpty}
           hint={isGuest ? t.profile.favoritesEmptyGuestHint : t.profile.favoritesEmptyHint}
+          onClick={isGuest ? onAuthPrompt : undefined}
         />
       )
     }
@@ -172,8 +174,9 @@ export default function ProfileStatsTabs({
       return (
         <TabEmptyState
           tone="history"
-          title={t.profile.historyEmpty}
-          hint={t.profile.historyEmptyHint}
+          title={isGuest ? t.profile.historyEmptyGuest : t.profile.historyEmpty}
+          hint={isGuest ? t.profile.historyEmptyGuestHint : t.profile.historyEmptyHint}
+          onClick={isGuest ? onAuthPrompt : undefined}
         />
       )
     }
@@ -302,10 +305,27 @@ const TONE_STYLES = {
   },
 }
 
-function TabEmptyState({ tone, title, hint }) {
+function TabEmptyState({ tone, title, hint, onClick }) {
   const cfg = TONE_STYLES[tone] || TONE_STYLES.favorites
   return (
-    <div className="stats-tabs__empty">
+    <div
+      className="stats-tabs__empty"
+      onClick={onClick}
+      role={onClick ? 'button' : undefined}
+      aria-label={onClick ? title : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={
+        onClick
+          ? (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                onClick()
+              }
+            }
+          : undefined
+      }
+      style={onClick ? { cursor: 'pointer' } : undefined}
+    >
       <div
         className="stats-tabs__empty-icon"
         style={{

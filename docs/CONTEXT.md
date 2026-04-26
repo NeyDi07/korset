@@ -12,7 +12,7 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 
 **Стек:** React 18 + Vite + Supabase + Vercel Serverless + OpenAI
 **Код:** JavaScript (не TypeScript), Vanilla CSS (не Tailwind)
-**Стиль:** Dark Premium Glassmorphism, Advent Pro + Inter, Material Symbols опционально
+**Стиль:** Dark/Light Premium Glassmorphism, Advent Pro + Inter, Material Symbols опционально
 
 ---
 
@@ -26,6 +26,7 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 /s/:storeSlug/product/:ean  → Карточка товара
 /s/:storeSlug/history       → История
 /s/:storeSlug/profile       → Профиль
+/s/:storeSlug/profile/edit  → Редактирование профиля
 /retail/:storeSlug/...      → Retail Cabinet
 ```
 
@@ -37,10 +38,13 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - Сканер штрихкодов, AIScreen (чат с ИИ + RAG)
 - Fit-Check (Red/Orange — детерминированный, Yellow — AI)
 - Push-уведомления, История + Избранное, Smart Merge
-- Retail Cabinet (Dashboard, Products, Settings)
+- Retail Cabinet: Dashboard (тенге метрики), Products (inline edit, barcode search), Import (CSV/XLS/XLSX + unknown EAN staging), Settings (лого, контакты, QR), EAN Recovery (serverless API)
 - Офлайн: App Shell + IndexedDB каталог + очередь сканов + OfflineBanner
-- RAG через Supabase pgvector (301 чанк, 20 файлов)
+- RAG через Supabase pgvector
 - RLS на 13 таблицах, JWT auth на API
+- Светлая + тёмная тема (3 этапа завершены, semantic tokens на всём UI)
+- Профиль: баннер + аватар + редактирование (ProfileEditScreen)
+- Каталог: Virtuoso виртуализация + двухэтапная загрузка + light поля
 
 ---
 
@@ -49,443 +53,144 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 0. **Vault Protocol:** НАЧАЛО чата → прочитай CONTEXT.md. КОНЕЦ чата → сохрани в Vault + embed. → `AGENTS.md`
 1. Сначала анализ → потом код. Предложи план → получи апрув.
 2. Не ломать работающее.
-3. Экраны покупателя → только внутри `/s/:storeSlug/`.
-4. Иконки: Качественные SVG для премиального вида. Material Symbols — опционально.
-5. Аватары только `<ProfileAvatar />`.
-6. Не переписывать стили на светлые.
-7. Новый текст → через `useI18n` (RU/KZ обязательно).
-8. Оценивай через B2B: «Помогает ли это продать подписку?»
-9. **AI-координация:** 3 модели (Codex / GLM 5.1 / Kimi 2.6) работают по `docs/AI_COLLAB_PROTOCOL.md`. Максимум 2 активных писателя, каждая в своей write-zone. Перед стартом → `AI_TASK_BOARD.md`, после → `AI_HANDOFF.md`.
+3. Смотри шире — проверяй связи (.gitignore, i18n, vault, контекст, импорты, side effects).
+4. Экраны покупателя → только внутри `/s/:storeSlug/`.
+5. Иконки: Качественные SVG для премиального вида. Material Symbols — опционально.
+6. Аватары только `<ProfileAvatar />`.
+7. **Тёмная + светлая тема — обе поддерживаются.** Только CSS-переменные, НЕ хардкодить цвета.
+8. Новый текст → через `useI18n` (RU/KZ обязательно).
+9. Оценивай через B2B: «Помогает ли это продать подписку?»
+10. Не менять дизайн без разрешения владельца.
+11. НЕ делать ручной деплой `vercel --prod`.
 
 ---
 
-## Текущий фокус
+## АКТУАЛЬНЫЕ СТАТИСТИКИ БД (2026-04-27)
 
-| Фокус | Статус |
-|-------|--------|
-| **Light theme rollout** | ✅ COMPLETED — Full UI parity across all 34+ files, semantic variables implemented, AI Chat & ScanScreen polished |
-| **Zero-Friction onboarding pivot** | 🗺️ PLANNED FOR V1 — убрать блокирующий buyer-onboarding, перенести обучение в store HomeScreen + физические материалы, реализацию отложить на отдельный этап |
-| **Arbuz catalog import** | ✅ 2228 продуктов из Arbuz → 3236 активных в DB |
-| **Каталог: русские имена** | ✅ NPC --fix-names |
-| **R2 CDN миграция** | ✅ ЗАВЕРШЕНА — 2571/2607 картинок в R2 |
-| **Data Moat Pipeline** | ✅ NPC + Arbuz + USDA — все работают |
-| **NPC EAN enrichment** | ✅ 2558/8153 (31%) реальных EAN, harvest в процессе |
-| **NPC EAN harvest combo** | 🔄 ~900/6036 обработано, avg 40 EAN/продукт, нужно продолжать |
-| **Удалить мусорные товары** | ✅ 17 деактивировано |
-| **Перевод инноязычного состава** | ✅ 100% русский состав |
-| **Batch upsert** | ✅ arbuz-catalog-parser переведён на batch (100x быстрее) |
-| **No-barcode-possible** | ✅ 209 продуктов помечены (202 Arbuz СТМ + 7 весовые) |
-| **Каталог: виртуализация Virtuoso** | ✅ рендерит только ~10-15 видимых вместо 3236 |
-| **Каталог: двухэтапная загрузка** | ✅ первые 50 мгновенно + фон догрузка всех |
-| **Каталог: light поля** | ✅ 14 полей вместо 30+, payload ~5x меньше |
-| **ProductScreen: ленивый fetch** | ✅ полные данные подгружаются при открытии карточки |
-| **БД-фиксы** (CASCADE, GIN) | 🔜 |
-| **Фронтенд: name_kz по языку** | 🔜 |
-| **USDA enrichment** | 🔜 457 продуктов без состава |
-| **R2 CDN миграция** | ✅ 8110/8146 (99.6%) на cdn.korset.app |
-| **Корзина дома парсер** | ✅ 5462 продуктов, 14 категорий |
-
-**ARBUZ CATALOG PARSER v2 — BATCH UPSERT:**
-
-```
-Стратегия: API search по 82 категориям → batch fetch existing → batch upsert
-Скрипт: scripts/arbuz-catalog-parser.cjs
-Инкрементальное сохранение прогресса каждые 10 продуктов
-Ретраи на API таймаутах (3 попытки)
-```
-
-**Ключевые открытия Arbuz API:**
-- `/api/v1/shop/categories` = **404** (НЕ работает)
-- **API search** = даёт `ingredients` + `nutrition` напрямую (НЕ нужен detail API!)
-- **API barcode** = пустые строки (НЕ даёт штрихкоды)
-- **NPC name search** = даёт EAN для ~40% продуктов
-- **82 категорий** обойдены через search queries
-
-**ТЕКУЩИЕ СТАТИСТИКИ БД (2026-04-27):**
-- **~7099 active** global_products (пользователь удалил несколько через EAN Recovery)
-- **Реальные EAN: ~7031** (~99.0%) — пользователь дочищает остатки вручную
-- **Fake EAN: ~68** — arbuz_ ~25 + kaspi_ 0 + korzinavdom_ ~43
+- **~7099 active** global_products
+- **Реальные EAN: ~7031** (~99.0%)
+- **Fake EAN: ~73** — arbuz_ ~29 + korzinavdom_ ~44 (kaspi_ = 0)
 - **Состав: ~87.5%**
 - **Нутриенты: ~81%** (5767)
-- **R2 CDN: 8115/11** (99.96% продуктов с картинками)
+- **R2 CDN: 99.96%** продуктов с картинками на cdn.korset.app
 - store_products для MARS (store-one): ~8755
 
-**EAN MATCHING — ИТОГИ ТЕСТИРОВАНИЯ:**
+---
+
+## МИГРАЦИИ
+
+| # | Назначение | Статус |
+|---|-----------|--------|
+| 001-005 | Базовые (RLS, pgvector, indexes, columns) | ✅ применены |
+| 006 | alternate_eans | ✅ применена |
+| 007 | source_primary + confidence | ✅ применена |
+| 008 | R2 image columns | ✅ применена |
+| 009 | store profile fields + 3 RPC | ✅ применена |
+| 010 | korzinavdom source | ✅ применена |
+| 011 | korzinavdom image_source CHECK | ✅ применена |
+| 012 | unknown_ean_staging + bulk RPC + data_quality_score + TTL | ✅ применена |
+| 013 | ON DELETE CASCADE/SET NULL на 13 FK | ✅ применена |
+| 014 | GIN jsonb + tsvector + полнотекстовый поиск | ✅ применена |
+| 015 | NOT NULL + CHECK + scan_events indexes | ✅ применена |
+| 016 | profile avatar_id + banner_url + profile-banners bucket | ⚠️ нужна ручная проверка применения через SQL Editor |
+
+---
+
+## СКРИПТЫ PIPELINE (основные)
+
+1. `scripts/arbuz-catalog-parser.cjs` — Arbuz-first bulk import (API+NPC+R2)
+2. `scripts/arbuz-enrich.cjs` — обогащение через Arbuz
+3. `scripts/npc-enrich.cjs` — NPC enrichment + `--fix-names`
+4. `scripts/usda-enrich.cjs` — через Vercel proxy
+5. `scripts/korzinavdom-parser.cjs` — Корзина дома
+6. `scripts/npc-eans-harvest.cjs` — combo EAN harvest
+7. `scripts/resolve-v3.cjs` — KZ-aware resolver + NPC name search
+8. `scripts/resolve-unknown-eans.cjs` — серверный каскад (NPC → Arbuz → USDA → OFF)
+9. `scripts/validate-ean.cjs`, `audit-catalog.cjs`, `add-category-prefix.cjs`
+10. `scripts/migrate-images-to-r2.mjs`, `embed-vault.mjs`, `query-vault.mjs`
+11. `scripts/translate-composition.cjs` — перевод состава через OpenAI
+
+---
+
+## АКТУАЛЬНЫЙ СПИСОК ПЛАНОВ (по приоритету)
+
+### P0 — Критичные для продаж
+
+| # | Задача | Статус | Комментарий |
+|---|--------|--------|-------------|
+| 1 | **i18n: хардкод русский текст** | 🔴 НЕ НАЧАТО | EanRecoveryScreen, ProductScreen, CatalogScreen — массовый хардкод, KZ язык невозможен для этих экранов. Нарушает правило #7. |
+| 2 | **Фронтенд: name_kz по языку** | 🔴 НЕ НАЧАТО | Данные (name_kz) готовы в БД→normalizer→model, но ProductScreen/CatalogScreen/RetailProductsScreen показывают только `product.name`. Нужно: `lang === 'kz' && product.nameKz ? product.nameKz : product.name` |
+| 3 | **Migration 016** — проверить и применить | 🟡 ПРОВЕРИТЬ | profile-banners bucket + avatar_id/banner_url колонки. AuthContext уже использует с graceful fallback. |
+
+### P1 — Важно для продукта
+
+| # | Задача | Статус | Комментарий |
+|---|--------|--------|-------------|
+| 4 | **Data Moat: data_quality_score → каскад** | 🔴 НЕ НАЧАТО | Score существует в БД (миграция 012), но resolver.js НЕ использует его для приоритизации источников. Каскад фиксированный: IndexedDB → store_products → global → demo → cache → OFF → AI. Нужно: auto-refresh при низком качестве, TTL-refresh цикл. |
+| 5 | **USDA enrichment** — проверить proxy | 🟡 ПРОВЕРИТЬ | Скрипт использует Vercel proxy `/api/usda`, не прямые вызовы. Статус proxy неясен. ~457 продуктов без состава. |
+| 6 | **Zero-Friction onboarding** | 🗺️ PLANNED | Убрать блокирующий OnboardingScreen из first-run, перенести обучение на HomeScreen + физматериалы. Подтверждено владельцем, отложено на отдельный этап. |
+
+### P2 — Улучшения
+
+| # | Задача | Статус | Комментарий |
+|---|--------|--------|-------------|
+| 7 | **~73 fake EAN дочистка** | 🔄 В ПРОЦЕССЕ | Пользователь вносит штрихкоды вручную через EAN Recovery screen. Автоматизированные подходы исчерпаны. |
+| 8 | **USDA enrichment** — обогащение продуктов без состава | 🔜 После проверки proxy | ~457 продуктов без состава |
+| 9 | **Офлайн-режим refinements** | 🔜 | 85/100, основа работает |
+| 10 | **Масштабирование** — партицирование scan_events | 🔜 НЕ НАЧАТО | Аудит: 40/100 |
+
+---
+
+## ВЫПОЛНЕННЫЕ ЗАДАЧИ (для контекста)
+
+- ✅ **Light theme** — 3 этапа: foundation + storage + toggle, customer/auth screens, scanner + retail + PWA polish
+- ✅ **EAN Coverage 77.2% → 99.0%** — resolver v2/v3, NPC harvest, OFF search, weight cleanup, alternate_eans
+- ✅ **Retail Dashboard: метрики в тенге** — Упущённая выручка ₸, Покупатели, Покрытие каталога %, Топ-5, период 7/30 дней
+- ✅ **Retail Import** — CSV/XLS/XLSX парсинг, preview, bulk RPC, unknown EAN staging, CSV экспорт отчёта, шаблоны
+- ✅ **Retail Products** — infinite query, серверный поиск с debounce, inline edit (₸), barcode scanner, delete с confirm
+- ✅ **Retail Settings** — лого upload, описание, контакты (IG/WA/2GIS/сайт/телефон), QR-код, push toggles, danger zone
+- ✅ **EAN Recovery** — serverless API (JWT + service_role), DELETE/update-EAN/update-name, barcode scanner, inline name edit
+- ✅ **Profile Edit** — баннеры (5 пресетов + upload), аватары (9 пресетов), Supabase Storage
+- ✅ **БД-фиксы (миграции 012-015)** — CASCADE FK, GIN indexes, tsvector полнотекстовый поиск, data_quality_score, TTL, bulk RPC
+- ✅ **Каталог: Virtuoso + двухэтапная загрузка** — light поля, scroll position, viewMode
+- ✅ **R2 CDN миграция** — 99.96% картинок на cdn.korset.app
+- ✅ **Состав: перевод через OpenAI** — 100% русский состав
+- ✅ **Batch upsert** — arbuz-catalog-parser 100x быстрее
+- ✅ **Git чистка** — .git 397МБ → 3.4МБ
+
+---
+
+## API ключи (в .env.local)
+
+- NPC_API_KEY ✅
+- USDA_API_KEY ✅ (работает через Vercel proxy, статус proxy проверить)
+- VERCEL_TOKEN ✅
+
+---
+
+## EAN MATCHING — ИТОГИ
+
 - NPC + DDG + OFF кросс-валидация: 25% verified, 85% any EAN
 - DuckDuckGo — единственный работающий веб-поисковик (Google/Yandex/Bing/Ozon/WB — все 403)
 - NPC часто мэтчит НЕ ТОТ продукт (Barilla sauce → pasta EAN)
 - Все коммерческие API не работают без ключей
-
-**КАТАЛОГ — ВИРТУАЛИЗАЦИЯ + ДВУХЭТАПНАЯ ЗАГРУЗКА (сессия 9-10):**
-- ✅ react-virtuoso: Virtuoso (list) + VirtuosoGrid (grid), overscan=600
-- ✅ Двухэтапная загрузка: первые 50 (light поля) за 0.3 сек → фон догрузка всех
-- ✅ Light поля: 14 полей вместо 30+, payload ~5x меньше
-- ✅ ProductScreen: ленивый fetch полных данных при открытии
-- ✅ ImageCarousel: fallback на product.image если product.images пустой
-- ✅ viewMode сохраняется в sessionStorage
-- ✅ Scroll position сохраняется в sessionStorage (initialTopMostItemIndex)
-
-**GIT ЧИСТКА (сессия 10):**
-- ✅ git-filter-repo: .git 397МБ → 3.4МБ (удалены data/, public/products/, zip/xlsx/csv, node_modules/ из истории)
-- ✅ .gitignore обновлён: data/, .opencode/node_modules/
-- ✅ 5 дублирующих vault файлов удалено, RAG эмбеддинги обновлены (386 чанков)
-- ✅ 3453 store_products привязаны к магазину ERALY
-
-**НОВЫЕ СКРИПТЫ (сессия 8):**
-- `scripts/test-ean-matching-methods.cjs` — v1: 8 методов, все 0%
-- `scripts/test-ean-matching-v2.cjs` — v2: NPC/OFF, NPC-translit 65%
-- `scripts/test-ean-web-search.cjs` — web search: DDG/Bing/Yandex/Google/Ozon/WB
-- `scripts/test-ean-cross-validate.cjs` — ЛУЧШИЙ: NPC+DDG+OFF кросс-валидация
-- `scripts/translate-composition.cjs` — ✅ перевод состава через OpenAI gpt-4o-mini
-
-**НОВЫЕ СКРИПТЫ (сессия 7):**
-- `scripts/translate-composition.cjs` — ✅ перевод состава через OpenAI gpt-4o-mini
-
-**⚠️ DB CONSTRAINTS:**
-
-1. `source_primary_check` — ✅ ИСПРАВЛЕНО: миграция 007 применена
-2. `global_products_ean_key` — UNIQUE на EAN. arbuz_XXX EAN для продуктов без штрихкода
-3. `halal_status_check` — ✅ OK
-
-**API ключи (в .env.local):**
-- NPC_API_KEY ✅
-- USDA_API_KEY ✅ (работает через Vercel proxy)
-- VERCEL_TOKEN ✅
-
-**СКРИПТЫ PIPELINE:**
-1. `scripts/arbuz-catalog-parser.cjs` — ✅ ГЛАВНЫЙ: Arbuz-first bulk import (API+NPC+R2)
-2. `scripts/arbuz-enrich.cjs` — ✅ обогащение существующих продуктов через Arbuz
-3. `scripts/npc-enrich.cjs` — ✅ + `--fix-names` режим
-4. `scripts/usda-enrich.cjs` — ✅ через Vercel proxy
-5. `scripts/arbuz-import.cjs` — ✅ старый Arbuz-first pipeline (не запускался)
-6. `scripts/validate-ean.cjs` — ✅ EAN валидация
-7. `scripts/audit-catalog.cjs` — ✅ аудит качества
-8. `scripts/add-category-prefix.cjs` — ✅ prepend русской категории
-
-**МИГРАЦИИ:**
-- 006 (`alternate_eans`): ✅ ВЫПОЛНЕНА
-- 007 (`add_pipeline_sources`): ✅ ПРИМЕНЕНА
-- 008 (`r2_image_columns`): ✅ ПРИМЕНЕНА
-- 009 (`store_profile_fields`): ✅ ПРИМЕНЕНА
-- 010 (`korzinavdom_source`): ✅ ПРИМЕНЕНА
-- 011 (`korzinavdom_image_source`): ✅ ПРИМЕНЕНА
-- 012 (`unknown_ean_staging`): ✅ ПРИМЕНЕНА — Data Moat pipeline, bulk RPC, data_quality_score
-- 013 (`cascade_fk_fixes`): ✅ ПРИМЕНЕНА — 13 FK с ON DELETE
-- 014 (`gin_tsvector_indexes`): ✅ ПРИМЕНЕНА — GIN + tsvector полнотекстовый поиск
-- 015 (`constraints_and_enrichment`): ✅ ПРИМЕНЕНА
-
-**ScanScreen РЕДИЗАЙН (сессия 11, 2026-04-21):**
-- ✅ Blur-шапка: кнопка Назад + заголовок + бейдж магазина
-- ✅ Камера (60%) — `flex: 6, minHeight: 0`
-- ✅ Нижняя панель (40%) — 4 кнопки (Фонарик/Галерея/Камера/Сравнить), ручной ввод EAN, история последних 5 сканов
-- ✅ i18n ключи: scanTitle, gallery, compare, cameraSwitch, manualInputPlaceholder, manualInvalid, recentScans (RU + KZ)
-- ✅ `saveRecentScan` — сохраняет в `localStorage` (`korset_recent_scans`, 5 последних)
-- ✅ ESLint-фиксы: `startScannerRef` для рекурсии, `t.scan.offlineNotFound` вместо `lang`
-
-**RETAIL PHASE 1 ЗАВЕРШЁН (сессия 12, 2026-04-21):**
-- ✅ `supabase/migrations/009_store_profile_fields.sql` — новые поля stores (logo_url, short_description, instagram_url, whatsapp_number, twogis_url, website_url), Storage bucket `store-logos`, RLS политики, 3 RPC функции (get_unique_customers, get_lost_revenue, get_scan_coverage)
-- ✅ `src/components/ConfirmDangerModal.jsx` — новый modal с вводом слова СБРОС/ТАЗАРТУ перед удалением каталога
-- ✅ `src/screens/RetailSettingsScreen.jsx` — полный редизайн: лого upload, краткое/полное описание, контакты (Instagram, WhatsApp, 2GIS, сайт, телефон), фикс критического бага onClick-в-style
-- ✅ `src/utils/retailAnalytics.js` — getUniqueCustomers, getLostRevenue, getScanCoverage + серверная пагинация getStoreCatalogProducts (PAGE_SIZE=40)
-- ✅ `src/screens/RetailDashboardScreen.jsx` — новые метрики: Покупателей (зелёный), Упущённая выручка ~₸ (красный), Покрытие каталога % (прогресс-бар с цветом по порогам)
-- ✅ `src/screens/StorePublicScreen.jsx` — страница магазина для покупателей: лого, описание (аккордеон), контакты с ссылками, i18n
-- ✅ `src/screens/HomeScreen.jsx` — short_description под адресом + кнопка Подробнее → StorePublicScreen
-- ✅ `src/screens/RetailProductsScreen.jsx` — useInfiniteQuery + Load More кнопка + дебаунс поиска 350ms + серверный поиск через ilike + optimistic updates адаптированы для infinite query
-
-**ПОРЯДОК ЗАДАЧ (следующий чат):**
-1. **Продолжить NPC EAN harvest** — `node scripts/npc-eans-harvest.cjs --limit=2000` (партиями по 2000), осталось ~5595 продуктов
-2. После harvest — продукты без бренда: рассмотреть NPC name-only поиск
-3. Фронтенд: name_kz по языку
-4. USDA enrichment — нужен новый API ключ (текущий disabled)
-5. Retail Dashboard: метрики в тенге
-6. End-to-end тест импорта прайс-листа с реальным CSV
-
-**КОРЗИНА ДОМА (korzinavdom.kz) — API парсер:**
-- API: `https://api.korzinavdom.kz/client/` (открытый, без авторизации)
-- Скрипт: `scripts/korzinavdom-parser.cjs`
-- Метод: list API → 5 параллельных detail API → batch upsert
-- Скорость: ~10 продуктов/сек
-- **ВАЖНО: `pageSize` не работает, нужно `size=500`** для получения всех товаров (иначе лимит 20)
-- Данные: название, состав, ккал/белки/жиры/углеводы, бренд, страна, картинка, халяль
-- Нет: EAN/штрихкод, аллергены
-- Молочка: ✅ 982 (94% состав, 97% нутриенты)
-- Снеки: ✅ 256 (90% состав, 88% нутриенты)
-
-Офлайн-режим: ✅ ГОТОВО (6 слоёв, 85/100)
-
-**R2 CDN:**
-- R2 bucket `korset-images` (EEUR), custom domain `cdn.korset.app` ✅
-- **8110/8146 картинок мигрировано** (99.6%)
+- **Автоматизированные подходы полностью исчерпаны** — NPC (3 раунда), OFF (2 раунда), UPCitemdb
 
 ---
 
-## Сессия 2026-04-26 — Light Theme Stage 1
+## Ключевые открытия Arbuz API
 
-**Статус:** ✅ Этап 1 выполнен: theme foundation + storage + profile toggle + shared shell/nav/modal layers.
+- `/api/v1/shop/categories` = **404** (НЕ работает)
+- API search = даёт `ingredients` + `nutrition` напрямую
+- API barcode = пустые строки (НЕ даёт штрихкоды)
+- NPC name search = даёт EAN для ~40% продуктов
 
-**Что реализовано:**
-- `src/utils/theme.js` — единая тема `light` / `dark`, initial system theme, ручной выбор через `localStorage`, `data-theme`, `color-scheme`, `meta theme-color`, событие `korset:theme-change`.
-- `index.html` — early theme bootstrap до React, чтобы снизить flash неправильной темы.
-- `src/index.css` — dark/light semantic tokens для glassmorphism, app shell, nav, retail, overlay, inputs, shadows; добавлена premium-анимация переключения темы и `prefers-reduced-motion` fallback.
-- `ProfileScreen` — пункт "Тема" стал живым стеклянным переключателем light/dark с солнцем/луной.
-- Общие слои переведены на токены: `BottomNav`, `RetailBottomNav`, `RetailLayout`, `ConfirmDangerModal`, `SyncResolveModal`, базовые frame/header/sheet слои.
+---
 
-**Проверки:** `npm run lint` ✅ (44 warning, без errors), `npm run build` ✅, `npm test` ✅ (4/4 Playwright).
+## КОРЗИНА ДОМА (korzinavdom.kz)
 
-**Следующий этап:** Customer/public/auth route set — Home, Catalog, Product/UnifiedProduct, History, Auth, SetupProfile, StorePublic, Stores, Notification/Privacy settings. Цель: убрать оставшиеся hardcoded dark surfaces на основных пользовательских маршрутах, сохранив тёмную тему как визуальный эталон.
-
-## Сессия 2026-04-26 — Light Theme Stage 2
-
-**Статус:** ✅ Этап 2 выполнен: customer/public/auth route set переведён на semantic theme tokens.
-
-**Что реализовано:**
-- `src/index.css` — расширены токены для экранных поверхностей: `--glass-subtle`, `--glass-muted`, `--glass-soft-border`, `--line-soft`, `--image-bg`, `--text-soft`, `--text-faint`, `--text-disabled`, `--badge-bg`, `--badge-border`, `--accent-sky`, `--shadow-card`.
-- Buyer/public route set: `HomeScreen`, `CatalogScreen`, `ProductScreen`, `UnifiedProductScreen`, `HistoryScreen`, `StorePublicScreen`, `StoresScreen`.
-- Auth/settings route set: `AuthScreen`, `SetupProfileScreen`, `NotificationSettingsScreen`, `PrivacySettingsScreen`.
-- Основные hardcoded dark surfaces и white text заменены на semantic tokens там, где они отвечали за карточки, инпуты, image surfaces, header, dividers, secondary text и обычный текст.
-
-**Проверки:** `npm run lint` ✅ (44 warning, без errors), `npm run build` ✅, `npm test` ✅ (4/4 Playwright).
-
-**Следующий этап:** Stage 3 — scanner/camera flow, retail cabinet deep pass и PWA polish. Особое внимание: `ScanScreen`, `RetailDashboardScreen`, `RetailProductsScreen`, `RetailImportScreen`, `RetailSettingsScreen`, `RetailEntryScreen`, manifest/browser chrome/status bar.
-- 36 мёртвых URL (7 Kaspi блокировка + 6 Unsplash сток + 23 local paths)
-- 58 продуктов без картинок вообще
-- `getImageUrl()` интегрирован, Cloudflare Image Transformations НЕ работают (платный план)
-- Скрипт миграции: `scripts/migrate-images-to-r2.mjs` (фикс пагинации + остановка при отсутствии прогресса)
-- Миграция 011: `supabase/migrations/011_add_korzinavdom_image_source.sql` — нужно применить через SQL Editor
-
-## Заметка сессии — 2026-04-24 аудит проекта
-
-- Проверка сборки: `npm run build` проходит вне sandbox; Vite/PWA build OK, есть предупреждения о смешанных dynamic/static imports для `supabase.js` и `offlineDB.js`.
-- Проверка lint: `npm run lint` падает с 2 ошибками в `src/screens/AuthScreen.jsx` (`EyeBtn` объявлен внутри render) и 46 предупреждениями.
-- Проверка E2E: `npm test` запускается вне sandbox; 2 теста проходят, 2 падают. Падения выглядят устаревшими (`text=Körset` strict locator, `/s/store-one` ждёт `Магазин 1`).
-- Аудит сохранён в `docs/vault/plans/project-audit-2026-04-24.md`.
-- Добавлен лёгкий pipeline памяти: шаблоны в `docs/vault/templates/`, описание в `docs/vault/architecture/assistant-memory-pipeline.md`, команда `npm run memory:save`.
-
-## Заметка сессии — 2026-04-25 RetailImport V1
-
-- Реализован первый рабочий импорт прайс-листа в Retail Cabinet: `src/screens/RetailImportScreen.jsx` теперь принимает CSV/XLS/XLSX, показывает предпросмотр, ошибки, отчёт и применяет изменения.
-- Добавлен `src/utils/retailImport.js`: парсинг колонок `EAN/Цена/Наличие/Полка/Название`, валидация EAN, дедупликация, нормализация наличия, store-scoped обновление `store_products`.
-- Важно по архитектуре: V1 обновляет только уже существующие `store_products`. Неизвестные EAN не создаются автоматически, а попадают в отчёт для Data Moat, чтобы не загрязнять `global_products`.
-- Новый UI-текст вынесен в `src/utils/i18n.js` (`retail.import`) на RU/KZ, компонент использует `useI18n`.
-- Проверки: `npm run lint` проходит с прежними 46 warning; `npm test` — 4/4; `npm run build` — OK. Build добавляет отдельный lazy chunk `xlsx-D_0l8YDs.js` (~143KB gzip), но PWA precache вырос до ~1800 KiB.
-- Рекомендуемый следующий фокус: bulk RPC/Data Moat flow для неизвестных EAN, подтвердить миграцию 011 и перейти к БД/search/scaling fixes.
-
-## Заметка сессии — 2026-04-25 RetailImport V1.1
-
-- `src/screens/RetailImportScreen.jsx` получил B2B-friendly UX: скачивание шаблона CSV/XLSX, понятные счётчики, отдельные секции для `unknown EAN` и ошибок обновления.
-- Чистая логика импорта вынесена в `src/utils/retailImportCore.js`; добавлен unit-тест `tests/unit/retailImportCore.test.mjs` на шаблон, preview-валидацию и разделение known/unknown EAN.
-- `src/utils/retailImport.js` теперь использует core-модуль и умеет выгружать CSV-отчёт по `unknown EAN` для Data Moat handoff.
-- `src/utils/i18n.js` расширен по `retail.import` на RU/KZ под новый flow шаблона и отчёта.
-- Проверки на 2026-04-25: `node --test tests/unit/retailImportCore.test.mjs` — 3/3; `npm run lint` — без новых ошибок, прежние 46 warning; `npm test` — 4/4; `npm run build` — OK.
-- Следующий оптимальный фокус: staging/bulk RPC flow для `unknown EAN`, затем ручное подтверждение миграции `011_add_korzinavdom_image_source.sql`, потом DB fixes (`CASCADE`, `GIN`) и search/scaling.
-
-## Заметка сессии — 2026-04-26 ProfileEdit + Storage (Этап 2)
-
-- Новый экран `src/screens/ProfileEditScreen.jsx` (`/s/:slug/profile/edit`): смена имени, выбор аватара (9 пресетов из `avatarPresets.js`), выбор баннера (5 пресетов + загрузка своего фото). Превью карточки баннера в реальном времени.
-- Загрузка фото: resize до 1200×540 → JPEG 0.85 → upload в Supabase Storage `profile-banners/{auth_id}/{ts}.jpg` → получаем publicUrl → cache-busted. Лимиты: ≤5 МБ, JPG/PNG/WebP. Проверка офлайна.
-- Миграция `supabase/migrations/016_profile_avatar_banner.sql`: `users.avatar_id`, `users.banner_url` + bucket `profile-banners` (public read, owner-only write/update/delete по `auth.uid() = path[0]`). **Применить вручную через Supabase SQL Editor.**
-- `AuthContext` расширен: `bannerUrl` в state, чтение `avatar_id`/`banner_url` из `users` + `user_metadata` + localStorage. Graceful fallback если миграция не применена (regex `column .* does not exist` → ретрай минимальным select).
-- `userIdentity.js`: `read/writeCachedProfileBanner` (новая пара).
-- `routes.js`: `buildProfileEditPath()`.
-- `ProfileScreen`: карандаш теперь ведёт на `/profile/edit`, баннер берётся из `bannerUrl` (с fallback на metadata и preset:sunset).
-- `App.jsx`: добавлен Route `/s/:storeSlug/profile/edit`.
-- Зеркалирование: при сохранении пишем в `users` ТАБЛИЦУ + `auth.user_metadata` (для других устройств).
-- Проверки: `npm run build` OK, eslint на изменённых файлах — 0 errors / 0 новых warnings.
-
-## Заметка сессии — 2026-04-26 ProfileScreen Banner (Этап 1)
-
-- Редизайн верхней части `src/screens/ProfileScreen.jsx`: убран email, компактный header (Профиль + edit-карандаш-кнопка 38×38), добавлена баннер-карточка `aspect-ratio 16/8` с фоновой картинкой, аватарка 96px по центру, имя в стеклянной "плашке" внизу баннера (UPPERCASE).
-- Новый модуль: `src/constants/bannerPresets.js` (5 пресетов + `resolveBannerSrc()`), читает `user_metadata.banner_url` (preset:id или URL); fallback на `sunset`.
-- Новые SVG-заглушки в `public/banners/`: sunset, mountains, purple, forest, ocean (легковесные, ~1KB каждая). Пользователь заменит реальными фото позже.
-- `src/utils/i18n.js`: добавлены `profile.banner.*` и `profile.edit.*` для RU/KZ (для Этапа 2).
-- Карандаш пока ведёт на старый `/setup-profile?mode=edit` (TODO Этап 2 — отдельный `/profile/edit`).
-- Проверки: `npm run build` OK, `npx eslint` на изменённых файлах — 0 ошибок.
-
-## Заметка сессии — 2026-04-25 multi-LLM coordination
-
-- Добавлен минимальный coordination layer для совместной работы Codex, GLM 5.1 и Kimi 2.6 без лишней бюрократии.
-- Новый протокол: `docs/AI_COLLAB_PROTOCOL.md` — роли моделей, write-zone, правило «максимум 2 активных писателя», базовое распределение задач.
-- Новая доска: `docs/AI_TASK_BOARD.md` — task_id, owner, status, scope, write-zone, первичное распределение backlog.
-- Новый handoff-файл: `docs/AI_HANDOFF.md` — готовые промпты для Codex / GLM 5.1 / Kimi 2.6 и шаблон передачи работы.
-- Рекомендованный режим для Körset: Codex как интегратор, GLM 5.1 на data/DB/perf, Kimi 2.6 на UI/UX; одновременно писать код должны максимум 2 модели и только в разные write-zone.
-
-## Заметка сессии — 2026-04-24 стабилизация проверок
-
-- Добавлен `.gitignore` для `test-results/`, чтобы Playwright-артефакты не попадали в `git status`.
-- В `src/screens/AuthScreen.jsx` компонент `EyeBtn` вынесен из render на уровень модуля.
-- В `tests/e2e/landing.spec.js` обновлены устаревшие проверки: landing ищет конкретный heading `Körset`, store route проверяет загрузку app shell вместо старого текста магазина; `page.goto` переведён на `waitUntil: 'domcontentloaded'`, чтобы не ловить timeout на внешних ресурсах.
-- Проверки после правок: `npm run lint` проходит с 0 errors и 46 warnings; `npm run build` проходит; `npm test` проходит 4/4.
-- Следующий оптимальный фокус: настоящий `RetailImportScreen` как P0 для продажи магазинам.
-
-## Заметка сессии — 2026-04-24 режим доступа и архитектурные рельсы
-
-- Добавлен vault-документ `docs/vault/architecture/assistant-access-and-architecture-governance.md`: уровни доступа ассистента, правила апрува, запреты для production, rollback/verification перед рискованными операциями.
-- В `.env.local` присутствуют ключи Supabase/OpenAI/R2/Vercel/NPC/USDA; прямые CLI `psql`, `supabase`, `wrangler`, `vercel` локально не найдены.
-- Supabase виден как один локально настроенный project host: `tcvuffoxwavqdexrzwjj.supabase.co`; отдельный dev/staging пока не подтверждён.
-- Рекомендованный режим: сначала read-only Supabase-аудит и архитектурные DB/security/scaling фиксы, затем RetailImport и новые фичи. Любые внешние write-операции — только после явного апрува владельца.
-
-## Заметка сессии — 2026-04-25 KOR-GLM-001: Data Moat + DB fixes
-
-- Реализован полный Data Moat pipeline для unknown EAN из импорта прайс-листов:
-  - **Миграция 012**: таблицы `unknown_ean_staging` + `import_batches`, 3 RPC (`bulk_update_store_products`, `stage_unknown_eans`, `resolve_unknown_eans`), `calc_data_quality_score()` функция + триггер, `source_updated_at` колонка, TTL default + backfill, версионирование `get_top_scanned_products` и `get_missed_opportunities`
-  - **Миграция 013**: ON DELETE CASCADE/SET NULL на 13 FK (scan_events, missing_products, product_matches, product_reviews, user_favorites, notification_deliveries, external_product_cache)
-  - **Миграция 014**: GIN на jsonb (specs_json, fit_reasons_json, cache allergens/diets/nutriments) + tsvector + GIN на name/brand/ingredients_raw + авто-триггер обновления tsvector
-  - **Миграция 015**: stores.owner_id NOT NULL, external_product_cache source CHECK расширен, индексы scan_events для аналитики, missing_products enriched (local_name, last_import_price_kzt)
-- `src/utils/retailImport.js`: `applyRetailImport` теперь вызывает `bulk_update_store_products` RPC (1 запрос вместо N), `stage_unknown_eans` (пишет unknown в staging + missing_products), `resolve_unknown_eans` (авто-привязка найденных). Fallback на старый построчный UPDATE если RPC недоступна.
-- `src/domain/product/resolver.js`: TTL enforcement в `findCacheProduct` — устаревший кэш (ttl_expires_at < now) больше не используется.
-- `scripts/resolve-unknown-eans.cjs`: серверный каскад обогащения — NPC → Arbuz → USDA → OFF. Поддержка --limit, --store, --dry-run.
-- Проверки: lint 0 errors / 48 warnings, build OK, 4/4 E2E, 3/3 unit.
-- **Миграции 011-015 ждут применения через Supabase SQL Editor (владелец проекта).**
-
-## Заметка сессии — 2026-04-26 light theme discovery
-
-- Пользователь дал прямой продуктовый апрув на исследование и план внедрения светлой темы, несмотря на историческое правило `не переписывать стили на светлые`.
-- Vault подтвердил прошлое решение `Dark Premium Glassmorphism` как осознанный выбор: премиальность, читаемость в магазине, OLED, связка со сканером, дифференциация.
-- По коду отдельной theme-system нет: нет `ThemeProvider`, нет `data-theme`, нет `prefers-color-scheme`, нет сохранения темы в `localStorage`/профиле; в `ProfileScreen` есть только пункт `Тема` со статусом `Скоро`.
-- Базовые CSS-токены есть в `src/index.css`, но они односторонне dark-first. Параллельно найден большой объём inline-цветов и стеклянных поверхностей, завязанных на тёмную палитру.
-- Быстрый аудит показал как минимум **34 UI-файла** с hardcoded dark-цветами. Самые тяжёлые зоны по объёму зависимостей: `HomeScreen`, `RetailProductsScreen`, `ProfileScreen`, `ProductScreen`, `AuthScreen`, `SetupProfileScreen`, `ScanScreen`, `RetailSettingsScreen`.
-- Дополнительные риски: `BottomNav` и `RetailBottomNav` жёстко красятся inline, `RetailLayout` имеет свою blue-tinted dark-палитру, `index.html` и PWA manifest зашиты под тёмный `theme-color`, а сканерный сценарий может требовать отдельного dark-first поведения даже при общей светлой теме.
-- Следующий шаг: согласовать 3 продуктовых решения перед детальным implementation plan — scope (весь продукт или частично), default/behavior (dark/light/system), persistence (локально на устройстве или sync в профиль/Supabase).
-
-## Заметка сессии — 2026-04-26 V1 UX/theme strategy confirmed by owner
-
-- Подтверждён продуктовый pivot `Zero-Friction`: обязательный buyer `OnboardingScreen` будет удалён из критического first-run flow. Пользователь после QR/входа должен сразу попадать на `HomeScreen` конкретного магазина.
-- Обучение переносится из блокирующего онбординга в два слоя:
-  - физические носители в магазине (баннеры/наклейки);
-  - in-app активация на `HomeScreen`: stories-карточки с объяснением ценности и `Smart Suggestion` для быстрой настройки аллергенов/точной проверки.
-- AI disclaimer планируется как `passive consent`-плашка внизу экрана или в scanner UI, а не как блокирующий шаг.
-- Это **не текущая реализация**, а подтверждённый roadmap V1. Внедрение онбордингового pivot вынести в отдельный этап после светлой темы.
-- По теме подтверждено:
-  - `Light Premium` переносится из V2 в обязательный scope V1;
-  - светлая тема должна покрыть **весь продукт**, а не только buyer-flow;
-  - UI модели `System / Light / Dark` не будет: в профиле остаётся выбор `Light / Dark`, а системная тема может использоваться только как initial value до первого явного выбора;
-  - при переключении тем нужна красивая, фирменная, но производительная анимация перехода;
-  - приоритетная цель для scanner — тоже полноценная поддержка светлой темы; гибрид допустим только если полноценный вариант даст риск поломки или плохой UX;
-  - типографика остаётся текущей: `Advent Pro` + `Inter` без перехода на `Manrope`;
-  - glassmorphism сохраняется и для dark, и для light;
-  - light theme должна быть максимально идентична dark-версии по характеру, детализации и премиальности, а не выглядеть как упрощённая альтернативная версия;
-  - customer app и retail cabinet сохраняют единый визуальный язык с небольшой разницей по акцентам, как и в текущей dark-версии.
-- По онбордингу дополнительно подтверждено:
-  - в пользовательском интерфейсе он не должен участвовать в первом входе после QR;
-  - код можно пока оставить в проекте как потенциальную future-переупаковку, но архитектуру V1 уже не строить вокруг обязательного онбординга.
-- Открытые вопросы перед implementation plan светлой темы теперь сузились до технических нюансов: где хранить выбор темы (локально или sync), как именно обновлять `theme-color`/PWA shell, и нужен ли отдельный rollout/QA этап для scanner.
-
-## Заметка сессии — 2026-04-26 light theme implementation plan
-
-- Владелец подтвердил финальные продуктовые параметры:
-  - покрытие всей системы;
-  - переключатель `Light / Dark`;
-  - initial value от system допустим только до первого ручного выбора;
-  - шрифты остаются `Advent Pro` + `Inter`;
-  - scanner целим в полноценный theme-aware сценарий;
-  - customer и retail сохраняют единый язык с мягкой разницей по акцентам;
-  - theme choice храним локально для V1.
-- Сформирован детальный план внедрения в `docs/vault/plans/light-theme-implementation-2026-04-26.md`.
-- Выбран visual direction для light: `crystal / pearl white glassmorphism` — максимально близкий по характеру к текущему dark premium, без упрощения и без ощущения “другого приложения”.
-- Реализацию оптимально вести в 3 этапа:
-  1. theme foundation + storage + toggle + shell;
-  2. customer/public/auth screens;
-  3. scanner + retail + PWA polish + regression pass.
-
-## Заметка сессии — 2026-04-26 NPC EAN Harvest (combo approach)
-
-- **Проблема:** только 1320/8153 (16%) продуктов имели реальные EAN. Fake EAN (arbuz_/kaspi_/korzinavdom_) не работают при сканировании.
-- **Эксперимент:** `scripts/npc-match-experiment.cjs` — протестировал 6 методов NPC-поиска на 30 продуктах:
-  - brand+name: универсально, 29.3 EAN/query
-  - brand+core+weight: лучше (30.7) но только если есть вес
-  - brand-only: ловит все варианты бренда, 24.1
-  - Решение: combo из 2-3 запросов на продукт
-- **Новый скрипт:** `scripts/npc-eans-harvest.cjs` — combo-подход:
-  - 2-3 запроса на продукт (brand+name, brand+core+weight если есть вес, brand-only)
-  - Собирает ВСЕ уникальные GTINs + NTINs (score≥10) в `alternate_eans` массив
-  - Лучший GTIN → primary `ean`, остальные → `alternate_eans`
-  - Обработка duplicate EAN: если EAN уже занят другим продуктом → в alternate_eans, пробует следующий
-  - Поддержка `--limit`, `--dry-run`, `--offset`
-- **Результаты (3 партии):**
-  - Batch 1 (200): 197 обновлено, 4426 GTIN + 3738 NTIN, 7596 alt EAN, avg 39.9/продукт
-  - Batch 2 (200): 197 обновлено, 193 primary EAN, 4426 GTIN + 3433 NTIN
-  - Batch 3 (500, прерван на ~398): обработка шла, прервано пользователем для сохранения контекста
-- **Прогресс EAN:** 1320 → 2558 реальных primary EAN (+1238, почти 2x)
-- **Осталось:** ~5595 продуктов ещё нуждаются в реальных EAN (те что с fake EAN и имеют бренд)
-- **Сканер уже поддерживает alternate_eans:** `resolver.js` строки 87, 121 используют `.contains('alternate_eans', [ean])` — матч по альтернативным EAN уже работает
-- **usda-enrich.cjs фикс:** больше не перезаписывает `source_primary` для продуктов из лучших источников
-- **npc-enrich.cjs фикс:** пагинация `.range()` с PAGE_SIZE=999 (Supabase default limit 1000)
-- **Следующий шаг:** продолжить harvest партиями по 2000 (`--limit=2000`), затем оставшиеся без бренда
-
-## Сессия 2026-04-26 — Light Theme Stage 3 (Final)
-
-**Статус:** ✅ Этап 3 выполнен: scanner, retail cabinet и оставшиеся компоненты переведены на semantic theme tokens.
-
-**Что реализовано:**
-- Retail экраны (`RetailSettingsScreen`, `RetailDashboardScreen`, `RetailProductsScreen`, `RetailImportScreen`, `RetailEntryScreen`) полностью токенизированы. Hardcoded `#fff` и `rgba(255,255,255,...)` заменены на семантические CSS переменные (`var(--glass-subtle)`, `var(--text)`, `var(--input-bg)` и т.д.).
-- Специальные экраны: `CompareScreen` и `ProfileScreen` также полностью поддерживают светлую тему.
-- Компоненты (`ExpandToggle`, `SyncResolveModal`, `ProfileAvatar` и др.) адаптированы. В `SyncResolveModal` улучшена видимость фиолетовых элементов (`#DDD6FE` -> `var(--primary)`) для читаемости на белом фоне.
-- Проведена глобальная чистка оставшихся хардкод-значений: `ScanScreen` (оверлей камеры, тосты, меню сравнения), `ProfileScreen` (иконки диет со stroke="#FFFFFF") и `AIScreen` (фон сообщений) теперь полностью адаптивны. Все жестко заданные `rgba(255)` и `#fff` заменены на семантические токены `var(--glass-bg)`, `var(--text)` и `currentColor`.
-- Добавлены новые светлые версии логотипов (`logo-light.png` и `icon-light.png`).
-
-**Проверки:**
-- Выполнен `npm run build` — сборка успешно проходит без ошибок.
-- Выполнен поиск оставшихся hardcoded цветов — приложение полностью очищено от некорректных цветовых инжекций. Светлая тема работает бесшовно и эстетично.
-- Полная интеграция темы с PWA manifest и system shell была завершена на этапе 1.
-
-**Следующий фокус:** 
-1. Дочистить ~68 fake EAN через EAN Recovery (пользователь в процессе)
-2. **Импорт прайс-листа** — P0 блокер продаж, нужен реальный тест CSV
-3. **Data Moat** — data_quality_score, каскад источников
-4. **БД-фиксы** — CASCADE, GIN, триггеры
-5. **Метрики в тенге** — дашборд не продаёт без денег
-
-## Заметка сессии — 2026-04-27 EAN Recovery UI + RLS Fix
-
-- **Проблема:** Удаление товаров через EAN Recovery не работало — RLS блокировал DELETE/UPDATE из фронтенда (anon key), Supabase молча возвращал `data: null, error: null`
-- **Решение:** Создан serverless API `/api/ean-recovery` — JWT-авторизация + service_role key (обходит RLS)
-- **EAN Recovery Screen (`src/screens/EanRecoveryScreen.jsx`) — полностью переписан:**
-  - **Удаление = полное DELETE** из `global_products` + `store_products` (через API, service_role)
-  - **Сканер штрихкода** — оранжевая кнопка «Сканировать», открывает камеру → отсканированный EAN автоматически вставляется
-  - **Карточка товара** — клик на название/картинку → ProductScreen в новой вкладке
-  - **Редактирование названия** — иконка ✏️ → инлайн-редактор, сохраняет в `global_products` через API
-  - **Подтверждение удаления** — модал «Удалить навсегда» с названием товара
-  - Всё на русском языке
-- **Retail Bottom Nav** — добавлена 4-я вкладка «Штрихкоды» (оранжевый qr_code_scanner) между «Товары» и «Настройки»
-- **API-эндпоинт `api/ean-recovery.js`:**
-  - `action: delete` — DELETE из store_products + global_products
-  - `action: update-ean` — UPDATE ean в global_products + store_products
-  - `action: update-name` — UPDATE name в global_products
-  - JWT верификация через `supabase.auth.getUser(token)`
-  - Service_role key для обхода RLS
-- **Магазин:** slug = `store-one`, name = `MARS`, город = Усть-Каменогорск, Новаторова 7
-- **i18n:** Добавлен ключ `eanRecovery` в retail.nav (RU: «Штрихкоды», KZ: «Штрихкодтар»)
-
-## Заметка сессии — 2026-04-26 EAN Coverage Final Push (77.2% → 99.0%)
-
-- **Цель:** 100% EAN coverage, избавиться от всех fake EAN (arbuz_/kaspi_/korzinavdom_)
-- **Результат:** 99.0% (7031/7104 реальных EAN), 73 fake EAN остались
-- **Что сделано:**
-  - Resolver v2: промотировал уникальные GTIN из alternate_eans, деактивировал дубли + мердж ингредиентов
-  - Resolver v3 (`scripts/resolve-v3.cjs`): расслабил 200-299 range (реальные KZ коды), NPC name search для no-alt продуктов
-  - OFF harvest (`scripts/off-ean-harvest.cjs`): brand+name поиск в Open Food Facts — 14 EAN найдено
-  - OFF broad search (`scripts/off-broad-search.cjs`): keyword-based поиск — 25 EAN найдено
-  - UPCitemdb (`scripts/upc-db-search.cjs`): 0 результатов (KZ-специфичные продукты)
-  - Деактивировано: 22 весовых товара (нет штрихкода по определению)
-  - Очищено: все kaspi_ EAN (был 1, теперь 0)
-  - NPC verification: alternate_eans с 0200/2500 prefix НЕ найдены в NPC — это внутренние/нерабочие коды
-- **Автоматизированные подходы полностью исчерпаны:** NPC (3 раунда), OFF (2 раунда), UPCitemdb, alternate_eans verification
-- **73 оставшихся fake EAN** требуют ручного ввода через EAN Recovery screen:
-  - 29 arbuz_ (Arbuz СТМ, нишевый импорт: Donckels, Alnatura, Edeka)
-  - 44 korzinavdom_ (локальные KZ бренды: Дәмді ет, Еткон, Ролли, Рамай, etc.)
-  - 37 имеют alternate_eans (все 0200-prefix, НЕ верифицированы в NPC)
-- **EAN Recovery screen** (`src/screens/EanRecoveryScreen.jsx`) построен и готов к использованию
-- **EAN Coverage Journey:**
-  | Stage | Active | Real EAN | Fake EAN | Coverage |
-  |-------|--------|----------|----------|----------|
-  | Start of session | 8153 | 6297 | 1852 | 77.2% |
-  | After resolver v2 | 7237 | 6921 | 316 | 95.6% |
-  | After NPC + cleanup | 7142 | 6984 | 154 | 97.8% |
-  | After resolver v3 | 7126 | 6992 | 134 | 98.1% |
-  | After OFF + weight cleanup | 7104 | 7031 | 73 | 99.0% |
-- **Новые скрипты:**
-  - `scripts/resolve-v3.cjs` — KZ-aware resolver + NPC name search
-  - `scripts/off-ean-harvest.cjs` — OFF brand+name search
-  - `scripts/off-broad-search.cjs` — OFF keyword-based search
-  - `scripts/upc-db-search.cjs` — UPCitemdb search (0 results)
-- **Следующий шаг:** пользователь вносит штрихкоды вручную через EAN Recovery screen, затем — переход к следующим проектным этапам
+- API: `https://api.korzinavdom.kz/client/` (открытый, без авторизации)
+- Скрипт: `scripts/korzinavdom-parser.cjs`
+- **ВАЖНО: `pageSize` не работает, нужно `size=500`**
+- Данные: название, состав, ккал/белки/жиры/углеводы, бренд, страна, картинка, халяль
+- Нет: EAN/штрихкод, аллергены
