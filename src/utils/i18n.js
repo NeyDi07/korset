@@ -411,6 +411,8 @@ export const dictionaries = {
       fitBadge: 'Подходит',
       notFitBadge: 'Не подходит',
       compareMode: 'Сравнить',
+      cancel: 'Отменить',
+      selectSecond: 'Выберите второй товар для сравнения',
     },
     retail: {
       nav: {
@@ -1027,6 +1029,8 @@ export const dictionaries = {
       fitBadge: 'Сай келеді',
       notFitBadge: 'Сай емес',
       compareMode: 'Салыстыру',
+      cancel: 'Болдырмау',
+      selectSecond: 'Салыстыру үшін 2-ші тауарды таңдаңыз',
     },
     retail: {
       nav: {

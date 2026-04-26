@@ -122,8 +122,8 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 
 | # | Задача | Статус | Комментарий |
 |---|--------|--------|-------------|
-| 1 | **i18n: хардкод русский текст** | 🔴 НЕ НАЧАТО | EanRecoveryScreen, ProductScreen, CatalogScreen — массовый хардкод, KZ язык невозможен для этих экранов. Нарушает правило #7. |
-| 2 | **Фронтенд: name_kz по языку** | 🔴 НЕ НАЧАТО | Данные (name_kz) готовы в БД→normalizer→model, но ProductScreen/CatalogScreen/RetailProductsScreen показывают только `product.name`. Нужно: `lang === 'kz' && product.nameKz ? product.nameKz : product.name` |
+| 1 | **i18n: хардкод русский текст** | 🟡 CatalogScreen ✅ | CatalogScreen — весь хардкод убран (compare.cancel/selectSecond, loading/loadingMore/searchingServer, modeBanner). Остальные экраны (ProductScreen, EanRecoveryScreen) — НЕ НАЧАТО |
+| 2 | **Фронтенд: name_kz по языку** | 🟡 CatalogScreen ✅ | CatalogScreen + comparePin — отображает nameKz при lang=kz. ProductScreen/RetailProductsScreen — НЕ НАЧАТО. Нужно: `lang === 'kz' && product.nameKz ? product.nameKz : product.name` |
 | 3 | **Migration 016** — проверить и применить | ✅ ПРИМЕНЕНА | profile-banners bucket + avatar_id/banner_url колонки. AuthContext уже использует с graceful fallback. Баннеры работают: 7 пресетов + custom upload. |
 
 ### P1 — Важно для продукта
@@ -157,6 +157,7 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - ✅ **Profile Edit** — баннеры (7 photo presets WebP + custom upload), аватары (9 presets), Supabase Storage
 - ✅ **БД-фиксы (миграции 012-015)** — CASCADE FK, GIN indexes, tsvector полнотекстовый поиск, data_quality_score, TTL, bulk RPC
 - ✅ **Каталог: Virtuoso + двухэтапная загрузка** — light поля, scroll position, viewMode
+- ✅ **Каталог: i18n + nameKz полировка** — весь хардкод убран, compare.cancel/selectSecond RU+KZ, nameKz в grid/list/comparePin, гибридный поиск (клиент+сервер), fit-бейджи, вес/объём вместо EAN, plural склонения
 - ✅ **Banner overhaul (2026-04-27)** — 7 фото-баннеров в WebP (160KB total, 99% compression), `scripts/optimize-banners.mjs` pipeline, PWA precache fix (`globPatterns` → `injectManifest` config), SelectedDot clipping fix, clean 2×4 grid
 - ✅ **R2 CDN миграция** — 99.96% картинок на cdn.korset.app
 - ✅ **Состав: перевод через OpenAI** — 100% русский состав

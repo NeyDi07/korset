@@ -288,8 +288,7 @@ export default function CatalogScreen() {
       ? `${displayList.length} ${pluralKz(displayList.length, 'тауар', 'тауар')}`
       : `${displayList.length} ${plural(displayList.length, 'товар', 'товара', 'товаров')}`
 
-  const searchHint =
-    !isCatalogReady && q.trim() ? t.catalog?.loadingSearch || 'Каталог загружается...' : null
+  const searchHint = !isCatalogReady && q.trim() ? t.catalog.loadingSearch : null
 
   const renderGridItem = useCallback(
     (index, product) => {
@@ -557,10 +556,10 @@ export default function CatalogScreen() {
                         : 'compare_arrows'}
                   </span>
                   {comparePin?.ean === product.ean
-                    ? 'Отменить'
+                    ? t.compare.cancel
                     : comparePin
-                      ? t.compare?.btnLabel || 'Сравнить'
-                      : t.compare?.compareMode || 'Сравнить'}
+                      ? t.compare.btnLabel
+                      : t.compare.compareMode}
                 </button>
               </div>
             </div>
@@ -591,8 +590,8 @@ export default function CatalogScreen() {
           >
             {storeTitle} ·{' '}
             {!isCatalogReady && catalogProducts.length === 0
-              ? t.catalog?.loading || 'Загрузка...'
-              : `${productCountText}${!isCatalogReady ? ' · ' + (t.catalog?.loadingMore || 'ещё загружается...') : ''}${isSearchingServer ? ' · ' + (t.catalog?.searchingServer || 'Ищем на сервере...') : ''}`}
+              ? t.catalog.loading
+              : `${productCountText}${!isCatalogReady ? ' · ' + t.catalog.loadingMore : ''}${isSearchingServer ? ' · ' + t.catalog.searchingServer : ''}`}
           </div>
         </div>
 
@@ -748,7 +747,7 @@ export default function CatalogScreen() {
                 marginBottom: 2,
               }}
             >
-              {t.compare?.modeBanner || 'Режим сравнения'}
+              {t.compare.modeBanner}
             </div>
             <div
               style={{
@@ -761,12 +760,10 @@ export default function CatalogScreen() {
                 whiteSpace: 'nowrap',
               }}
             >
-              {comparePin.name}
+              {comparePin.nameKz && lang === 'kz' ? comparePin.nameKz : comparePin.name}
             </div>
             <div style={{ fontSize: 11, color: 'var(--text-soft)', marginTop: 1 }}>
-              {t.compare?.selectSecond ||
-                t.compare?.modeBanner ||
-                'Выберите второй товар для сравнения'}
+              {t.compare.selectSecond}
             </div>
           </div>
           <button
