@@ -1,17 +1,13 @@
 import { useNavigate } from 'react-router-dom'
-import { useI18n } from '../utils/i18n.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { buildProductPath } from '../utils/routes.js'
 
 /**
  * Compact product card used in profile tabs (favorites / history).
- * Renders image, name, short meta line, and an explicit CTA button to open
- * the product detail screen. Whole card is clickable; the CTA stops propagation
- * so the button itself can play its press animation independently.
+ * Whole card is the only click target — opens the product detail screen.
  */
 export default function ProductMiniCard({ product }) {
   const navigate = useNavigate()
-  const { t } = useI18n()
   const { currentStore } = useStore()
 
   if (!product?.ean && !product?.id) return null
@@ -70,35 +66,12 @@ export default function ProductMiniCard({ product }) {
           </div>
         )}
       </div>
-      <div className="product-mini-card__name" title={product.name}>
-        {product.name}
+      <div className="product-mini-card__body">
+        <div className="product-mini-card__name" title={product.name}>
+          {product.name}
+        </div>
+        {meta && <div className="product-mini-card__meta">{meta}</div>}
       </div>
-      {meta && <div className="product-mini-card__meta">{meta}</div>}
-      <button
-        type="button"
-        className="product-mini-card__cta"
-        onClick={(e) => {
-          e.stopPropagation()
-          handleOpen()
-        }}
-      >
-        <svg
-          width="14"
-          height="14"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M15 3h6v6" />
-          <path d="M10 14L21 3" />
-          <path d="M21 14v5a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h5" />
-        </svg>
-        <span>{t.profile.openCard}</span>
-      </button>
     </div>
   )
 }

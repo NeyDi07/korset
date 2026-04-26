@@ -11,7 +11,7 @@ import {
 } from '../domain/product/resolver.js'
 import { buildHistoryOwnerKey, readLocalScanHistory } from '../utils/localHistory.js'
 import { loadPrivacySettings } from '../utils/privacySettings.js'
-import ProductMiniCard from '../components/ProductMiniCard.jsx'
+import ProfileStatsTabs from '../components/profile/ProfileStatsTabs.jsx'
 import {
   buildHistoryPath,
   buildNotificationSettingsPath,
@@ -20,7 +20,6 @@ import {
   buildProfilePath,
 } from '../utils/routes.js'
 import ProfileAvatar from '../components/ProfileAvatar.jsx'
-import { HeartIcon } from '../components/icons/HeartIcon.jsx'
 import { ALLERGENS } from '../constants/allergens.js'
 import { DIET_GOALS } from '../constants/dietGoals.js'
 import { buildAuthNavigateState } from '../utils/authFlow.js'
@@ -327,7 +326,6 @@ export default function ProfileScreen() {
   const [allergenInput, setAllergenInput] = useState('')
   // Active stats tab: 'favorites' | 'preferences' | 'history' | null
   const [activeTab, setActiveTab] = useState(null)
-  const toggleTab = (tab) => setActiveTab((cur) => (cur === tab ? null : tab))
 
   // Lazy-loaded mini-grids for favorites/history tabs (top 6 each).
   // null = not loaded yet, [] = loaded but empty, [items] = loaded with content.
@@ -464,125 +462,6 @@ export default function ProfileScreen() {
         .pref-chip:active { transform: scale(0.95); }
         .settings-item { transition: background 0.15s; }
         .settings-item:active { background: var(--glass-bg) !important; }
-        .stat-card { transition: border-color 0.35s cubic-bezier(.4,0,.2,1), box-shadow 0.35s cubic-bezier(.4,0,.2,1), transform 0.2s ease; }
-        .stat-card:active { transform: scale(0.97); }
-        .stat-card.is-active.is-favorites { border: 1.5px solid rgba(248,113,113,0.55); box-shadow: 0 12px 36px rgba(220,38,38,0.28); }
-        .stat-card.is-active.is-preferences { border: 1.5px solid rgba(167,139,250,0.55); box-shadow: 0 12px 36px rgba(124,58,237,0.32); }
-        .stat-card.is-active.is-history { border: 1.5px solid rgba(52,211,153,0.55); box-shadow: 0 12px 36px rgba(16,185,129,0.28); }
-        .tab-panel-wrap {
-          overflow: hidden;
-          transition: max-height 0.4s cubic-bezier(.4,0,.2,1), margin-top 0.4s cubic-bezier(.4,0,.2,1), opacity 0.3s ease;
-        }
-        .tab-panel-card.is-favorites { border-color: rgba(248,113,113,0.35); box-shadow: 0 14px 40px rgba(220,38,38,0.18); }
-        .tab-panel-card.is-preferences { border-color: rgba(167,139,250,0.35); box-shadow: 0 14px 40px rgba(124,58,237,0.22); }
-        .tab-panel-card.is-history { border-color: rgba(52,211,153,0.35); box-shadow: 0 14px 40px rgba(16,185,129,0.18); }
-        @keyframes tabFadeIn {
-          from { opacity: 0; transform: translateY(6px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .tab-content { animation: tabFadeIn 0.35s cubic-bezier(.4,0,.2,1) both; }
-        .empty-state-icon {
-          width: 56px; height: 56px; border-radius: 50%;
-          display: flex; align-items: center; justify-content: center;
-          margin: 0 auto 14px;
-        }
-        .view-all-btn {
-          display: flex; align-items: center; justify-content: center; gap: 8px;
-          width: 100%; padding: 12px 16px; margin-top: 16px;
-          border-radius: 14px;
-          background: var(--glass-subtle);
-          border: 1px solid var(--glass-soft-border);
-          color: var(--text);
-          font-family: var(--font-display);
-          font-size: 13px; font-weight: 600;
-          cursor: pointer;
-          transition: background 0.2s ease, transform 0.15s ease;
-        }
-        .view-all-btn:active { transform: scale(0.98); background: var(--glass-bg); }
-        .mini-grid {
-          display: grid;
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-          gap: 10px;
-        }
-        @media (min-width: 380px) {
-          .mini-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-        }
-        .product-mini-card {
-          background: var(--glass-subtle);
-          border: 1px solid var(--glass-soft-border);
-          border-radius: 14px;
-          padding: 8px 8px 10px;
-          display: flex;
-          flex-direction: column;
-          gap: 6px;
-          cursor: pointer;
-          transition: transform 0.15s ease, border-color 0.2s ease, background 0.2s ease;
-          outline: none;
-        }
-        .product-mini-card:active { transform: scale(0.97); }
-        .product-mini-card:hover { border-color: var(--glass-border); }
-        .product-mini-card:focus-visible { border-color: rgba(167,139,250,0.55); box-shadow: 0 0 0 3px rgba(124,58,237,0.18); }
-        .product-mini-card__image-wrap {
-          width: 100%;
-          aspect-ratio: 1 / 1;
-          border-radius: 10px;
-          overflow: hidden;
-          background: var(--glass-bg);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-        .product-mini-card__image { width: 100%; height: 100%; object-fit: contain; }
-        .product-mini-card__placeholder { color: var(--text-disabled); }
-        .product-mini-card__name {
-          font-family: var(--font-display);
-          font-size: 11px;
-          font-weight: 600;
-          color: var(--text);
-          line-height: 1.25;
-          display: -webkit-box;
-          -webkit-line-clamp: 2;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          min-height: 28px;
-          margin-top: 2px;
-        }
-        .product-mini-card__meta {
-          font-family: var(--font-display);
-          font-size: 9.5px;
-          font-weight: 500;
-          color: var(--text-dim);
-          letter-spacing: 0.4px;
-          text-transform: uppercase;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-        .product-mini-card__cta {
-          margin-top: 4px;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          gap: 5px;
-          padding: 6px 8px;
-          border-radius: 9px;
-          background: rgba(124,58,237,0.18);
-          border: 1px solid rgba(124,58,237,0.3);
-          color: #A78BFA;
-          font-family: var(--font-display);
-          font-size: 10px;
-          font-weight: 600;
-          cursor: pointer;
-          transition: background 0.15s ease, transform 0.15s ease;
-        }
-        .product-mini-card__cta:active { transform: scale(0.96); background: rgba(124,58,237,0.28); }
-        .tab-loading {
-          display: flex; align-items: center; justify-content: center;
-          padding: 30px 0;
-          color: var(--text-dim);
-          font-family: var(--font-display); font-size: 13px;
-        }
       `}</style>
 
       <div
@@ -758,7 +637,7 @@ export default function ProfileScreen() {
                   pointerEvents: 'none',
                 }}
               />
-              {/* Avatar — centered, raised toward upper area */}
+              {/* Avatar вЂ” centered, raised toward upper area */}
               <div
                 style={{
                   position: 'absolute',
@@ -810,7 +689,7 @@ export default function ProfileScreen() {
                   </div>
                 )}
               </div>
-              {/* Name pill — bottom center */}
+              {/* Name pill вЂ” bottom center */}
               <div
                 style={{
                   position: 'absolute',
@@ -880,601 +759,266 @@ export default function ProfileScreen() {
             </div>
           </div>
 
-          {/* ── STATS — 3 GLASS CARDS ── */}
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              gap: 12,
-              padding: '14px 20px 22px',
-            }}
-          >
-            {/* Favorites */}
-            <div
-              onClick={() => toggleTab('favorites')}
-              role="button"
-              aria-expanded={activeTab === 'favorites'}
-              style={{ flex: 1, position: 'relative', paddingTop: 28, cursor: 'pointer' }}
-            >
-              <div
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  zIndex: 2,
-                  width: 56,
-                  height: 56,
-                  borderRadius: '50%',
-                  background: 'rgba(220,38,38,0.25)',
-                  border: '2px solid rgba(220,38,38,0.35)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  boxShadow: '0 4px 20px rgba(220,38,38,0.25)',
-                }}
-              >
-                <HeartIcon filled={true} size={24} color="#F87171" />
-              </div>
-              <div
-                className={`glass-card stat-card ${activeTab === 'favorites' ? 'is-active is-favorites' : ''}`}
-                style={{
-                  padding: '44px 8px 16px',
-                  textAlign: 'center',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'flex-end',
-                  minHeight: 110,
-                }}
-              >
-                <div
-                  style={{
-                    fontFamily: 'var(--font-display)',
-                    fontSize: 42,
-                    fontWeight: 600,
-                    color: 'var(--text)',
-                    lineHeight: 1,
-                    flex: 1,
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}
-                >
-                  {favoritesCount}
-                </div>
-                <div
-                  style={{
-                    fontSize: 11,
-                    color: 'var(--text-disabled)',
-                    marginTop: 8,
-                    fontFamily: 'var(--font-display)',
-                    fontWeight: 500,
-                  }}
-                >
-                  {t.profile.favorites}
-                </div>
-              </div>
-            </div>
-
-            {/* Preferences */}
-            <div
-              onClick={() => toggleTab('preferences')}
-              role="button"
-              aria-expanded={activeTab === 'preferences'}
-              style={{ flex: 1, position: 'relative', paddingTop: 28, cursor: 'pointer' }}
-            >
-              <div
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  zIndex: 2,
-                  width: 56,
-                  height: 56,
-                  borderRadius: '50%',
-                  background: 'rgba(124,58,237,0.25)',
-                  border: '2px solid rgba(124,58,237,0.35)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  boxShadow: '0 4px 20px rgba(124,58,237,0.25)',
-                }}
-              >
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#A78BFA"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <line x1="4" y1="21" x2="4" y2="14" />
-                  <line x1="4" y1="10" x2="4" y2="3" />
-                  <line x1="12" y1="21" x2="12" y2="12" />
-                  <line x1="12" y1="8" x2="12" y2="3" />
-                  <line x1="20" y1="21" x2="20" y2="16" />
-                  <line x1="20" y1="12" x2="20" y2="3" />
-                  <line x1="1" y1="14" x2="7" y2="14" />
-                  <line x1="9" y1="8" x2="15" y2="8" />
-                  <line x1="17" y1="16" x2="23" y2="16" />
-                </svg>
-              </div>
-              <div
-                className={`glass-card stat-card ${activeTab === 'preferences' ? 'is-active is-preferences' : ''}`}
-                style={{
-                  padding: '44px 8px 16px',
-                  textAlign: 'center',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'flex-end',
-                  minHeight: 110,
-                }}
-              >
-                <div
-                  style={{
-                    fontFamily: 'var(--font-display)',
-                    fontSize: 42,
-                    fontWeight: 600,
-                    color: 'var(--text)',
-                    lineHeight: 1,
-                    flex: 1,
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}
-                >
-                  {totalPref}
-                </div>
-                <div
-                  style={{
-                    fontSize: 11,
-                    color: 'var(--text-disabled)',
-                    marginTop: 8,
-                    fontFamily: 'var(--font-display)',
-                    fontWeight: 500,
-                  }}
-                >
-                  {t.profile.preferencesTitle}
-                </div>
-              </div>
-            </div>
-
-            {/* Scans */}
-            <div
-              onClick={() => toggleTab('history')}
-              role="button"
-              aria-expanded={activeTab === 'history'}
-              style={{ flex: 1, position: 'relative', paddingTop: 28, cursor: 'pointer' }}
-            >
-              <div
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  zIndex: 2,
-                  width: 56,
-                  height: 56,
-                  borderRadius: '50%',
-                  background: 'rgba(16,185,129,0.25)',
-                  border: '2px solid rgba(16,185,129,0.35)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  boxShadow: '0 4px 20px rgba(16,185,129,0.25)',
-                }}
-              >
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#34D399"
-                  strokeWidth="2.2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M4 8V6a2 2 0 012-2h2" />
-                  <path d="M16 4h2a2 2 0 012 2v2" />
-                  <path d="M20 16v2a2 2 0 01-2 2h-2" />
-                  <path d="M8 20H6a2 2 0 01-2-2v-2" />
-                  <line x1="5" y1="12" x2="19" y2="12" strokeWidth="2.5" />
-                </svg>
-              </div>
-              <div
-                className={`glass-card stat-card ${activeTab === 'history' ? 'is-active is-history' : ''}`}
-                style={{
-                  padding: '44px 8px 16px',
-                  textAlign: 'center',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'flex-end',
-                  minHeight: 110,
-                }}
-              >
-                <div
-                  style={{
-                    fontFamily: 'var(--font-display)',
-                    fontSize: 42,
-                    fontWeight: 600,
-                    color: 'var(--text)',
-                    lineHeight: 1,
-                    flex: 1,
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}
-                >
-                  {scanCount}
-                </div>
-                <div
-                  style={{
-                    fontSize: 11,
-                    color: 'var(--text-disabled)',
-                    marginTop: 8,
-                    fontFamily: 'var(--font-display)',
-                    fontWeight: 500,
-                  }}
-                >
-                  {t.profile.scans}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* ── TAB CONTENT (favorites / preferences / history) ── */}
-          <div style={{ padding: '0 22px 20px' }}>
-            <div
-              className="tab-panel-wrap"
-              style={{
-                maxHeight: activeTab ? 2000 : 0,
-                opacity: activeTab ? 1 : 0,
-                marginTop: activeTab ? 8 : 0,
-              }}
-            >
-              <div
-                className={`glass-card tab-panel-card ${activeTab ? `is-${activeTab}` : ''}`}
-                style={{ padding: 20 }}
-              >
-                {activeTab === 'preferences' && (
-                  <div className="tab-content" key="preferences">
-                    {/* Diet */}
-                    <div style={{ marginBottom: 20 }}>
-                      <div
-                        style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}
-                      >
-                        <div
-                          style={{
-                            width: 6,
-                            height: 6,
-                            borderRadius: '50%',
-                            background: '#34D399',
-                          }}
-                        />
-                        <span
-                          style={{
-                            fontFamily: 'var(--font-display)',
-                            fontSize: 13,
-                            fontWeight: 600,
-                            color: '#34D399',
-                            textTransform: 'uppercase',
-                            letterSpacing: 1,
-                          }}
-                        >
-                          {t.profile.diet}
-                        </span>
-                      </div>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                        <div
-                          className="pref-chip"
-                          onClick={() => setProfile((p) => ({ ...p, halal: !p.halal }))}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 7,
-                            padding: '8px 14px',
-                            borderRadius: 14,
-                            background: profile.halal
-                              ? 'rgba(124,58,237,0.2)'
-                              : 'var(--glass-subtle)',
-                            border: `1px solid ${profile.halal ? 'rgba(124,58,237,0.4)' : 'var(--glass-soft-border)'}`,
-                          }}
-                        >
-                          <svg
-                            width="24"
-                            viewBox="0 0 16 16"
-                            fill="currentColor"
-                            style={{
-                              transition: 'opacity 0.2s ease',
-                              opacity: profile.halal ? 1 : 0.3,
-                            }}
-                          >
-                            <path d="M0.191809375 8c0 -4.330375 3.509625 -7.84 7.84 -7.84 1.010625 0 1.978375 0.1929375 2.8665 0.5420625 0.226625 0.0888125 0.3521875 0.3276875 0.300125 0.5635s-0.2695 0.398125 -0.5114375 0.37975c-0.147 -0.0091875 -0.2970625 -0.0153125 -0.447125 -0.0153125 -3.5188125 0 -6.37 2.8511875 -6.37 6.37s2.8511875 6.37 6.37 6.37c0.1500625 0 0.300125 -0.006125 0.447125 -0.0153125 0.2419375 -0.0153125 0.459375 0.1439375 0.5114375 0.37975s-0.0735 0.4746875 -0.300125 0.5635c-0.888125 0.349125 -1.855875 0.5420625 -2.8665 0.5420625 -4.330375 0 -7.84 -3.509625 -7.84 -7.84Zm11.496625 -3.632125c0.1071875 -0.2174375 0.4195625 -0.2174375 0.52675 0l0.9646875 1.953875c0.042875 0.08575 0.1255625 0.147 0.2205 0.1623125l2.156 0.312375c0.2419375 0.0336875 0.336875 0.33075 0.1623125 0.50225l-1.5588125 1.519c-0.0704375 0.067375 -0.1010625 0.165375 -0.08575 0.2603125l0.3675 2.1468125c0.0398125 0.238875 -0.2113125 0.422625 -0.4256875 0.3093125l-1.929375 -1.0136875c-0.08575 -0.0459375 -0.1868125 -0.0459375 -0.2725625 0l-1.929375 1.0136875c-0.214375 0.1133125 -0.4685625 -0.0704375 -0.4256875 -0.3093125l0.3675 -2.1468125c0.0153125 -0.0949375 -0.0153125 -0.1929375 -0.08575 -0.2603125l-1.55575 -1.519c-0.1745625 -0.1715 -0.079625 -0.4655 0.1623125 -0.50225l2.156 -0.312375c0.0949375 -0.0153125 0.177625 -0.0735 0.2205 -0.1623125l0.9646875 -1.953875Z" />
-                          </svg>
-                          <span
-                            style={{
-                              fontFamily: 'var(--font-display)',
-                              fontSize: 13,
-                              fontWeight: 500,
-                              color: profile.halal ? '#10B981' : 'var(--text-disabled)',
-                              transition: 'color 0.2s ease',
-                            }}
-                          >
-                            {t.profile.halalLabel}
-                          </span>
-                        </div>
-                        {DIET_GOALS.map((d) => {
-                          const a = profile.dietGoals.includes(d.id)
-                          return (
-                            <div
-                              key={d.id}
-                              className="pref-chip"
-                              onClick={() => toggleDiet(d.id)}
-                              style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 7,
-                                padding: '8px 14px',
-                                borderRadius: 14,
-                                background: a ? 'rgba(124,58,237,0.2)' : 'var(--glass-subtle)',
-                                border: `1px solid ${a ? 'rgba(124,58,237,0.4)' : 'var(--glass-soft-border)'}`,
-                              }}
-                            >
-                              <DietIcon name={d.icon} size={24} />
-                              <span
-                                style={{
-                                  fontFamily: 'var(--font-display)',
-                                  fontSize: 13,
-                                  fontWeight: 500,
-                                  color: a ? 'var(--primary)' : 'var(--text-disabled)',
-                                }}
-                              >
-                                {tr(d.label)}
-                              </span>
-                            </div>
-                          )
-                        })}
-                      </div>
-                    </div>
-
+          {/* ── STATS TABS (favorites / preferences / history) ── */}
+          <div style={{ padding: '14px 20px 24px' }}>
+            <ProfileStatsTabs
+              activeTab={activeTab}
+              onTabChange={setActiveTab}
+              favoritesCount={favoritesCount}
+              scanCount={scanCount}
+              preferencesCount={totalPref}
+              topFavorites={topFavorites}
+              topHistory={topHistory}
+              loadingTab={loadingTab}
+              onViewAllFavorites={() =>
+                navigate(buildHistoryPath(currentStore?.slug || null, 'favorites'))
+              }
+              onViewAllHistory={() =>
+                navigate(buildHistoryPath(currentStore?.slug || null, 'history'))
+              }
+              t={t}
+              preferencesContent={
+                <>
+                  {/* Diet */}
+                  <div style={{ marginBottom: 20 }}>
                     <div
-                      style={{
-                        height: 1,
-                        background: 'var(--glass-soft-border)',
-                        margin: '0 0 20px',
-                      }}
-                    />
-
-                    {/* Allergens */}
-                    <div>
+                      style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}
+                    >
                       <div
-                        style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}
+                        style={{
+                          width: 6,
+                          height: 6,
+                          borderRadius: '50%',
+                          background: '#34D399',
+                        }}
+                      />
+                      <span
+                        style={{
+                          fontFamily: 'var(--font-display)',
+                          fontSize: 13,
+                          fontWeight: 600,
+                          color: '#34D399',
+                          textTransform: 'uppercase',
+                          letterSpacing: 1,
+                        }}
                       >
-                        <div
+                        {t.profile.diet}
+                      </span>
+                    </div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                      <div
+                        className="pref-chip"
+                        onClick={() => setProfile((p) => ({ ...p, halal: !p.halal }))}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 7,
+                          padding: '8px 14px',
+                          borderRadius: 14,
+                          background: profile.halal
+                            ? 'rgba(124,58,237,0.2)'
+                            : 'var(--glass-subtle)',
+                          border: `1px solid ${profile.halal ? 'rgba(124,58,237,0.4)' : 'var(--glass-soft-border)'}`,
+                        }}
+                      >
+                        <svg
+                          width="24"
+                          viewBox="0 0 16 16"
+                          fill="currentColor"
                           style={{
-                            width: 6,
-                            height: 6,
-                            borderRadius: '50%',
-                            background: '#F87171',
+                            transition: 'opacity 0.2s ease',
+                            opacity: profile.halal ? 1 : 0.3,
                           }}
-                        />
+                        >
+                          <path d="M0.191809375 8c0 -4.330375 3.509625 -7.84 7.84 -7.84 1.010625 0 1.978375 0.1929375 2.8665 0.5420625 0.226625 0.0888125 0.3521875 0.3276875 0.300125 0.5635s-0.2695 0.398125 -0.5114375 0.37975c-0.147 -0.0091875 -0.2970625 -0.0153125 -0.447125 -0.0153125 -3.5188125 0 -6.37 2.8511875 -6.37 6.37s2.8511875 6.37 6.37 6.37c0.1500625 0 0.300125 -0.006125 0.447125 -0.0153125 0.2419375 -0.0153125 0.459375 0.1439375 0.5114375 0.37975s-0.0735 0.4746875 -0.300125 0.5635c-0.888125 0.349125 -1.855875 0.5420625 -2.8665 0.5420625 -4.330375 0 -7.84 -3.509625 -7.84 -7.84Zm11.496625 -3.632125c0.1071875 -0.2174375 0.4195625 -0.2174375 0.52675 0l0.9646875 1.953875c0.042875 0.08575 0.1255625 0.147 0.2205 0.1623125l2.156 0.312375c0.2419375 0.0336875 0.336875 0.33075 0.1623125 0.50225l-1.5588125 1.519c-0.0704375 0.067375 -0.1010625 0.165375 -0.08575 0.2603125l0.3675 2.1468125c0.0398125 0.238875 -0.2113125 0.422625 -0.4256875 0.3093125l-1.929375 -1.0136875c-0.08575 -0.0459375 -0.1868125 -0.0459375 -0.2725625 0l-1.929375 1.0136875c-0.214375 0.1133125 -0.4685625 -0.0704375 -0.4256875 -0.3093125l0.3675 -2.1468125c0.0153125 -0.0949375 -0.0153125 -0.1929375 -0.08575 -0.2603125l-1.55575 -1.519c-0.1745625 -0.1715 -0.079625 -0.4655 0.1623125 -0.50225l2.156 -0.312375c0.0949375 -0.0153125 0.177625 -0.0735 0.2205 -0.1623125l0.9646875 -1.953875Z" />
+                        </svg>
                         <span
                           style={{
                             fontFamily: 'var(--font-display)',
                             fontSize: 13,
-                            fontWeight: 600,
-                            color: '#F87171',
-                            textTransform: 'uppercase',
-                            letterSpacing: 1,
+                            fontWeight: 500,
+                            color: profile.halal ? '#10B981' : 'var(--text-disabled)',
+                            transition: 'color 0.2s ease',
                           }}
                         >
-                          {t.profile.allergens}
+                          {t.profile.halalLabel}
                         </span>
                       </div>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 14 }}>
-                        {ALLERGENS.map((al) => {
-                          const a = profile.allergens.includes(al.id)
-                          return (
-                            <div
-                              key={al.id}
-                              className="pref-chip"
-                              onClick={() => toggleAllergen(al.id)}
-                              style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 7,
-                                padding: '8px 12px',
-                                borderRadius: 14,
-                                background: a ? 'rgba(239,68,68,0.15)' : 'var(--glass-subtle)',
-                                border: `1px solid ${a ? 'rgba(239,68,68,0.3)' : 'var(--glass-soft-border)'}`,
-                              }}
-                            >
-                              <DietIcon name={al.icon} size={14} />
-                              <span
-                                style={{
-                                  fontFamily: 'var(--font-display)',
-                                  fontSize: 12,
-                                  fontWeight: 500,
-                                  color: a ? '#EF4444' : 'var(--text-disabled)',
-                                }}
-                              >
-                                {tr(al.label)}
-                              </span>
-                            </div>
-                          )
-                        })}
-                      </div>
-                      <div style={{ display: 'flex', gap: 8 }}>
-                        <input
-                          ref={allergenInputRef}
-                          value={allergenInput}
-                          onChange={(e) => setAllergenInput(e.target.value)}
-                          onKeyDown={(e) => e.key === 'Enter' && addCustom()}
-                          placeholder={t.profile.customPlaceholder}
-                          style={{
-                            flex: 1,
-                            background: 'var(--glass-bg)',
-                            border: '1px solid var(--glass-soft-border)',
-                            borderRadius: 12,
-                            padding: '10px 14px',
-                            color: 'var(--text)',
-                            fontSize: 12,
-                            fontFamily: 'var(--font-display)',
-                            outline: 'none',
-                          }}
-                        />
-                        <button
-                          onClick={addCustom}
-                          style={{
-                            padding: '10px 14px',
-                            borderRadius: 12,
-                            background: 'var(--primary)',
-                            border: 'none',
-                            color: '#fff',
-                            fontSize: 12,
-                            fontWeight: 600,
-                            fontFamily: 'var(--font-display)',
-                            cursor: 'pointer',
-                          }}
-                        >
-                          {t.profile.add}
-                        </button>
-                      </div>
-                      {profile.customAllergens.length > 0 && (
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 10 }}>
-                          {profile.customAllergens.map((val) => (
+                      {DIET_GOALS.map((d) => {
+                        const a = profile.dietGoals.includes(d.id)
+                        return (
+                          <div
+                            key={d.id}
+                            className="pref-chip"
+                            onClick={() => toggleDiet(d.id)}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 7,
+                              padding: '8px 14px',
+                              borderRadius: 14,
+                              background: a ? 'rgba(124,58,237,0.2)' : 'var(--glass-subtle)',
+                              border: `1px solid ${a ? 'rgba(124,58,237,0.4)' : 'var(--glass-soft-border)'}`,
+                            }}
+                          >
+                            <DietIcon name={d.icon} size={24} />
                             <span
-                              key={val}
                               style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: 5,
-                                padding: '5px 10px',
-                                borderRadius: 12,
-                                background: 'rgba(239,68,68,0.1)',
-                                color: '#FCA5A5',
-                                border: '1px solid rgba(239,68,68,0.2)',
-                                fontSize: 11,
                                 fontFamily: 'var(--font-display)',
+                                fontSize: 13,
+                                fontWeight: 500,
+                                color: a ? 'var(--primary)' : 'var(--text-disabled)',
                               }}
                             >
-                              {val}
-                              <span
-                                onClick={() => removeCustom(val)}
-                                style={{
-                                  cursor: 'pointer',
-                                  fontSize: 14,
-                                  lineHeight: 1,
-                                  opacity: 0.6,
-                                }}
-                              >
-                                ×
-                              </span>
+                              {tr(d.label)}
                             </span>
-                          ))}
-                        </div>
-                      )}
+                          </div>
+                        )
+                      })}
                     </div>
                   </div>
-                )}
 
-                {activeTab === 'favorites' && (
-                  <div className="tab-content" key="favorites">
-                    {loadingTab === 'favorites' && topFavorites === null ? (
-                      <div className="tab-loading">…</div>
-                    ) : topFavorites && topFavorites.length > 0 ? (
-                      <>
-                        <div className="mini-grid">
-                          {topFavorites.map((p) => (
-                            <ProductMiniCard key={p.ean || p.id} product={p} />
-                          ))}
-                        </div>
-                        {favoritesCount > topFavorites.length && (
-                          <button
-                            type="button"
-                            className="view-all-btn"
-                            onClick={() =>
-                              navigate(buildHistoryPath(currentStore?.slug || null, 'favorites'))
-                            }
-                          >
-                            {t.profile.viewAll}
-                            <svg
-                              width="16"
-                              height="16"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2.2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            >
-                              <path d="M9 18l6-6-6-6" />
-                            </svg>
-                          </button>
-                        )}
-                      </>
-                    ) : (
-                      <TabEmptyState
-                        tone="favorites"
-                        title={t.profile.favoritesEmpty}
-                        hint={t.profile.favoritesEmptyHint}
+                  <div
+                    style={{
+                      height: 1,
+                      background: 'var(--glass-soft-border)',
+                      margin: '0 0 20px',
+                    }}
+                  />
+
+                  {/* Allergens */}
+                  <div>
+                    <div
+                      style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}
+                    >
+                      <div
+                        style={{
+                          width: 6,
+                          height: 6,
+                          borderRadius: '50%',
+                          background: '#F87171',
+                        }}
                       />
+                      <span
+                        style={{
+                          fontFamily: 'var(--font-display)',
+                          fontSize: 13,
+                          fontWeight: 600,
+                          color: '#F87171',
+                          textTransform: 'uppercase',
+                          letterSpacing: 1,
+                        }}
+                      >
+                        {t.profile.allergens}
+                      </span>
+                    </div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 14 }}>
+                      {ALLERGENS.map((al) => {
+                        const a = profile.allergens.includes(al.id)
+                        return (
+                          <div
+                            key={al.id}
+                            className="pref-chip"
+                            onClick={() => toggleAllergen(al.id)}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 7,
+                              padding: '8px 12px',
+                              borderRadius: 14,
+                              background: a ? 'rgba(239,68,68,0.15)' : 'var(--glass-subtle)',
+                              border: `1px solid ${a ? 'rgba(239,68,68,0.3)' : 'var(--glass-soft-border)'}`,
+                            }}
+                          >
+                            <DietIcon name={al.icon} size={14} />
+                            <span
+                              style={{
+                                fontFamily: 'var(--font-display)',
+                                fontSize: 12,
+                                fontWeight: 500,
+                                color: a ? '#EF4444' : 'var(--text-disabled)',
+                              }}
+                            >
+                              {tr(al.label)}
+                            </span>
+                          </div>
+                        )
+                      })}
+                    </div>
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      <input
+                        ref={allergenInputRef}
+                        value={allergenInput}
+                        onChange={(e) => setAllergenInput(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && addCustom()}
+                        placeholder={t.profile.customPlaceholder}
+                        style={{
+                          flex: 1,
+                          background: 'var(--glass-bg)',
+                          border: '1px solid var(--glass-soft-border)',
+                          borderRadius: 12,
+                          padding: '10px 14px',
+                          color: 'var(--text)',
+                          fontSize: 12,
+                          fontFamily: 'var(--font-display)',
+                          outline: 'none',
+                        }}
+                      />
+                      <button
+                        onClick={addCustom}
+                        style={{
+                          padding: '10px 14px',
+                          borderRadius: 12,
+                          background: 'var(--primary)',
+                          border: 'none',
+                          color: '#fff',
+                          fontSize: 12,
+                          fontWeight: 600,
+                          fontFamily: 'var(--font-display)',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        {t.profile.add}
+                      </button>
+                    </div>
+                    {profile.customAllergens.length > 0 && (
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 10 }}>
+                        {profile.customAllergens.map((val) => (
+                          <span
+                            key={val}
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: 5,
+                              padding: '5px 10px',
+                              borderRadius: 12,
+                              background: 'rgba(239,68,68,0.1)',
+                              color: '#FCA5A5',
+                              border: '1px solid rgba(239,68,68,0.2)',
+                              fontSize: 11,
+                              fontFamily: 'var(--font-display)',
+                            }}
+                          >
+                            {val}
+                            <span
+                              onClick={() => removeCustom(val)}
+                              style={{
+                                cursor: 'pointer',
+                                fontSize: 14,
+                                lineHeight: 1,
+                                opacity: 0.6,
+                              }}
+                            >
+                              Г—
+                            </span>
+                          </span>
+                        ))}
+                      </div>
                     )}
                   </div>
-                )}
-
-                {activeTab === 'history' && (
-                  <div className="tab-content" key="history">
-                    {loadingTab === 'history' && topHistory === null ? (
-                      <div className="tab-loading">…</div>
-                    ) : topHistory && topHistory.length > 0 ? (
-                      <>
-                        <div className="mini-grid">
-                          {topHistory.map((p) => (
-                            <ProductMiniCard
-                              key={`${p.ean || p.id}-${p.scanDate || ''}`}
-                              product={p}
-                            />
-                          ))}
-                        </div>
-                        {scanCount > topHistory.length && (
-                          <button
-                            type="button"
-                            className="view-all-btn"
-                            onClick={() =>
-                              navigate(buildHistoryPath(currentStore?.slug || null, 'history'))
-                            }
-                          >
-                            {t.profile.viewAll}
-                            <svg
-                              width="16"
-                              height="16"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2.2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            >
-                              <path d="M9 18l6-6-6-6" />
-                            </svg>
-                          </button>
-                        )}
-                      </>
-                    ) : (
-                      <TabEmptyState
-                        tone="history"
-                        title={t.profile.historyEmpty}
-                        hint={t.profile.historyEmptyHint}
-                      />
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
+                </>
+              }
+            />
           </div>
 
           {/* ── SETTINGS ── */}
@@ -1842,7 +1386,7 @@ export default function ProfileScreen() {
                         color: '#38BDF8',
                       }}
                     >
-                      Управление магазином (Beta)
+                      РЈРїСЂР°РІР»РµРЅРёРµ РјР°РіР°Р·РёРЅРѕРј (Beta)
                     </span>
                   </div>
                   <div
@@ -1976,90 +1520,5 @@ export default function ProfileScreen() {
         </div>
       </div>
     </>
-  )
-}
-
-const TAB_EMPTY_STATE_TONES = {
-  favorites: {
-    bg: 'rgba(220,38,38,0.18)',
-    border: 'rgba(248,113,113,0.45)',
-    color: '#F87171',
-    icon: (
-      <svg
-        width="26"
-        height="26"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="#F87171"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
-      </svg>
-    ),
-  },
-  history: {
-    bg: 'rgba(16,185,129,0.18)',
-    border: 'rgba(52,211,153,0.45)',
-    color: '#34D399',
-    icon: (
-      <svg
-        width="26"
-        height="26"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="#34D399"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <path d="M4 8V6a2 2 0 012-2h2" />
-        <path d="M16 4h2a2 2 0 012 2v2" />
-        <path d="M20 16v2a2 2 0 01-2 2h-2" />
-        <path d="M8 20H6a2 2 0 01-2-2v-2" />
-        <line x1="5" y1="12" x2="19" y2="12" strokeWidth="2.5" />
-      </svg>
-    ),
-  },
-}
-
-function TabEmptyState({ tone, title, hint }) {
-  const cfg = TAB_EMPTY_STATE_TONES[tone] || TAB_EMPTY_STATE_TONES.favorites
-  return (
-    <div style={{ textAlign: 'center', padding: '6px 4px' }}>
-      <div
-        className="empty-state-icon"
-        style={{
-          background: cfg.bg,
-          border: `2px solid ${cfg.border}`,
-          boxShadow: `0 6px 20px ${cfg.bg}`,
-        }}
-      >
-        {cfg.icon}
-      </div>
-      <div
-        style={{
-          fontFamily: 'var(--font-display)',
-          fontSize: 14,
-          fontWeight: 600,
-          color: 'var(--text)',
-          marginBottom: 4,
-        }}
-      >
-        {title}
-      </div>
-      <div
-        style={{
-          fontFamily: 'var(--font-display)',
-          fontSize: 12,
-          color: 'var(--text-dim)',
-          fontWeight: 400,
-          lineHeight: 1.4,
-        }}
-      >
-        {hint}
-      </div>
-    </div>
   )
 }
