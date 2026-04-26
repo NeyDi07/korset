@@ -10,6 +10,7 @@ export default function RetailBottomNav() {
 
   const getActive = () => {
     if (pathname.includes('/products')) return 'products'
+    if (pathname.includes('/import')) return 'import'
     if (pathname.includes('/settings')) return 'settings'
     return 'dashboard'
   }
@@ -32,6 +33,12 @@ export default function RetailBottomNav() {
       icon: 'shopping_bag',
     },
     {
+      id: 'import',
+      label: t.retail.nav.import,
+      path: `/retail/${storeSlug}/import`,
+      icon: 'upload_file',
+    },
+    {
       id: 'settings',
       label: t.retail.nav.settings,
       path: `/retail/${storeSlug}/settings`,
@@ -48,7 +55,7 @@ export default function RetailBottomNav() {
         right: 0,
         zIndex: 100,
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr 1fr',
+        gridTemplateColumns: '1fr 1fr 1fr 1fr',
         alignItems: 'end',
         columnGap: 4,
         padding: `8px 8px calc(12px + env(safe-area-inset-bottom, 0px))`,
