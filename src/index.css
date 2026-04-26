@@ -799,105 +799,9 @@ body {
   transform: translateX(18px);
 }
 
-.theme-toggle {
-  width: 102px;
-  height: 44px;
-  border: 1px solid var(--theme-toggle-border);
-  border-radius: 999px;
-  background:
-    linear-gradient(145deg, var(--theme-toggle-track), rgba(255, 255, 255, 0.02)),
-    var(--glass-bg);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.26),
-    inset 0 -12px 28px rgba(15, 23, 42, 0.1),
-    var(--shadow-glass);
-  backdrop-filter: blur(18px) saturate(1.2);
-  -webkit-backdrop-filter: blur(18px) saturate(1.2);
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  padding: 0;
-  flex-shrink: 0;
-}
-
-.theme-toggle::before {
-  content: '';
-  position: absolute;
-  inset: 3px;
-  border-radius: inherit;
-  background:
-    radial-gradient(circle at 22% 50%, rgba(255, 196, 0, 0.24), transparent 32%),
-    radial-gradient(circle at 78% 50%, rgba(105, 167, 255, 0.24), transparent 34%);
-  opacity: 0.8;
-  transition: opacity 0.34s ease;
-}
-
-.theme-toggle__thumb {
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  width: 52px;
-  height: 36px;
-  border-radius: 999px;
-  background: var(--theme-toggle-thumb);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.46),
-    inset 0 -14px 24px rgba(15, 23, 42, 0.1),
-    0 12px 28px rgba(31, 41, 65, 0.24);
-  transition:
-    transform 0.46s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.34s ease,
-    background 0.34s ease;
-}
-
-.theme-toggle.is-dark .theme-toggle__thumb {
-  transform: translateX(42px);
-}
-
-.theme-toggle__icon {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 23px;
-  height: 23px;
-  display: grid;
-  place-items: center;
-  z-index: 2;
-  transition:
-    opacity 0.3s ease,
-    transform 0.38s cubic-bezier(0.22, 1, 0.36, 1),
-    color 0.3s ease;
-}
-
-.theme-toggle__icon.sun {
-  left: 18px;
-  color: var(--theme-toggle-icon-a);
-}
-
-.theme-toggle__icon.moon {
-  right: 18px;
-  color: var(--theme-toggle-icon-b);
-}
-
-.theme-toggle.is-light .theme-toggle__icon.sun,
-.theme-toggle.is-dark .theme-toggle__icon.moon {
-  opacity: 1;
-  transform: translateY(-50%) scale(1.05);
-}
-
-.theme-toggle.is-light .theme-toggle__icon.moon,
-.theme-toggle.is-dark .theme-toggle__icon.sun {
-  opacity: 0.42;
-  transform: translateY(-50%) scale(0.82);
-}
-
-.theme-toggle:active .theme-toggle__thumb {
-  transform: scaleX(1.08);
-}
-
-.theme-toggle.is-dark:active .theme-toggle__thumb {
-  transform: translateX(42px) scaleX(1.08);
-}
+/* (Old .theme-toggle pill styles removed — replaced by SegmentedToggle
+ * React component which carries its own inline styles + sliding thumb
+ * animation. Theme tokens above are kept for any future use.) */
 
 /* ─── Tags ────────────────────────────────────────── */
 .tag-grid {
@@ -1327,36 +1231,38 @@ body {
   }
 }
 
+/* Soft on-screen "sweep" overlay that fades in/out during a theme change.
+ * Lower opacity (0.55 → 0.32 max) and shorter duration than before so the
+ * transition feels gentle rather than flashy. */
 .theme-transition body::before {
   content: '';
   position: fixed;
   inset: 0;
   z-index: 9998;
   pointer-events: none;
-  background:
-    radial-gradient(circle at 50% 50%, var(--theme-sweep), transparent 42%),
-    linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.18) 46%, transparent 68%);
+  background: radial-gradient(circle at 50% 50%, var(--theme-sweep), transparent 55%);
   opacity: 0;
-  animation: themeSweep 0.78s cubic-bezier(0.22, 1, 0.36, 1);
+  animation: themeSweep 0.62s cubic-bezier(0.22, 1, 0.36, 1);
+  mix-blend-mode: plus-lighter;
 }
 
+/* Universal smooth transition during theme swap — applies to every
+ * element so colours, borders, and shadows fade together rather than
+ * snapping individually. The previous version used !important + 0.42s,
+ * which made the page look "stuck" mid-flip on lower-end phones; 0.34s
+ * is the sweet spot between "instant" and "sluggish" per testing. */
 .theme-transition *,
 .theme-transition *::before,
 .theme-transition *::after {
   transition:
-    background-color 0.42s ease,
-    background 0.42s ease,
-    border-color 0.42s ease,
-    color 0.34s ease,
-    box-shadow 0.42s ease,
-    opacity 0.3s ease !important;
-}
-
-.theme-transition .theme-toggle__thumb {
-  transition:
-    transform 0.46s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.34s ease,
+    background 0.34s ease,
+    border-color 0.34s ease,
+    color 0.28s ease,
+    fill 0.28s ease,
+    stroke 0.28s ease,
     box-shadow 0.34s ease,
-    background 0.34s ease !important;
+    opacity 0.26s ease;
 }
 
 @media (prefers-reduced-motion: reduce) {
