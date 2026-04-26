@@ -600,9 +600,43 @@ export default function ProfileScreen() {
             )}
           </div>
 
-          {/* ── BANNER CARD (background image + avatar + name overlay) ── */}
+          {/* ── BANNER CARD (background image + avatar + name overlay) ──
+            For GUESTS we deliberately do NOT show the colourful preset
+            banner: it would suggest the slot is already filled. Instead we
+            render a neutral, slightly textured gradient with a "sign in to
+            set a banner" hint, and make the entire card a button that
+            navigates to /auth. Avatar slot behaves the same way. This is a
+            deliberate hook — the visual void invites the user to register. */}
           <div style={{ padding: '0 16px 0' }}>
             <div
+              role={user ? undefined : 'button'}
+              tabIndex={user ? undefined : 0}
+              onClick={
+                user
+                  ? undefined
+                  : () =>
+                      navigate('/auth', {
+                        state: buildAuthNavigateState(location, {
+                          reason: 'profile_required',
+                          message: t.profile.authRequiredMsg,
+                        }),
+                      })
+              }
+              onKeyDown={
+                user
+                  ? undefined
+                  : (e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        navigate('/auth', {
+                          state: buildAuthNavigateState(location, {
+                            reason: 'profile_required',
+                            message: t.profile.authRequiredMsg,
+                          }),
+                        })
+                      }
+                    }
+              }
               style={{
                 position: 'relative',
                 width: '100%',
@@ -611,33 +645,57 @@ export default function ProfileScreen() {
                 minHeight: 190,
                 borderRadius: 24,
                 overflow: 'hidden',
-                background: 'linear-gradient(135deg, #1E0A3C 0%, #6D28D9 100%)',
-                boxShadow: '0 12px 40px rgba(0,0,0,0.35)',
+                background: user
+                  ? 'linear-gradient(135deg, #1E0A3C 0%, #6D28D9 100%)'
+                  : 'linear-gradient(135deg, var(--glass-bg) 0%, var(--glass-subtle) 100%)',
+                boxShadow: user ? '0 12px 40px rgba(0,0,0,0.35)' : '0 8px 24px rgba(0,0,0,0.18)',
+                border: user ? 'none' : '1px solid var(--glass-soft-border)',
+                cursor: user ? 'default' : 'pointer',
               }}
             >
-              <img
-                src={resolveBannerSrc(bannerUrl || user?.user_metadata?.banner_url || null)}
-                alt=""
-                aria-hidden="true"
-                style={{
-                  position: 'absolute',
-                  inset: 0,
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                  pointerEvents: 'none',
-                }}
-              />
-              {/* Bottom gradient for legibility */}
-              <div
-                style={{
-                  position: 'absolute',
-                  inset: 0,
-                  background: 'linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.55) 100%)',
-                  pointerEvents: 'none',
-                }}
-              />
-              {/* Avatar вЂ” centered, raised toward upper area */}
+              {user ? (
+                <>
+                  <img
+                    src={resolveBannerSrc(bannerUrl || user?.user_metadata?.banner_url || null)}
+                    alt=""
+                    aria-hidden="true"
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      pointerEvents: 'none',
+                    }}
+                  />
+                  {/* Bottom gradient for legibility */}
+                  <div
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      background:
+                        'linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.55) 100%)',
+                      pointerEvents: 'none',
+                    }}
+                  />
+                </>
+              ) : (
+                /* Subtle diagonal-stripe texture so the placeholder doesn't
+                   read as "broken" or "loading", but as "intentionally
+                   empty, click to fill". */
+                <div
+                  aria-hidden="true"
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    backgroundImage:
+                      'repeating-linear-gradient(135deg, transparent 0px, transparent 14px, rgba(255,255,255,0.025) 14px, rgba(255,255,255,0.025) 28px)',
+                    pointerEvents: 'none',
+                  }}
+                />
+              )}
+
+              {/* Avatar — centered, raised toward upper area */}
               <div
                 style={{
                   position: 'absolute',
@@ -647,11 +705,12 @@ export default function ProfileScreen() {
                   width: 115,
                   height: 115,
                   borderRadius: '50%',
-                  border: '3px solid #7C3AED',
+                  border: user ? '3px solid #7C3AED' : '2px dashed var(--glass-border)',
                   padding: 3,
-                  background: 'rgba(12,10,30,0.55)',
-                  boxShadow:
-                    '0 6px 24px rgba(124,58,237,0.45), inset 0 0 14px rgba(124,58,237,0.18)',
+                  background: user ? 'rgba(12,10,30,0.55)' : 'var(--glass-subtle)',
+                  boxShadow: user
+                    ? '0 6px 24px rgba(124,58,237,0.45), inset 0 0 14px rgba(124,58,237,0.18)'
+                    : 'none',
                   boxSizing: 'border-box',
                 }}
               >
@@ -667,19 +726,22 @@ export default function ProfileScreen() {
                       width: '100%',
                       height: '100%',
                       borderRadius: '50%',
-                      background: '#7C3AED',
+                      background: 'transparent',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
+                      color: 'var(--text-dim)',
                     }}
+                    aria-label={t.profile.guestAvatarHint}
+                    title={t.profile.guestAvatarHint}
                   >
                     <svg
-                      width="50"
-                      height="50"
+                      width="46"
+                      height="46"
                       viewBox="0 0 24 24"
                       fill="none"
-                      stroke="#fff"
-                      strokeWidth="1.5"
+                      stroke="currentColor"
+                      strokeWidth="1.6"
                       strokeLinecap="round"
                       strokeLinejoin="round"
                     >
@@ -689,7 +751,7 @@ export default function ProfileScreen() {
                   </div>
                 )}
               </div>
-              {/* Name pill вЂ” bottom center */}
+              {/* Name pill — bottom center */}
               <div
                 style={{
                   position: 'absolute',
@@ -727,33 +789,43 @@ export default function ProfileScreen() {
                     {displayName || user?.user_metadata?.full_name || 'Körset User'}
                   </div>
                 ) : (
-                  <button
-                    onClick={() =>
-                      navigate('/auth', {
-                        state: buildAuthNavigateState(location, {
-                          reason: 'profile_required',
-                          message: t.profile.authRequiredMsg,
-                        }),
-                      })
-                    }
+                  /* Non-interactive hint pill — the surrounding banner card
+                     itself is the button (see role="button" above), so we
+                     don't double up clickable areas. The pill explains why
+                     the banner is empty. */
+                  <div
                     style={{
-                      pointerEvents: 'auto',
-                      background: 'rgba(15,10,30,0.65)',
-                      border: '1px solid rgba(255,255,255,0.18)',
-                      color: '#fff',
+                      pointerEvents: 'none',
+                      background: 'var(--glass-bg)',
+                      border: '1px solid var(--glass-soft-border)',
+                      color: 'var(--text-sub)',
                       fontSize: 13,
                       fontFamily: 'var(--font-display)',
-                      fontWeight: 600,
-                      padding: '9px 22px',
+                      fontWeight: 500,
+                      padding: '8px 16px',
                       borderRadius: 12,
-                      cursor: 'pointer',
-                      letterSpacing: 0.5,
-                      backdropFilter: 'blur(6px)',
-                      WebkitBackdropFilter: 'blur(6px)',
+                      letterSpacing: 0.2,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 8,
                     }}
                   >
-                    {t.profile.loginBtn}
-                  </button>
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      aria-hidden="true"
+                    >
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                      <path d="M7 11V7a5 5 0 0110 0v4" />
+                    </svg>
+                    {t.profile.guestBannerHint}
+                  </div>
                 )}
               </div>
             </div>

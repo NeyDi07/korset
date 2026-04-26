@@ -270,6 +270,8 @@ export const dictionaries = {
       authRequiredPDataMsg:
         'Сначала войдите в аккаунт, чтобы видеть и редактировать личные данные.',
       loginBtn: 'Войти в аккаунт',
+      guestBannerHint: 'Войдите, чтобы поставить баннер',
+      guestAvatarHint: 'Войдите, чтобы выбрать аватар',
       sectionMain: 'Основное',
       sectionPersonal: 'Личные данные',
       sectionNotifications: 'Уведомления',
@@ -847,6 +849,8 @@ export const dictionaries = {
       authRequiredMsg: 'Профиль баптауларын пайдалану үшін аккаунтқа кіріңіз.',
       authRequiredPDataMsg: 'Жеке деректерді көру және өзгерту үшін аккаунтқа кіріңіз.',
       loginBtn: 'Аккаунтқа кіру',
+      guestBannerHint: 'Баннер қою үшін кіріңіз',
+      guestAvatarHint: 'Аватар таңдау үшін кіріңіз',
       sectionMain: 'Негізгі',
       sectionPersonal: 'Жеке деректер',
       sectionNotifications: 'Хабарландырулар',

@@ -131,8 +131,16 @@
   z-index: 3;
 }
 
+/*
+ * IMPORTANT: We use FIXED px sizes plus media queries instead of clamp() with
+ * `vw` units. Firefox includes the scrollbar width when computing `vw`, while
+ * Chromium does not — this causes typography to render visibly smaller in
+ * Firefox at the same viewport width. Fixed px values render identically in
+ * every engine. The trade-off (no fluid scaling between breakpoints) is fine
+ * here because we only have a couple of breakpoints to support.
+ */
 .stat-card__value {
-  font-size: clamp(38px, 13vw, 52px);
+  font-size: 46px;
   font-weight: 700;
   line-height: 1;
   color: var(--text);
@@ -142,7 +150,7 @@
 }
 
 .stat-card__label {
-  font-size: clamp(12px, 3.3vw, 14px);
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-sub);
   letter-spacing: 0.2px;
@@ -154,6 +162,18 @@
   margin-top: 2px;
 }
 
+/* Smaller phones (≤360px width — iPhone SE, older Androids): scale down a
+ * bit so the big number still fits without ellipsis on narrow viewports. */
+@media (max-width: 360px) {
+  .stat-card__value {
+    font-size: 40px;
+  }
+  .stat-card__label {
+    font-size: 12px;
+  }
+}
+
+/* Tablets and up: bigger, more impactful. */
 @media (min-width: 600px) {
   .stat-card {
     padding: 36px 12px 20px;
@@ -164,6 +184,9 @@
     width: 58px;
     height: 58px;
     top: -26px;
+  }
+  .stat-card__value {
+    font-size: 56px;
   }
   .stat-card__label {
     font-size: 15px;
