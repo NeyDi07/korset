@@ -46,7 +46,7 @@ export default function StorePublicScreen() {
             width: 28,
             height: 28,
             border: '3px solid rgba(56,189,248,0.15)',
-            borderTop: '3px solid #38BDF8',
+            borderTop: '3px solid var(--accent-sky)',
             borderRadius: '50%',
             animation: 'spin 0.8s linear infinite',
           }}
@@ -71,9 +71,9 @@ export default function StorePublicScreen() {
             width: 40,
             height: 40,
             borderRadius: 12,
-            background: 'rgba(255,255,255,0.05)',
-            border: '1px solid rgba(255,255,255,0.08)',
-            color: '#fff',
+            background: 'var(--glass-bg)',
+            border: '1px solid var(--glass-soft-border)',
+            color: 'var(--text)',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
@@ -98,7 +98,7 @@ export default function StorePublicScreen() {
                 borderRadius: 22,
                 objectFit: 'cover',
                 flexShrink: 0,
-                boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
+                boxShadow: 'var(--shadow-card)',
               }}
             />
           ) : (
@@ -108,13 +108,13 @@ export default function StorePublicScreen() {
                 height: 80,
                 borderRadius: 22,
                 background: 'linear-gradient(135deg, rgba(56,189,248,0.25), rgba(124,58,237,0.25))',
-                border: '1px solid rgba(56,189,248,0.2)',
+                border: '1px solid var(--accent-sky-border)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontSize: 30,
                 fontWeight: 800,
-                color: '#fff',
+                color: 'var(--text-inverse)',
                 fontFamily: 'var(--font-display)',
                 flexShrink: 0,
               }}
@@ -127,7 +127,7 @@ export default function StorePublicScreen() {
               style={{
                 fontSize: 11,
                 fontWeight: 700,
-                color: 'rgba(167,139,250,0.7)',
+                color: 'var(--primary-bright)',
                 letterSpacing: '0.1em',
                 textTransform: 'uppercase',
                 marginBottom: 4,
@@ -140,7 +140,7 @@ export default function StorePublicScreen() {
                 fontFamily: 'var(--font-display)',
                 fontSize: 26,
                 fontWeight: 900,
-                color: '#fff',
+                color: 'var(--text)',
                 lineHeight: 1.15,
                 margin: '0 0 6px',
               }}
@@ -151,7 +151,7 @@ export default function StorePublicScreen() {
               <div
                 style={{
                   fontSize: 13,
-                  color: 'rgba(180,180,210,0.6)',
+                  color: 'var(--text-dim)',
                   display: 'flex',
                   alignItems: 'center',
                   gap: 4,
@@ -167,7 +167,7 @@ export default function StorePublicScreen() {
               <div
                 style={{
                   fontSize: 13,
-                  color: 'rgba(180,180,210,0.7)',
+                  color: 'var(--text-soft)',
                   marginTop: 6,
                   lineHeight: 1.5,
                 }}
@@ -182,8 +182,8 @@ export default function StorePublicScreen() {
         {hasDescription && (
           <div
             style={{
-              background: 'rgba(255,255,255,0.03)',
-              border: '1px solid rgba(255,255,255,0.08)',
+              background: 'var(--glass-subtle)',
+              border: '1px solid var(--glass-soft-border)',
               borderRadius: 16,
               overflow: 'hidden',
             }}
@@ -199,13 +199,13 @@ export default function StorePublicScreen() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                color: '#fff',
+                color: 'var(--text)',
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <span
                   className="material-symbols-outlined"
-                  style={{ fontSize: 18, color: '#A78BFA' }}
+                  style={{ fontSize: 18, color: 'var(--primary-bright)' }}
                 >
                   description
                 </span>
@@ -230,9 +230,9 @@ export default function StorePublicScreen() {
                 style={{
                   padding: '0 16px 16px',
                   fontSize: 14,
-                  color: 'rgba(180,180,210,0.8)',
+                  color: 'var(--text-soft)',
                   lineHeight: 1.65,
-                  borderTop: '1px solid rgba(255,255,255,0.05)',
+                  borderTop: '1px solid var(--line-soft)',
                 }}
               >
                 <div style={{ paddingTop: 12 }}>{store.description || store.short_description}</div>
@@ -245,8 +245,8 @@ export default function StorePublicScreen() {
         {hasContacts && (
           <div
             style={{
-              background: 'rgba(255,255,255,0.03)',
-              border: '1px solid rgba(255,255,255,0.08)',
+              background: 'var(--glass-subtle)',
+              border: '1px solid var(--glass-soft-border)',
               borderRadius: 16,
               overflow: 'hidden',
             }}
@@ -259,7 +259,7 @@ export default function StorePublicScreen() {
                 color: 'var(--text-dim)',
                 textTransform: 'uppercase',
                 letterSpacing: 1,
-                borderBottom: '1px solid rgba(255,255,255,0.05)',
+                borderBottom: '1px solid var(--line-soft)',
               }}
             >
               {isKz ? 'Байланыс' : 'Контакты'}
@@ -305,7 +305,7 @@ export default function StorePublicScreen() {
                     <div
                       style={{
                         fontSize: 13,
-                        color: '#fff',
+                        color: 'var(--text)',
                         fontWeight: 500,
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
@@ -323,9 +323,7 @@ export default function StorePublicScreen() {
                   </span>
                 </a>
                 {i < arr.length - 1 && (
-                  <div
-                    style={{ height: 1, background: 'rgba(255,255,255,0.05)', margin: '0 16px' }}
-                  />
+                  <div style={{ height: 1, background: 'var(--line-soft)', margin: '0 16px' }} />
                 )}
               </div>
             ))}
@@ -337,18 +335,18 @@ export default function StorePublicScreen() {
           style={{
             padding: '16px 18px',
             borderRadius: 18,
-            background: 'rgba(255,255,255,0.03)',
-            border: '1px solid rgba(255,255,255,0.07)',
+            background: 'var(--glass-subtle)',
+            border: '1px solid var(--glass-soft-border)',
           }}
         >
-          <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', marginBottom: 8 }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text)', marginBottom: 8 }}>
             {isKz ? 'Körset осы дүкенде не істей алады' : 'Что умеет Körset в этом магазине'}
           </div>
           <ul
             style={{
               margin: 0,
               paddingLeft: 18,
-              color: 'rgba(210,210,240,0.7)',
+              color: 'var(--text-soft)',
               fontSize: 13,
               lineHeight: 1.7,
             }}
@@ -379,7 +377,7 @@ export default function StorePublicScreen() {
             cursor: 'pointer',
             background: 'linear-gradient(135deg, rgba(124,58,237,0.22), rgba(109,40,217,0.1))',
             border: '1.5px solid rgba(124,58,237,0.4)',
-            color: '#fff',
+            color: 'var(--text)',
             fontSize: 16,
             fontWeight: 700,
           }}
@@ -397,9 +395,9 @@ export default function StorePublicScreen() {
             padding: '16px',
             borderRadius: 18,
             cursor: 'pointer',
-            background: 'rgba(255,255,255,0.04)',
-            border: '1px solid rgba(255,255,255,0.09)',
-            color: '#E9D5FF',
+            background: 'var(--glass-muted)',
+            border: '1px solid var(--glass-border)',
+            color: 'var(--primary-bright)',
             fontSize: 14,
             fontWeight: 600,
           }}

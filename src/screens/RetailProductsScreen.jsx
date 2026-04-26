@@ -70,8 +70,8 @@ function SkeletonRow() {
         alignItems: 'center',
         gap: 12,
         padding: '14px 16px',
-        background: 'rgba(255,255,255,0.02)',
-        border: '1px solid rgba(255,255,255,0.05)',
+        background: 'var(--glass-subtle)',
+        border: '1px solid var(--line-soft)',
         borderRadius: 18,
       }}
     >
@@ -172,7 +172,7 @@ function PriceField({ productId, initialPrice, p, priceMutation }) {
   }
   const stateLabel = { idle: null, saving: p.saving, saved: `✓ ${p.saved}`, error: p.saveError }
   const borderColor = {
-    idle: 'rgba(255,255,255,0.1)',
+    idle: 'var(--glass-border)',
     saving: 'rgba(56,189,248,0.4)',
     saved: 'rgba(16,185,129,0.4)',
     error: 'rgba(248,113,113,0.4)',
@@ -218,10 +218,10 @@ function PriceField({ productId, initialPrice, p, priceMutation }) {
             fontFamily: 'var(--font-display)',
             padding: '11px 16px',
             borderRadius: '12px 0 0 12px',
-            background: 'rgba(255,255,255,0.05)',
+            background: 'var(--input-bg)',
             border: `1px solid ${borderColor[saveState]}`,
             borderRight: 'none',
-            color: '#fff',
+            color: 'var(--text)',
             outline: 'none',
             WebkitAppearance: 'none',
             MozAppearance: 'textfield',
@@ -254,7 +254,7 @@ function StockToggle({ product, label, stockMutation }) {
   const on = isInStock(product)
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-      <span style={{ fontSize: 14, fontWeight: 500, color: '#fff' }}>{label}</span>
+      <span style={{ fontSize: 14, fontWeight: 500, color: 'var(--text)' }}>{label}</span>
       <div
         role="switch"
         aria-checked={on}
@@ -267,7 +267,7 @@ function StockToggle({ product, label, stockMutation }) {
           height: 30,
           borderRadius: 15,
           cursor: 'pointer',
-          background: on ? '#10B981' : 'rgba(255,255,255,0.1)',
+          background: on ? '#10B981' : 'var(--glass-border)',
           position: 'relative',
           transition: 'background 0.25s',
           opacity: stockMutation.isPending ? 0.7 : 1,
@@ -331,7 +331,7 @@ function ShelfField({ productId, initialShelf, p, shelfMutation }) {
   }
   const stateLabel = { idle: null, saving: p.saving, saved: `✓ ${p.saved}`, error: p.saveError }
   const borderColor = {
-    idle: 'rgba(255,255,255,0.1)',
+    idle: 'var(--glass-border)',
     saving: 'rgba(56,189,248,0.4)',
     saved: 'rgba(16,185,129,0.4)',
     error: 'rgba(248,113,113,0.4)',
@@ -375,9 +375,9 @@ function ShelfField({ productId, initialShelf, p, shelfMutation }) {
           fontFamily: 'var(--font-body)',
           padding: '11px 16px',
           borderRadius: 12,
-          background: 'rgba(255,255,255,0.05)',
+          background: 'var(--input-bg)',
           border: `1px solid ${borderColor[saveState]}`,
-          color: '#fff',
+          color: 'var(--text)',
           outline: 'none',
           margin: 0,
           transition: 'border-color 0.2s',
@@ -395,10 +395,10 @@ function ReadonlyBlock({ product, p, storeSlug }) {
   return (
     <div
       style={{
-        background: 'rgba(255,255,255,0.03)',
+        background: 'var(--glass-subtle)',
         borderRadius: 12,
         padding: 14,
-        border: '1px solid rgba(255,255,255,0.05)',
+        border: '1px solid var(--line-soft)',
         marginTop: 8,
       }}
     >
@@ -408,7 +408,7 @@ function ReadonlyBlock({ product, p, storeSlug }) {
             width: 64,
             height: 64,
             borderRadius: 10,
-            background: 'rgba(255,255,255,0.05)',
+            background: 'var(--glass-bg)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -448,7 +448,7 @@ function ReadonlyBlock({ product, p, storeSlug }) {
               <span style={{ fontSize: 11, color: 'var(--text-dim)', marginRight: 6 }}>
                 {p.brandLabel}:
               </span>
-              <span style={{ fontSize: 13, color: '#fff' }}>{gp.brand}</span>
+              <span style={{ fontSize: 13, color: 'var(--text)' }}>{gp.brand}</span>
             </div>
           )}
           {gp.category && (
@@ -456,7 +456,7 @@ function ReadonlyBlock({ product, p, storeSlug }) {
               <span style={{ fontSize: 11, color: 'var(--text-dim)', marginRight: 6 }}>
                 {p.categoryLabel}:
               </span>
-              <span style={{ fontSize: 13, color: '#fff' }}>{gp.category}</span>
+              <span style={{ fontSize: 13, color: 'var(--text)' }}>{gp.category}</span>
             </div>
           )}
           {gp.quantity && (
@@ -464,16 +464,14 @@ function ReadonlyBlock({ product, p, storeSlug }) {
               <span style={{ fontSize: 11, color: 'var(--text-dim)', marginRight: 6 }}>
                 {p.quantityLabel}:
               </span>
-              <span style={{ fontSize: 13, color: '#fff' }}>{gp.quantity}</span>
+              <span style={{ fontSize: 13, color: 'var(--text)' }}>{gp.quantity}</span>
             </div>
           )}
         </div>
       </div>
 
       {storeSlug && (
-        <div
-          style={{ marginTop: 12, borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: 10 }}
-        >
+        <div style={{ marginTop: 12, borderTop: '1px solid var(--line-soft)', paddingTop: 10 }}>
           <a
             href={buildProductPath(storeSlug, product.ean)}
             target="_blank"
@@ -524,8 +522,8 @@ const ProductCard = memo(
     return (
       <div
         style={{
-          background: isExpanded ? 'rgba(56,189,248,0.05)' : 'rgba(255,255,255,0.03)',
-          border: `1px solid ${isExpanded ? 'rgba(56,189,248,0.28)' : 'rgba(255,255,255,0.06)'}`,
+          background: isExpanded ? 'rgba(56,189,248,0.05)' : 'var(--glass-subtle)',
+          border: `1px solid ${isExpanded ? 'rgba(56,189,248,0.28)' : 'var(--glass-soft-border)'}`,
           borderRadius: 18,
           overflow: 'hidden',
           transition: 'border-color 0.25s, background 0.25s',
@@ -548,7 +546,7 @@ const ProductCard = memo(
               width: 48,
               height: 48,
               borderRadius: 12,
-              background: 'rgba(255,255,255,0.05)',
+              background: 'var(--glass-bg)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -579,7 +577,7 @@ const ProductCard = memo(
               style={{
                 fontSize: 14,
                 fontWeight: 600,
-                color: '#fff',
+                color: 'var(--text)',
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
@@ -595,7 +593,7 @@ const ProductCard = memo(
             <div
               style={{
                 fontSize: 10,
-                color: 'rgba(255,255,255,0.18)',
+                color: 'var(--text-disabled)',
                 marginTop: 2,
                 fontFamily: 'var(--font-display)',
               }}
@@ -655,7 +653,7 @@ const ProductCard = memo(
             opacity: isExpanded ? 1 : 0,
             transition: 'grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s',
             background: 'rgba(0,0,0,0.18)',
-            borderTop: isExpanded ? '1px solid rgba(255,255,255,0.06)' : 'none',
+            borderTop: isExpanded ? '1px solid var(--glass-soft-border)' : 'none',
           }}
         >
           <div style={{ overflow: 'hidden' }}>
@@ -725,8 +723,8 @@ function GridCard({ product, tr, onEdit }) {
     <div
       onClick={() => onEdit(product)}
       style={{
-        background: 'rgba(255,255,255,0.03)',
-        border: '1px solid rgba(255,255,255,0.07)',
+        background: 'var(--glass-subtle)',
+        border: '1px solid var(--glass-soft-border)',
         borderRadius: 16,
         overflow: 'hidden',
         cursor: 'pointer',
@@ -741,7 +739,7 @@ function GridCard({ product, tr, onEdit }) {
         style={{
           height: 120,
           flexShrink: 0,
-          background: 'rgba(255,255,255,0.04)',
+          background: 'var(--glass-muted)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -777,7 +775,7 @@ function GridCard({ product, tr, onEdit }) {
           style={{
             fontSize: 12,
             fontWeight: 600,
-            color: '#fff',
+            color: 'var(--text)',
             lineHeight: 1.3,
             minHeight: '2.6em',
             display: '-webkit-box',
@@ -880,7 +878,7 @@ function EditBottomSheet({
           style={{ display: 'flex', justifyContent: 'center', paddingTop: 10, paddingBottom: 4 }}
         >
           <div
-            style={{ width: 36, height: 4, borderRadius: 2, background: 'rgba(255,255,255,0.12)' }}
+            style={{ width: 36, height: 4, borderRadius: 2, background: 'var(--glass-handle)' }}
           />
         </div>
 
@@ -891,7 +889,7 @@ function EditBottomSheet({
               width: 52,
               height: 52,
               borderRadius: 12,
-              background: 'rgba(255,255,255,0.05)',
+              background: 'var(--input-bg)',
               overflow: 'hidden',
               flexShrink: 0,
               display: 'flex',
@@ -920,7 +918,7 @@ function EditBottomSheet({
               style={{
                 fontSize: 15,
                 fontWeight: 700,
-                color: '#fff',
+                color: 'var(--text)',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
@@ -935,7 +933,7 @@ function EditBottomSheet({
           <button
             onClick={onClose}
             style={{
-              background: 'rgba(255,255,255,0.08)',
+              background: 'var(--glass-soft-border)',
               border: 'none',
               borderRadius: 10,
               padding: 8,
@@ -982,7 +980,7 @@ function EditBottomSheet({
         )}
 
         {/* Divider */}
-        <div style={{ height: 1, background: 'rgba(255,255,255,0.06)', margin: '14px 20px 0' }} />
+        <div style={{ height: 1, background: 'var(--line-soft)', margin: '14px 20px 0' }} />
 
         {/* Editor fields */}
         <div
@@ -1082,7 +1080,9 @@ function ConfirmDeleteModal({ product, tr, deleteMutation, onClose }) {
             </span>
           </div>
           <div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: '#fff' }}>{tr.deleteProduct}</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)' }}>
+              {tr.deleteProduct}
+            </div>
             <div style={{ fontSize: 12, color: 'var(--text-dim)', marginTop: 2 }}>
               {tr.deleteHint}
             </div>
@@ -1093,7 +1093,7 @@ function ConfirmDeleteModal({ product, tr, deleteMutation, onClose }) {
           style={{
             fontSize: 13,
             color: 'var(--text-sub)',
-            background: 'rgba(255,255,255,0.03)',
+            background: 'var(--glass-subtle)',
             borderRadius: 10,
             padding: '10px 14px',
             marginBottom: 20,
@@ -1112,8 +1112,8 @@ function ConfirmDeleteModal({ product, tr, deleteMutation, onClose }) {
               flex: 1,
               padding: '12px 0',
               borderRadius: 12,
-              border: '1px solid rgba(255,255,255,0.1)',
-              background: 'rgba(255,255,255,0.05)',
+              border: '1px solid var(--glass-border)',
+              background: 'var(--glass-bg)',
               color: 'var(--text-sub)',
               fontSize: 14,
               fontWeight: 600,
@@ -1435,10 +1435,10 @@ export default function RetailProductsScreen() {
               flex: 1,
               display: 'flex',
               alignItems: 'center',
-              background: 'rgba(255,255,255,0.05)',
+              background: 'var(--input-bg)',
               borderRadius: 14,
               padding: '9px 14px',
-              border: '1px solid rgba(255,255,255,0.08)',
+              border: '1px solid var(--input-border)',
               gap: 10,
             }}
           >
@@ -1457,7 +1457,7 @@ export default function RetailProductsScreen() {
                 flex: 1,
                 background: 'transparent',
                 border: 'none',
-                color: '#fff',
+                color: 'var(--text)',
                 fontSize: 15,
                 outline: 'none',
                 fontFamily: 'var(--font-body)',
@@ -1534,7 +1534,7 @@ export default function RetailProductsScreen() {
           <div
             style={{
               display: 'flex',
-              background: 'rgba(255,255,255,0.05)',
+              background: 'var(--glass-bg)',
               borderRadius: 10,
               padding: 3,
               gap: 2,
@@ -1624,7 +1624,7 @@ export default function RetailProductsScreen() {
           >
             {scanToast.type === 'found' ? 'check_circle' : 'search_off'}
           </span>
-          <div style={{ color: '#fff' }}>
+          <div style={{ color: 'var(--text)' }}>
             <div style={{ fontSize: 13, fontWeight: 700 }}>
               {scanToast.type === 'found' ? p.scanFound : p.scanNotFound}
             </div>

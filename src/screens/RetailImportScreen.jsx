@@ -18,8 +18,8 @@ function StatCard({ label, value, color = '#38BDF8' }) {
         minWidth: 0,
         padding: 14,
         borderRadius: 14,
-        background: 'rgba(255,255,255,0.035)',
-        border: '1px solid rgba(255,255,255,0.07)',
+        background: 'var(--glass-subtle)',
+        border: '1px solid var(--glass-soft-border)',
       }}
     >
       <div style={{ fontSize: 11, color: 'var(--text-dim)', marginBottom: 5 }}>{label}</div>
@@ -61,12 +61,12 @@ function RowCard({ row, accent = '#A7F3D0', reason }) {
         gap: 10,
         padding: 12,
         borderRadius: 14,
-        background: 'rgba(255,255,255,0.035)',
-        border: '1px solid rgba(255,255,255,0.06)',
+        background: 'var(--glass-subtle)',
+        border: '1px solid var(--glass-soft-border)',
       }}
     >
       <div style={{ minWidth: 0 }}>
-        <div style={{ color: '#fff', fontWeight: 800, fontSize: 13 }}>{row.ean}</div>
+        <div style={{ color: 'var(--text)', fontWeight: 800, fontSize: 13 }}>{row.ean}</div>
         <div style={{ color: 'var(--text-dim)', fontSize: 12, marginTop: 3 }}>
           {row.localName || row.shelfZone || row.stockStatus}
         </div>
@@ -182,7 +182,7 @@ export default function RetailImportScreen() {
             fontSize: 24,
             fontWeight: 800,
             fontFamily: 'var(--font-display)',
-            color: '#fff',
+            color: 'var(--text)',
             margin: '0 0 8px',
           }}
         >
@@ -201,7 +201,7 @@ export default function RetailImportScreen() {
           border: '1px solid rgba(56,189,248,0.14)',
         }}
       >
-        <div style={{ color: '#fff', fontWeight: 800, fontSize: 14 }}>{t.templateTitle}</div>
+        <div style={{ color: 'var(--text)', fontWeight: 800, fontSize: 14 }}>{t.templateTitle}</div>
         <div
           style={{
             color: 'var(--text-dim)',
@@ -240,13 +240,13 @@ export default function RetailImportScreen() {
         <span className="material-symbols-outlined" style={{ fontSize: 38, color: '#38BDF8' }}>
           upload_file
         </span>
-        <div style={{ fontSize: 16, fontWeight: 700, color: '#fff', marginTop: 12 }}>
+        <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)', marginTop: 12 }}>
           {fileName || t.choose}
         </div>
         <div style={{ fontSize: 13, color: 'var(--text-dim)', textAlign: 'center', marginTop: 6 }}>
           {t.formats}
         </div>
-        <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.42)', marginTop: 10 }}>
+        <div style={{ fontSize: 11, color: 'var(--text-disabled)', marginTop: 10 }}>
           {t.template}
         </div>
         <input
@@ -291,7 +291,12 @@ export default function RetailImportScreen() {
             }}
           >
             <h3
-              style={{ margin: 0, fontSize: 16, color: '#fff', fontFamily: 'var(--font-display)' }}
+              style={{
+                margin: 0,
+                fontSize: 16,
+                color: 'var(--text)',
+                fontFamily: 'var(--font-display)',
+              }}
             >
               {result ? t.report : t.preview}
             </h3>
@@ -320,7 +325,7 @@ export default function RetailImportScreen() {
 
       {errors.length > 0 && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          <div style={{ color: '#fff', fontWeight: 800, fontSize: 14 }}>{t.parseErrors}</div>
+          <div style={{ color: 'var(--text)', fontWeight: 800, fontSize: 14 }}>{t.parseErrors}</div>
           {errors.slice(0, 5).map((error, index) => (
             <div key={`${error.row}-${index}`} style={{ fontSize: 12, color: '#FBBF24' }}>
               {error.row ? `${t.rowLabel} ${error.row}: ` : ''}
@@ -350,7 +355,9 @@ export default function RetailImportScreen() {
             }}
           >
             <div>
-              <div style={{ color: '#fff', fontWeight: 800, fontSize: 14 }}>{t.unknownTitle}</div>
+              <div style={{ color: 'var(--text)', fontWeight: 800, fontSize: 14 }}>
+                {t.unknownTitle}
+              </div>
               <div style={{ color: 'var(--text-dim)', fontSize: 12, marginTop: 4 }}>
                 {t.unknownHint}
               </div>
@@ -390,7 +397,7 @@ export default function RetailImportScreen() {
             border: '1px solid rgba(248,113,113,0.18)',
           }}
         >
-          <div style={{ color: '#fff', fontWeight: 800, fontSize: 14, marginBottom: 10 }}>
+          <div style={{ color: 'var(--text)', fontWeight: 800, fontSize: 14, marginBottom: 10 }}>
             {t.failedTitle}
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -415,8 +422,8 @@ export default function RetailImportScreen() {
           border: 'none',
           background: canApply
             ? 'linear-gradient(135deg, #0EA5E9, #2563EB)'
-            : 'rgba(255,255,255,0.06)',
-          color: canApply ? '#fff' : 'rgba(255,255,255,0.35)',
+            : 'var(--glass-soft-border)',
+          color: canApply ? '#fff' : 'var(--text-disabled)',
           fontSize: 15,
           fontWeight: 800,
           fontFamily: 'var(--font-display)',

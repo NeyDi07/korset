@@ -179,3 +179,23 @@
 - Фронтенд: name_kz по языку
 - Импорт прайс-листа (RetailImportScreen)
 - БД-фиксы (CASCADE, GIN)
+
+---
+
+## 2026-04-26 — Сессия 14: NPC EAN Harvest (combo approach)
+
+**Выполнено:**
+- Эксперимент с 6 методами NPC-поиска → combo стратегия (brand+name + brand+core+weight + brand-only)
+- Новый `scripts/npc-eans-harvest.cjs`: 2-3 запроса/продукт, ВСЕ EAN в alternate_eans, лучший GTIN → primary
+- Обработка duplicate EAN (если занят → в alternate, пробует следующий)
+- 3 партии harvest (~900 продуктов): 1320 → 2558 реальных EAN (+94%)
+- Avg 40 EAN/продукт (GTINs + NTINs + alternates)
+- Сканер уже поддерживает alternate_eans (resolver.js)
+- USDA-enrich фикс: не перезаписывает source_primary
+- NPC-enrich фикс: пагинация .range() (Supabase limit 1000)
+- CONTEXT.md + vault обновлены
+
+**Не выполнено:**
+- Продолжить harvest для оставшихся ~5595 продуктов (партиями по 2000)
+- Продукты без бренда — нужен другой подход
+- USDA enrichment — API ключ disabled, нужен новый

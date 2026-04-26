@@ -32,7 +32,7 @@ function ProductThumb({ product }) {
         placeItems: 'center',
         fontSize: 28,
         fontWeight: 800,
-        color: '#A78BFA',
+        color: 'var(--primary-bright)',
       }}
     >
       {product.name?.[0] || '•'}
@@ -210,8 +210,8 @@ export default function CatalogScreen() {
         <div
           onClick={() => handleNavigate(product)}
           style={{
-            background: 'rgba(255,255,255,0.04)',
-            border: '1px solid rgba(255,255,255,0.08)',
+            background: 'var(--glass-muted)',
+            border: '1px solid var(--glass-soft-border)',
             borderRadius: 18,
             padding: 12,
             display: 'flex',
@@ -237,7 +237,7 @@ export default function CatalogScreen() {
               width: '100%',
               aspectRatio: '1/1',
               borderRadius: 14,
-              background: 'rgba(255,255,255,0.03)',
+              background: 'var(--image-bg)',
               overflow: 'hidden',
               marginBottom: 10,
             }}
@@ -249,7 +249,7 @@ export default function CatalogScreen() {
               fontFamily: 'var(--font-display)',
               fontSize: 13,
               fontWeight: 700,
-              color: '#fff',
+              color: 'var(--text)',
               lineHeight: 1.3,
               display: '-webkit-box',
               WebkitLineClamp: 2,
@@ -274,7 +274,7 @@ export default function CatalogScreen() {
                 fontFamily: 'var(--font-display)',
                 fontSize: 16,
                 fontWeight: 900,
-                color: '#A78BFA',
+                color: 'var(--primary-bright)',
               }}
             >
               {formatPrice(product.priceKzt)}
@@ -327,8 +327,8 @@ export default function CatalogScreen() {
         <div
           onClick={() => handleNavigate(product)}
           style={{
-            background: 'rgba(255,255,255,0.04)',
-            border: '1px solid rgba(255,255,255,0.08)',
+            background: 'var(--glass-muted)',
+            border: '1px solid var(--glass-soft-border)',
             borderRadius: 18,
             padding: 12,
             margin: '0 20px',
@@ -343,7 +343,7 @@ export default function CatalogScreen() {
               width: 92,
               height: 92,
               borderRadius: 16,
-              background: 'rgba(255,255,255,0.03)',
+              background: 'var(--image-bg)',
               overflow: 'hidden',
             }}
           >
@@ -364,7 +364,7 @@ export default function CatalogScreen() {
                   fontFamily: 'var(--font-display)',
                   fontSize: 15,
                   fontWeight: 700,
-                  color: '#fff',
+                  color: 'var(--text)',
                   lineHeight: 1.35,
                 }}
               >
@@ -383,7 +383,7 @@ export default function CatalogScreen() {
                 {fit.fits ? 'Подходит' : 'Проверить'}
               </div>
             </div>
-            <div style={{ fontSize: 12, color: 'rgba(200,200,240,0.62)', marginBottom: 10 }}>
+            <div style={{ fontSize: 12, color: 'var(--text-soft)', marginBottom: 10 }}>
               {product.brand || 'Без бренда'} · {product.ean}
             </div>
             <div
@@ -400,12 +400,12 @@ export default function CatalogScreen() {
                     fontFamily: 'var(--font-display)',
                     fontSize: 22,
                     fontWeight: 900,
-                    color: '#A78BFA',
+                    color: 'var(--primary-bright)',
                   }}
                 >
                   {formatPrice(product.priceKzt)}
                 </div>
-                <div style={{ fontSize: 11, color: 'rgba(180,180,210,0.6)' }}>
+                <div style={{ fontSize: 11, color: 'var(--text-dim)' }}>
                   {product.shelf || 'Полка уточняется'}
                 </div>
               </div>
@@ -417,7 +417,7 @@ export default function CatalogScreen() {
                   gap: 6,
                 }}
               >
-                <div style={{ fontSize: 11, color: 'rgba(220,220,240,0.65)' }}>
+                <div style={{ fontSize: 11, color: 'var(--text-soft)' }}>
                   Score {product.qualityScore || 0}/100
                 </div>
                 <button
@@ -477,7 +477,7 @@ export default function CatalogScreen() {
               fontFamily: 'var(--font-display)',
               fontSize: 28,
               fontWeight: 900,
-              color: '#fff',
+              color: 'var(--text)',
               lineHeight: 1,
             }}
           >
@@ -499,8 +499,8 @@ export default function CatalogScreen() {
               style={{
                 padding: '12px 14px',
                 borderRadius: 16,
-                background: 'rgba(255,255,255,0.04)',
-                border: '1px solid rgba(255,255,255,0.08)',
+                background: 'var(--input-bg)',
+                border: '1px solid var(--input-border)',
               }}
             >
               <input
@@ -512,7 +512,7 @@ export default function CatalogScreen() {
                   background: 'transparent',
                   border: 'none',
                   outline: 'none',
-                  color: '#fff',
+                  color: 'var(--text)',
                   fontSize: 14,
                 }}
               />
@@ -543,13 +543,13 @@ export default function CatalogScreen() {
               width: 44,
               height: 44,
               borderRadius: 14,
-              background: 'rgba(255,255,255,0.04)',
-              border: '1px solid rgba(255,255,255,0.08)',
+              background: 'var(--glass-muted)',
+              border: '1px solid var(--glass-soft-border)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               cursor: 'pointer',
-              color: 'rgba(220,220,240,0.8)',
+              color: 'var(--text-soft)',
             }}
           >
             <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
@@ -570,9 +570,9 @@ export default function CatalogScreen() {
                 borderRadius: 999,
                 whiteSpace: 'nowrap',
                 cursor: 'pointer',
-                background: filter === option ? 'rgba(124,58,237,0.18)' : 'rgba(255,255,255,0.04)',
-                border: `1px solid ${filter === option ? 'rgba(124,58,237,0.42)' : 'rgba(255,255,255,0.08)'}`,
-                color: filter === option ? '#C4B5FD' : 'rgba(220,220,240,0.7)',
+                background: filter === option ? 'var(--badge-bg)' : 'var(--glass-muted)',
+                border: `1px solid ${filter === option ? 'var(--badge-border)' : 'var(--glass-soft-border)'}`,
+                color: filter === option ? 'var(--primary-bright)' : 'var(--text-soft)',
                 fontSize: 12,
                 fontWeight: 600,
               }}
@@ -600,9 +600,9 @@ export default function CatalogScreen() {
                 padding: '7px 10px',
                 borderRadius: 12,
                 cursor: 'pointer',
-                background: sort === option.id ? 'rgba(96,165,250,0.14)' : 'rgba(255,255,255,0.04)',
-                border: `1px solid ${sort === option.id ? 'rgba(96,165,250,0.32)' : 'rgba(255,255,255,0.08)'}`,
-                color: sort === option.id ? '#93C5FD' : 'rgba(220,220,240,0.7)',
+                background: sort === option.id ? 'var(--accent-sky-dim)' : 'var(--glass-muted)',
+                border: `1px solid ${sort === option.id ? 'var(--accent-sky-border)' : 'var(--glass-soft-border)'}`,
+                color: sort === option.id ? 'var(--accent-sky)' : 'var(--text-soft)',
                 fontSize: 11,
                 fontWeight: 600,
               }}
@@ -619,8 +619,8 @@ export default function CatalogScreen() {
             margin: '0 20px 10px',
             padding: '12px 14px',
             borderRadius: 16,
-            background: 'rgba(124,58,237,0.15)',
-            border: '1.5px solid rgba(139,92,246,0.5)',
+            background: 'var(--badge-bg)',
+            border: '1.5px solid var(--badge-border)',
             backdropFilter: 'blur(12px)',
             display: 'flex',
             alignItems: 'center',
@@ -631,7 +631,7 @@ export default function CatalogScreen() {
         >
           <span
             className="material-symbols-outlined"
-            style={{ fontSize: 20, color: '#A78BFA', flexShrink: 0 }}
+            style={{ fontSize: 20, color: 'var(--primary-bright)', flexShrink: 0 }}
           >
             compare_arrows
           </span>
@@ -640,7 +640,7 @@ export default function CatalogScreen() {
               style={{
                 fontSize: 10,
                 fontWeight: 800,
-                color: '#A78BFA',
+                color: 'var(--primary-bright)',
                 letterSpacing: '0.05em',
                 textTransform: 'uppercase',
                 marginBottom: 2,
@@ -652,7 +652,7 @@ export default function CatalogScreen() {
               style={{
                 fontSize: 13,
                 fontWeight: 700,
-                color: '#E9D5FF',
+                color: 'var(--text)',
                 lineHeight: 1.3,
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
@@ -661,7 +661,7 @@ export default function CatalogScreen() {
             >
               {comparePin.name}
             </div>
-            <div style={{ fontSize: 11, color: 'rgba(196,181,253,0.7)', marginTop: 1 }}>
+            <div style={{ fontSize: 11, color: 'var(--text-soft)', marginTop: 1 }}>
               Выберите второй товар для сравнения
             </div>
           </div>
@@ -672,7 +672,10 @@ export default function CatalogScreen() {
             }}
             style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}
           >
-            <span className="material-symbols-outlined" style={{ fontSize: 20, color: '#A78BFA' }}>
+            <span
+              className="material-symbols-outlined"
+              style={{ fontSize: 20, color: 'var(--primary-bright)' }}
+            >
               close
             </span>
           </button>

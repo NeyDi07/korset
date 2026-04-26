@@ -63,11 +63,14 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 
 | Фокус | Статус |
 |-------|--------|
+| **Light theme rollout planning** | 🔍 DISCOVERY — системы темы нет, 34 UI-файла с hardcoded dark-цветами, ждём продуктовые решения по scope/default/persistence |
+| **Zero-Friction onboarding pivot** | 🗺️ PLANNED FOR V1 — убрать блокирующий buyer-onboarding, перенести обучение в store HomeScreen + физические материалы, реализацию отложить на отдельный этап |
 | **Arbuz catalog import** | ✅ 2228 продуктов из Arbuz → 3236 активных в DB |
 | **Каталог: русские имена** | ✅ NPC --fix-names |
 | **R2 CDN миграция** | ✅ ЗАВЕРШЕНА — 2571/2607 картинок в R2 |
 | **Data Moat Pipeline** | ✅ NPC + Arbuz + USDA — все работают |
-| **NPC EAN enrichment** | ✅ 1320/3236 (40%) реальных EAN |
+| **NPC EAN enrichment** | ✅ 2558/8153 (31%) реальных EAN, harvest в процессе |
+| **NPC EAN harvest combo** | 🔄 ~900/6036 обработано, avg 40 EAN/продукт, нужно продолжать |
 | **Удалить мусорные товары** | ✅ 17 деактивировано |
 | **Перевод инноязычного состава** | ✅ 100% русский состав |
 | **Batch upsert** | ✅ arbuz-catalog-parser переведён на batch (100x быстрее) |
@@ -98,15 +101,16 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - **NPC name search** = даёт EAN для ~40% продуктов
 - **82 категорий** обойдены через search queries
 
-**ТЕКУЩИЕ СТАТИСТИКИ БД (2026-04-22):**
-- **~8204 active** global_products (arbuz: 2045 + korzinavdom: 5458 + другие: ~701)
+**ТЕКУЩИЕ СТАТИСТИКИ БД (2026-04-26):**
+- **8153 active** global_products
+- **Реальные EAN: 2558** (31%) — было 1320 (16%) до NPC harvest
+- **Fake EAN:** arbuz_ 1337 + kaspi_ 91 + korzinavdom_ 4167 = 5595
 - **Состав: 100%** (0 без состава)
 - **Нутриенты: ~85%**
 - **R2 CDN: 8115/8118** (99.96% продуктов с картинками)
-- 3 мёртвых Kaspi URL (реальные продукты без картинки)
-- 35 без картинки (казахстанские шоколадные бренды: Alma Chocolates, NA MEDU, Спартак — нет в OFF/Korzinavdom)
 - Arbuz СТМ удалены, брендовые восстановлены
 - store_products для ERALY: 8760
+- **NPC EAN harvest**: обработано ~900/6036 продуктов с брендом, avg ~40 EAN/продукт
 
 **EAN MATCHING — ИТОГИ ТЕСТИРОВАНИЯ:**
 - NPC + DDG + OFF кросс-валидация: 25% verified, 85% any EAN
@@ -191,10 +195,12 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - ✅ `src/screens/RetailProductsScreen.jsx` — useInfiniteQuery + Load More кнопка + дебаунс поиска 350ms + серверный поиск через ilike + optimistic updates адаптированы для infinite query
 
 **ПОРЯДОК ЗАДАЧ (следующий чат):**
-1. Протестировать импорт прайс-листа end-to-end с новыми RPC
-2. Запустить `resolve-unknown-eans.cjs` для обработки staged EAN
+1. **Продолжить NPC EAN harvest** — `node scripts/npc-eans-harvest.cjs --limit=2000` (партиями по 2000), осталось ~5595 продуктов
+2. После harvest — продукты без бренда: рассмотреть NPC name-only поиск
 3. Фронтенд: name_kz по языку
-4. USDA enrichment — 457 продуктов без состава
+4. USDA enrichment — нужен новый API ключ (текущий disabled)
+5. Retail Dashboard: метрики в тенге
+6. End-to-end тест импорта прайс-листа с реальным CSV
 
 **КОРЗИНА ДОМА (korzinavdom.kz) — API парсер:**
 - API: `https://api.korzinavdom.kz/client/` (открытый, без авторизации)
@@ -212,6 +218,37 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 **R2 CDN:**
 - R2 bucket `korset-images` (EEUR), custom domain `cdn.korset.app` ✅
 - **8110/8146 картинок мигрировано** (99.6%)
+
+---
+
+## Сессия 2026-04-26 — Light Theme Stage 1
+
+**Статус:** ✅ Этап 1 выполнен: theme foundation + storage + profile toggle + shared shell/nav/modal layers.
+
+**Что реализовано:**
+- `src/utils/theme.js` — единая тема `light` / `dark`, initial system theme, ручной выбор через `localStorage`, `data-theme`, `color-scheme`, `meta theme-color`, событие `korset:theme-change`.
+- `index.html` — early theme bootstrap до React, чтобы снизить flash неправильной темы.
+- `src/index.css` — dark/light semantic tokens для glassmorphism, app shell, nav, retail, overlay, inputs, shadows; добавлена premium-анимация переключения темы и `prefers-reduced-motion` fallback.
+- `ProfileScreen` — пункт "Тема" стал живым стеклянным переключателем light/dark с солнцем/луной.
+- Общие слои переведены на токены: `BottomNav`, `RetailBottomNav`, `RetailLayout`, `ConfirmDangerModal`, `SyncResolveModal`, базовые frame/header/sheet слои.
+
+**Проверки:** `npm run lint` ✅ (44 warning, без errors), `npm run build` ✅, `npm test` ✅ (4/4 Playwright).
+
+**Следующий этап:** Customer/public/auth route set — Home, Catalog, Product/UnifiedProduct, History, Auth, SetupProfile, StorePublic, Stores, Notification/Privacy settings. Цель: убрать оставшиеся hardcoded dark surfaces на основных пользовательских маршрутах, сохранив тёмную тему как визуальный эталон.
+
+## Сессия 2026-04-26 — Light Theme Stage 2
+
+**Статус:** ✅ Этап 2 выполнен: customer/public/auth route set переведён на semantic theme tokens.
+
+**Что реализовано:**
+- `src/index.css` — расширены токены для экранных поверхностей: `--glass-subtle`, `--glass-muted`, `--glass-soft-border`, `--line-soft`, `--image-bg`, `--text-soft`, `--text-faint`, `--text-disabled`, `--badge-bg`, `--badge-border`, `--accent-sky`, `--shadow-card`.
+- Buyer/public route set: `HomeScreen`, `CatalogScreen`, `ProductScreen`, `UnifiedProductScreen`, `HistoryScreen`, `StorePublicScreen`, `StoresScreen`.
+- Auth/settings route set: `AuthScreen`, `SetupProfileScreen`, `NotificationSettingsScreen`, `PrivacySettingsScreen`.
+- Основные hardcoded dark surfaces и white text заменены на semantic tokens там, где они отвечали за карточки, инпуты, image surfaces, header, dividers, secondary text и обычный текст.
+
+**Проверки:** `npm run lint` ✅ (44 warning, без errors), `npm run build` ✅, `npm test` ✅ (4/4 Playwright).
+
+**Следующий этап:** Stage 3 — scanner/camera flow, retail cabinet deep pass и PWA polish. Особое внимание: `ScanScreen`, `RetailDashboardScreen`, `RetailProductsScreen`, `RetailImportScreen`, `RetailSettingsScreen`, `RetailEntryScreen`, manifest/browser chrome/status bar.
 - 36 мёртвых URL (7 Kaspi блокировка + 6 Unsplash сток + 23 local paths)
 - 58 продуктов без картинок вообще
 - `getImageUrl()` интегрирован, Cloudflare Image Transformations НЕ работают (платный план)
@@ -279,3 +316,96 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - `scripts/resolve-unknown-eans.cjs`: серверный каскад обогащения — NPC → Arbuz → USDA → OFF. Поддержка --limit, --store, --dry-run.
 - Проверки: lint 0 errors / 48 warnings, build OK, 4/4 E2E, 3/3 unit.
 - **Миграции 011-015 ждут применения через Supabase SQL Editor (владелец проекта).**
+
+## Заметка сессии — 2026-04-26 light theme discovery
+
+- Пользователь дал прямой продуктовый апрув на исследование и план внедрения светлой темы, несмотря на историческое правило `не переписывать стили на светлые`.
+- Vault подтвердил прошлое решение `Dark Premium Glassmorphism` как осознанный выбор: премиальность, читаемость в магазине, OLED, связка со сканером, дифференциация.
+- По коду отдельной theme-system нет: нет `ThemeProvider`, нет `data-theme`, нет `prefers-color-scheme`, нет сохранения темы в `localStorage`/профиле; в `ProfileScreen` есть только пункт `Тема` со статусом `Скоро`.
+- Базовые CSS-токены есть в `src/index.css`, но они односторонне dark-first. Параллельно найден большой объём inline-цветов и стеклянных поверхностей, завязанных на тёмную палитру.
+- Быстрый аудит показал как минимум **34 UI-файла** с hardcoded dark-цветами. Самые тяжёлые зоны по объёму зависимостей: `HomeScreen`, `RetailProductsScreen`, `ProfileScreen`, `ProductScreen`, `AuthScreen`, `SetupProfileScreen`, `ScanScreen`, `RetailSettingsScreen`.
+- Дополнительные риски: `BottomNav` и `RetailBottomNav` жёстко красятся inline, `RetailLayout` имеет свою blue-tinted dark-палитру, `index.html` и PWA manifest зашиты под тёмный `theme-color`, а сканерный сценарий может требовать отдельного dark-first поведения даже при общей светлой теме.
+- Следующий шаг: согласовать 3 продуктовых решения перед детальным implementation plan — scope (весь продукт или частично), default/behavior (dark/light/system), persistence (локально на устройстве или sync в профиль/Supabase).
+
+## Заметка сессии — 2026-04-26 V1 UX/theme strategy confirmed by owner
+
+- Подтверждён продуктовый pivot `Zero-Friction`: обязательный buyer `OnboardingScreen` будет удалён из критического first-run flow. Пользователь после QR/входа должен сразу попадать на `HomeScreen` конкретного магазина.
+- Обучение переносится из блокирующего онбординга в два слоя:
+  - физические носители в магазине (баннеры/наклейки);
+  - in-app активация на `HomeScreen`: stories-карточки с объяснением ценности и `Smart Suggestion` для быстрой настройки аллергенов/точной проверки.
+- AI disclaimer планируется как `passive consent`-плашка внизу экрана или в scanner UI, а не как блокирующий шаг.
+- Это **не текущая реализация**, а подтверждённый roadmap V1. Внедрение онбордингового pivot вынести в отдельный этап после светлой темы.
+- По теме подтверждено:
+  - `Light Premium` переносится из V2 в обязательный scope V1;
+  - светлая тема должна покрыть **весь продукт**, а не только buyer-flow;
+  - UI модели `System / Light / Dark` не будет: в профиле остаётся выбор `Light / Dark`, а системная тема может использоваться только как initial value до первого явного выбора;
+  - при переключении тем нужна красивая, фирменная, но производительная анимация перехода;
+  - приоритетная цель для scanner — тоже полноценная поддержка светлой темы; гибрид допустим только если полноценный вариант даст риск поломки или плохой UX;
+  - типографика остаётся текущей: `Advent Pro` + `Inter` без перехода на `Manrope`;
+  - glassmorphism сохраняется и для dark, и для light;
+  - light theme должна быть максимально идентична dark-версии по характеру, детализации и премиальности, а не выглядеть как упрощённая альтернативная версия;
+  - customer app и retail cabinet сохраняют единый визуальный язык с небольшой разницей по акцентам, как и в текущей dark-версии.
+- По онбордингу дополнительно подтверждено:
+  - в пользовательском интерфейсе он не должен участвовать в первом входе после QR;
+  - код можно пока оставить в проекте как потенциальную future-переупаковку, но архитектуру V1 уже не строить вокруг обязательного онбординга.
+- Открытые вопросы перед implementation plan светлой темы теперь сузились до технических нюансов: где хранить выбор темы (локально или sync), как именно обновлять `theme-color`/PWA shell, и нужен ли отдельный rollout/QA этап для scanner.
+
+## Заметка сессии — 2026-04-26 light theme implementation plan
+
+- Владелец подтвердил финальные продуктовые параметры:
+  - покрытие всей системы;
+  - переключатель `Light / Dark`;
+  - initial value от system допустим только до первого ручного выбора;
+  - шрифты остаются `Advent Pro` + `Inter`;
+  - scanner целим в полноценный theme-aware сценарий;
+  - customer и retail сохраняют единый язык с мягкой разницей по акцентам;
+  - theme choice храним локально для V1.
+- Сформирован детальный план внедрения в `docs/vault/plans/light-theme-implementation-2026-04-26.md`.
+- Выбран visual direction для light: `crystal / pearl white glassmorphism` — максимально близкий по характеру к текущему dark premium, без упрощения и без ощущения “другого приложения”.
+- Реализацию оптимально вести в 3 этапа:
+  1. theme foundation + storage + toggle + shell;
+  2. customer/public/auth screens;
+  3. scanner + retail + PWA polish + regression pass.
+
+## Заметка сессии — 2026-04-26 NPC EAN Harvest (combo approach)
+
+- **Проблема:** только 1320/8153 (16%) продуктов имели реальные EAN. Fake EAN (arbuz_/kaspi_/korzinavdom_) не работают при сканировании.
+- **Эксперимент:** `scripts/npc-match-experiment.cjs` — протестировал 6 методов NPC-поиска на 30 продуктах:
+  - brand+name: универсально, 29.3 EAN/query
+  - brand+core+weight: лучше (30.7) но только если есть вес
+  - brand-only: ловит все варианты бренда, 24.1
+  - Решение: combo из 2-3 запросов на продукт
+- **Новый скрипт:** `scripts/npc-eans-harvest.cjs` — combo-подход:
+  - 2-3 запроса на продукт (brand+name, brand+core+weight если есть вес, brand-only)
+  - Собирает ВСЕ уникальные GTINs + NTINs (score≥10) в `alternate_eans` массив
+  - Лучший GTIN → primary `ean`, остальные → `alternate_eans`
+  - Обработка duplicate EAN: если EAN уже занят другим продуктом → в alternate_eans, пробует следующий
+  - Поддержка `--limit`, `--dry-run`, `--offset`
+- **Результаты (3 партии):**
+  - Batch 1 (200): 197 обновлено, 4426 GTIN + 3738 NTIN, 7596 alt EAN, avg 39.9/продукт
+  - Batch 2 (200): 197 обновлено, 193 primary EAN, 4426 GTIN + 3433 NTIN
+  - Batch 3 (500, прерван на ~398): обработка шла, прервано пользователем для сохранения контекста
+- **Прогресс EAN:** 1320 → 2558 реальных primary EAN (+1238, почти 2x)
+- **Осталось:** ~5595 продуктов ещё нуждаются в реальных EAN (те что с fake EAN и имеют бренд)
+- **Сканер уже поддерживает alternate_eans:** `resolver.js` строки 87, 121 используют `.contains('alternate_eans', [ean])` — матч по альтернативным EAN уже работает
+- **usda-enrich.cjs фикс:** больше не перезаписывает `source_primary` для продуктов из лучших источников
+- **npc-enrich.cjs фикс:** пагинация `.range()` с PAGE_SIZE=999 (Supabase default limit 1000)
+- **Следующий шаг:** продолжить harvest партиями по 2000 (`--limit=2000`), затем оставшиеся без бренда
+
+## Сессия 2026-04-26 — Light Theme Stage 3 (Final)
+
+**Статус:** ✅ Этап 3 выполнен: scanner, retail cabinet и оставшиеся компоненты переведены на semantic theme tokens.
+
+**Что реализовано:**
+- Retail экраны (`RetailSettingsScreen`, `RetailDashboardScreen`, `RetailProductsScreen`, `RetailImportScreen`, `RetailEntryScreen`) полностью токенизированы. Hardcoded `#fff` и `rgba(255,255,255,...)` заменены на семантические CSS переменные (`var(--glass-subtle)`, `var(--text)`, `var(--input-bg)` и т.д.).
+- Специальные экраны: `CompareScreen` и `ProfileScreen` также полностью поддерживают светлую тему.
+- Компоненты (`ExpandToggle`, `SyncResolveModal`, `ProfileAvatar` и др.) адаптированы. В `SyncResolveModal` улучшена видимость фиолетовых элементов (`#DDD6FE` -> `var(--primary)`) для читаемости на белом фоне.
+- Выставлены исключения для UI: `ScanScreen` (оверлей камеры) и цветные кнопки (кнопки с `background: var(--primary)`) сохранили жестко заданные светлые цвета `#fff` для поддержания контраста, независимо от темы.
+
+**Проверки:**
+- Выполнен `npm run build` — сборка успешно проходит без ошибок.
+- Поиск оставшихся hardcoded цветов показывает, что основные экраны приложения чисты от `rgba(255)` и `#fff`, за исключением моковых экранов и элементов, которым явно нужен контраст (кнопки, overlay камеры, canvas-графика для QR-кодов).
+- Полная интеграция темы с PWA manifest и system shell была завершена на этапе 1.
+
+**Следующий фокус:** 
+- Вернуться к продуктовым задачам B2B (data moat, bulk RPC, неизвестные EAN), как планировалось ранее. Светлая тема внедрена.

@@ -77,7 +77,7 @@ function StatusCard({ fits, reasons, t }) {
           {fits ? '✓' : '!'}
         </div>
         <div>
-          <div style={{ fontWeight: 800, color: '#fff', fontSize: 15 }}>{title}</div>
+          <div style={{ fontWeight: 800, color: 'var(--text)', fontSize: 15 }}>{title}</div>
           <div style={{ color: 'var(--text-dim)', fontSize: 12 }}>{subtitle}</div>
         </div>
       </div>
@@ -88,7 +88,7 @@ function StatusCard({ fits, reasons, t }) {
               <span style={{ marginTop: 1, color: reason.type === 'fail' ? '#F87171' : '#4ADE80' }}>
                 {reason.type === 'fail' ? '•' : '✓'}
               </span>
-              <span style={{ color: '#E8E8FF', fontSize: 13, lineHeight: 1.45 }}>
+              <span style={{ color: 'var(--text-soft)', fontSize: 13, lineHeight: 1.45 }}>
                 {reason.text}
               </span>
             </div>
@@ -114,14 +114,14 @@ function NutritionGrid({ nutrition, t }) {
         <div
           key={label}
           style={{
-            background: 'rgba(255,255,255,0.04)',
-            border: '1px solid rgba(255,255,255,0.06)',
+            background: 'var(--glass-muted)',
+            border: '1px solid var(--glass-soft-border)',
             borderRadius: 16,
             padding: 14,
           }}
         >
           <div style={{ color: 'var(--text-dim)', fontSize: 11, marginBottom: 6 }}>{label}</div>
-          <div style={{ color: '#fff', fontWeight: 800, fontSize: 18 }}>
+          <div style={{ color: 'var(--text)', fontWeight: 800, fontSize: 18 }}>
             {value == null ? '—' : value}
             {value == null ? (
               ''
@@ -255,7 +255,9 @@ export default function UnifiedProductScreen({ mode = 'canonical' }) {
       <div className="screen" style={{ display: 'grid', placeItems: 'center', padding: 24 }}>
         <div style={{ textAlign: 'center', color: 'var(--text-dim)' }}>
           <div style={{ fontSize: 48, marginBottom: 12 }}>🔍</div>
-          <div style={{ color: '#fff', fontWeight: 700, marginBottom: 8 }}>{t.common.notFound}</div>
+          <div style={{ color: 'var(--text)', fontWeight: 700, marginBottom: 8 }}>
+            {t.common.notFound}
+          </div>
           <div style={{ fontSize: 13 }}>{error || t.product.notFoundInDb}</div>
           <button
             className="btn btn-secondary"
@@ -276,9 +278,9 @@ export default function UnifiedProductScreen({ mode = 'canonical' }) {
           position: 'sticky',
           top: 0,
           zIndex: 10,
-          background: 'rgba(7,7,18,0.92)',
+          background: 'var(--header-bg)',
           backdropFilter: 'blur(18px)',
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
+          borderBottom: '1px solid var(--line-soft)',
           padding: '16px 20px',
           paddingTop: 'max(16px, env(safe-area-inset-top))',
         }}
@@ -290,7 +292,7 @@ export default function UnifiedProductScreen({ mode = 'canonical' }) {
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
-                color: '#fff',
+                color: 'var(--text)',
                 fontWeight: 800,
                 fontSize: 16,
                 whiteSpace: 'nowrap',
@@ -310,9 +312,9 @@ export default function UnifiedProductScreen({ mode = 'canonical' }) {
               width: 40,
               height: 40,
               borderRadius: 14,
-              border: '1px solid rgba(255,255,255,0.08)',
-              background: 'rgba(255,255,255,0.04)',
-              color: isFavorite ? '#F87171' : '#fff',
+              border: '1px solid var(--glass-soft-border)',
+              background: 'var(--glass-muted)',
+              color: isFavorite ? '#F87171' : 'var(--text)',
               display: 'grid',
               placeItems: 'center',
             }}
@@ -340,8 +342,8 @@ export default function UnifiedProductScreen({ mode = 'canonical' }) {
             style={{
               display: 'grid',
               placeItems: 'center',
-              background: 'rgba(255,255,255,0.03)',
-              border: '1px solid rgba(255,255,255,0.05)',
+              background: 'var(--image-bg)',
+              border: '1px solid var(--line-soft)',
               borderRadius: 18,
               height: 210,
               marginBottom: 16,
@@ -363,7 +365,9 @@ export default function UnifiedProductScreen({ mode = 'canonical' }) {
             style={{ display: 'flex', justifyContent: 'space-between', gap: 12, marginBottom: 10 }}
           >
             <div>
-              <div style={{ color: '#fff', fontWeight: 900, fontSize: 22, lineHeight: 1.15 }}>
+              <div
+                style={{ color: 'var(--text)', fontWeight: 900, fontSize: 22, lineHeight: 1.15 }}
+              >
                 {product.name}
               </div>
               <div style={{ color: 'var(--text-dim)', fontSize: 13, marginTop: 4 }}>
@@ -372,7 +376,7 @@ export default function UnifiedProductScreen({ mode = 'canonical' }) {
             </div>
             {product.qualityScore != null && (
               <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                <div style={{ color: '#fff', fontWeight: 800, fontSize: 16 }}>
+                <div style={{ color: 'var(--text)', fontWeight: 800, fontSize: 16 }}>
                   {product.qualityScore}/100
                 </div>
                 <div
@@ -396,7 +400,7 @@ export default function UnifiedProductScreen({ mode = 'canonical' }) {
             {product.priceKzt != null && (
               <span
                 className="category-badge grocery"
-                style={{ background: 'rgba(124,58,237,0.16)', color: '#D8B4FE' }}
+                style={{ background: 'var(--badge-bg)', color: 'var(--primary-bright)' }}
               >
                 {formatPrice(product.priceKzt)}
               </span>
@@ -537,8 +541,8 @@ function InfoCard({ label, value, multiline = false }) {
   return (
     <div
       style={{
-        background: 'rgba(255,255,255,0.04)',
-        border: '1px solid rgba(255,255,255,0.06)',
+        background: 'var(--glass-muted)',
+        border: '1px solid var(--glass-soft-border)',
         borderRadius: 16,
         padding: 14,
       }}
@@ -546,7 +550,7 @@ function InfoCard({ label, value, multiline = false }) {
       <div style={{ color: 'var(--text-dim)', fontSize: 11, marginBottom: 6 }}>{label}</div>
       <div
         style={{
-          color: '#fff',
+          color: 'var(--text)',
           fontSize: 13,
           lineHeight: multiline ? 1.55 : 1.35,
           whiteSpace: multiline ? 'normal' : 'nowrap',
@@ -566,9 +570,9 @@ function InfoChip({ label, value }) {
       style={{
         padding: '8px 10px',
         borderRadius: 999,
-        background: 'rgba(255,255,255,0.04)',
-        border: '1px solid rgba(255,255,255,0.06)',
-        color: '#E8E8FF',
+        background: 'var(--glass-muted)',
+        border: '1px solid var(--glass-soft-border)',
+        color: 'var(--text)',
         fontSize: 12,
       }}
     >

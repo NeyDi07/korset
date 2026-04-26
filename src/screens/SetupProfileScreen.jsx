@@ -45,10 +45,10 @@ function SurfaceCard({ children, style }) {
   return (
     <div
       style={{
-        background: 'rgba(255,255,255,0.04)',
-        border: '1px solid rgba(255,255,255,0.08)',
+        background: 'var(--glass-muted)',
+        border: '1px solid var(--glass-soft-border)',
         borderRadius: 24,
-        boxShadow: '0 20px 40px rgba(0,0,0,0.24)',
+        boxShadow: 'var(--shadow-card)',
         ...style,
       }}
     >
@@ -78,8 +78,8 @@ function AvatarChoice({ selected, onClick, children }) {
           width: '100%',
           height: '100%',
           borderRadius: 20,
-          background: 'rgba(255,255,255,0.03)',
-          border: selected ? '2px solid #8B5CF6' : '1px solid rgba(255,255,255,0.09)',
+          background: 'var(--image-bg)',
+          border: selected ? '2px solid var(--primary-mid)' : '1px solid var(--glass-soft-border)',
           boxShadow: selected ? '0 12px 28px rgba(124,58,237,0.22)' : 'none',
           overflow: 'hidden',
         }}
@@ -96,7 +96,7 @@ function AvatarChoice({ selected, onClick, children }) {
             height: 28,
             borderRadius: '50%',
             background: '#10B981',
-            border: '3px solid #0F0F18',
+            border: '3px solid var(--bg-surface)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -139,8 +139,8 @@ function AvatarGrid({
           onClick={() => fileInputRef.current?.click()}
           style={{
             appearance: 'none',
-            border: '1px dashed rgba(255,255,255,0.16)',
-            background: 'rgba(255,255,255,0.03)',
+            border: '1px dashed var(--glass-border)',
+            background: 'var(--glass-subtle)',
             borderRadius: 20,
             aspectRatio: '1 / 1',
             cursor: 'pointer',
@@ -157,7 +157,7 @@ function AvatarGrid({
               justifyContent: 'center',
               flexDirection: 'column',
               gap: 10,
-              color: 'rgba(255,255,255,0.76)',
+              color: 'var(--text-soft)',
             }}
           >
             <div
@@ -165,7 +165,7 @@ function AvatarGrid({
                 width: 44,
                 height: 44,
                 borderRadius: 14,
-                background: 'rgba(255,255,255,0.06)',
+                background: 'var(--glass-bg)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -417,7 +417,7 @@ export default function SetupProfileScreen() {
       <div
         className="screen"
         style={{
-          background: '#07070F',
+          background: 'var(--bg-app)',
           paddingTop: 0,
           paddingBottom: 'max(28px, env(safe-area-inset-bottom))',
         }}
@@ -430,9 +430,9 @@ export default function SetupProfileScreen() {
                 width: 42,
                 height: 42,
                 borderRadius: 14,
-                background: 'rgba(255,255,255,0.04)',
-                border: '1px solid rgba(255,255,255,0.08)',
-                color: '#fff',
+                background: 'var(--glass-muted)',
+                border: '1px solid var(--glass-soft-border)',
+                color: 'var(--text)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -457,7 +457,7 @@ export default function SetupProfileScreen() {
                 margin: 0,
                 fontSize: 24,
                 fontWeight: 700,
-                color: '#fff',
+                color: 'var(--text)',
                 letterSpacing: '-0.02em',
               }}
             >
@@ -480,8 +480,8 @@ export default function SetupProfileScreen() {
             </div>
             <div
               style={{
-                background: 'rgba(255,255,255,0.03)',
-                border: `1px solid ${nameError ? 'rgba(248,113,113,0.45)' : 'rgba(255,255,255,0.09)'}`,
+                background: 'var(--input-bg)',
+                border: `1px solid ${nameError ? 'rgba(248,113,113,0.45)' : 'var(--input-border)'}`,
                 borderRadius: 18,
                 padding: '15px 16px',
               }}
@@ -496,7 +496,7 @@ export default function SetupProfileScreen() {
                   background: 'transparent',
                   border: 'none',
                   outline: 'none',
-                  color: '#fff',
+                  color: 'var(--text)',
                   fontSize: 18,
                   fontWeight: 700,
                   letterSpacing: '-0.02em',
@@ -508,7 +508,7 @@ export default function SetupProfileScreen() {
                 minHeight: 20,
                 paddingTop: 10,
                 fontSize: 12,
-                color: nameError ? '#FCA5A5' : 'rgba(255,255,255,0.28)',
+                color: nameError ? '#FCA5A5' : 'var(--text-disabled)',
               }}
             >
               {nameError || `${name.trim().length}/24`}
@@ -531,7 +531,7 @@ export default function SetupProfileScreen() {
             <div
               style={{
                 fontSize: 14,
-                color: 'rgba(255,255,255,0.48)',
+                color: 'var(--text-faint)',
                 lineHeight: 1.5,
                 marginBottom: 18,
               }}
@@ -561,7 +561,7 @@ export default function SetupProfileScreen() {
               cursor: loading ? 'default' : 'pointer',
               background:
                 loading || !canContinueName || !hasAvatar ? 'rgba(139,92,246,0.35)' : '#7C3AED',
-              color: '#fff',
+              color: 'var(--text-inverse)',
               fontSize: 16,
               fontWeight: 700,
               boxShadow: loading ? 'none' : '0 18px 36px rgba(124,58,237,0.24)',
@@ -578,7 +578,7 @@ export default function SetupProfileScreen() {
     <div
       className="screen"
       style={{
-        background: '#07070F',
+        background: 'var(--bg-app)',
         paddingTop: 0,
         paddingBottom: 'max(32px, env(safe-area-inset-bottom))',
       }}
@@ -598,9 +598,9 @@ export default function SetupProfileScreen() {
               width: 42,
               height: 42,
               borderRadius: 14,
-              background: 'rgba(255,255,255,0.04)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              color: '#fff',
+              background: 'var(--glass-muted)',
+              border: '1px solid var(--glass-soft-border)',
+              color: 'var(--text)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -634,7 +634,7 @@ export default function SetupProfileScreen() {
           style={{
             height: 4,
             borderRadius: 999,
-            background: 'rgba(255,255,255,0.08)',
+            background: 'var(--glass-bg)',
             overflow: 'hidden',
             marginBottom: 24,
           }}
@@ -667,7 +667,7 @@ export default function SetupProfileScreen() {
               style={{
                 fontSize: 28,
                 fontWeight: 800,
-                color: '#fff',
+                color: 'var(--text)',
                 lineHeight: 1.15,
                 marginBottom: 10,
               }}
@@ -677,7 +677,7 @@ export default function SetupProfileScreen() {
             <div
               style={{
                 fontSize: 14,
-                color: 'rgba(255,255,255,0.48)',
+                color: 'var(--text-faint)',
                 lineHeight: 1.5,
                 marginBottom: 18,
               }}
@@ -686,8 +686,8 @@ export default function SetupProfileScreen() {
             </div>
             <div
               style={{
-                background: 'rgba(255,255,255,0.03)',
-                border: `1px solid ${nameError ? 'rgba(248,113,113,0.45)' : 'rgba(255,255,255,0.09)'}`,
+                background: 'var(--input-bg)',
+                border: `1px solid ${nameError ? 'rgba(248,113,113,0.45)' : 'var(--input-border)'}`,
                 borderRadius: 18,
                 padding: '16px 18px',
               }}
@@ -702,7 +702,7 @@ export default function SetupProfileScreen() {
                   background: 'transparent',
                   border: 'none',
                   outline: 'none',
-                  color: '#fff',
+                  color: 'var(--text)',
                   fontSize: 20,
                   fontWeight: 700,
                   letterSpacing: '-0.02em',
@@ -714,7 +714,7 @@ export default function SetupProfileScreen() {
                 minHeight: 22,
                 paddingTop: 10,
                 fontSize: 12,
-                color: nameError ? '#FCA5A5' : 'rgba(255,255,255,0.28)',
+                color: nameError ? '#FCA5A5' : 'var(--text-disabled)',
               }}
             >
               {nameError || `${name.trim().length}/24`}
@@ -738,7 +738,7 @@ export default function SetupProfileScreen() {
               style={{
                 fontSize: 28,
                 fontWeight: 800,
-                color: '#fff',
+                color: 'var(--text)',
                 lineHeight: 1.15,
                 marginBottom: 10,
               }}
@@ -748,7 +748,7 @@ export default function SetupProfileScreen() {
             <div
               style={{
                 fontSize: 14,
-                color: 'rgba(255,255,255,0.48)',
+                color: 'var(--text-faint)',
                 lineHeight: 1.5,
                 marginBottom: 18,
               }}
@@ -781,7 +781,7 @@ export default function SetupProfileScreen() {
               loading || (step === 1 ? !canContinueName : !hasAvatar)
                 ? 'rgba(139,92,246,0.35)'
                 : '#7C3AED',
-            color: '#fff',
+            color: 'var(--text-inverse)',
             fontSize: 16,
             fontWeight: 700,
             boxShadow: loading ? 'none' : '0 18px 36px rgba(124,58,237,0.24)',

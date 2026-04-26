@@ -4,35 +4,57 @@ import { useI18n } from '../utils/i18n.js'
 
 const ALLERGEN_NAMES = {
   ru: {
-    milk: 'Молоко', eggs: 'Яйца', gluten: 'Глютен', nuts: 'Орехи',
-    peanuts: 'Арахис', soy: 'Соя', fish: 'Рыба', shellfish: 'Морепродукты',
-    sesame: 'Кунжут', honey: 'Мёд',
+    milk: 'Молоко',
+    eggs: 'Яйца',
+    gluten: 'Глютен',
+    nuts: 'Орехи',
+    peanuts: 'Арахис',
+    soy: 'Соя',
+    fish: 'Рыба',
+    shellfish: 'Морепродукты',
+    sesame: 'Кунжут',
+    honey: 'Мёд',
   },
   kz: {
-    milk: 'Сүт', eggs: 'Жұмыртқа', gluten: 'Глютен', nuts: 'Жаңғақ',
-    peanuts: 'Жержаңғақ', soy: 'Соя', fish: 'Балық', shellfish: 'Теңіз өнімдері',
-    sesame: 'Күнжіт', honey: 'Бал',
+    milk: 'Сүт',
+    eggs: 'Жұмыртқа',
+    gluten: 'Глютен',
+    nuts: 'Жаңғақ',
+    peanuts: 'Жержаңғақ',
+    soy: 'Соя',
+    fish: 'Балық',
+    shellfish: 'Теңіз өнімдері',
+    sesame: 'Күнжіт',
+    honey: 'Бал',
   },
 }
 
 const DIET_NAMES = {
   ru: {
-    sugar_free: 'Без сахара', dairy_free: 'Без лактозы', gluten_free: 'Без глютена',
-    vegan: 'Веган', vegetarian: 'Вегетариан', keto: 'Кето', kid_friendly: 'Для детей',
+    sugar_free: 'Без сахара',
+    dairy_free: 'Без лактозы',
+    gluten_free: 'Без глютена',
+    vegan: 'Веган',
+    vegetarian: 'Вегетариан',
+    keto: 'Кето',
+    kid_friendly: 'Для детей',
     halal: 'Халал',
   },
   kz: {
-    sugar_free: 'Қантсыз', dairy_free: 'Лактозасыз', gluten_free: 'Глютенсіз',
-    vegan: 'Веган', vegetarian: 'Вегетариан', keto: 'Кето', kid_friendly: 'Балаларға',
+    sugar_free: 'Қантсыз',
+    dairy_free: 'Лактозасыз',
+    gluten_free: 'Глютенсіз',
+    vegan: 'Веган',
+    vegetarian: 'Вегетариан',
+    keto: 'Кето',
+    kid_friendly: 'Балаларға',
     halal: 'Халал',
   },
 }
 
 function formatList(ids, nameMap, lang) {
   if (!ids || ids.length === 0) return null
-  return ids
-    .map((id) => nameMap[lang]?.[id] || nameMap.ru?.[id] || id)
-    .join(', ')
+  return ids.map((id) => nameMap[lang]?.[id] || nameMap.ru?.[id] || id).join(', ')
 }
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
@@ -41,42 +63,62 @@ function DiffRow({ label, localValue, cloudValue, lang }) {
   const emptyText = lang === 'kz' ? 'Таңдалмаған' : 'Не выбрано'
   return (
     <div style={{ marginBottom: 12 }}>
-      <div style={{
-        fontSize: 10, fontWeight: 700, color: 'rgba(196,181,253,0.6)',
-        textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 7,
-      }}>
+      <div
+        style={{
+          fontSize: 10,
+          fontWeight: 700,
+          color: 'var(--text-disabled)',
+          textTransform: 'uppercase',
+          letterSpacing: '0.1em',
+          marginBottom: 7,
+        }}
+      >
         {label}
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 7 }}>
         {/* Local */}
-        <div style={{
-          background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)',
-          borderRadius: 10, padding: '10px 11px',
-        }}>
-          <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', marginBottom: 5 }}>
+        <div
+          style={{
+            background: 'var(--glass-subtle)',
+            border: '1px solid var(--glass-soft-border)',
+            borderRadius: 10,
+            padding: '10px 11px',
+          }}
+        >
+          <div style={{ fontSize: 10, color: 'var(--text-disabled)', marginBottom: 5 }}>
             📱 {lang === 'kz' ? 'Құрылғыда' : 'На устройстве'}
           </div>
-          <div style={{
-            fontSize: 12, lineHeight: 1.4,
-            color: localValue ? '#fff' : 'rgba(255,255,255,0.25)',
-            fontStyle: localValue ? 'normal' : 'italic',
-          }}>
+          <div
+            style={{
+              fontSize: 12,
+              lineHeight: 1.4,
+              color: localValue ? 'var(--text)' : 'var(--text-disabled)',
+              fontStyle: localValue ? 'normal' : 'italic',
+            }}
+          >
             {localValue || emptyText}
           </div>
         </div>
         {/* Cloud */}
-        <div style={{
-          background: 'rgba(124,58,237,0.07)', border: '1px solid rgba(124,58,237,0.18)',
-          borderRadius: 10, padding: '10px 11px',
-        }}>
-          <div style={{ fontSize: 10, color: 'rgba(196,181,253,0.45)', marginBottom: 5 }}>
+        <div
+          style={{
+            background: 'rgba(124,58,237,0.07)',
+            border: '1px solid rgba(124,58,237,0.18)',
+            borderRadius: 10,
+            padding: '10px 11px',
+          }}
+        >
+          <div style={{ fontSize: 10, color: 'var(--primary)', opacity: 0.6, marginBottom: 5 }}>
             ☁️ {lang === 'kz' ? 'Аккаунтта' : 'В аккаунте'}
           </div>
-          <div style={{
-            fontSize: 12, lineHeight: 1.4,
-            color: cloudValue ? '#DDD6FE' : 'rgba(196,181,253,0.3)',
-            fontStyle: cloudValue ? 'normal' : 'italic',
-          }}>
+          <div
+            style={{
+              fontSize: 12,
+              lineHeight: 1.4,
+              color: cloudValue ? 'var(--primary)' : 'var(--text-disabled)',
+              fontStyle: cloudValue ? 'normal' : 'italic',
+            }}
+          >
             {cloudValue || emptyText}
           </div>
         </div>
@@ -107,8 +149,10 @@ export default function SyncResolveModal({ conflict, loading, onResolve, onDismi
   const halalDiffer = Boolean(local.halal) !== Boolean(cloud.halal)
 
   const btnBase = {
-    border: 'none', cursor: loading ? 'not-allowed' : 'pointer',
-    opacity: loading ? 0.55 : 1, transition: 'opacity 0.15s, transform 0.12s',
+    border: 'none',
+    cursor: loading ? 'not-allowed' : 'pointer',
+    opacity: loading ? 0.55 : 1,
+    transition: 'opacity 0.15s, transform 0.12s',
     fontFamily: 'inherit',
   }
 
@@ -124,9 +168,15 @@ export default function SyncResolveModal({ conflict, loading, onResolve, onDismi
       {/* Backdrop */}
       <div
         style={{
-          position: 'fixed', inset: 0, zIndex: 9000,
-          background: 'rgba(4,4,14,0.86)', backdropFilter: 'blur(18px)',
-          display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
+          position: 'fixed',
+          inset: 0,
+          zIndex: 9000,
+          background: 'var(--overlay-bg)',
+          backdropFilter: 'blur(18px)',
+          WebkitBackdropFilter: 'blur(18px)',
+          display: 'flex',
+          alignItems: 'flex-end',
+          justifyContent: 'center',
           animation: 'srBackdrop 0.22s ease both',
         }}
         onClick={onDismiss}
@@ -135,9 +185,10 @@ export default function SyncResolveModal({ conflict, loading, onResolve, onDismi
         <div
           onClick={(e) => e.stopPropagation()}
           style={{
-            width: '100%', maxWidth: 520,
-            background: 'linear-gradient(170deg, rgba(18,14,36,0.98) 0%, rgba(10,8,24,0.99) 100%)',
-            border: '1px solid rgba(124,58,237,0.2)',
+            width: '100%',
+            maxWidth: 520,
+            background: 'linear-gradient(170deg, var(--bg-card) 0%, var(--bg-surface) 100%)',
+            border: '1px solid var(--glass-border)',
             borderBottom: 'none',
             borderRadius: '24px 24px 0 0',
             padding: '10px 22px 32px',
@@ -145,33 +196,53 @@ export default function SyncResolveModal({ conflict, loading, onResolve, onDismi
             maxHeight: '92vh',
             overflowY: 'auto',
             animation: 'srCard 0.32s cubic-bezier(0.22, 1, 0.36, 1) both',
-            boxShadow: '0 -24px 80px rgba(124,58,237,0.12), 0 -1px 0 rgba(124,58,237,0.15)',
+            boxShadow: 'var(--shadow-soft), 0 -1px 0 var(--glass-border)',
           }}
         >
           {/* Drag handle */}
-          <div style={{
-            width: 36, height: 4, borderRadius: 2,
-            background: 'rgba(255,255,255,0.1)',
-            margin: '10px auto 22px',
-          }} />
+          <div
+            style={{
+              width: 36,
+              height: 4,
+              borderRadius: 2,
+              background: 'var(--glass-handle)',
+              margin: '10px auto 22px',
+            }}
+          />
 
           {/* Header */}
-          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 10 }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              justifyContent: 'space-between',
+              marginBottom: 10,
+            }}
+          >
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{
-                width: 46, height: 46, borderRadius: 14, flexShrink: 0,
-                background: 'linear-gradient(135deg, rgba(234,179,8,0.16), rgba(234,179,8,0.06))',
-                border: '1px solid rgba(234,179,8,0.22)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 22,
-              }}>
+              <div
+                style={{
+                  width: 46,
+                  height: 46,
+                  borderRadius: 14,
+                  flexShrink: 0,
+                  background: 'linear-gradient(135deg, rgba(234,179,8,0.16), rgba(234,179,8,0.06))',
+                  border: '1px solid rgba(234,179,8,0.22)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 22,
+                }}
+              >
                 ⚖️
               </div>
               <div>
-                <div style={{ fontSize: 17, fontWeight: 800, color: '#fff', lineHeight: 1.2 }}>
+                <div
+                  style={{ fontSize: 17, fontWeight: 800, color: 'var(--text)', lineHeight: 1.2 }}
+                >
                   {lang === 'kz' ? 'Баптаулар сәйкеспейді' : 'Разные настройки'}
                 </div>
-                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', marginTop: 2 }}>
+                <div style={{ fontSize: 12, color: 'var(--text-dim)', marginTop: 2 }}>
                   {lang === 'kz' ? 'Деректерді қалай біріктіру керек?' : 'Как объединить данные?'}
                 </div>
               </div>
@@ -180,27 +251,47 @@ export default function SyncResolveModal({ conflict, loading, onResolve, onDismi
             <button
               onClick={onDismiss}
               style={{
-                ...btnBase, width: 32, height: 32, borderRadius: 8, flexShrink: 0,
-                background: 'rgba(255,255,255,0.05)',
-                border: '1px solid rgba(255,255,255,0.07)',
-                color: 'rgba(255,255,255,0.3)', display: 'flex',
-                alignItems: 'center', justifyContent: 'center',
+                ...btnBase,
+                width: 32,
+                height: 32,
+                borderRadius: 8,
+                flexShrink: 0,
+                background: 'var(--glass-bg)',
+                border: '1px solid var(--glass-border)',
+                color: 'var(--text-dim)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
               aria-label="Закрыть"
             >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+              >
                 <path d="M18 6L6 18M6 6l12 12" />
               </svg>
             </button>
           </div>
 
           {/* Description */}
-          <p style={{
-            fontSize: 13, lineHeight: 1.6, color: 'rgba(255,255,255,0.5)',
-            margin: '0 0 18px', padding: '12px 14px',
-            background: 'rgba(255,255,255,0.03)', borderRadius: 12,
-            border: '1px solid rgba(255,255,255,0.05)',
-          }}>
+          <p
+            style={{
+              fontSize: 13,
+              lineHeight: 1.6,
+              color: 'var(--text-sub)',
+              margin: '0 0 18px',
+              padding: '12px 14px',
+              background: 'var(--glass-bg)',
+              borderRadius: 12,
+              border: '1px solid var(--glass-border)',
+            }}
+          >
             {lang === 'kz'
               ? 'Бұл құрылғыда және Körset аккаунтыңызда аллерген мен тамақтану баптаулары әртүрлі. Мәліметтерді қалай сақтағыңыз келеді?'
               : 'На этом устройстве и в вашем Körset аккаунте сохранены разные аллергены или предпочтения. Выберите, как их объединить.'}
@@ -244,7 +335,6 @@ export default function SyncResolveModal({ conflict, loading, onResolve, onDismi
 
           {/* ─── Action buttons ─── */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
-
             {/* Primary: Merge (recommended) */}
             <button
               className="sr-btn-primary"
@@ -252,19 +342,35 @@ export default function SyncResolveModal({ conflict, loading, onResolve, onDismi
               disabled={loading}
               style={{
                 ...btnBase,
-                width: '100%', height: 54, borderRadius: 16,
+                width: '100%',
+                height: 54,
+                borderRadius: 16,
                 background: loading
                   ? 'rgba(124,58,237,0.4)'
                   : 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)',
-                color: '#fff', fontSize: 15, fontWeight: 800,
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                color: '#fff',
+                fontSize: 15,
+                fontWeight: 800,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 8,
                 boxShadow: loading ? 'none' : '0 8px 28px rgba(124,58,237,0.35)',
               }}
             >
-              {loading
-                ? <><span style={{ animation: 'spin 0.8s linear infinite', display: 'inline-block' }}>⏳</span> {lang === 'kz' ? 'Сақталуда...' : 'Сохранение...'}</>
-                : <><span>🔀</span> {lang === 'kz' ? 'Біріктіру (ұсынылады)' : 'Объединить (рекомендуется)'}</>
-              }
+              {loading ? (
+                <>
+                  <span style={{ animation: 'spin 0.8s linear infinite', display: 'inline-block' }}>
+                    ⏳
+                  </span>{' '}
+                  {lang === 'kz' ? 'Сақталуда...' : 'Сохранение...'}
+                </>
+              ) : (
+                <>
+                  <span>🔀</span>{' '}
+                  {lang === 'kz' ? 'Біріктіру (ұсынылады)' : 'Объединить (рекомендуется)'}
+                </>
+              )}
             </button>
 
             {/* Secondary row: Cloud / Local */}
@@ -275,10 +381,13 @@ export default function SyncResolveModal({ conflict, loading, onResolve, onDismi
                 disabled={loading}
                 style={{
                   ...btnBase,
-                  height: 48, borderRadius: 14,
-                  background: 'rgba(255,255,255,0.04)',
-                  border: '1px solid rgba(255,255,255,0.08)',
-                  color: '#DDD6FE', fontSize: 13, fontWeight: 700,
+                  height: 48,
+                  borderRadius: 14,
+                  background: 'var(--glass-subtle)',
+                  border: '1px solid var(--glass-soft-border)',
+                  color: 'var(--text)',
+                  fontSize: 13,
+                  fontWeight: 700,
                 }}
               >
                 ☁️ {lang === 'kz' ? 'Аккаунттан' : 'Из аккаунта'}
@@ -289,10 +398,13 @@ export default function SyncResolveModal({ conflict, loading, onResolve, onDismi
                 disabled={loading}
                 style={{
                   ...btnBase,
-                  height: 48, borderRadius: 14,
-                  background: 'rgba(255,255,255,0.04)',
-                  border: '1px solid rgba(255,255,255,0.08)',
-                  color: '#DDD6FE', fontSize: 13, fontWeight: 700,
+                  height: 48,
+                  borderRadius: 14,
+                  background: 'var(--glass-subtle)',
+                  border: '1px solid var(--glass-soft-border)',
+                  color: 'var(--text)',
+                  fontSize: 13,
+                  fontWeight: 700,
                 }}
               >
                 📱 {lang === 'kz' ? 'Құрылғыдан' : 'С устройства'}
@@ -305,9 +417,13 @@ export default function SyncResolveModal({ conflict, loading, onResolve, onDismi
               disabled={loading}
               style={{
                 ...btnBase,
-                background: 'none', border: 'none',
-                color: 'rgba(255,255,255,0.28)', fontSize: 13,
-                padding: '6px 0', textAlign: 'center', width: '100%',
+                background: 'none',
+                border: 'none',
+                color: 'var(--text-disabled)',
+                fontSize: 13,
+                padding: '6px 0',
+                textAlign: 'center',
+                width: '100%',
               }}
             >
               {lang === 'kz' ? 'Кейінірек шешемін' : 'Решу позже'}

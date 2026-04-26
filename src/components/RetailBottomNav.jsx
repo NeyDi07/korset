@@ -15,7 +15,7 @@ export default function RetailBottomNav() {
   }
 
   const active = getActive()
-  const col = (on) => (on ? '#38BDF8' : 'rgba(148, 163, 184, 0.45)')
+  const col = (on) => (on ? 'var(--retail-accent)' : 'var(--nav-muted)')
   const storeSlug = currentStore?.slug || 'store-one'
 
   const TABS = [
@@ -52,9 +52,11 @@ export default function RetailBottomNav() {
         alignItems: 'end',
         columnGap: 4,
         padding: `8px 8px calc(12px + env(safe-area-inset-bottom, 0px))`,
-        background: 'rgba(8,12,24,0.97)', // Slightly bluer tint for retail
+        background: 'var(--retail-nav-bg)',
         backdropFilter: 'blur(24px)',
-        borderTop: '1px solid rgba(56, 189, 248, 0.15)', // Blue tint border
+        WebkitBackdropFilter: 'blur(24px)',
+        borderTop: '1px solid var(--retail-border)',
+        boxShadow: '0 -18px 48px rgba(15,23,42,0.12)',
       }}
     >
       {TABS.map((tab) => {

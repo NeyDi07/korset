@@ -23,7 +23,7 @@ function FullScreenLoader({ label }) {
         alignItems: 'center',
         justifyContent: 'center',
         gap: 16,
-        background: '#080C18',
+        background: 'var(--bg-app)',
       }}
     >
       <div style={spinStyle} />
@@ -50,7 +50,7 @@ function NoStoreScreen({ userEmail }) {
         justifyContent: 'center',
         padding: '40px 24px',
         gap: 20,
-        background: '#080C18',
+        background: 'var(--bg-app)',
         textAlign: 'center',
       }}
     >
@@ -61,7 +61,12 @@ function NoStoreScreen({ userEmail }) {
         storefront
       </span>
       <div
-        style={{ fontFamily: 'var(--font-display)', fontSize: 24, fontWeight: 800, color: '#fff' }}
+        style={{
+          fontFamily: 'var(--font-display)',
+          fontSize: 24,
+          fontWeight: 800,
+          color: 'var(--text)',
+        }}
       >
         Магазин не найден
       </div>
@@ -69,7 +74,7 @@ function NoStoreScreen({ userEmail }) {
         Аккаунт <b style={{ color: '#E9D5FF' }}>{userEmail}</b> не привязан ни к одному магазину
         Körset.
       </div>
-      <div style={{ fontSize: 13, color: 'rgba(180,180,210,0.4)', lineHeight: 1.6, maxWidth: 300 }}>
+      <div style={{ fontSize: 13, color: 'var(--text-dim)', lineHeight: 1.6, maxWidth: 300 }}>
         Если вы хотите подключить ваш магазин — напишите нам, мы настроим доступ вручную на этапе
         пилота.
       </div>

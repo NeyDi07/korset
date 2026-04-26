@@ -35,9 +35,9 @@ export default function StoresScreen() {
             width: 38,
             height: 38,
             borderRadius: 12,
-            border: '1px solid rgba(255,255,255,0.1)',
-            background: 'rgba(255,255,255,0.05)',
-            color: '#fff',
+            border: '1px solid var(--glass-border)',
+            background: 'var(--glass-bg)',
+            color: 'var(--text)',
           }}
         >
           ←
@@ -54,7 +54,7 @@ export default function StoresScreen() {
                 width: 28,
                 height: 28,
                 border: '3px solid rgba(56,189,248,0.15)',
-                borderTop: '3px solid #38BDF8',
+                borderTop: '3px solid var(--accent-sky)',
                 borderRadius: '50%',
                 animation: 'spin 0.8s linear infinite',
                 margin: '0 auto 12px',
@@ -87,8 +87,8 @@ export default function StoresScreen() {
               borderRadius: 18,
               cursor: 'pointer',
               textAlign: 'left',
-              background: 'rgba(255,255,255,0.04)',
-              border: '1px solid rgba(255,255,255,0.08)',
+              background: 'var(--glass-muted)',
+              border: '1px solid var(--glass-soft-border)',
               display: 'flex',
               alignItems: 'center',
               gap: 14,
@@ -118,7 +118,7 @@ export default function StoresScreen() {
                   justifyContent: 'center',
                   fontSize: 20,
                   fontWeight: 800,
-                  color: '#fff',
+                  color: 'var(--text-inverse)',
                   fontFamily: 'var(--font-display)',
                   flexShrink: 0,
                 }}
@@ -127,12 +127,12 @@ export default function StoresScreen() {
               </div>
             )}
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 16, fontWeight: 700, color: '#fff', marginBottom: 4 }}>
+              <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)', marginBottom: 4 }}>
                 {store.name}
               </div>
-              <div style={{ fontSize: 12, color: 'rgba(180,180,210,0.65)' }}>{store.city}</div>
+              <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>{store.city}</div>
             </div>
-            <span style={{ color: 'rgba(167,139,250,0.8)', fontSize: 18 }}>›</span>
+            <span style={{ color: 'var(--primary-bright)', fontSize: 18 }}>›</span>
           </button>
         ))}
       </div>

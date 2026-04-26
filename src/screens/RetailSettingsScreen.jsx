@@ -251,16 +251,16 @@ export default function RetailSettingsScreen() {
     paddingLeft: 4,
   }
   const CARD_STYLE = {
-    background: 'rgba(255,255,255,0.03)',
-    border: '1px solid rgba(255,255,255,0.08)',
+    background: 'var(--glass-subtle)',
+    border: '1px solid var(--glass-soft-border)',
     borderRadius: 16,
     overflow: 'hidden',
   }
   const INPUT_STYLE = {
     width: '100%',
-    background: 'rgba(0,0,0,0.2)',
-    border: '1px solid rgba(255,255,255,0.1)',
-    color: '#fff',
+    background: 'var(--input-bg)',
+    border: '1px solid var(--input-border)',
+    color: 'var(--text)',
     padding: '12px 14px',
     borderRadius: 10,
     fontSize: 15,
@@ -268,7 +268,7 @@ export default function RetailSettingsScreen() {
     fontFamily: 'var(--font-body)',
   }
   const FIELD_LABEL = { fontSize: 13, color: 'var(--text-sub)', marginBottom: 6 }
-  const DIVIDER = { height: 1, background: 'rgba(255,255,255,0.05)' }
+  const DIVIDER = { height: 1, background: 'var(--line-soft)' }
 
   return (
     <>
@@ -295,7 +295,7 @@ export default function RetailSettingsScreen() {
               fontSize: 24,
               fontWeight: 700,
               fontFamily: 'var(--font-display)',
-              color: '#fff',
+              color: 'var(--text)',
               margin: '0 0 4px',
             }}
           >
@@ -316,8 +316,8 @@ export default function RetailSettingsScreen() {
                   width: 72,
                   height: 72,
                   borderRadius: 16,
-                  background: 'rgba(255,255,255,0.05)',
-                  border: '1px dashed rgba(255,255,255,0.15)',
+                  background: 'var(--glass-bg)',
+                  border: '1px dashed var(--glass-strong-border)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -341,7 +341,9 @@ export default function RetailSettingsScreen() {
                 )}
               </div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 14, color: '#fff', fontWeight: 600, marginBottom: 4 }}>
+                <div
+                  style={{ fontSize: 14, color: 'var(--text)', fontWeight: 600, marginBottom: 4 }}
+                >
                   {isKz ? 'Дүкен логотипі' : 'Логотип магазина'}
                 </div>
                 <div style={{ fontSize: 12, color: 'var(--text-dim)', marginBottom: 10 }}>
@@ -671,8 +673,8 @@ export default function RetailSettingsScreen() {
           </div>
           <div
             style={{
-              background: 'rgba(255,255,255,0.03)',
-              border: '1px solid rgba(255,255,255,0.08)',
+              background: 'var(--glass-subtle)',
+              border: '1px solid var(--glass-soft-border)',
               borderRadius: 16,
               padding: 20,
             }}
@@ -707,7 +709,7 @@ export default function RetailSettingsScreen() {
                 </svg>
               </div>
               <div>
-                <div style={{ fontSize: 15, color: '#fff', fontWeight: 600 }}>
+                <div style={{ fontSize: 15, color: 'var(--text)', fontWeight: 600 }}>
                   {isKz ? 'QR-код арқылы қосылу' : 'Подключение по QR-коду'}
                 </div>
                 <div style={{ fontSize: 12, color: 'var(--text-sub)', marginTop: 2 }}>
@@ -757,7 +759,7 @@ export default function RetailSettingsScreen() {
                   alignItems: 'center',
                   gap: 16,
                   padding: '20px 16px',
-                  background: 'rgba(0,0,0,0.2)',
+                  background: 'var(--input-bg)',
                   borderRadius: 12,
                   border: '1px dashed rgba(124,58,237,0.3)',
                 }}
@@ -886,8 +888,8 @@ export default function RetailSettingsScreen() {
           </div>
           <div
             style={{
-              background: 'rgba(255,255,255,0.03)',
-              border: '1px solid rgba(255,255,255,0.08)',
+              background: 'var(--glass-subtle)',
+              border: '1px solid var(--glass-soft-border)',
               borderRadius: 16,
             }}
           >
@@ -901,7 +903,9 @@ export default function RetailSettingsScreen() {
               }}
             >
               <div>
-                <div style={{ fontSize: 15, color: '#fff', fontWeight: 500, marginBottom: 4 }}>
+                <div
+                  style={{ fontSize: 15, color: 'var(--text)', fontWeight: 500, marginBottom: 4 }}
+                >
                   {isKz ? 'Жоқ тауарлар' : 'Отсутствующие товары'}
                 </div>
                 <div style={{ fontSize: 12, color: 'var(--text-sub)' }}>
@@ -919,7 +923,7 @@ export default function RetailSettingsScreen() {
                   cursor: savingToggle === 'notifyMissing' ? 'default' : 'pointer',
                   flexShrink: 0,
                   opacity: savingToggle === 'notifyMissing' ? 0.6 : 1,
-                  background: settings.notifyMissing ? '#38BDF8' : 'rgba(255,255,255,0.1)',
+                  background: settings.notifyMissing ? '#38BDF8' : 'var(--glass-border)',
                   position: 'relative',
                   transition: 'background 0.3s, opacity 0.2s',
                 }}
@@ -939,7 +943,7 @@ export default function RetailSettingsScreen() {
               </div>
             </div>
 
-            <div style={{ height: 1, background: 'rgba(255,255,255,0.05)', margin: '0 16px' }} />
+            <div style={{ height: 1, background: 'var(--line-soft)', margin: '0 16px' }} />
 
             {/* Toggle 2 */}
             <div
@@ -951,7 +955,9 @@ export default function RetailSettingsScreen() {
               }}
             >
               <div>
-                <div style={{ fontSize: 15, color: '#fff', fontWeight: 500, marginBottom: 4 }}>
+                <div
+                  style={{ fontSize: 15, color: 'var(--text)', fontWeight: 500, marginBottom: 4 }}
+                >
                   {isKz ? 'Күнделікті есеп' : 'Ежедневный отчет'}
                 </div>
                 <div style={{ fontSize: 12, color: 'var(--text-sub)' }}>
@@ -967,7 +973,7 @@ export default function RetailSettingsScreen() {
                   cursor: savingToggle === 'notifyDaily' ? 'default' : 'pointer',
                   flexShrink: 0,
                   opacity: savingToggle === 'notifyDaily' ? 0.6 : 1,
-                  background: settings.notifyDaily ? '#38BDF8' : 'rgba(255,255,255,0.1)',
+                  background: settings.notifyDaily ? '#38BDF8' : 'var(--glass-border)',
                   position: 'relative',
                   transition: 'background 0.3s, opacity 0.2s',
                 }}

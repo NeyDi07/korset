@@ -108,13 +108,23 @@ async function main() {
 
   const sb = createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: false } })
 
-  const { data: products, error } = await sb
-    .from('global_products')
-    .select('id, ean, name, name_kz, brand, country_of_origin, source_primary')
-    .eq('is_active', true)
-    .order('id')
-
-  if (error) { console.error('DB error:', error); process.exit(1) }
+  const PAGE_SIZE = 999
+  let allProducts = []
+  let page = 0
+  while (true) {
+    const { data: chunk, error } = await sb
+      .from('global_products')
+      .select('id, ean, name, name_kz, brand, country_of_origin, source_primary')
+      .eq('is_active', true)
+      .order('id')
+      .range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1)
+    if (error) { console.error('DB error:', error); process.exit(1) }
+    if (!chunk || chunk.length === 0) break
+    allProducts = allProducts.concat(chunk)
+    page++
+    if (chunk.length < PAGE_SIZE) break
+  }
+  const products = allProducts
   console.log(`Total products: ${products.length}`)
 
   let toProcess

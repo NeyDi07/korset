@@ -140,7 +140,7 @@ async function main() {
   if (error) { console.error('DB error:', error); process.exit(1) }
   console.log(`Total products: ${products.length}`)
 
-  const needsData = products.filter(p => !p.ingredients_raw || !p.nutriments_json)
+  const needsData = products.filter(p => !p.ingredients_raw || Object.keys(p.nutriments_json || {}).length === 0)
   console.log(`Need USDA enrichment: ${needsData.length}`)
   const toProcess = opts.limit > 0 ? needsData.slice(0, opts.limit) : needsData
   console.log(`Will process: ${toProcess.length}`)
@@ -233,13 +233,13 @@ async function main() {
         if (!p.ingredients_raw && ingredients) {
           updates.ingredients_raw = ingredients
         }
-        if (!p.nutriments_json && nutrients) {
+        if (Object.keys(p.nutriments_json || {}).length === 0 && nutrients) {
           updates.nutriments_json = nutrients
           updates.alcohol_100g = 0
         }
-        if (bestFood.brandName) updates.manufacturer = bestFood.brandName
+        if (bestFood.brandName && !p.manufacturer) updates.manufacturer = bestFood.brandName
         if (Object.keys(updates).length > 1) {
-          updates.source_primary = 'usda'
+          if (!p.source_primary || p.source_primary === 'manual') updates.source_primary = 'usda'
           const { error: updErr } = await sb.from('global_products').update(updates).eq('id', p.id)
           if (updErr) console.log(`    ⚠ DB update error: ${updErr.message}`)
           else console.log(`    → DB updated`)

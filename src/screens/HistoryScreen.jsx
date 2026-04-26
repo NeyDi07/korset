@@ -232,9 +232,9 @@ export default function HistoryScreen() {
             width: 40,
             height: 40,
             borderRadius: 12,
-            background: 'rgba(255,255,255,0.05)',
-            border: '1px solid rgba(255,255,255,0.08)',
-            color: '#fff',
+            background: 'var(--glass-bg)',
+            border: '1px solid var(--glass-soft-border)',
+            color: 'var(--text)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -283,7 +283,7 @@ export default function HistoryScreen() {
           style={{
             fontSize: 20,
             fontFamily: 'var(--font-display)',
-            color: '#fff',
+            color: 'var(--text)',
             marginBottom: 8,
           }}
         >
@@ -316,7 +316,7 @@ export default function HistoryScreen() {
           }
           style={{
             background: '#7C3AED',
-            color: '#fff',
+            color: 'var(--text)',
             border: 'none',
             padding: '14px 28px',
             borderRadius: 14,
@@ -339,9 +339,9 @@ export default function HistoryScreen() {
           position: 'sticky',
           top: 0,
           zIndex: 10,
-          background: 'rgba(12,12,24,0.92)',
+          background: 'var(--header-bg)',
           backdropFilter: 'blur(20px)',
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
+          borderBottom: '1px solid var(--line-soft)',
           padding: '16px 20px',
           paddingTop: 'max(16px, env(safe-area-inset-top))',
         }}
@@ -353,9 +353,9 @@ export default function HistoryScreen() {
               width: 36,
               height: 36,
               borderRadius: 10,
-              background: 'rgba(255,255,255,0.05)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              color: '#fff',
+              background: 'var(--glass-bg)',
+              border: '1px solid var(--glass-soft-border)',
+              color: 'var(--text)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -379,7 +379,7 @@ export default function HistoryScreen() {
               fontSize: 20,
               fontWeight: 700,
               fontFamily: 'var(--font-display)',
-              color: '#fff',
+              color: 'var(--text)',
             }}
           >
             {lang === 'kz' ? 'Менің тауарларым' : 'Мои товары'}
@@ -392,8 +392,8 @@ export default function HistoryScreen() {
             gap: 8,
             padding: 4,
             borderRadius: 14,
-            background: 'rgba(255,255,255,0.04)',
-            border: '1px solid rgba(255,255,255,0.06)',
+            background: 'var(--glass-muted)',
+            border: '1px solid var(--glass-soft-border)',
           }}
         >
           <button
@@ -517,7 +517,7 @@ export default function HistoryScreen() {
                 width: 72,
                 height: 72,
                 borderRadius: '50%',
-                background: 'rgba(255,255,255,0.03)',
+                background: 'var(--glass-subtle)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -530,7 +530,7 @@ export default function HistoryScreen() {
                   height="28"
                   viewBox="0 0 24 24"
                   fill="none"
-                  stroke="rgba(255,255,255,0.2)"
+                  stroke="var(--icon-muted)"
                   strokeWidth="2"
                   strokeLinecap="round"
                 >
@@ -538,14 +538,14 @@ export default function HistoryScreen() {
                   <polyline points="12 6 12 12 16 14" />
                 </svg>
               ) : (
-                <HeartIcon filled={false} size={28} color="rgba(255,255,255,0.2)" />
+                <HeartIcon filled={false} size={28} color="var(--icon-muted)" />
               )}
             </div>
             <p
               style={{
                 fontFamily: 'var(--font-display)',
                 fontSize: 14,
-                color: 'rgba(255,255,255,0.3)',
+                color: 'var(--text-disabled)',
               }}
             >
               {tab === 'history'
@@ -564,8 +564,8 @@ export default function HistoryScreen() {
                 key={`${product.canonicalId || product.id || product.ean || index}-${index}`}
                 onClick={() => goToProduct(product)}
                 style={{
-                  background: 'rgba(255,255,255,0.03)',
-                  border: '1px solid rgba(255,255,255,0.06)',
+                  background: 'var(--glass-subtle)',
+                  border: '1px solid var(--glass-soft-border)',
                   borderRadius: 16,
                   padding: 12,
                   display: 'flex',
@@ -579,7 +579,7 @@ export default function HistoryScreen() {
                     width: 56,
                     height: 56,
                     borderRadius: 12,
-                    background: 'rgba(255,255,255,0.03)',
+                    background: 'var(--image-bg)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -616,7 +616,7 @@ export default function HistoryScreen() {
                       fontSize: 14,
                       fontWeight: 600,
                       fontFamily: 'var(--font-display)',
-                      color: '#fff',
+                      color: 'var(--text)',
                       whiteSpace: 'nowrap',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
@@ -641,7 +641,7 @@ export default function HistoryScreen() {
                       <div
                         style={{
                           fontSize: 10,
-                          color: 'rgba(255,255,255,0.2)',
+                          color: 'var(--text-disabled)',
                           marginTop: 3,
                           fontFamily: 'var(--font-display)',
                         }}
@@ -656,7 +656,7 @@ export default function HistoryScreen() {
                     <div
                       style={{
                         fontSize: 10,
-                        color: 'rgba(255,255,255,0.2)',
+                        color: 'var(--text-disabled)',
                         marginTop: 3,
                         fontFamily: 'var(--font-display)',
                       }}
@@ -691,7 +691,7 @@ export default function HistoryScreen() {
                     height="16"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke="rgba(255,255,255,0.15)"
+                    stroke="var(--icon-muted)"
                     strokeWidth="2"
                     strokeLinecap="round"
                     style={{ flexShrink: 0 }}

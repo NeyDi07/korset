@@ -24,7 +24,7 @@ const CARD_THEME = {
   amber: { bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.2)', color: '#F59E0B' },
   green: { bg: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.2)', color: '#10B981' },
   red: { bg: 'rgba(248,113,113,0.08)', border: 'rgba(248,113,113,0.2)', color: '#F87171' },
-  neutral: { bg: 'rgba(255,255,255,0.03)', border: 'rgba(255,255,255,0.08)', color: '#fff' },
+  neutral: { bg: 'var(--glass-subtle)', border: 'var(--glass-soft-border)', color: 'var(--text)' },
 }
 
 function MetricCard({ label, sub, value, icon, accent = 'neutral', loading }) {
@@ -80,8 +80,8 @@ function ProductRow({ rank, name, scanCount, imageUrl, scanLabel, loading }) {
   const rowStyle = {
     display: 'flex',
     alignItems: 'center',
-    background: 'rgba(255,255,255,0.03)',
-    border: '1px solid rgba(255,255,255,0.06)',
+    background: 'var(--glass-subtle)',
+    border: '1px solid var(--glass-soft-border)',
     padding: '10px 12px',
     borderRadius: 12,
     gap: 12,
@@ -125,7 +125,7 @@ function ProductRow({ rank, name, scanCount, imageUrl, scanLabel, loading }) {
           width: 40,
           height: 40,
           borderRadius: 8,
-          background: 'rgba(255,255,255,0.05)',
+          background: 'var(--glass-bg)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -153,7 +153,7 @@ function ProductRow({ rank, name, scanCount, imageUrl, scanLabel, loading }) {
           style={{
             fontSize: 13,
             fontWeight: 500,
-            color: '#fff',
+            color: 'var(--text)',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
@@ -193,8 +193,8 @@ function MissedRow({
   const rowStyle = {
     display: 'flex',
     alignItems: 'center',
-    background: 'rgba(255,255,255,0.03)',
-    border: '1px solid rgba(255,255,255,0.06)',
+    background: 'var(--glass-subtle)',
+    border: '1px solid var(--glass-soft-border)',
     padding: '10px 12px',
     borderRadius: 12,
     gap: 12,
@@ -226,7 +226,7 @@ function MissedRow({
           width: 40,
           height: 40,
           borderRadius: 8,
-          background: 'rgba(255,255,255,0.05)',
+          background: 'var(--glass-bg)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -254,7 +254,7 @@ function MissedRow({
           style={{
             fontSize: 13,
             fontWeight: 500,
-            color: '#fff',
+            color: 'var(--text)',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
@@ -348,7 +348,7 @@ function SectionHeader({ icon, iconColor, title }) {
           fontSize: 15,
           fontFamily: 'var(--font-display)',
           fontWeight: 600,
-          color: '#fff',
+          color: 'var(--text)',
           margin: 0,
         }}
       >
@@ -473,7 +473,7 @@ export default function RetailDashboardScreen() {
               fontSize: 17,
               fontWeight: 700,
               fontFamily: 'var(--font-display)',
-              color: '#fff',
+              color: 'var(--text)',
               lineHeight: 1.3,
             }}
           >
@@ -485,8 +485,8 @@ export default function RetailDashboardScreen() {
           style={{
             display: 'flex',
             flexShrink: 0,
-            background: 'rgba(255,255,255,0.05)',
-            border: '1px solid rgba(255,255,255,0.1)',
+            background: 'var(--glass-bg)',
+            border: '1px solid var(--glass-border)',
             borderRadius: 10,
             padding: 3,
             gap: 3,
@@ -608,8 +608,8 @@ export default function RetailDashboardScreen() {
       {/* ── Scan coverage progress bar ── */}
       <div
         style={{
-          background: 'rgba(255,255,255,0.03)',
-          border: '1px solid rgba(255,255,255,0.07)',
+          background: 'var(--glass-subtle)',
+          border: '1px solid var(--glass-soft-border)',
           borderRadius: 14,
           padding: '12px 14px',
         }}
@@ -656,7 +656,7 @@ export default function RetailDashboardScreen() {
           style={{
             height: 6,
             borderRadius: 3,
-            background: 'rgba(255,255,255,0.06)',
+            background: 'var(--glass-soft-border)',
             overflow: 'hidden',
           }}
         >
@@ -720,7 +720,7 @@ export default function RetailDashboardScreen() {
                 style={{
                   padding: '5px 11px',
                   borderRadius: 8,
-                  border: `1px solid ${active ? 'rgba(245,158,11,0.4)' : 'rgba(255,255,255,0.08)'}`,
+                  border: `1px solid ${active ? 'rgba(245,158,11,0.4)' : 'var(--glass-soft-border)'}`,
                   cursor: 'pointer',
                   fontSize: 11,
                   fontWeight: 600,

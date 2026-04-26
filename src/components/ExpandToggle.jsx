@@ -12,10 +12,10 @@ export default function ExpandToggle({ checked, onChange, label }) {
         border: 'none',
         padding: 0,
         cursor: 'pointer',
-        color: '#E9D5FF',
+        color: 'var(--primary-bright)',
       }}
     >
-      <span style={{ fontSize: 14, fontWeight: 700, color: '#EDE9FE' }}>{label}</span>
+      <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)' }}>{label}</span>
       <span
         style={{
           position: 'relative',

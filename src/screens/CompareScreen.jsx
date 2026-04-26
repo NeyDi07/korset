@@ -346,7 +346,7 @@ export default function CompareScreen() {
       <div
         style={{
           flexShrink: 0,
-          background: 'rgba(7,7,15,0.98)',
+          background: 'var(--bg-app)',
           borderBottom: '1px solid rgba(139,92,246,0.15)',
           zIndex: 20,
         }}
@@ -386,7 +386,7 @@ export default function CompareScreen() {
               fontFamily: 'var(--font-display)',
               fontSize: 16,
               fontWeight: 800,
-              color: '#fff',
+              color: 'var(--text)',
               display: 'flex',
               alignItems: 'center',
               gap: 8,
@@ -434,7 +434,7 @@ export default function CompareScreen() {
                 style={{
                   fontSize: 12,
                   fontWeight: 700,
-                  color: '#fff',
+                  color: 'var(--text)',
                   textAlign: 'center',
                   lineHeight: 1.3,
                   display: '-webkit-box',

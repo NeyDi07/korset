@@ -15,7 +15,7 @@ export default function HomeScreen() {
     return (
       <div
         className="screen"
-        style={{ paddingBottom: 100, background: '#080C18', minHeight: '100vh' }}
+        style={{ paddingBottom: 100, background: 'var(--bg-app)', minHeight: '100vh' }}
       >
         {/* Background glow */}
         <div
@@ -53,8 +53,8 @@ export default function HomeScreen() {
                   height: 64,
                   borderRadius: 20,
                   objectFit: 'cover',
-                  background: 'rgba(255,255,255,0.05)',
-                  boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
+                  background: 'var(--image-bg)',
+                  boxShadow: 'var(--shadow-card)',
                 }}
               />
             ) : (
@@ -65,16 +65,16 @@ export default function HomeScreen() {
                   borderRadius: 20,
                   background:
                     'linear-gradient(135deg, rgba(56,189,248,0.25), rgba(124,58,237,0.25))',
-                  border: '1px solid rgba(56,189,248,0.2)',
+                  border: '1px solid var(--accent-sky-border)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontSize: 26,
                   fontWeight: 800,
-                  color: '#fff',
+                  color: 'var(--text-inverse)',
                   fontFamily: 'var(--font-display)',
                   flexShrink: 0,
-                  boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
+                  boxShadow: 'var(--shadow-card)',
                 }}
               >
                 {currentStore.name?.[0]?.toUpperCase() || 'K'}
@@ -84,14 +84,14 @@ export default function HomeScreen() {
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
                 <span
                   className="material-symbols-outlined"
-                  style={{ fontSize: 14, color: '#38BDF8' }}
+                  style={{ fontSize: 14, color: 'var(--accent-sky)' }}
                 >
                   verified
                 </span>
                 <span
                   style={{
                     fontSize: 11,
-                    color: 'rgba(167,139,250,0.8)',
+                    color: 'var(--primary-bright)',
                     fontWeight: 800,
                     textTransform: 'uppercase',
                     letterSpacing: '0.1em',
@@ -105,7 +105,7 @@ export default function HomeScreen() {
                   fontFamily: 'var(--font-display)',
                   fontSize: 28,
                   fontWeight: 900,
-                  color: '#fff',
+                  color: 'var(--text)',
                   lineHeight: 1.1,
                   margin: 0,
                   letterSpacing: '-0.02em',
@@ -116,7 +116,7 @@ export default function HomeScreen() {
               <div
                 style={{
                   fontSize: 13,
-                  color: 'rgba(180,180,210,0.65)',
+                  color: 'var(--text-dim)',
                   marginTop: 6,
                   display: 'flex',
                   alignItems: 'center',
@@ -132,7 +132,7 @@ export default function HomeScreen() {
                 <div
                   style={{
                     fontSize: 12,
-                    color: 'rgba(180,180,210,0.55)',
+                    color: 'var(--text-dim)',
                     marginTop: 5,
                     lineHeight: 1.4,
                   }}
@@ -230,7 +230,7 @@ export default function HomeScreen() {
                     borderRadius: 8,
                     background: 'rgba(167,139,250,0.1)',
                     border: '1px solid rgba(167,139,250,0.2)',
-                    color: 'rgba(167,139,250,0.85)',
+                    color: 'var(--primary-bright)',
                     fontSize: 11,
                     fontWeight: 600,
                     cursor: 'pointer',
@@ -253,10 +253,10 @@ export default function HomeScreen() {
             style={{
               padding: '16px 20px',
               borderRadius: 20,
-              background: 'rgba(255,255,255,0.03)',
+              background: 'var(--glass-subtle)',
               backdropFilter: 'blur(20px)',
               WebkitBackdropFilter: 'blur(20px)',
-              border: '1px solid rgba(255,255,255,0.08)',
+              border: '1px solid var(--glass-soft-border)',
               marginBottom: 24,
               display: 'flex',
               gap: 14,
@@ -268,7 +268,7 @@ export default function HomeScreen() {
                 width: 40,
                 height: 40,
                 borderRadius: 12,
-                background: 'rgba(124,58,237,0.15)',
+                background: 'var(--badge-bg)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -277,7 +277,7 @@ export default function HomeScreen() {
             >
               <span
                 className="material-symbols-outlined"
-                style={{ color: '#A78BFA', fontSize: 20 }}
+                style={{ color: 'var(--primary-bright)', fontSize: 20 }}
               >
                 info
               </span>
@@ -287,14 +287,14 @@ export default function HomeScreen() {
                 style={{
                   fontSize: 14,
                   fontWeight: 800,
-                  color: '#fff',
+                  color: 'var(--text)',
                   marginBottom: 2,
                   fontFamily: 'var(--font-display)',
                 }}
               >
                 Контекст магазина
               </div>
-              <div style={{ fontSize: 12, lineHeight: 1.4, color: 'rgba(220,220,255,0.6)' }}>
+              <div style={{ fontSize: 12, lineHeight: 1.4, color: 'var(--text-soft)' }}>
                 Аллергены, халал, КБЖУ, наличие и цена адаптированы под этот филиал.
               </div>
             </div>
@@ -311,11 +311,11 @@ export default function HomeScreen() {
               background: 'linear-gradient(135deg, rgba(124,58,237,0.3), rgba(56,189,248,0.15))',
               backdropFilter: 'blur(20px)',
               WebkitBackdropFilter: 'blur(20px)',
-              border: '1px solid rgba(255,255,255,0.15)',
+              border: '1px solid var(--glass-strong-border)',
               display: 'flex',
               alignItems: 'center',
               gap: 20,
-              boxShadow: '0 16px 40px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2)',
+              boxShadow: 'var(--shadow-card), inset 0 1px 0 rgba(255,255,255,0.2)',
               marginBottom: 16,
               transition: 'transform 0.2s, box-shadow 0.2s',
             }}
@@ -342,7 +342,10 @@ export default function HomeScreen() {
                 boxShadow: '0 8px 24px rgba(56,189,248,0.4)',
               }}
             >
-              <span className="material-symbols-outlined" style={{ color: '#fff', fontSize: 28 }}>
+              <span
+                className="material-symbols-outlined"
+                style={{ color: 'var(--text-inverse)', fontSize: 28 }}
+              >
                 barcode_scanner
               </span>
             </div>
@@ -352,20 +355,20 @@ export default function HomeScreen() {
                   fontFamily: 'var(--font-display)',
                   fontSize: 20,
                   fontWeight: 800,
-                  color: '#fff',
+                  color: 'var(--text)',
                   marginBottom: 4,
                   letterSpacing: '-0.01em',
                 }}
               >
                 {t.home.scanBtn}
               </div>
-              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', fontWeight: 500 }}>
+              <div style={{ fontSize: 13, color: 'var(--text-soft)', fontWeight: 500 }}>
                 {t.home.scanSub}
               </div>
             </div>
             <span
               className="material-symbols-outlined"
-              style={{ marginLeft: 'auto', color: 'rgba(255,255,255,0.3)', fontSize: 24 }}
+              style={{ marginLeft: 'auto', color: 'var(--icon-muted)', fontSize: 24 }}
             >
               chevron_right
             </span>
@@ -381,13 +384,13 @@ export default function HomeScreen() {
                 padding: '20px 16px',
                 borderRadius: 24,
                 cursor: 'pointer',
-                background: 'rgba(255,255,255,0.03)',
+                background: 'var(--glass-subtle)',
                 backdropFilter: 'blur(20px)',
-                border: '1px solid rgba(255,255,255,0.08)',
+                border: '1px solid var(--glass-soft-border)',
                 display: 'flex',
                 flexDirection: 'column',
                 gap: 12,
-                boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
+                boxShadow: 'var(--shadow-card)',
               }}
             >
               <div
@@ -395,7 +398,7 @@ export default function HomeScreen() {
                   width: 44,
                   height: 44,
                   borderRadius: 14,
-                  background: 'rgba(56,189,248,0.1)',
+                  background: 'var(--accent-sky-dim)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -406,7 +409,7 @@ export default function HomeScreen() {
                   height="22"
                   viewBox="0 0 24 24"
                   fill="none"
-                  stroke="#38BDF8"
+                  stroke="var(--accent-sky)"
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -423,13 +426,13 @@ export default function HomeScreen() {
                     fontFamily: 'var(--font-display)',
                     fontSize: 16,
                     fontWeight: 800,
-                    color: '#fff',
+                    color: 'var(--text)',
                     marginBottom: 2,
                   }}
                 >
                   {t.home.catalog}
                 </div>
-                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', lineHeight: 1.3 }}>
+                <div style={{ fontSize: 12, color: 'var(--text-faint)', lineHeight: 1.3 }}>
                   {t.home.catalogSub}
                 </div>
               </div>
@@ -441,13 +444,13 @@ export default function HomeScreen() {
                 padding: '20px 16px',
                 borderRadius: 24,
                 cursor: 'pointer',
-                background: 'rgba(255,255,255,0.03)',
+                background: 'var(--glass-subtle)',
                 backdropFilter: 'blur(20px)',
-                border: '1px solid rgba(255,255,255,0.08)',
+                border: '1px solid var(--glass-soft-border)',
                 display: 'flex',
                 flexDirection: 'column',
                 gap: 12,
-                boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
+                boxShadow: 'var(--shadow-card)',
               }}
             >
               <div
@@ -480,13 +483,13 @@ export default function HomeScreen() {
                     fontFamily: 'var(--font-display)',
                     fontSize: 16,
                     fontWeight: 800,
-                    color: '#fff',
+                    color: 'var(--text)',
                     marginBottom: 2,
                   }}
                 >
                   {t.home.ai}
                 </div>
-                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', lineHeight: 1.3 }}>
+                <div style={{ fontSize: 12, color: 'var(--text-faint)', lineHeight: 1.3 }}>
                   {t.home.aiSub}
                 </div>
               </div>
@@ -500,14 +503,14 @@ export default function HomeScreen() {
               padding: '18px 20px',
               borderRadius: 20,
               cursor: 'pointer',
-              background: 'rgba(255,255,255,0.02)',
+              background: 'var(--glass-subtle)',
               backdropFilter: 'blur(20px)',
-              border: '1px solid rgba(255,255,255,0.06)',
+              border: '1px solid var(--glass-soft-border)',
               display: 'flex',
               alignItems: 'center',
               gap: 16,
               marginBottom: 20,
-              boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+              boxShadow: 'var(--shadow-card)',
             }}
           >
             <div
@@ -533,20 +536,20 @@ export default function HomeScreen() {
                 style={{
                   fontSize: 15,
                   fontWeight: 800,
-                  color: '#fff',
+                  color: 'var(--text)',
                   fontFamily: 'var(--font-display)',
                   letterSpacing: '0.01em',
                 }}
               >
                 {lang === 'kz' ? 'Менің тарихым' : 'Моя история'}
               </div>
-              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginTop: 2 }}>
+              <div style={{ fontSize: 12, color: 'var(--text-faint)', marginTop: 2 }}>
                 {lang === 'kz' ? 'Сканерленген тауарлар' : 'Отсканированные товары'}
               </div>
             </div>
             <span
               className="material-symbols-outlined"
-              style={{ color: 'rgba(255,255,255,0.2)', fontSize: 20 }}
+              style={{ color: 'var(--icon-muted)', fontSize: 20 }}
             >
               arrow_forward
             </span>
@@ -560,16 +563,16 @@ export default function HomeScreen() {
     <>
       <style>{`
         .landing-page {
-          --primary: #d2bbff;
-          --primary-container: #7c3aed;
-          --secondary: #d2bbff;
+          --primary: var(--primary-bright);
+          --primary-container: var(--primary);
+          --secondary: var(--primary-bright);
           --secondary-container: #523787;
           --tertiary: #ffb784;
           --tertiary-container: #a15100;
-          --bg: #07070F;
-          --surface: #131317;
-          --surface-variant: #353439;
-          --on-surface-variant: #ccc3d8;
+          --bg: var(--bg-app);
+          --surface: var(--bg-surface);
+          --surface-variant: var(--bg-card);
+          --on-surface-variant: var(--text-sub);
           --error: #ffb4ab;
 
           position: fixed;
@@ -578,7 +581,7 @@ export default function HomeScreen() {
           overflow-y: auto;
           overflow-x: hidden;
           font-family: var(--font-body);          background-color: var(--bg);
-          color: #e4e1e7;
+          color: var(--text);
           scrollbar-width: thin;
           scrollbar-color: rgba(124,58,237,0.3) transparent;
         }
@@ -590,22 +593,22 @@ export default function HomeScreen() {
         .font-label { font-family: var(--font-body); }
         
         .glass { 
-          background: rgba(53, 52, 57, 0.4); 
+          background: var(--glass-bg); 
           backdrop-filter: blur(20px); 
           -webkit-backdrop-filter: blur(20px);
         }
         .ghost-border { 
-          border: 1px solid rgba(74, 68, 85, 0.15); 
+          border: 1px solid var(--glass-soft-border); 
         }
         
         .top-nav {
           position: sticky;
           top: 0;
           z-index: 50;
-          background: rgba(19, 19, 23, 0.5);
+          background: var(--header-bg);
           backdrop-filter: blur(24px);
           -webkit-backdrop-filter: blur(24px);
-          border-bottom: 1px solid rgba(255,255,255,0.04);
+          border-bottom: 1px solid var(--line-soft);
           display: flex;
           justify-content: space-between;
           align-items: center;
@@ -625,20 +628,20 @@ export default function HomeScreen() {
           width: 38px;
           height: 38px;
           border-radius: 10px;
-          background: rgba(53, 52, 57, 0.35);
+          background: var(--glass-bg);
           backdrop-filter: blur(12px);
           -webkit-backdrop-filter: blur(12px);
-          border: 1px solid rgba(255,255,255,0.06);
+          border: 1px solid var(--glass-soft-border);
           display: flex;
           align-items: center;
           justify-content: center;
           cursor: pointer;
-          color: rgba(210,187,255,0.7);
+          color: var(--primary-bright);
           transition: background 0.2s, color 0.2s;
         }
         .top-nav__btn:hover {
-          background: rgba(53,52,57,0.55);
-          color: #d2bbff;
+          background: var(--bg-card-hover);
+          color: var(--primary-bright);
         }
 
         .hero-section {
@@ -683,28 +686,28 @@ export default function HomeScreen() {
           gap: 8px;
           padding: 10px 20px;
           border-radius: 99px;
-          box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+          box-shadow: var(--shadow-card);
           white-space: nowrap;
         }
         .plate-left {
           transform: rotate(-4deg);
           margin-right: -20px;
           z-index: 1;
-          background: rgba(53, 52, 57, 0.4);
+          background: var(--glass-bg);
         }
         .plate-center {
           transform: rotate(0deg) scale(1.05);
           z-index: 2;
           padding: 14px 28px;
           border: 1px solid rgba(210, 187, 255, 0.2);
-          background: rgba(40, 39, 44, 0.85);
-          box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+          background: var(--glass-strong);
+          box-shadow: var(--shadow-soft);
         }
         .plate-right {
           transform: rotate(4deg);
           margin-left: -20px;
           z-index: 1;
-          background: rgba(53, 52, 57, 0.4);
+          background: var(--glass-bg);
         }
 
         .hero-title {
@@ -750,21 +753,21 @@ export default function HomeScreen() {
         .cta-btn-main:active { transform: scale(0.98); box-shadow: 0 5px 15px rgba(124, 58, 237, 0.2); }
 
         .cta-btn-sec {
-          background: rgba(255,255,255,0.05);
-          color: #fff;
+          background: var(--glass-bg);
+          color: var(--text);
           width: 100%;
           max-width: 280px;
           padding: 18px 24px;
           border-radius: 99px;
-          border: 1px solid rgba(255,255,255,0.1);
+          border: 1px solid var(--glass-border);
           font-family: 'Advent Pro', sans-serif;
           font-weight: 700;
           font-size: 16px;
           cursor: pointer;
           transition: background 0.2s;
         }
-        .cta-btn-sec:hover { background: rgba(255,255,255,0.1); }
-        .cta-btn-sec:active { background: rgba(255,255,255,0.08); transform: scale(0.98); }
+        .cta-btn-sec:hover { background: var(--bg-card-hover); }
+        .cta-btn-sec:active { background: var(--glass-muted); transform: scale(0.98); }
 
         .neon-glow-primary { box-shadow: 0 0 40px -10px rgba(210, 187, 255, 0.4); }
         .neon-glow-tertiary { box-shadow: 0 0 40px -10px rgba(255, 183, 132, 0.4); }
@@ -775,16 +778,16 @@ export default function HomeScreen() {
           overflow: hidden;
           padding: 40px;
           border-radius: 24px;
-          background: rgba(31, 31, 35, 0.4);
+          background: var(--glass-bg);
           backdrop-filter: blur(20px);
           -webkit-backdrop-filter: blur(20px);
-          border: 1px solid rgba(210, 187, 255, 0.1);
+          border: 1px solid var(--glass-soft-border);
           transition: transform 0.3s ease, box-shadow 0.3s ease;
           z-index: 1;
         }
         .step-card:hover {
           transform: scale(1.03);
-          box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+          box-shadow: var(--shadow-card);
         }
         .step-num {
           position: absolute;
@@ -793,7 +796,7 @@ export default function HomeScreen() {
           font-family: 'Advent Pro', sans-serif;
           font-size: 160px;
           font-weight: 900;
-          color: rgba(255,255,255,0.02);
+          color: var(--line-soft);
           line-height: 1;
           transition: color 0.3s ease;
           z-index: -1;
@@ -838,7 +841,7 @@ export default function HomeScreen() {
         .landing-footer {
           position: relative;
           padding: 64px 24px 24px;
-          background: rgba(8, 8, 16, 0.85);
+          background: var(--header-bg);
           backdrop-filter: blur(40px);
           -webkit-backdrop-filter: blur(40px);
           border-top: 1px solid rgba(124, 58, 237, 0.12);
@@ -884,7 +887,7 @@ export default function HomeScreen() {
         .landing-footer__desc {
           font-size: 14px;
           line-height: 1.7;
-          color: rgba(255, 255, 255, 0.45);
+          color: var(--text-faint);
           max-width: 420px;
           margin: 0 0 20px;
         }
@@ -902,7 +905,7 @@ export default function HomeScreen() {
         }
         .landing-footer__status span {
           font-size: 12px;
-          color: rgba(255, 255, 255, 0.35);
+          color: var(--text-faint);
           font-weight: 500;
         }
         .landing-footer__nav {
@@ -923,14 +926,14 @@ export default function HomeScreen() {
           font-weight: 700;
           letter-spacing: 0.12em;
           text-transform: uppercase;
-          color: rgba(255, 255, 255, 0.3);
+          color: var(--text-disabled);
           margin: 0 0 4px;
           font-family: var(--font-body);        }
         .landing-footer__link {
           background: none;
           border: none;
           padding: 0;
-          color: rgba(255, 255, 255, 0.6);
+          color: var(--text-soft);
           font-size: 14px;
           cursor: pointer;
           text-align: left;
@@ -947,12 +950,12 @@ export default function HomeScreen() {
           justify-content: space-between;
           align-items: center;
           padding-top: 24px;
-          border-top: 1px solid rgba(255, 255, 255, 0.04);
+          border-top: 1px solid var(--line-soft);
           gap: 16px;
         }
         .landing-footer__copyright {
           font-size: 13px;
-          color: rgba(255, 255, 255, 0.25);
+          color: var(--text-disabled);
         }
         .landing-footer__kz-badge {
           display: inline-flex;
@@ -1072,7 +1075,7 @@ export default function HomeScreen() {
             <p
               className="font-label"
               style={{
-                color: 'rgba(255,255,255,0.7)',
+                color: 'var(--text-soft)',
                 fontSize: 16,
                 lineHeight: 1.6,
                 maxWidth: 460,
@@ -1254,7 +1257,7 @@ export default function HomeScreen() {
                 </div>
                 <h3
                   className="font-headline"
-                  style={{ fontSize: 28, fontWeight: 800, color: '#fff', margin: 0 }}
+                  style={{ fontSize: 28, fontWeight: 800, color: 'var(--text)', margin: 0 }}
                 >
                   E-Добавки
                 </h3>
@@ -1284,7 +1287,7 @@ export default function HomeScreen() {
                 flexDirection: 'column',
                 gap: 16,
                 borderTop: '1px solid rgba(255, 183, 132, 0.15)',
-                boxShadow: '0 16px 40px rgba(0,0,0,0.2)',
+                boxShadow: 'var(--shadow-card)',
               }}
             >
               <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
@@ -1310,7 +1313,7 @@ export default function HomeScreen() {
                 </div>
                 <h3
                   className="font-headline"
-                  style={{ fontSize: 28, fontWeight: 800, color: '#fff', margin: 0 }}
+                  style={{ fontSize: 28, fontWeight: 800, color: 'var(--text)', margin: 0 }}
                 >
                   Умный сканер
                 </h3>
@@ -1340,7 +1343,7 @@ export default function HomeScreen() {
                 flexDirection: 'column',
                 gap: 16,
                 borderTop: '1px solid rgba(16, 185, 129, 0.15)',
-                boxShadow: '0 16px 40px rgba(0,0,0,0.2)',
+                boxShadow: 'var(--shadow-card)',
               }}
             >
               <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
@@ -1366,7 +1369,7 @@ export default function HomeScreen() {
                 </div>
                 <h3
                   className="font-headline"
-                  style={{ fontSize: 28, fontWeight: 800, color: '#fff', margin: 0 }}
+                  style={{ fontSize: 28, fontWeight: 800, color: 'var(--text)', margin: 0 }}
                 >
                   Ваш профиль
                 </h3>
@@ -1395,7 +1398,7 @@ export default function HomeScreen() {
                 flexDirection: 'column',
                 gap: 16,
                 borderTop: '1px solid rgba(244, 63, 94, 0.15)',
-                boxShadow: '0 16px 40px rgba(0,0,0,0.2)',
+                boxShadow: 'var(--shadow-card)',
               }}
             >
               <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
@@ -1421,7 +1424,7 @@ export default function HomeScreen() {
                 </div>
                 <h3
                   className="font-headline"
-                  style={{ fontSize: 28, fontWeight: 800, color: '#fff', margin: 0 }}
+                  style={{ fontSize: 28, fontWeight: 800, color: 'var(--text)', margin: 0 }}
                 >
                   Детектор аллергий
                 </h3>
@@ -1445,7 +1448,7 @@ export default function HomeScreen() {
         {/* B2B Section */}
         <section
           className="section-padding"
-          style={{ background: 'rgba(8,12,24,0.95)', position: 'relative' }}
+          style={{ background: 'var(--bg-app)', position: 'relative' }}
         >
           <div
             style={{
@@ -1473,7 +1476,7 @@ export default function HomeScreen() {
               alignItems: 'center',
               gap: 24,
               textAlign: 'center',
-              boxShadow: '0 24px 60px rgba(0,0,0,0.3)',
+              boxShadow: 'var(--shadow-soft)',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
@@ -1487,12 +1490,12 @@ export default function HomeScreen() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  border: '1px solid rgba(56,189,248,0.2)',
+                  border: '1px solid var(--accent-sky-border)',
                 }}
               >
                 <span
                   className="material-symbols-outlined"
-                  style={{ fontSize: 28, color: '#38BDF8' }}
+                  style={{ fontSize: 28, color: 'var(--accent-sky)' }}
                 >
                   storefront
                 </span>
@@ -1504,7 +1507,7 @@ export default function HomeScreen() {
                 fontWeight: 800,
                 textTransform: 'uppercase',
                 letterSpacing: '0.15em',
-                color: '#38BDF8',
+                color: 'var(--accent-sky)',
                 fontFamily: 'var(--font-body)',
               }}
             >
@@ -1516,7 +1519,7 @@ export default function HomeScreen() {
                 fontFamily: "'Advent Pro', sans-serif",
                 fontSize: 'clamp(32px, 6vw, 48px)',
                 fontWeight: 800,
-                color: '#fff',
+                color: 'var(--text)',
                 lineHeight: 1.1,
                 margin: 0,
               }}
@@ -1536,7 +1539,7 @@ export default function HomeScreen() {
             <p
               style={{
                 fontSize: 16,
-                color: 'rgba(200,200,240,0.7)',
+                color: 'var(--text-soft)',
                 lineHeight: 1.6,
                 margin: 0,
                 maxWidth: 600,
@@ -1567,10 +1570,10 @@ export default function HomeScreen() {
                     display: 'flex',
                     alignItems: 'center',
                     gap: 10,
-                    background: 'rgba(255,255,255,0.03)',
+                    background: 'var(--glass-subtle)',
                     padding: '12px 24px',
                     borderRadius: 99,
-                    border: '1px solid rgba(255,255,255,0.05)',
+                    border: '1px solid var(--line-soft)',
                   }}
                 >
                   <span
@@ -1583,7 +1586,7 @@ export default function HomeScreen() {
                     style={{
                       fontSize: 14,
                       fontWeight: 600,
-                      color: '#fff',
+                      color: 'var(--text)',
                       fontFamily: 'var(--font-body)',
                     }}
                   >
@@ -1602,7 +1605,7 @@ export default function HomeScreen() {
                 cursor: 'pointer',
                 background: 'linear-gradient(135deg, #38BDF8, #7C3AED)',
                 border: 'none',
-                color: '#fff',
+                color: 'var(--text-inverse)',
                 fontSize: 16,
                 fontWeight: 800,
                 fontFamily: "'Advent Pro', sans-serif",

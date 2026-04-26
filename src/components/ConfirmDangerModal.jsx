@@ -44,8 +44,9 @@ export default function ConfirmDangerModal({
         position: 'fixed',
         inset: 0,
         zIndex: 9999,
-        background: 'rgba(0,0,0,0.72)',
+        background: 'var(--overlay-bg)',
         backdropFilter: 'blur(6px)',
+        WebkitBackdropFilter: 'blur(6px)',
         display: 'flex',
         alignItems: 'flex-end',
         justifyContent: 'center',
@@ -57,7 +58,7 @@ export default function ConfirmDangerModal({
         style={{
           width: '100%',
           maxWidth: 480,
-          background: 'linear-gradient(160deg, rgba(20,8,8,0.98) 0%, rgba(15,5,5,0.99) 100%)',
+          background: 'linear-gradient(160deg, var(--bg-card) 0%, var(--bg-surface) 100%)',
           border: '1px solid rgba(239,68,68,0.25)',
           borderRadius: '20px 20px 0 0',
           padding: '8px 0 0',
@@ -70,7 +71,7 @@ export default function ConfirmDangerModal({
             width: 40,
             height: 4,
             borderRadius: 2,
-            background: 'rgba(255,255,255,0.12)',
+            background: 'var(--glass-handle)',
             margin: '0 auto 20px',
           }}
         />
@@ -104,7 +105,7 @@ export default function ConfirmDangerModal({
                   fontSize: 17,
                   fontWeight: 700,
                   fontFamily: 'var(--font-display)',
-                  color: '#fff',
+                  color: 'var(--text)',
                   lineHeight: 1.3,
                 }}
               >
@@ -157,9 +158,9 @@ export default function ConfirmDangerModal({
               spellCheck={false}
               style={{
                 width: '100%',
-                background: 'rgba(0,0,0,0.3)',
-                border: `1px solid ${matched ? 'rgba(239,68,68,0.6)' : 'rgba(255,255,255,0.1)'}`,
-                color: matched ? '#EF4444' : '#fff',
+                background: 'var(--input-bg)',
+                border: `1px solid ${matched ? 'rgba(239,68,68,0.6)' : 'var(--input-border)'}`,
+                color: matched ? '#EF4444' : 'var(--text)',
                 padding: '10px 12px',
                 borderRadius: 8,
                 fontSize: 15,
@@ -181,8 +182,8 @@ export default function ConfirmDangerModal({
                 flex: 1,
                 padding: '13px 16px',
                 borderRadius: 12,
-                border: '1px solid rgba(255,255,255,0.1)',
-                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid var(--glass-border)',
+                background: 'var(--glass-bg)',
                 color: 'var(--text-sub)',
                 fontSize: 15,
                 fontWeight: 600,
@@ -201,7 +202,7 @@ export default function ConfirmDangerModal({
                 borderRadius: 12,
                 border: 'none',
                 background: matched && !loading ? 'rgba(239,68,68,0.85)' : 'rgba(239,68,68,0.2)',
-                color: matched && !loading ? '#fff' : 'rgba(255,255,255,0.3)',
+                color: matched && !loading ? '#fff' : 'var(--text-dim)',
                 fontSize: 15,
                 fontWeight: 700,
                 cursor: matched && !loading ? 'pointer' : 'default',

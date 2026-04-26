@@ -20,7 +20,7 @@ function Section({ title, children }) {
           fontFamily: 'var(--font-body)',
           fontSize: 11,
           fontWeight: 700,
-          color: 'rgba(255,255,255,0.28)',
+          color: 'var(--text-disabled)',
           marginBottom: 8,
           textTransform: 'uppercase',
           letterSpacing: 1.5,
@@ -54,7 +54,7 @@ function Row({ label, description, right, danger = false, onClick }) {
             fontFamily: 'var(--font-body)',
             fontSize: 14,
             fontWeight: 600,
-            color: danger ? '#FCA5A5' : '#fff',
+            color: danger ? '#FCA5A5' : 'var(--text)',
           }}
         >
           {label}
@@ -65,7 +65,7 @@ function Row({ label, description, right, danger = false, onClick }) {
               fontFamily: 'var(--font-body)',
               fontSize: 12,
               lineHeight: 1.45,
-              color: 'rgba(255,255,255,0.45)',
+              color: 'var(--text-faint)',
               marginTop: 4,
             }}
           >
@@ -91,8 +91,8 @@ function Toggle({ checked, onChange, disabled = false }) {
         width: 50,
         height: 30,
         borderRadius: 999,
-        border: '1px solid rgba(255,255,255,0.08)',
-        background: checked ? 'linear-gradient(135deg,#7C3AED,#EC4899)' : 'rgba(255,255,255,0.08)',
+        border: '1px solid var(--glass-soft-border)',
+        background: checked ? 'linear-gradient(135deg,#7C3AED,#EC4899)' : 'var(--glass-bg)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: checked ? 'flex-end' : 'flex-start',
@@ -315,9 +315,9 @@ export default function NotificationSettingsScreen() {
             width: 44,
             height: 44,
             borderRadius: 14,
-            border: '1px solid rgba(255,255,255,0.08)',
-            background: 'rgba(255,255,255,0.04)',
-            color: '#fff',
+            border: '1px solid var(--glass-soft-border)',
+            background: 'var(--glass-muted)',
+            color: 'var(--text)',
             cursor: 'pointer',
             display: 'grid',
             placeItems: 'center',
@@ -342,7 +342,7 @@ export default function NotificationSettingsScreen() {
             fontFamily: 'var(--font-display)',
             fontSize: 28,
             letterSpacing: 1,
-            color: '#fff',
+            color: 'var(--text)',
           }}
         >
           {t.notification.title}
@@ -357,7 +357,7 @@ export default function NotificationSettingsScreen() {
               fontFamily: 'var(--font-body)',
               fontSize: 14,
               lineHeight: 1.55,
-              color: 'rgba(255,255,255,0.72)',
+              color: 'var(--text-soft)',
             }}
           >
             {t.notification.intro}
@@ -377,7 +377,7 @@ export default function NotificationSettingsScreen() {
             />
           }
         />
-        <div style={{ height: 1, background: 'rgba(255,255,255,0.04)', margin: '0 18px' }} />
+        <div style={{ height: 1, background: 'var(--line-soft)', margin: '0 18px' }} />
         <Row
           label={t.notification.deviceSubscription}
           description={
@@ -390,7 +390,7 @@ export default function NotificationSettingsScreen() {
               style={{
                 fontFamily: 'var(--font-body)',
                 fontSize: 12,
-                color: settings.subscriptionActive ? '#86EFAC' : 'rgba(255,255,255,0.45)',
+                color: settings.subscriptionActive ? '#059669' : 'var(--text-faint)',
               }}
             >
               {settings.subscriptionActive ? t.notification.active : t.notification.no}
@@ -399,13 +399,13 @@ export default function NotificationSettingsScreen() {
         />
         {statusText ? (
           <>
-            <div style={{ height: 1, background: 'rgba(255,255,255,0.04)', margin: '0 18px' }} />
+            <div style={{ height: 1, background: 'var(--line-soft)', margin: '0 18px' }} />
             <div
               style={{
                 padding: '12px 18px',
                 fontFamily: 'var(--font-body)',
                 fontSize: 12,
-                color: 'rgba(255,255,255,0.55)',
+                color: 'var(--text-faint)',
               }}
             >
               {statusText}
@@ -425,7 +425,7 @@ export default function NotificationSettingsScreen() {
             />
           }
         />
-        <div style={{ height: 1, background: 'rgba(255,255,255,0.04)', margin: '0 18px' }} />
+        <div style={{ height: 1, background: 'var(--line-soft)', margin: '0 18px' }} />
         <Row
           label={t.notification.favorites}
           description={t.notification.favoritesDesc}
@@ -436,7 +436,7 @@ export default function NotificationSettingsScreen() {
             />
           }
         />
-        <div style={{ height: 1, background: 'rgba(255,255,255,0.04)', margin: '0 18px' }} />
+        <div style={{ height: 1, background: 'var(--line-soft)', margin: '0 18px' }} />
         <Row
           label={t.notification.restock}
           description={t.notification.restockDesc}
@@ -447,7 +447,7 @@ export default function NotificationSettingsScreen() {
             />
           }
         />
-        <div style={{ height: 1, background: 'rgba(255,255,255,0.04)', margin: '0 18px' }} />
+        <div style={{ height: 1, background: 'var(--line-soft)', margin: '0 18px' }} />
         <Row
           label={t.notification.promo}
           description={t.notification.promoDesc}
@@ -458,7 +458,7 @@ export default function NotificationSettingsScreen() {
             />
           }
         />
-        <div style={{ height: 1, background: 'rgba(255,255,255,0.04)', margin: '0 18px' }} />
+        <div style={{ height: 1, background: 'var(--line-soft)', margin: '0 18px' }} />
         <Row
           label={t.notification.weekly}
           description={t.notification.weeklyDesc}
@@ -482,7 +482,7 @@ export default function NotificationSettingsScreen() {
             />
           }
         />
-        <div style={{ height: 1, background: 'rgba(255,255,255,0.04)', margin: '0 18px' }} />
+        <div style={{ height: 1, background: 'var(--line-soft)', margin: '0 18px' }} />
         <div style={{ display: 'flex', gap: 12, padding: '15px 18px' }}>
           <label
             style={{
@@ -492,7 +492,7 @@ export default function NotificationSettingsScreen() {
               gap: 6,
               fontFamily: 'var(--font-body)',
               fontSize: 12,
-              color: 'rgba(255,255,255,0.55)',
+              color: 'var(--text-faint)',
             }}
           >
             {t.notification.from}
@@ -501,11 +501,11 @@ export default function NotificationSettingsScreen() {
               value={settings.quietFrom}
               onChange={(e) => updatePartial({ quietFrom: e.target.value })}
               style={{
-                background: 'rgba(255,255,255,0.05)',
-                border: '1px solid rgba(255,255,255,0.08)',
+                background: 'var(--input-bg)',
+                border: '1px solid var(--input-border)',
                 borderRadius: 12,
                 padding: '12px 14px',
-                color: '#fff',
+                color: 'var(--text)',
                 fontFamily: 'var(--font-body)',
               }}
             />
@@ -518,7 +518,7 @@ export default function NotificationSettingsScreen() {
               gap: 6,
               fontFamily: 'var(--font-body)',
               fontSize: 12,
-              color: 'rgba(255,255,255,0.55)',
+              color: 'var(--text-faint)',
             }}
           >
             {t.notification.to}
@@ -527,11 +527,11 @@ export default function NotificationSettingsScreen() {
               value={settings.quietTo}
               onChange={(e) => updatePartial({ quietTo: e.target.value })}
               style={{
-                background: 'rgba(255,255,255,0.05)',
-                border: '1px solid rgba(255,255,255,0.08)',
+                background: 'var(--input-bg)',
+                border: '1px solid var(--input-border)',
                 borderRadius: 12,
                 padding: '12px 14px',
-                color: '#fff',
+                color: 'var(--text)',
                 fontFamily: 'var(--font-body)',
               }}
             />

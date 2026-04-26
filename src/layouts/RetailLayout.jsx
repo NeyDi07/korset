@@ -9,7 +9,7 @@ const spinnerStyle = {
   width: 32,
   height: 32,
   border: '3px solid rgba(56,189,248,0.15)',
-  borderTop: '3px solid #38BDF8',
+  borderTop: '3px solid var(--retail-accent)',
   borderRadius: '50%',
   animation: 'spin 0.8s linear infinite',
 }
@@ -43,20 +43,26 @@ function NoAccessScreen({ storeName }) {
     >
       <span
         className="material-symbols-outlined"
-        style={{ fontSize: 52, color: 'rgba(248,113,113,0.7)' }}
+        style={{ fontSize: 52, color: 'var(--error-bright)' }}
       >
         lock
       </span>
       <div
-        style={{ fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 800, color: '#fff' }}
+        style={{
+          fontFamily: 'var(--font-display)',
+          fontSize: 22,
+          fontWeight: 800,
+          color: 'var(--text)',
+        }}
       >
         Нет доступа
       </div>
       <div style={{ fontSize: 14, color: 'var(--text-sub)', lineHeight: 1.6, maxWidth: 280 }}>
-        Retail Cabinet магазина <b style={{ color: '#E9D5FF' }}>{storeName || 'этого магазина'}</b>{' '}
-        доступен только его владельцу.
+        Retail Cabinet магазина{' '}
+        <b style={{ color: 'var(--primary-bright)' }}>{storeName || 'этого магазина'}</b> доступен
+        только его владельцу.
       </div>
-      <div style={{ fontSize: 12, color: 'rgba(180,180,210,0.4)', marginTop: 8 }}>
+      <div style={{ fontSize: 12, color: 'var(--text-dim)', marginTop: 8 }}>
         Если вы владелец — обратитесь в поддержку Körset для привязки аккаунта.
       </div>
     </div>
@@ -92,15 +98,16 @@ export default function RetailLayout() {
   }
 
   return (
-    <div className="app-frame" style={{ background: '#080C18' }}>
+    <div className="app-frame" style={{ background: 'var(--retail-bg)' }}>
       <div
         style={{
           position: 'sticky',
           top: 0,
           zIndex: 10,
-          background: 'rgba(8,12,24,0.92)',
+          background: 'var(--retail-header-bg)',
           backdropFilter: 'blur(20px)',
-          borderBottom: '1px solid rgba(56,189,248,0.1)',
+          WebkitBackdropFilter: 'blur(20px)',
+          borderBottom: '1px solid var(--retail-border)',
           padding: '16px 20px',
           paddingTop: 'max(16px, env(safe-area-inset-top))',
           display: 'flex',
@@ -114,7 +121,7 @@ export default function RetailLayout() {
               fontSize: 18,
               fontWeight: 800,
               fontFamily: 'var(--font-display)',
-              color: '#38BDF8',
+              color: 'var(--retail-accent)',
               letterSpacing: '-0.3px',
               display: 'flex',
               alignItems: 'center',

@@ -1,9 +1,8 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { setLang, useI18n } from '../utils/i18n.js'
 import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useAuth } from '../contexts/AuthContext.jsx'
-import { supabase } from '../utils/supabase.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 import {
   buildHistoryPath,
@@ -16,6 +15,7 @@ import { HeartIcon } from '../components/icons/HeartIcon.jsx'
 import { ALLERGENS } from '../constants/allergens.js'
 import { DIET_GOALS } from '../constants/dietGoals.js'
 import { buildAuthNavigateState } from '../utils/authFlow.js'
+import { useTheme } from '../utils/theme.js'
 
 /* ─── DIET/ALLERGEN ICONS ─── */
 export function DietIcon({ name, size = 24 }) {
@@ -273,6 +273,36 @@ export function DietIcon({ name, size = 24 }) {
 
 import { useUserData } from '../contexts/UserDataContext.jsx'
 
+function ThemeModeToggle({ theme, onToggle, label }) {
+  const isLight = theme === 'light'
+
+  return (
+    <button
+      type="button"
+      className={`theme-toggle ${isLight ? 'is-light' : 'is-dark'}`}
+      aria-pressed={isLight}
+      onClick={(e) => {
+        e.stopPropagation()
+        onToggle()
+      }}
+      aria-label={label}
+      title={label}
+    >
+      <span className="theme-toggle__thumb" />
+      <span className="theme-toggle__icon sun" aria-hidden="true">
+        <span className="material-symbols-outlined" style={{ fontSize: 21 }}>
+          light_mode
+        </span>
+      </span>
+      <span className="theme-toggle__icon moon" aria-hidden="true">
+        <span className="material-symbols-outlined" style={{ fontSize: 21 }}>
+          dark_mode
+        </span>
+      </span>
+    </button>
+  )
+}
+
 export default function ProfileScreen() {
   const navigate = useNavigate()
   const location = useLocation()
@@ -282,6 +312,7 @@ export default function ProfileScreen() {
   const { user, displayName, avatarId, logout } = useAuth()
   const { favoritesCount, scanCount } = useUserData()
   const { currentStore } = useStore()
+  const { theme, toggleTheme } = useTheme()
 
   const [allergenInput, setAllergenInput] = useState('')
   const [prefOpen, setPrefOpen] = useState(false)
@@ -321,17 +352,17 @@ export default function ProfileScreen() {
         @keyframes floatOrb2 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-25px,15px) scale(0.9)} }
         @keyframes floatOrb3 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(15px,25px) scale(1.05)} }
         .glass-card {
-          background: rgba(255,255,255,0.05);
+          background: var(--glass-bg);
           backdrop-filter: blur(28px);
           -webkit-backdrop-filter: blur(28px);
-          border: 1px solid rgba(255,255,255,0.1);
+          border: 1px solid var(--glass-border);
           border-radius: 24px;
           position: relative;
         }
         .pref-chip { transition: all 0.2s ease; cursor: pointer; }
         .pref-chip:active { transform: scale(0.95); }
         .settings-item { transition: background 0.15s; }
-        .settings-item:active { background: rgba(255,255,255,0.03) !important; }
+        .settings-item:active { background: var(--glass-bg) !important; }
       `}</style>
 
       <div
@@ -341,7 +372,7 @@ export default function ProfileScreen() {
           paddingBottom: 100,
           overflowX: 'hidden',
           minHeight: '100vh',
-          background: 'var(--bg)',
+          background: 'var(--bg-app)',
           position: 'relative',
         }}
       >
@@ -428,7 +459,7 @@ export default function ProfileScreen() {
                 fontFamily: 'var(--font-display)',
                 fontSize: 24,
                 fontWeight: 500,
-                color: '#fff',
+                color: 'var(--text)',
                 margin: 0,
                 lineHeight: 1,
               }}
@@ -535,7 +566,7 @@ export default function ProfileScreen() {
                     fontFamily: 'var(--font-display)',
                     fontSize: 26,
                     fontWeight: 700,
-                    color: '#fff',
+                    color: 'var(--text)',
                     margin: '0 0 4px',
                     textTransform: 'uppercase',
                     letterSpacing: 1,
@@ -560,7 +591,7 @@ export default function ProfileScreen() {
                     fontFamily: 'var(--font-display)',
                     fontSize: 28,
                     fontWeight: 700,
-                    color: '#fff',
+                    color: 'var(--text)',
                     margin: '0 0 12px',
                     textTransform: 'uppercase',
                     letterSpacing: 2,
@@ -580,7 +611,7 @@ export default function ProfileScreen() {
                   style={{
                     background: 'transparent',
                     border: '1.5px solid rgba(255,255,255,0.2)',
-                    color: '#fff',
+                    color: 'var(--text)',
                     fontSize: 13,
                     fontFamily: 'var(--font-display)',
                     fontWeight: 500,
@@ -647,7 +678,7 @@ export default function ProfileScreen() {
                     fontFamily: 'var(--font-display)',
                     fontSize: 42,
                     fontWeight: 600,
-                    color: '#fff',
+                    color: 'var(--text)',
                     lineHeight: 1,
                     flex: 1,
                     display: 'flex',
@@ -732,7 +763,7 @@ export default function ProfileScreen() {
                     fontFamily: 'var(--font-display)',
                     fontSize: 42,
                     fontWeight: 600,
-                    color: '#fff',
+                    color: 'var(--text)',
                     lineHeight: 1,
                     flex: 1,
                     display: 'flex',
@@ -812,7 +843,7 @@ export default function ProfileScreen() {
                     fontFamily: 'var(--font-display)',
                     fontSize: 42,
                     fontWeight: 600,
-                    color: '#fff',
+                    color: 'var(--text)',
                     lineHeight: 1,
                     flex: 1,
                     display: 'flex',
@@ -1006,11 +1037,11 @@ export default function ProfileScreen() {
                       placeholder={t.profile.customPlaceholder}
                       style={{
                         flex: 1,
-                        background: 'rgba(255,255,255,0.04)',
+                        background: 'var(--glass-bg)',
                         border: '1px solid rgba(255,255,255,0.08)',
                         borderRadius: 12,
                         padding: '10px 14px',
-                        color: '#fff',
+                        color: 'var(--text)',
                         fontSize: 12,
                         fontFamily: 'var(--font-display)',
                         outline: 'none',
@@ -1174,9 +1205,9 @@ export default function ProfileScreen() {
                             setLang(l)
                           }}
                           style={{
-                            background: lang === l ? '#7C3AED' : 'transparent',
+                            background: lang === l ? 'var(--primary)' : 'transparent',
                             border: 'none',
-                            color: '#fff',
+                            color: lang === l ? '#fff' : 'var(--text-sub)',
                             padding: '5px 14px',
                             borderRadius: 8,
                             fontSize: 12,
@@ -1206,19 +1237,13 @@ export default function ProfileScreen() {
                     </svg>
                   ),
                   label: t.profile.theme,
+                  onClick: toggleTheme,
                   right: (
-                    <span
-                      style={{
-                        fontSize: 10,
-                        color: 'rgba(255,255,255,0.25)',
-                        fontFamily: 'var(--font-display)',
-                        background: 'rgba(255,255,255,0.05)',
-                        padding: '3px 8px',
-                        borderRadius: 6,
-                      }}
-                    >
-                      {t.profile.comingSoon}
-                    </span>
+                    <ThemeModeToggle
+                      theme={theme}
+                      onToggle={toggleTheme}
+                      label={`${t.profile.theme}: ${theme === 'light' ? 'Light' : 'Dark'}`}
+                    />
                   ),
                 },
               ],
@@ -1309,7 +1334,7 @@ export default function ProfileScreen() {
                   fontFamily: 'var(--font-display)',
                   fontSize: 11,
                   fontWeight: 600,
-                  color: 'rgba(255,255,255,0.2)',
+                  color: 'var(--text-dim)',
                   marginBottom: 8,
                   textTransform: 'uppercase',
                   letterSpacing: 1.5,
@@ -1338,7 +1363,7 @@ export default function ProfileScreen() {
                             width: 34,
                             height: 34,
                             borderRadius: 10,
-                            background: 'rgba(124,58,237,0.1)',
+                            background: 'var(--primary-dim)',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -1351,7 +1376,7 @@ export default function ProfileScreen() {
                             fontFamily: 'var(--font-display)',
                             fontSize: 14,
                             fontWeight: 500,
-                            color: '#fff',
+                            color: 'var(--text)',
                           }}
                         >
                           {item.label}
@@ -1364,7 +1389,7 @@ export default function ProfileScreen() {
                             height="16"
                             viewBox="0 0 24 24"
                             fill="none"
-                            stroke="rgba(255,255,255,0.15)"
+                            stroke="var(--text-dim)"
                             strokeWidth="2"
                             strokeLinecap="round"
                           >
@@ -1376,7 +1401,7 @@ export default function ProfileScreen() {
                       <div
                         style={{
                           height: 1,
-                          background: 'rgba(255,255,255,0.03)',
+                          background: 'var(--border)',
                           margin: '0 18px',
                         }}
                       />
@@ -1490,7 +1515,7 @@ export default function ProfileScreen() {
                     fontFamily: 'var(--font-display)',
                     fontSize: 14,
                     fontWeight: 500,
-                    color: '#fff',
+                    color: 'var(--text)',
                   }}
                 >
                   {t.profile.restartOnboarding}

@@ -24,7 +24,7 @@ function Section({ title, children }) {
           fontFamily: 'var(--font-body)',
           fontSize: 11,
           fontWeight: 700,
-          color: 'rgba(255,255,255,0.28)',
+          color: 'var(--text-disabled)',
           marginBottom: 8,
           textTransform: 'uppercase',
           letterSpacing: 1.5,
@@ -58,7 +58,7 @@ function Row({ label, description, right, danger = false, onClick }) {
             fontFamily: 'var(--font-body)',
             fontSize: 14,
             fontWeight: 600,
-            color: danger ? '#FCA5A5' : '#fff',
+            color: danger ? '#FCA5A5' : 'var(--text)',
           }}
         >
           {label}
@@ -69,7 +69,7 @@ function Row({ label, description, right, danger = false, onClick }) {
               fontFamily: 'var(--font-body)',
               fontSize: 12,
               lineHeight: 1.45,
-              color: 'rgba(255,255,255,0.45)',
+              color: 'var(--text-faint)',
               marginTop: 4,
             }}
           >
@@ -95,8 +95,8 @@ function Toggle({ checked, onChange, disabled = false }) {
         width: 50,
         height: 30,
         borderRadius: 999,
-        border: '1px solid rgba(255,255,255,0.08)',
-        background: checked ? 'linear-gradient(135deg,#7C3AED,#8B5CF6)' : 'rgba(255,255,255,0.08)',
+        border: '1px solid var(--glass-soft-border)',
+        background: checked ? 'linear-gradient(135deg,#7C3AED,#8B5CF6)' : 'var(--glass-bg)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: checked ? 'flex-end' : 'flex-start',
@@ -130,7 +130,7 @@ function ActionButton({ label, danger = false, onClick, disabled = false }) {
         borderRadius: 14,
         padding: '14px 16px',
         background: danger ? 'rgba(239,68,68,0.12)' : 'rgba(124,58,237,0.14)',
-        color: danger ? '#FCA5A5' : '#DDD6FE',
+        color: danger ? '#FCA5A5' : 'var(--primary-bright)',
         fontFamily: 'var(--font-body)',
         fontSize: 14,
         fontWeight: 700,
@@ -244,9 +244,9 @@ export default function PrivacySettingsScreen() {
             width: 44,
             height: 44,
             borderRadius: 14,
-            border: '1px solid rgba(255,255,255,0.08)',
-            background: 'rgba(255,255,255,0.04)',
-            color: '#fff',
+            border: '1px solid var(--glass-soft-border)',
+            background: 'var(--glass-muted)',
+            color: 'var(--text)',
             cursor: 'pointer',
             display: 'grid',
             placeItems: 'center',
@@ -271,7 +271,7 @@ export default function PrivacySettingsScreen() {
             fontFamily: 'var(--font-display)',
             fontSize: 28,
             letterSpacing: 1,
-            color: '#fff',
+            color: 'var(--text)',
           }}
         >
           {t.privacy.title}
@@ -285,7 +285,7 @@ export default function PrivacySettingsScreen() {
               fontFamily: 'var(--font-body)',
               fontSize: 14,
               lineHeight: 1.55,
-              color: 'rgba(255,255,255,0.72)',
+              color: 'var(--text-soft)',
             }}
           >
             {t.privacy.intro}
@@ -304,7 +304,7 @@ export default function PrivacySettingsScreen() {
             />
           }
         />
-        <div style={{ height: 1, background: 'rgba(255,255,255,0.04)', margin: '0 18px' }} />
+        <div style={{ height: 1, background: 'var(--line-soft)', margin: '0 18px' }} />
         <Row
           label={t.privacy.anonymousAnalytics}
           description={t.privacy.anonymousAnalyticsDesc}
@@ -325,7 +325,7 @@ export default function PrivacySettingsScreen() {
             <Toggle checked={privacy.localHistoryEnabled} onChange={handleLocalHistoryToggle} />
           }
         />
-        <div style={{ height: 1, background: 'rgba(255,255,255,0.04)', margin: '0 18px' }} />
+        <div style={{ height: 1, background: 'var(--line-soft)', margin: '0 18px' }} />
         <Row
           label={t.privacy.rememberStore}
           description={t.privacy.rememberStoreDesc}
@@ -358,7 +358,7 @@ export default function PrivacySettingsScreen() {
           description={t.privacy.ifAnalyticsOffDesc}
           right={null}
         />
-        <div style={{ height: 1, background: 'rgba(255,255,255,0.04)', margin: '0 18px' }} />
+        <div style={{ height: 1, background: 'var(--line-soft)', margin: '0 18px' }} />
         <Row
           label={t.privacy.ifLocalHistoryOff}
           description={t.privacy.ifLocalHistoryOffDesc}
@@ -375,7 +375,7 @@ export default function PrivacySettingsScreen() {
               fontFamily: 'var(--font-body)',
               fontSize: 13,
               lineHeight: 1.5,
-              color: 'rgba(255,255,255,0.68)',
+              color: 'var(--text-soft)',
             }}
           >
             {statusText}

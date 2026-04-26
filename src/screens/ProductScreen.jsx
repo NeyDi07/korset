@@ -149,7 +149,7 @@ function ImageCarousel({ images, fallbackEan, singleImage }) {
         style={{
           height: 280,
           borderRadius: 20,
-          background: 'rgba(255,255,255,0.03)',
+          background: 'var(--image-bg)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -178,7 +178,7 @@ function ImageCarousel({ images, fallbackEan, singleImage }) {
         height: 280,
         borderRadius: 20,
         overflow: 'hidden',
-        background: 'rgba(255,255,255,0.02)',
+        background: 'var(--image-bg)',
       }}
     >
       <div
@@ -232,7 +232,7 @@ function ImageCarousel({ images, fallbackEan, singleImage }) {
                 width: currentIndex === i ? 20 : 6,
                 height: 6,
                 borderRadius: 3,
-                background: currentIndex === i ? '#fff' : 'rgba(255,255,255,0.4)',
+                background: currentIndex === i ? 'var(--text)' : 'var(--text-faint)',
                 transition: 'all 0.3s ease',
               }}
             />
@@ -276,7 +276,7 @@ function CollapsibleFitCheck({ severityKey, reasons }) {
             height: 38,
             borderRadius: 11,
             background: s.color,
-            color: '#fff',
+            color: 'var(--text-inverse)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -368,7 +368,7 @@ function CollapsibleFitCheck({ severityKey, reasons }) {
             <div
               style={{
                 fontSize: 11,
-                color: 'rgba(255,255,255,0.45)',
+                color: 'var(--text-faint)',
                 marginTop: 2,
                 letterSpacing: '0.02em',
               }}
@@ -414,7 +414,7 @@ function CollapsibleFitCheck({ severityKey, reasons }) {
           }}
         >
           {reasons.map((r, i) => {
-            const rColor = SEVERITY[r.type]?.color || 'rgba(255,255,255,0.7)'
+            const rColor = SEVERITY[r.type]?.color || 'var(--text-soft)'
             return (
               <div
                 key={i}
@@ -423,7 +423,7 @@ function CollapsibleFitCheck({ severityKey, reasons }) {
                   alignItems: 'flex-start',
                   gap: 10,
                   fontSize: 13,
-                  color: 'rgba(255,255,255,0.85)',
+                  color: 'var(--text-soft)',
                   lineHeight: 1.4,
                 }}
               >
@@ -504,9 +504,9 @@ function DietBadges({ product, lang }) {
             justifyContent: 'center',
             gap: 6,
             borderRadius: 14,
-            background: b.matched ? `${b.color}14` : 'rgba(255,255,255,0.03)',
-            border: `1px solid ${b.matched ? `${b.color}38` : 'rgba(255,255,255,0.06)'}`,
-            color: b.matched ? b.color : 'rgba(255,255,255,0.28)',
+            background: b.matched ? `${b.color}14` : 'var(--glass-subtle)',
+            border: `1px solid ${b.matched ? `${b.color}38` : 'var(--glass-soft-border)'}`,
+            color: b.matched ? b.color : 'var(--text-disabled)',
             opacity: b.matched ? 1 : 0.5,
             transition: 'all 0.2s',
           }}
@@ -551,9 +551,8 @@ function NutritionUnified({ nutrition }) {
   return (
     <div
       style={{
-        background:
-          'linear-gradient(180deg, rgba(255,255,255,0.045) 0%, rgba(255,255,255,0.02) 100%)',
-        border: '1px solid rgba(255,255,255,0.1)',
+        background: 'linear-gradient(180deg, var(--glass-muted) 0%, var(--glass-subtle) 100%)',
+        border: '1px solid var(--glass-border)',
         borderRadius: 18,
         padding: 16,
       }}
@@ -610,7 +609,7 @@ function NutritionUnified({ nutrition }) {
             style={{
               fontSize: 42,
               fontWeight: 900,
-              color: '#fff',
+              color: 'var(--text)',
               fontFamily: 'var(--font-display)',
               lineHeight: 1,
               letterSpacing: '-0.03em',
@@ -623,7 +622,7 @@ function NutritionUnified({ nutrition }) {
             style={{
               fontSize: 11,
               fontWeight: 600,
-              color: 'rgba(255,255,255,0.55)',
+              color: 'var(--text-faint)',
               marginTop: 4,
               letterSpacing: '0.04em',
             }}
@@ -656,7 +655,7 @@ function NutritionUnified({ nutrition }) {
             columnGap: 10,
             alignItems: 'center',
             paddingTop: 14,
-            borderTop: '1px solid rgba(255,255,255,0.08)',
+            borderTop: '1px solid var(--line-soft)',
           }}
         >
           {sugar != null && (
@@ -700,16 +699,14 @@ function MacroRow({ label, value, color }) {
         style={{
           fontSize: 15,
           fontWeight: 900,
-          color: '#fff',
+          color: 'var(--text)',
           fontFamily: 'var(--font-display)',
           lineHeight: 1,
           letterSpacing: '-0.01em',
         }}
       >
         {fmt(value)}
-        <span
-          style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', marginLeft: 2, fontWeight: 600 }}
-        >
+        <span style={{ fontSize: 10, color: 'var(--text-faint)', marginLeft: 2, fontWeight: 600 }}>
           г
         </span>
       </span>
@@ -727,7 +724,7 @@ function ThreeStepRow({ label, value, unit, thresholds }) {
 
   return (
     <>
-      <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.85)' }}>{label}</div>
+      <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-soft)' }}>{label}</div>
       <div style={{ display: 'flex', gap: 4 }}>
         {[0, 1, 2].map((i) => (
           <div
@@ -809,13 +806,13 @@ function IngredientsBlock({ text, userAllergens = [] }) {
   return (
     <div
       style={{
-        background: 'rgba(255,255,255,0.02)',
-        border: '1px solid rgba(255,255,255,0.06)',
+        background: 'var(--glass-subtle)',
+        border: '1px solid var(--glass-soft-border)',
         borderRadius: 14,
         padding: 14,
         fontSize: 13,
         lineHeight: 1.7,
-        color: 'rgba(255,255,255,0.7)',
+        color: 'var(--text-soft)',
       }}
     >
       {tokens.map((tok, i) => {
@@ -877,8 +874,8 @@ function SpecsGrid({ product }) {
           style={{
             padding: '12px 14px',
             borderRadius: 12,
-            background: 'rgba(255,255,255,0.02)',
-            border: '1px solid rgba(255,255,255,0.05)',
+            background: 'var(--glass-subtle)',
+            border: '1px solid var(--line-soft)',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
@@ -901,7 +898,7 @@ function SpecsGrid({ product }) {
             style={{
               fontSize: 13,
               fontWeight: 600,
-              color: '#fff',
+              color: 'var(--text)',
               textAlign: 'right',
               lineHeight: 1.3,
             }}
@@ -1086,9 +1083,9 @@ export default function ProductScreen() {
           position: 'sticky',
           top: 0,
           zIndex: 10,
-          background: 'rgba(12,12,14,0.85)',
+          background: 'var(--header-bg)',
           backdropFilter: 'blur(12px)',
-          borderBottom: '1px solid rgba(255,255,255,0.05)',
+          borderBottom: '1px solid var(--line-soft)',
           padding: '14px 20px',
           display: 'flex',
           alignItems: 'center',
@@ -1102,8 +1099,8 @@ export default function ProductScreen() {
             width: 38,
             height: 38,
             borderRadius: 12,
-            border: '1px solid rgba(255,255,255,0.1)',
-            background: 'rgba(255,255,255,0.05)',
+            border: '1px solid var(--glass-border)',
+            background: 'var(--glass-bg)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -1116,7 +1113,7 @@ export default function ProductScreen() {
             height="18"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="rgba(255,255,255,0.9)"
+            stroke="var(--text)"
             strokeWidth="2.5"
             strokeLinecap="round"
           >
@@ -1146,8 +1143,8 @@ export default function ProductScreen() {
             width: 38,
             height: 38,
             borderRadius: 12,
-            border: '1px solid rgba(255,255,255,0.1)',
-            background: isFavorite ? 'rgba(239,68,68,0.15)' : 'rgba(255,255,255,0.05)',
+            border: '1px solid var(--glass-border)',
+            background: isFavorite ? 'rgba(239,68,68,0.15)' : 'var(--glass-bg)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -1156,11 +1153,7 @@ export default function ProductScreen() {
             transition: 'background 0.15s, border-color 0.15s',
           }}
         >
-          <HeartIcon
-            filled={isFavorite}
-            size={18}
-            color={isFavorite ? '#EF4444' : 'rgba(255,255,255,0.9)'}
-          />
+          <HeartIcon filled={isFavorite} size={18} color={isFavorite ? '#EF4444' : 'var(--text)'} />
         </button>
       </div>
 
@@ -1188,7 +1181,7 @@ export default function ProductScreen() {
               fontWeight: 800,
               fontFamily: 'var(--font-display)',
               lineHeight: 1.22,
-              color: '#fff',
+              color: 'var(--text)',
               margin: 0,
               minWidth: 0,
               wordBreak: 'break-word',
@@ -1211,7 +1204,7 @@ export default function ProductScreen() {
                 style={{
                   fontSize: 22,
                   fontWeight: 900,
-                  color: '#fff',
+                  color: 'var(--text)',
                   fontFamily: 'var(--font-display)',
                   letterSpacing: '-0.02em',
                   whiteSpace: 'nowrap',
@@ -1252,7 +1245,7 @@ export default function ProductScreen() {
           <div
             style={{
               fontSize: 11,
-              color: 'rgba(255,255,255,0.4)',
+              color: 'var(--text-faint)',
               textAlign: 'center',
               marginTop: -8,
             }}
@@ -1284,13 +1277,13 @@ export default function ProductScreen() {
             <SectionLabel>Описание</SectionLabel>
             <div
               style={{
-                background: 'rgba(255,255,255,0.02)',
-                border: '1px solid rgba(255,255,255,0.05)',
+                background: 'var(--glass-subtle)',
+                border: '1px solid var(--line-soft)',
                 borderRadius: 14,
                 padding: 14,
                 fontSize: 13,
                 lineHeight: 1.55,
-                color: 'rgba(255,255,255,0.7)',
+                color: 'var(--text-soft)',
               }}
             >
               {product.description}
@@ -1314,9 +1307,9 @@ export default function ProductScreen() {
                 padding: '14px 10px',
                 borderRadius: 14,
                 cursor: 'pointer',
-                background: 'rgba(255,255,255,0.04)',
-                border: '1px solid rgba(255,255,255,0.1)',
-                color: '#fff',
+                background: 'var(--glass-muted)',
+                border: '1px solid var(--glass-border)',
+                color: 'var(--text)',
                 fontSize: 14,
                 fontWeight: 700,
                 fontFamily: 'var(--font-display)',
@@ -1348,7 +1341,7 @@ export default function ProductScreen() {
                 cursor: 'pointer',
                 background: 'linear-gradient(135deg, #7C3AED, #6D28D9)',
                 border: 'none',
-                color: '#fff',
+                color: 'var(--text-inverse)',
                 fontSize: 14,
                 fontWeight: 700,
                 fontFamily: 'var(--font-display)',
@@ -1376,8 +1369,8 @@ export default function ProductScreen() {
               padding: '13px 16px',
               borderRadius: 14,
               cursor: 'pointer',
-              background: 'rgba(255,255,255,0.03)',
-              border: '1px solid rgba(255,255,255,0.08)',
+              background: 'var(--glass-subtle)',
+              border: '1px solid var(--glass-soft-border)',
               color: 'var(--text-sub)',
               fontSize: 13,
               fontWeight: 600,

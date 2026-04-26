@@ -53,7 +53,7 @@ function EyeBtn({ show, onToggle }) {
         transform: 'translateY(-50%)',
         background: 'none',
         border: 'none',
-        color: 'rgba(255,255,255,0.3)',
+        color: 'var(--text-disabled)',
         cursor: 'pointer',
         padding: 4,
         display: 'flex',
@@ -221,11 +221,11 @@ export default function AuthScreen() {
 
   /* ─── Shared input style ─── */
   const inputStyle = (field) => ({
-    background: 'rgba(255,255,255,0.04)',
-    border: `1.5px solid ${focusedField === field ? 'rgba(124,58,237,0.5)' : 'rgba(255,255,255,0.08)'}`,
+    background: 'var(--input-bg)',
+    border: `1.5px solid ${focusedField === field ? 'var(--badge-border)' : 'var(--input-border)'}`,
     padding: '15px 48px 15px 16px',
     borderRadius: 14,
-    color: '#fff',
+    color: 'var(--text)',
     fontSize: 14,
     fontFamily: 'var(--font-display)',
     width: '100%',
@@ -263,14 +263,14 @@ export default function AuthScreen() {
       <style>{`
         @keyframes floatA1 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(20px,-15px) scale(1.08)} }
         @keyframes floatA2 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-18px,12px) scale(0.92)} }
-        .auth-input::placeholder { color: rgba(255,255,255,0.25) !important; }
-        .auth-input:focus { border-color: rgba(124,58,237,0.5) !important; }
+        .auth-input::placeholder { color: var(--text-disabled) !important; }
+        .auth-input:focus { border-color: var(--badge-border) !important; }
       `}</style>
 
       <div
         className="screen auth-screen"
         style={{
-          background: 'var(--bg)',
+          background: 'var(--bg-app)',
           paddingTop: 0,
           paddingBottom: 'max(32px, env(safe-area-inset-bottom, 0px))',
           minHeight: '100%',
@@ -348,9 +348,9 @@ export default function AuthScreen() {
               width: 40,
               height: 40,
               borderRadius: 12,
-              background: 'rgba(255,255,255,0.05)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              color: '#fff',
+              background: 'var(--glass-bg)',
+              border: '1px solid var(--glass-soft-border)',
+              color: 'var(--text)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -390,7 +390,7 @@ export default function AuthScreen() {
                 fontFamily: 'var(--font-display)',
                 fontSize: 'clamp(24px, 6vw, 28px)',
                 fontWeight: 700,
-                color: '#fff',
+                color: 'var(--text)',
                 margin: 0,
                 letterSpacing: 0.5,
                 textAlign: 'center',
@@ -402,7 +402,7 @@ export default function AuthScreen() {
               style={{
                 fontFamily: 'var(--font-display)',
                 fontSize: 14,
-                color: 'rgba(255,255,255,0.4)',
+                color: 'var(--text-faint)',
                 marginTop: 8,
                 textAlign: 'center',
                 lineHeight: 1.4,
@@ -428,9 +428,9 @@ export default function AuthScreen() {
         >
           <div
             style={{
-              background: 'rgba(255,255,255,0.03)',
+              background: 'var(--glass-subtle)',
               backdropFilter: 'blur(24px)',
-              border: '1px solid rgba(255,255,255,0.07)',
+              border: '1px solid var(--glass-soft-border)',
               borderRadius: 20,
               padding: '24px 20px',
               marginBottom: 20,
@@ -441,7 +441,7 @@ export default function AuthScreen() {
                 style={{
                   background: 'rgba(124,58,237,0.08)',
                   border: '1px solid rgba(124,58,237,0.2)',
-                  color: '#DDD6FE',
+                  color: 'var(--primary-bright)',
                   padding: '12px 16px',
                   borderRadius: 12,
                   fontSize: 13,
@@ -551,10 +551,10 @@ export default function AuthScreen() {
                         fontSize: 22,
                         fontWeight: 700,
                         fontFamily: 'var(--font-display)',
-                        background: 'rgba(255,255,255,0.04)',
-                        border: '1.5px solid rgba(124,58,237,0.2)',
+                        background: 'var(--input-bg)',
+                        border: '1.5px solid var(--badge-border)',
                         borderRadius: 12,
-                        color: '#fff',
+                        color: 'var(--text)',
                         outline: 'none',
                         transition: 'border 0.2s',
                       }}
@@ -566,7 +566,7 @@ export default function AuthScreen() {
                   disabled={loading || otp.join('').length < 6}
                   style={{
                     background: '#7C3AED',
-                    color: '#fff',
+                    color: 'var(--text-inverse)',
                     border: 'none',
                     padding: 16,
                     borderRadius: 14,
@@ -605,7 +605,7 @@ export default function AuthScreen() {
                   disabled={loading || !canSubmit()}
                   style={{
                     background: '#7C3AED',
-                    color: '#fff',
+                    color: 'var(--text-inverse)',
                     border: 'none',
                     padding: 16,
                     borderRadius: 14,
@@ -700,9 +700,7 @@ export default function AuthScreen() {
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            background: rule.ok
-                              ? 'rgba(16,185,129,0.15)'
-                              : 'rgba(255,255,255,0.05)',
+                            background: rule.ok ? 'rgba(16,185,129,0.15)' : 'var(--glass-bg)',
                           }}
                         >
                           {rule.ok ? (
@@ -723,7 +721,7 @@ export default function AuthScreen() {
                                 width: 4,
                                 height: 4,
                                 borderRadius: '50%',
-                                background: 'rgba(255,255,255,0.2)',
+                                background: 'var(--text-disabled)',
                               }}
                             />
                           )}
@@ -732,7 +730,7 @@ export default function AuthScreen() {
                           style={{
                             fontSize: 11,
                             fontFamily: 'var(--font-display)',
-                            color: rule.ok ? '#34D399' : 'rgba(255,255,255,0.3)',
+                            color: rule.ok ? '#34D399' : 'var(--text-disabled)',
                           }}
                         >
                           {rule.text}
@@ -760,7 +758,7 @@ export default function AuthScreen() {
                           ? 'rgba(239,68,68,0.5)'
                           : focusedField === 'cpw'
                             ? 'rgba(124,58,237,0.5)'
-                            : 'rgba(255,255,255,0.08)',
+                            : 'var(--input-border)',
                       }}
                     />
                     <EyeBtn
@@ -792,7 +790,7 @@ export default function AuthScreen() {
                       style={{
                         background: 'none',
                         border: 'none',
-                        color: 'rgba(255,255,255,0.3)',
+                        color: 'var(--text-disabled)',
                         fontSize: 12,
                         fontFamily: 'var(--font-display)',
                         cursor: 'pointer',
@@ -809,7 +807,7 @@ export default function AuthScreen() {
                   disabled={loading || !canSubmit()}
                   style={{
                     background: '#7C3AED',
-                    color: '#fff',
+                    color: 'var(--text-inverse)',
                     border: 'none',
                     padding: 16,
                     borderRadius: 14,
@@ -839,11 +837,11 @@ export default function AuthScreen() {
             {mode !== 'verify' && mode !== 'forgot' && (
               <>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '22px 0' }}>
-                  <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.06)' }} />
+                  <div style={{ flex: 1, height: 1, background: 'var(--line-soft)' }} />
                   <span
                     style={{
                       fontSize: 11,
-                      color: 'rgba(255,255,255,0.25)',
+                      color: 'var(--text-disabled)',
                       fontFamily: 'var(--font-display)',
                       textTransform: 'uppercase',
                       letterSpacing: 1,
@@ -851,7 +849,7 @@ export default function AuthScreen() {
                   >
                     {lang === 'kz' ? 'немесе' : 'или'}
                   </span>
-                  <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.06)' }} />
+                  <div style={{ flex: 1, height: 1, background: 'var(--line-soft)' }} />
                 </div>
 
                 <button
@@ -862,9 +860,9 @@ export default function AuthScreen() {
                     alignItems: 'center',
                     justifyContent: 'center',
                     gap: 10,
-                    background: 'rgba(255,255,255,0.05)',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    color: '#fff',
+                    background: 'var(--glass-bg)',
+                    border: '1px solid var(--glass-border)',
+                    color: 'var(--text)',
                     padding: 14,
                     borderRadius: 14,
                     fontSize: 14,
@@ -910,7 +908,7 @@ export default function AuthScreen() {
               <p
                 style={{
                   fontSize: 13,
-                  color: 'rgba(255,255,255,0.3)',
+                  color: 'var(--text-disabled)',
                   fontFamily: 'var(--font-display)',
                   margin: 0,
                 }}
@@ -953,7 +951,7 @@ export default function AuthScreen() {
               <p
                 style={{
                   fontSize: 11,
-                  color: 'rgba(255,255,255,0.2)',
+                  color: 'var(--text-disabled)',
                   fontFamily: 'var(--font-display)',
                   lineHeight: 1.5,
                 }}
@@ -964,7 +962,7 @@ export default function AuthScreen() {
                     <span
                       onClick={() => navigate('/privacy-policy')}
                       style={{
-                        color: 'rgba(255,255,255,0.4)',
+                        color: 'var(--text-faint)',
                         textDecoration: 'underline',
                         cursor: 'pointer',
                       }}
@@ -979,7 +977,7 @@ export default function AuthScreen() {
                     <span
                       onClick={() => navigate('/privacy-policy')}
                       style={{
-                        color: 'rgba(255,255,255,0.4)',
+                        color: 'var(--text-faint)',
                         textDecoration: 'underline',
                         cursor: 'pointer',
                       }}
