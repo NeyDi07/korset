@@ -26,6 +26,30 @@ function isValidEan(code) {
   return parseInt(clean[12]) === check
 }
 
+async function eanApi(action, payload) {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession()
+  const token = session?.access_token
+  if (!token) throw new Error('Не авторизован')
+
+  const res = await fetch('/api/ean-recovery', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ action, ...payload }),
+  })
+
+  const json = await res.json()
+  if (!res.ok) {
+    if (json.error === 'duplicate') throw new Error('DUPLICATE')
+    throw new Error(json.error || 'Server error')
+  }
+  return json
+}
+
 export default function EanRecoveryScreen() {
   const { t } = useI18n()
   const p = t.retail.products
@@ -84,33 +108,22 @@ export default function EanRecoveryScreen() {
     setSaving(product.id)
     setError(null)
 
-    const { error: dbError } = await supabase
-      .from('global_products')
-      .update({ ean: code })
-      .eq('id', product.id)
-
-    if (dbError) {
-      if (dbError.message.includes('duplicate key')) {
+    try {
+      await eanApi('update-ean', { id: product.id, ean: code })
+      setProducts((prev) => prev.filter((pr) => pr.id !== product.id))
+      setEditingId(null)
+      setEditEan('')
+      setSaving(null)
+      setSuccess(product.brand + ' ' + (product.name || '').substring(0, 25))
+      setTimeout(() => setSuccess(null), 2500)
+    } catch (e) {
+      if (e.message === 'DUPLICATE') {
         setError(p.duplicateEan)
       } else {
-        setError(dbError.message)
+        setError(e.message)
       }
       setSaving(null)
-      return
     }
-
-    await supabase
-      .from('store_products')
-      .update({ ean: code })
-      .eq('global_product_id', product.id)
-      .eq('is_active', true)
-
-    setProducts((prev) => prev.filter((pr) => pr.id !== product.id))
-    setEditingId(null)
-    setEditEan('')
-    setSaving(null)
-    setSuccess(product.brand + ' ' + (product.name || '').substring(0, 25))
-    setTimeout(() => setSuccess(null), 2500)
   }
 
   const handleSaveName = async (product) => {
@@ -121,46 +134,41 @@ export default function EanRecoveryScreen() {
     }
 
     setSaving(product.id)
-    const { error: dbError } = await supabase
-      .from('global_products')
-      .update({ name })
-      .eq('id', product.id)
+    setError(null)
 
-    if (dbError) {
-      setError(dbError.message)
+    try {
+      await eanApi('update-name', { id: product.id, name })
+      setProducts((prev) => prev.map((pr) => (pr.id === product.id ? { ...pr, name } : pr)))
+      setEditingNameId(null)
+      setEditName('')
       setSaving(null)
-      return
+    } catch (e) {
+      setError(e.message)
+      setSaving(null)
     }
-
-    setProducts((prev) => prev.map((pr) => (pr.id === product.id ? { ...pr, name } : pr)))
-    setEditingNameId(null)
-    setEditName('')
-    setSaving(null)
   }
 
   const handleFullDelete = async (product) => {
     setSaving(product.id)
+    setError(null)
 
-    await supabase.from('store_products').delete().eq('global_product_id', product.id)
-
-    const { error: dbError } = await supabase.from('global_products').delete().eq('id', product.id)
-
-    if (dbError) {
-      setError('Ошибка удаления: ' + dbError.message)
+    try {
+      await eanApi('delete', { id: product.id })
+      setProducts((prev) => prev.filter((pr) => pr.id !== product.id))
       setSaving(null)
       setConfirmDeleteId(null)
-      return
+    } catch (e) {
+      setError('Ошибка удаления: ' + e.message)
+      setSaving(null)
+      setConfirmDeleteId(null)
     }
-
-    setProducts((prev) => prev.filter((pr) => pr.id !== product.id))
-    setSaving(null)
-    setConfirmDeleteId(null)
   }
 
   const handleScanEan = (ean) => {
+    const targetId = scannerForId
     setScannerForId(null)
     if (!ean) return
-    setEditingId(scannerForId)
+    setEditingId(targetId)
     setEditEan(ean)
     setError(null)
   }
@@ -184,12 +192,10 @@ export default function EanRecoveryScreen() {
 
   return (
     <div style={{ minHeight: '100dvh', background: 'var(--retail-bg)', paddingBottom: 90 }}>
-      {/* Scanner modal */}
       {scannerForId && (
         <RetailScannerModal onScan={handleScanEan} onClose={() => setScannerForId(null)} />
       )}
 
-      {/* Confirm delete modal */}
       {confirmProduct &&
         createPortal(
           <div
@@ -305,7 +311,6 @@ export default function EanRecoveryScreen() {
           document.body
         )}
 
-      {/* Sticky header */}
       <div
         style={{
           position: 'sticky',
@@ -465,7 +470,6 @@ export default function EanRecoveryScreen() {
               }}
             >
               <div style={{ display: 'flex', gap: 12 }}>
-                {/* Image — tap to open product card */}
                 <a
                   href={buildProductPath(storeSlug, pr.ean)}
                   target="_blank"
@@ -501,7 +505,6 @@ export default function EanRecoveryScreen() {
                 </a>
 
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  {/* Name — editable */}
                   {editingNameId === pr.id ? (
                     <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
                       <input
@@ -558,13 +561,7 @@ export default function EanRecoveryScreen() {
                       </button>
                     </div>
                   ) : (
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 4,
-                      }}
-                    >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                       <a
                         href={buildProductPath(storeSlug, pr.ean)}
                         target="_blank"
@@ -628,7 +625,6 @@ export default function EanRecoveryScreen() {
                   </div>
                 </div>
 
-                {/* Full delete button */}
                 <button
                   onClick={() => setConfirmDeleteId(pr.id)}
                   disabled={saving === pr.id}
@@ -655,7 +651,6 @@ export default function EanRecoveryScreen() {
                 </button>
               </div>
 
-              {/* EAN edit section */}
               {editingId === pr.id ? (
                 <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
                   <input
