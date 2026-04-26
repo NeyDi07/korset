@@ -156,6 +156,8 @@ export default defineConfig({
       injectManifest: {
         swSrc: 'src/sw.js',
         swDest: 'dist/sw.js',
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,webp,jpg,jpeg}'],
+        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024, // 3MB for banner images
       },
       manifest: {
         name: 'Körset',
@@ -170,9 +172,7 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,webp,jpg,jpeg}'],
-        // Ensure banners and other image assets are properly cached
-        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024, // 3MB for banner images
+        // Runtime caching options (precache manifest is built by injectManifest above)
       },
     }),
   ],
