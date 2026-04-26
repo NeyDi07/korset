@@ -760,7 +760,7 @@ export default function ProfileScreen() {
           </div>
 
           {/* ── STATS TABS (favorites / preferences / history) ── */}
-          <div style={{ padding: '14px 20px 24px' }}>
+          <div style={{ padding: '38px 20px 28px' }}>
             <ProfileStatsTabs
               activeTab={activeTab}
               onTabChange={setActiveTab}

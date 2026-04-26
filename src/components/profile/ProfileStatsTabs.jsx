@@ -107,7 +107,7 @@ export default function ProfileStatsTabs({
 
     if (activeTab === 'favorites') {
       if (loadingTab === 'favorites' && topFavorites === null) {
-        return <div className="stats-tabs__loading">…</div>
+        return <TabSpinner text={t.profile.favoritesLoading || t.common.loading} />
       }
       if (topFavorites && topFavorites.length > 0) {
         return (
@@ -137,7 +137,7 @@ export default function ProfileStatsTabs({
 
     if (activeTab === 'history') {
       if (loadingTab === 'history' && topHistory === null) {
-        return <div className="stats-tabs__loading">…</div>
+        return <TabSpinner text={t.profile.historyLoading || t.common.loading} />
       }
       if (topHistory && topHistory.length > 0) {
         return (
@@ -301,6 +301,24 @@ function TabEmptyState({ tone, title, hint }) {
       </div>
       <div className="stats-tabs__empty-title">{title}</div>
       <div className="stats-tabs__empty-hint">{hint}</div>
+    </div>
+  )
+}
+
+/**
+ * In-tab loading indicator. Uses a rotating arc (CSS-driven so it's smooth
+ * even when the main thread is busy hydrating product rows) and a short
+ * localized label so users immediately understand the panel is working.
+ * The arc colour is inherited from the parent panel's `--tone-color-strong`,
+ * so it always matches the active tab.
+ */
+function TabSpinner({ text }) {
+  return (
+    <div className="stats-tabs__spinner" role="status" aria-live="polite">
+      <svg viewBox="0 0 50 50" aria-hidden="true">
+        <circle cx="25" cy="25" r="20" />
+      </svg>
+      <span className="stats-tabs__spinner-text">{text}</span>
     </div>
   )
 }

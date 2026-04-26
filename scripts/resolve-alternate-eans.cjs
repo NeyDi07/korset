@@ -127,13 +127,13 @@ async function main() {
   if (DRY_RUN) {
     console.log('── TO UPDATE (first 15) ──')
     toUpdate.slice(0, 15).forEach(u => {
-      console.log(u.old_ean + ' → ' + u.new_ean + ' (' + u.country + ') ' + (u.brand || '?') + ' | ' + (u.name || '').substring(0, 40))
+      console.log(u.old_ean + ' → ' + u.new_ean + ' (' + (u.new_country || '?') + ') ' + (u.brand || '?') + ' | ' + (u.name || '').substring(0, 40))
     })
     console.log()
     console.log('── TO DEACTIVATE (first 15) ──')
     toDeactivate.slice(0, 15).forEach(d => {
       const flag = d.needs_merge ? ' ⚠️ NEEDS MERGE' : ''
-      console.log(d.old_ean + ' = dup of ' + d.matches_ean + ' | ' + (d.brand || '?') + ' | ' + (d.name || '').substring(0, 35) + flag)
+      console.log(d.old_ean + ' = dup of ' + (d.dup_ean || '?') + ' | ' + (d.brand || '?') + ' | ' + (d.name || '').substring(0, 35) + flag)
     })
     console.log()
     console.log('Dry run. Remove --dry-run to apply.')
@@ -143,13 +143,13 @@ async function main() {
   console.log('Step 1: Merging ingredients from fake→real for', needsMerge.length, 'products...')
   for (const d of needsMerge) {
     const fakeP = fakeWithAlt.find(p => p.id === d.id)
-    const realP = realByEan[d.matches_ean]
+    const realP = realByEan[d.dup_ean]
     if (fakeP && realP) {
       const { error } = await sb
         .from('global_products')
         .update({ ingredients_raw: fakeP.ingredients_raw })
         .eq('id', realP.id)
-      if (error) console.log('  MERGE ERR:', d.matches_ean, error.message)
+      if (error) console.log('  MERGE ERR:', d.dup_ean, error.message)
     }
   }
 
