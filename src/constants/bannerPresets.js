@@ -2,7 +2,7 @@
 // Stored as `preset:<id>` in users.banner_url. URLs are public assets in /public/banners/.
 
 export const BANNER_PRESETS = [
-  /* ── New photo banners (WebP, 1200×450, optimized) ── */
+  /* ── Photo banners (WebP, 1200×450, optimized via optimize:banners) ── */
   {
     id: 'golden-samurai',
     src: '/banners/golden-samurai.webp',
@@ -39,7 +39,6 @@ export const BANNER_PRESETS = [
     thumb: '/banners/thumbs/dawn-ronin.webp',
     label: { ru: 'Рассветный ронин', kz: 'Таңғы ронин' },
   },
-  /* ── Placeholders for next batch (drop images + run optimize:banners) ── */
   {
     id: 'midnight-grove',
     src: '/banners/midnight-grove.webp',
@@ -47,42 +46,17 @@ export const BANNER_PRESETS = [
     label: { ru: 'Полночная роща', kz: 'Түнгі орман' },
   },
   {
+    id: 'arctic-whisper',
+    src: '/banners/arctic-whisper.webp',
+    thumb: '/banners/thumbs/arctic-whisper.webp',
+    label: { ru: 'Арктический шёпот', kz: 'Арктикалық сыбыр' },
+  },
+  /* ── Placeholder for future 9th banner ── */
+  {
     id: 'astral-dream',
     src: '/banners/astral-dream.webp',
     thumb: '/banners/thumbs/astral-dream.webp',
     label: { ru: 'Астральный сон', kz: 'Астралдық түс' },
-  },
-  {
-    id: 'ember-field',
-    src: '/banners/ember-field.webp',
-    thumb: '/banners/thumbs/ember-field.webp',
-    label: { ru: 'Поле углей', kz: 'Қызыл өріс' },
-  },
-  /* ── Legacy vector banners (kept for old user profiles) ── */
-  {
-    id: 'sunset',
-    src: '/banners/sunset.svg',
-    label: { ru: 'Закат', kz: 'Күн батуы' },
-  },
-  {
-    id: 'mountains',
-    src: '/banners/mountains.svg',
-    label: { ru: 'Горы', kz: 'Таулар' },
-  },
-  {
-    id: 'purple',
-    src: '/banners/purple.svg',
-    label: { ru: 'Космос', kz: 'Ғарыш' },
-  },
-  {
-    id: 'forest',
-    src: '/banners/forest.svg',
-    label: { ru: 'Лес', kz: 'Орман' },
-  },
-  {
-    id: 'ocean',
-    src: '/banners/ocean.svg',
-    label: { ru: 'Океан', kz: 'Мұхит' },
   },
 ]
 

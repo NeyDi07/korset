@@ -550,62 +550,68 @@ export default function ProfileEditScreen() {
               )
             })}
 
-            {/* Upload tile */}
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={uploading}
-              style={{
-                appearance: 'none',
-                padding: 0,
-                aspectRatio: '16 / 8',
-                cursor: uploading ? 'wait' : 'pointer',
-                position: 'relative',
-                background: 'rgba(124,58,237,0.08)',
-                border:
-                  bannerSelection?.type === 'url'
-                    ? '2px solid #7C3AED'
-                    : '1px dashed rgba(167,139,250,0.4)',
-                borderRadius: 16,
-                color: '#A78BFA',
-                fontFamily: 'var(--font-display)',
-                fontSize: 12,
-                fontWeight: 600,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 6,
-                overflow: 'hidden',
-              }}
-            >
-              {bannerSelection?.type === 'url' ? (
-                <img
-                  src={bannerSelection.url}
-                  alt=""
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                />
-              ) : (
-                <>
-                  <svg
-                    width="22"
-                    height="22"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M12 4v16M4 12h16" />
-                  </svg>
-                  <span style={{ textAlign: 'center', padding: '0 6px' }}>
-                    {uploading ? t.profile.edit.saving : t.profile.edit.uploadOwn}
-                  </span>
-                </>
-              )}
+            {/* Upload tile — wrapped in a positioned div so SelectedDot
+                can sit OUTSIDE the button's overflow:hidden boundary. This
+                mirrors the preset-tile pattern where the dot is rendered
+                outside the inner overflow-hidden wrapper. */}
+            <div style={{ position: 'relative', aspectRatio: '16 / 8' }}>
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploading}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  appearance: 'none',
+                  padding: 0,
+                  cursor: uploading ? 'wait' : 'pointer',
+                  position: 'relative',
+                  background: 'rgba(124,58,237,0.08)',
+                  border:
+                    bannerSelection?.type === 'url'
+                      ? '2px solid #7C3AED'
+                      : '1px dashed rgba(167,139,250,0.4)',
+                  borderRadius: 16,
+                  color: '#A78BFA',
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 12,
+                  fontWeight: 600,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 6,
+                  overflow: 'hidden',
+                }}
+              >
+                {bannerSelection?.type === 'url' ? (
+                  <img
+                    src={bannerSelection.url}
+                    alt=""
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                  />
+                ) : (
+                  <>
+                    <svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M12 4v16M4 12h16" />
+                    </svg>
+                    <span style={{ textAlign: 'center', padding: '0 6px' }}>
+                      {uploading ? t.profile.edit.saving : t.profile.edit.uploadOwn}
+                    </span>
+                  </>
+                )}
+              </button>
               {bannerSelection?.type === 'url' && <SelectedDot />}
-            </button>
+            </div>
           </div>
           <input
             ref={fileInputRef}
