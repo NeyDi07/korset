@@ -14,6 +14,7 @@ import {
 } from '../utils/retailAnalytics.js'
 import RetailScannerModal from '../components/RetailScannerModal.jsx'
 import { buildProductPath } from '../utils/routes.js'
+import { useNavigate } from 'react-router-dom'
 
 // ── Helpers ────────────────────────────────────────────────────────
 function displayName(p) {
@@ -1153,6 +1154,8 @@ export default function RetailProductsScreen() {
   const { storeId, currentStore } = useStore()
   const queryClient = useQueryClient()
   const p = t.retail.products
+  const navigate = useNavigate()
+  const storeSlug = currentStore?.slug ?? null
 
   const [viewMode, setViewMode] = useState(() => localStorage.getItem('retail_view_mode') || 'list')
   const [search, setSearch] = useState('')
@@ -1315,8 +1318,6 @@ export default function RetailProductsScreen() {
 
   useEffect(() => () => clearTimeout(toastTimer.current), [])
 
-  const storeSlug = currentStore?.slug ?? null
-
   // With server-side search, products is already filtered
   const filtered = products
 
@@ -1348,8 +1349,34 @@ export default function RetailProductsScreen() {
       >
         {search ? 'search_off' : 'inventory_2'}
       </span>
-      <div style={{ fontSize: 14 }}>{p.notFound}</div>
+      <div style={{ fontSize: 14 }}>{search ? p.notFound : p.emptyCatalog}</div>
       {search && <div style={{ fontSize: 12, marginTop: 4, opacity: 0.7 }}>{p.notFoundSub}</div>}
+      {!search && (
+        <button
+          onClick={() => navigate(`/retail/${storeSlug}/import`)}
+          style={{
+            marginTop: 16,
+            padding: '12px 24px',
+            borderRadius: 14,
+            border: 'none',
+            background: 'linear-gradient(135deg, #10B981, #059669)',
+            color: '#fff',
+            fontSize: 14,
+            fontWeight: 700,
+            fontFamily: 'var(--font-display)',
+            cursor: 'pointer',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 8,
+            boxShadow: '0 8px 24px rgba(16,185,129,0.25)',
+          }}
+        >
+          <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
+            upload_file
+          </span>
+          {t.retail.nav.import}
+        </button>
+      )}
     </div>
   )
 
@@ -1468,6 +1495,29 @@ export default function RetailProductsScreen() {
           >
             <span className="material-symbols-outlined" style={{ fontSize: 22 }}>
               barcode_scanner
+            </span>
+          </button>
+
+          {/* Import */}
+          <button
+            onClick={() => navigate(`/retail/${storeSlug}/import`)}
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 14,
+              border: 'none',
+              cursor: 'pointer',
+              background: 'rgba(16,185,129,0.12)',
+              color: '#10B981',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+              transition: 'background 0.2s',
+            }}
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: 22 }}>
+              upload_file
             </span>
           </button>
         </div>

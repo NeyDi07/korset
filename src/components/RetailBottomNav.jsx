@@ -10,13 +10,12 @@ export default function RetailBottomNav() {
 
   const getActive = () => {
     if (pathname.includes('/products')) return 'products'
-    if (pathname.includes('/import')) return 'import'
     if (pathname.includes('/settings')) return 'settings'
     return 'dashboard'
   }
 
   const active = getActive()
-  const col = (on) => (on ? '#38BDF8' : 'rgba(148, 163, 184, 0.45)') // Retail uses a more "Sky Blue" distinct color
+  const col = (on) => (on ? '#38BDF8' : 'rgba(148, 163, 184, 0.45)')
   const storeSlug = currentStore?.slug || 'store-one'
 
   const TABS = [
@@ -31,12 +30,6 @@ export default function RetailBottomNav() {
       label: t.retail.nav.products,
       path: `/retail/${storeSlug}/products`,
       icon: 'shopping_bag',
-    },
-    {
-      id: 'import',
-      label: t.retail.nav.import,
-      path: `/retail/${storeSlug}/import`,
-      icon: 'upload_file',
     },
     {
       id: 'settings',
@@ -55,7 +48,7 @@ export default function RetailBottomNav() {
         right: 0,
         zIndex: 100,
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr 1fr 1fr',
+        gridTemplateColumns: '1fr 1fr 1fr',
         alignItems: 'end',
         columnGap: 4,
         padding: `8px 8px calc(12px + env(safe-area-inset-bottom, 0px))`,
