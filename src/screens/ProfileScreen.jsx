@@ -1,9 +1,17 @@
-import { useState, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { setLang, useI18n } from '../utils/i18n.js'
 import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import { useStore } from '../contexts/StoreContext.jsx'
+import { supabase } from '../utils/supabase.js'
+import {
+  hydrateProductsFromFavoriteRows,
+  hydrateProductsFromScanRows,
+} from '../domain/product/resolver.js'
+import { buildHistoryOwnerKey, readLocalScanHistory } from '../utils/localHistory.js'
+import { loadPrivacySettings } from '../utils/privacySettings.js'
+import ProductMiniCard from '../components/ProductMiniCard.jsx'
 import {
   buildHistoryPath,
   buildNotificationSettingsPath,
@@ -311,7 +319,7 @@ export default function ProfileScreen() {
   const { lang, t } = useI18n()
   const allergenInputRef = useRef(null)
   const { profile, updateProfile: setProfile } = useProfile()
-  const { user, displayName, avatarId, bannerUrl, logout } = useAuth()
+  const { user, displayName, avatarId, bannerUrl, internalUserId, logout } = useAuth()
   const { favoritesCount, scanCount } = useUserData()
   const { currentStore } = useStore()
   const { theme, toggleTheme } = useTheme()
@@ -320,6 +328,95 @@ export default function ProfileScreen() {
   // Active stats tab: 'favorites' | 'preferences' | 'history' | null
   const [activeTab, setActiveTab] = useState(null)
   const toggleTab = (tab) => setActiveTab((cur) => (cur === tab ? null : tab))
+
+  // Lazy-loaded mini-grids for favorites/history tabs (top 6 each).
+  // null = not loaded yet, [] = loaded but empty, [items] = loaded with content.
+  const [topFavorites, setTopFavorites] = useState(null)
+  const [topHistory, setTopHistory] = useState(null)
+  const [loadingTab, setLoadingTab] = useState(null)
+
+  useEffect(() => {
+    if (activeTab !== 'favorites' || topFavorites !== null) return
+    if (!user || !internalUserId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setTopFavorites([])
+      return
+    }
+    let cancelled = false
+
+    setLoadingTab('favorites')
+    ;(async () => {
+      try {
+        const { data, error } = await supabase
+          .from('user_favorites')
+          .select('ean, global_product_id, added_at')
+          .eq('user_id', internalUserId)
+          .order('added_at', { ascending: false })
+          .limit(6)
+        if (error) throw error
+        const hydrated = await hydrateProductsFromFavoriteRows(data || [])
+        if (!cancelled) setTopFavorites(hydrated)
+      } catch (err) {
+        console.warn('[ProfileScreen] favorites load failed', err)
+        if (!cancelled) setTopFavorites([])
+      } finally {
+        if (!cancelled) setLoadingTab((cur) => (cur === 'favorites' ? null : cur))
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [activeTab, user, internalUserId, topFavorites])
+
+  useEffect(() => {
+    if (activeTab !== 'history' || topHistory !== null) return
+    let cancelled = false
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setLoadingTab('history')
+    ;(async () => {
+      try {
+        const ownerKey = buildHistoryOwnerKey(user)
+        const local = loadPrivacySettings().localHistoryEnabled
+          ? readLocalScanHistory(ownerKey)
+          : []
+        let remoteHydrated = []
+        if (user && internalUserId) {
+          const { data, error } = await supabase
+            .from('scan_events')
+            .select('ean, global_product_id, scanned_at')
+            .eq('user_id', internalUserId)
+            .order('scanned_at', { ascending: false })
+            .limit(20)
+          if (!error) {
+            remoteHydrated = await hydrateProductsFromScanRows(data || [])
+          }
+        }
+        // Merge by ean, keep most recent occurrence
+        const map = new Map()
+        for (const item of [...remoteHydrated, ...local]) {
+          if (!item?.ean) continue
+          const time = new Date(item.scanDate || item.scannedAt || item.scanned_at || 0).getTime()
+          const existing = map.get(item.ean)
+          if (!existing || time >= existing._time) {
+            map.set(item.ean, { ...item, _time: time })
+          }
+        }
+        const merged = Array.from(map.values())
+          .sort((a, b) => b._time - a._time)
+          .slice(0, 6)
+          .map(({ _time, ...rest }) => rest)
+        if (!cancelled) setTopHistory(merged)
+      } catch (err) {
+        console.warn('[ProfileScreen] history load failed', err)
+        if (!cancelled) setTopHistory([])
+      } finally {
+        if (!cancelled) setLoadingTab((cur) => (cur === 'history' ? null : cur))
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [activeTab, user, internalUserId, topHistory])
 
   const toggleDiet = (id) =>
     setProfile((p) => ({
@@ -402,6 +499,90 @@ export default function ProfileScreen() {
           transition: background 0.2s ease, transform 0.15s ease;
         }
         .view-all-btn:active { transform: scale(0.98); background: var(--glass-bg); }
+        .mini-grid {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 10px;
+        }
+        @media (min-width: 380px) {
+          .mini-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        }
+        .product-mini-card {
+          background: var(--glass-subtle);
+          border: 1px solid var(--glass-soft-border);
+          border-radius: 14px;
+          padding: 8px 8px 10px;
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+          cursor: pointer;
+          transition: transform 0.15s ease, border-color 0.2s ease, background 0.2s ease;
+          outline: none;
+        }
+        .product-mini-card:active { transform: scale(0.97); }
+        .product-mini-card:hover { border-color: var(--glass-border); }
+        .product-mini-card:focus-visible { border-color: rgba(167,139,250,0.55); box-shadow: 0 0 0 3px rgba(124,58,237,0.18); }
+        .product-mini-card__image-wrap {
+          width: 100%;
+          aspect-ratio: 1 / 1;
+          border-radius: 10px;
+          overflow: hidden;
+          background: var(--glass-bg);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .product-mini-card__image { width: 100%; height: 100%; object-fit: contain; }
+        .product-mini-card__placeholder { color: var(--text-disabled); }
+        .product-mini-card__name {
+          font-family: var(--font-display);
+          font-size: 11px;
+          font-weight: 600;
+          color: var(--text);
+          line-height: 1.25;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          min-height: 28px;
+          margin-top: 2px;
+        }
+        .product-mini-card__meta {
+          font-family: var(--font-display);
+          font-size: 9.5px;
+          font-weight: 500;
+          color: var(--text-dim);
+          letter-spacing: 0.4px;
+          text-transform: uppercase;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .product-mini-card__cta {
+          margin-top: 4px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 5px;
+          padding: 6px 8px;
+          border-radius: 9px;
+          background: rgba(124,58,237,0.18);
+          border: 1px solid rgba(124,58,237,0.3);
+          color: #A78BFA;
+          font-family: var(--font-display);
+          font-size: 10px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: background 0.15s ease, transform 0.15s ease;
+        }
+        .product-mini-card__cta:active { transform: scale(0.96); background: rgba(124,58,237,0.28); }
+        .tab-loading {
+          display: flex; align-items: center; justify-content: center;
+          padding: 30px 0;
+          color: var(--text-dim);
+          font-family: var(--font-display); font-size: 13px;
+        }
       `}</style>
 
       <div
@@ -1202,63 +1383,94 @@ export default function ProfileScreen() {
 
                 {activeTab === 'favorites' && (
                   <div className="tab-content" key="favorites">
-                    <TabEmptyState
-                      tone="favorites"
-                      title={t.profile.favoritesEmpty}
-                      hint={t.profile.favoritesEmptyHint}
-                    />
-                    <button
-                      type="button"
-                      className="view-all-btn"
-                      onClick={() =>
-                        navigate(buildHistoryPath(currentStore?.slug || null, 'favorites'))
-                      }
-                    >
-                      {t.profile.viewAll}
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2.2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M9 18l6-6-6-6" />
-                      </svg>
-                    </button>
+                    {loadingTab === 'favorites' && topFavorites === null ? (
+                      <div className="tab-loading">…</div>
+                    ) : topFavorites && topFavorites.length > 0 ? (
+                      <>
+                        <div className="mini-grid">
+                          {topFavorites.map((p) => (
+                            <ProductMiniCard key={p.ean || p.id} product={p} />
+                          ))}
+                        </div>
+                        {favoritesCount > topFavorites.length && (
+                          <button
+                            type="button"
+                            className="view-all-btn"
+                            onClick={() =>
+                              navigate(buildHistoryPath(currentStore?.slug || null, 'favorites'))
+                            }
+                          >
+                            {t.profile.viewAll}
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2.2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M9 18l6-6-6-6" />
+                            </svg>
+                          </button>
+                        )}
+                      </>
+                    ) : (
+                      <TabEmptyState
+                        tone="favorites"
+                        title={t.profile.favoritesEmpty}
+                        hint={t.profile.favoritesEmptyHint}
+                      />
+                    )}
                   </div>
                 )}
 
                 {activeTab === 'history' && (
                   <div className="tab-content" key="history">
-                    <TabEmptyState
-                      tone="history"
-                      title={t.profile.historyEmpty}
-                      hint={t.profile.historyEmptyHint}
-                    />
-                    <button
-                      type="button"
-                      className="view-all-btn"
-                      onClick={() =>
-                        navigate(buildHistoryPath(currentStore?.slug || null, 'history'))
-                      }
-                    >
-                      {t.profile.viewAll}
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2.2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M9 18l6-6-6-6" />
-                      </svg>
-                    </button>
+                    {loadingTab === 'history' && topHistory === null ? (
+                      <div className="tab-loading">…</div>
+                    ) : topHistory && topHistory.length > 0 ? (
+                      <>
+                        <div className="mini-grid">
+                          {topHistory.map((p) => (
+                            <ProductMiniCard
+                              key={`${p.ean || p.id}-${p.scanDate || ''}`}
+                              product={p}
+                            />
+                          ))}
+                        </div>
+                        {scanCount > topHistory.length && (
+                          <button
+                            type="button"
+                            className="view-all-btn"
+                            onClick={() =>
+                              navigate(buildHistoryPath(currentStore?.slug || null, 'history'))
+                            }
+                          >
+                            {t.profile.viewAll}
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2.2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M9 18l6-6-6-6" />
+                            </svg>
+                          </button>
+                        )}
+                      </>
+                    ) : (
+                      <TabEmptyState
+                        tone="history"
+                        title={t.profile.historyEmpty}
+                        hint={t.profile.historyEmptyHint}
+                      />
+                    )}
                   </div>
                 )}
               </div>
