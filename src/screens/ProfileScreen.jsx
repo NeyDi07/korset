@@ -13,6 +13,7 @@ import { buildHistoryOwnerKey, readLocalScanHistory } from '../utils/localHistor
 import { loadPrivacySettings } from '../utils/privacySettings.js'
 import ProfileStatsTabs from '../components/profile/ProfileStatsTabs.jsx'
 import {
+  buildAccountPath,
   buildHistoryPath,
   buildNotificationSettingsPath,
   buildPrivacyPath,
@@ -738,7 +739,7 @@ export default function ProfileScreen() {
                     margin: 0,
                     cursor: 'pointer',
                     background:
-                      'radial-gradient(ellipse 70% 60% at 50% 28%, var(--bg-card-hover) 0%, transparent 75%)',
+                      'radial-gradient(ellipse 70% 60% at 50% 28%, var(--bg-surface) 0%, transparent 75%)',
                   }}
                 />
               )}
@@ -834,14 +835,14 @@ export default function ProfileScreen() {
                       maxWidth: '85%',
                       padding: '6px 16px',
                       borderRadius: 12,
-                      background: 'rgba(15,10,30,0.55)',
-                      border: '1px solid rgba(255,255,255,0.08)',
+                      background: 'var(--glass-strong)',
+                      border: '1px solid var(--glass-border)',
                       backdropFilter: 'blur(6px)',
                       WebkitBackdropFilter: 'blur(6px)',
                       fontFamily: 'var(--font-display)',
                       fontSize: 22,
                       fontWeight: 600,
-                      color: '#fff',
+                      color: 'var(--text)',
                       textTransform: 'uppercase',
                       letterSpacing: 1,
                       lineHeight: 1.1,
@@ -1180,7 +1181,7 @@ export default function ProfileScreen() {
                   label: t.profile.sectionPersonal,
                   onClick: () =>
                     user
-                      ? navigate('/setup-profile?mode=edit')
+                      ? navigate(buildAccountPath(currentStore?.slug || null))
                       : navigate('/auth', {
                           state: buildAuthNavigateState(location, {
                             reason: 'profile_required',
@@ -1302,27 +1303,12 @@ export default function ProfileScreen() {
                       <circle cx="12" cy="12" r="10" />
                       <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3" />
                       <line x1="12" y1="17" x2="12.01" y2="17" />
-                    </svg>
-                  ),
-                  label: t.profile.help,
-                },
-                {
-                  icon: (
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#A78BFA"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    >
-                      <circle cx="12" cy="12" r="10" />
                       <line x1="12" y1="16" x2="12" y2="12" />
                       <line x1="12" y1="8" x2="12.01" y2="8" />
                     </svg>
                   ),
-                  label: t.profile.about,
+                  label: t.profile.helpAbout,
+                  ariaLabel: t.profile.helpAboutAria,
                 },
                 {
                   icon: (
@@ -1452,8 +1438,8 @@ export default function ProfileScreen() {
           {/* ── ACTIONS ── */}
           <div style={{ padding: '0 22px 14px' }}>
             <div className="glass-card" style={{ padding: 0 }}>
-              {/* Temporary Button for Retail Cabinet */}
-              {user && (
+              {/* Retail Cabinet — только для владельца магазина */}
+              {user && currentStore?.owner_id === user?.id && (
                 <>
                   <div
                     className="settings-item"
@@ -1500,7 +1486,7 @@ export default function ProfileScreen() {
                         color: '#38BDF8',
                       }}
                     >
-                      РЈРїСЂР°РІР»РµРЅРёРµ РјР°РіР°Р·РёРЅРѕРј (Beta)
+                      Управление магазином (Beta)
                     </span>
                   </div>
                   <div
@@ -1628,7 +1614,27 @@ export default function ProfileScreen() {
                 fontWeight: 400,
               }}
             >
-              Körset v0.1.0 • Kazakhstan 🇰🇿
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                Körset v1.0.0
+                <svg width="14" height="10" viewBox="0 0 60 30" aria-hidden="true">
+                  <rect width="60" height="30" fill="#00afca" />
+                  <rect y="10" width="60" height="10" fill="#fec50c" />
+                  <path
+                    d="M30 6.5 l1.2 3.7 h3.8 l-3.1 2.2 1.2 3.7 -3.1-2.2 -3.1 2.2 1.2-3.7 -3.1-2.2 h3.8 z"
+                    fill="#fec50c"
+                  />
+                  <path
+                    d="M30 6.5 l1.2 3.7 h3.8 l-3.1 2.2 1.2 3.7 -3.1-2.2 -3.1 2.2 1.2-3.7 -3.1-2.2 h3.8 z"
+                    fill="#fec50c"
+                    transform="translate(-12,0)"
+                  />
+                  <path
+                    d="M30 6.5 l1.2 3.7 h3.8 l-3.1 2.2 1.2 3.7 -3.1-2.2 -3.1 2.2 1.2-3.7 -3.1-2.2 h3.8 z"
+                    fill="#fec50c"
+                    transform="translate(12,0)"
+                  />
+                </svg>
+              </span>
             </div>
           </div>
         </div>

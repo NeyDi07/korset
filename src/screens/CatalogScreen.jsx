@@ -1,14 +1,21 @@
 import { useState, useMemo, useEffect, useCallback, useRef, forwardRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Virtuoso, VirtuosoGrid } from 'react-virtuoso'
-import { checkProductFit, formatPrice } from '../utils/fitCheck.js'
+import {
+  checkProductFit,
+  formatPrice,
+  CATEGORY_LABELS,
+  CATEGORY_LABELS_KZ,
+} from '../utils/fitCheck.js'
 import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { useOffline } from '../contexts/OfflineContext.jsx'
-import { useI18n } from '../utils/i18n.js'
+import { useI18n, plural, pluralKz } from '../utils/i18n.js'
 import { getGlobalDemoProducts, getStoreCatalogProducts } from '../utils/storeCatalog.js'
 import { getCatalogFromIndexedDB } from '../utils/offlineDB.js'
 import { buildProductPath, buildComparePath } from '../utils/routes.js'
+import { supabase } from '../utils/supabase.js'
+import { getImageUrl } from '../utils/imageUrl.js'
 
 function ProductThumb({ product }) {
   const [imgOk, setImgOk] = useState(true)
@@ -80,7 +87,7 @@ const ListFooter = forwardRef(({ style, ...props }, ref) => (
 
 export default function CatalogScreen() {
   const navigate = useNavigate()
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
   const { profile } = useProfile()
   const { storeId, currentStore, catalogProducts, isCatalogReady } = useStore()
   const { isOnline } = useOffline()
@@ -96,6 +103,8 @@ export default function CatalogScreen() {
   )
 
   const [offlineCatalog, setOfflineCatalog] = useState([])
+  const [serverResults, setServerResults] = useState([])
+  const [isSearchingServer, setIsSearchingServer] = useState(false)
 
   useEffect(() => {
     if (!isOnline && (!catalogProducts || catalogProducts.length === 0)) {
@@ -117,6 +126,8 @@ export default function CatalogScreen() {
   const hasProfile = Boolean(
     profile?.halal || profile?.halalOnly || profile?.allergens?.length || profile?.dietGoals?.length
   )
+  const categoryLabels = lang === 'kz' ? CATEGORY_LABELS_KZ : CATEGORY_LABELS
+
   const categoryOptions = useMemo(() => {
     const dynamic = [...new Set(baseProducts.map((product) => product.category).filter(Boolean))]
     return ['all', ...(hasProfile ? ['fit'] : []), ...dynamic]
@@ -132,25 +143,93 @@ export default function CatalogScreen() {
 
     const query = q.trim().toLowerCase()
     if (query) {
-      arr = arr.filter((product) =>
-        `${product.name} ${product.brand || ''} ${(product.tags || []).join(' ')}`
-          .toLowerCase()
-          .includes(query)
-      )
+      arr = arr.filter((product) => {
+        const haystack =
+          `${product.name} ${product.nameKz || ''} ${product.brand || ''} ${(product.ingredients || '').slice(0, 200)} ${(product.tags || []).join(' ')}`.toLowerCase()
+        return haystack.includes(query)
+      })
     }
 
     arr.sort((a, b) => {
       if (sort === 'cheap') return (a.priceKzt || 0) - (b.priceKzt || 0)
       if (sort === 'pricey') return (b.priceKzt || 0) - (a.priceKzt || 0)
-      if (sort === 'rating') return (b.qualityScore || 0) - (a.qualityScore || 0)
       const aFit = checkProductFit(a, profile).fits ? 0 : 1
       const bFit = checkProductFit(b, profile).fits ? 0 : 1
       if (aFit !== bFit) return aFit - bFit
-      return (b.qualityScore || 0) - (a.qualityScore || 0)
+      return 0
     })
 
     return arr
   }, [baseProducts, filter, profile, q, sort])
+
+  const clientEmpty = q.trim().length > 0 && list.length === 0
+
+  useEffect(() => {
+    if (!isOnline || !q.trim() || !storeId) {
+      setServerResults([])
+      setIsSearchingServer(false)
+      return
+    }
+    if (!clientEmpty) {
+      setServerResults([])
+      return
+    }
+    const term = q.trim()
+    const timer = setTimeout(() => {
+      setIsSearchingServer(true)
+      supabase
+        .from('store_products')
+        .select(
+          `ean, price_kzt, shelf_zone, stock_status, local_name, global_products!inner(ean, name, name_kz, brand, category, quantity, image_url, halal_status, nutriscore)`
+        )
+        .eq('store_id', storeId)
+        .eq('is_active', true)
+        .eq('global_products.is_active', true)
+        .or(
+          `global_products.name.ilike.%${term}%,global_products.brand.ilike.%${term}%,local_name.ilike.%${term}%`
+        )
+        .range(0, 29)
+        .then(({ data, error }) => {
+          if (error || !data) {
+            setServerResults([])
+          } else {
+            const mapped = data.map((sp) => {
+              const gp = sp.global_products || {}
+              return {
+                ean: gp.ean || sp.ean,
+                name: sp.local_name || gp.name,
+                nameKz: gp.name_kz || null,
+                brand: gp.brand || null,
+                category: gp.category || null,
+                quantity: gp.quantity || null,
+                image: getImageUrl(gp.image_url) || null,
+                images: [],
+                priceKzt: sp.price_kzt || null,
+                shelf: sp.shelf_zone || null,
+                stockStatus: sp.stock_status || null,
+                halalStatus: gp.halal_status || 'unknown',
+                nutriscore: gp.nutriscore || null,
+                allergens: [],
+                dietTags: [],
+                source: 'server_search',
+              }
+            })
+            setServerResults(mapped)
+          }
+          setIsSearchingServer(false)
+        })
+        .catch(() => {
+          setServerResults([])
+          setIsSearchingServer(false)
+        })
+    }, 400)
+    return () => clearTimeout(timer)
+  }, [clientEmpty, q, storeId, isOnline])
+
+  const displayList = useMemo(() => {
+    if (clientEmpty && serverResults.length > 0) return serverResults
+    return list
+  }, [clientEmpty, serverResults, list])
 
   const [comparePin, setComparePin] = useState(() => {
     try {
@@ -198,7 +277,16 @@ export default function CatalogScreen() {
     [currentStore, navigate]
   )
 
-  const storeTitle = currentStore ? currentStore.name : 'Каталог Körset'
+  const storeTitle = currentStore
+    ? currentStore.name
+    : lang === 'kz'
+      ? 'Körset каталогі'
+      : 'Каталог Körset'
+
+  const productCountText =
+    lang === 'kz'
+      ? `${displayList.length} ${pluralKz(displayList.length, 'тауар', 'тауар')}`
+      : `${displayList.length} ${plural(displayList.length, 'товар', 'товара', 'товаров')}`
 
   const searchHint =
     !isCatalogReady && q.trim() ? t.catalog?.loadingSearch || 'Каталог загружается...' : null
@@ -221,16 +309,20 @@ export default function CatalogScreen() {
             height: '100%',
           }}
         >
-          <div style={{ position: 'absolute', top: 12, right: 12, zIndex: 2 }}>
+          <div style={{ position: 'absolute', top: 10, left: 10, zIndex: 2 }}>
             <div
               style={{
-                width: 10,
-                height: 10,
-                borderRadius: '50%',
-                background: fit.fits ? '#34D399' : '#F87171',
-                boxShadow: `0 0 10px ${fit.fits ? '#34D399' : '#F87171'}`,
+                fontSize: 9,
+                fontWeight: 700,
+                padding: '2px 6px',
+                borderRadius: 999,
+                background: fit.fits ? 'rgba(16,185,129,0.18)' : 'rgba(239,68,68,0.18)',
+                color: fit.fits ? '#34D399' : '#F87171',
+                border: `1px solid ${fit.fits ? 'rgba(52,211,153,0.3)' : 'rgba(248,113,113,0.3)'}`,
               }}
-            />
+            >
+              {fit.fits ? t.catalog.fits : t.catalog.check}
+            </div>
           </div>
           <div
             style={{
@@ -259,8 +351,22 @@ export default function CatalogScreen() {
               flex: 1,
             }}
           >
-            {product.name}
+            {lang === 'kz' && product.nameKz ? product.nameKz : product.name}
           </div>
+          {product.brand && (
+            <div
+              style={{
+                fontSize: 11,
+                color: 'var(--text-soft)',
+                marginBottom: 6,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {product.brand}
+            </div>
+          )}
           <div
             style={{
               display: 'flex',
@@ -317,7 +423,7 @@ export default function CatalogScreen() {
         </div>
       )
     },
-    [profile, comparePin, handleCompare, handleNavigate]
+    [profile, comparePin, handleCompare, handleNavigate, lang, t.catalog.fits, t.catalog.check]
   )
 
   const renderListItem = useCallback(
@@ -368,7 +474,7 @@ export default function CatalogScreen() {
                   lineHeight: 1.35,
                 }}
               >
-                {product.name}
+                {lang === 'kz' && product.nameKz ? product.nameKz : product.name}
               </div>
               <div
                 style={{
@@ -380,11 +486,11 @@ export default function CatalogScreen() {
                   flexShrink: 0,
                 }}
               >
-                {fit.fits ? 'Подходит' : 'Проверить'}
+                {fit.fits ? t.catalog.fits : t.catalog.check}
               </div>
             </div>
             <div style={{ fontSize: 12, color: 'var(--text-soft)', marginBottom: 10 }}>
-              {product.brand || 'Без бренда'} · {product.ean}
+              {[product.brand || t.catalog.noBrand, product.quantity].filter(Boolean).join(' · ')}
             </div>
             <div
               style={{
@@ -406,7 +512,7 @@ export default function CatalogScreen() {
                   {formatPrice(product.priceKzt)}
                 </div>
                 <div style={{ fontSize: 11, color: 'var(--text-dim)' }}>
-                  {product.shelf || 'Полка уточняется'}
+                  {product.shelf || t.catalog.shelfTbd}
                 </div>
               </div>
               <div
@@ -417,9 +523,6 @@ export default function CatalogScreen() {
                   gap: 6,
                 }}
               >
-                <div style={{ fontSize: 11, color: 'var(--text-soft)' }}>
-                  Score {product.qualityScore || 0}/100
-                </div>
                 <button
                   onClick={(e) => handleCompare(product, e)}
                   style={{
@@ -465,7 +568,7 @@ export default function CatalogScreen() {
         </div>
       )
     },
-    [profile, comparePin, handleCompare, handleNavigate, t]
+    [profile, comparePin, handleCompare, handleNavigate, t, lang]
   )
 
   return (
@@ -489,7 +592,7 @@ export default function CatalogScreen() {
             {storeTitle} ·{' '}
             {!isCatalogReady && catalogProducts.length === 0
               ? t.catalog?.loading || 'Загрузка...'
-              : `${list.length} товаров${!isCatalogReady ? ' · ' + (t.catalog?.loadingMore || 'ещё загружается...') : ''}`}
+              : `${productCountText}${!isCatalogReady ? ' · ' + (t.catalog?.loadingMore || 'ещё загружается...') : ''}${isSearchingServer ? ' · ' + (t.catalog?.searchingServer || 'Ищем на сервере...') : ''}`}
           </div>
         </div>
 
@@ -581,7 +684,7 @@ export default function CatalogScreen() {
                 ? t.catalog.filters.all
                 : option === 'fit'
                   ? t.catalog.filters.fit
-                  : option}
+                  : categoryLabels[option] || t.catalog.filters[option] || option}
             </button>
           ))}
         </div>
@@ -591,7 +694,6 @@ export default function CatalogScreen() {
             { id: 'fit', label: t.catalog.sort.fit },
             { id: 'cheap', label: t.catalog.sort.cheap },
             { id: 'pricey', label: t.catalog.sort.pricey },
-            { id: 'rating', label: t.catalog.sort.rating },
           ].map((option) => (
             <button
               key={option.id}
@@ -662,7 +764,9 @@ export default function CatalogScreen() {
               {comparePin.name}
             </div>
             <div style={{ fontSize: 11, color: 'var(--text-soft)', marginTop: 1 }}>
-              Выберите второй товар для сравнения
+              {t.compare?.selectSecond ||
+                t.compare?.modeBanner ||
+                'Выберите второй товар для сравнения'}
             </div>
           </div>
           <button
@@ -686,7 +790,7 @@ export default function CatalogScreen() {
         {viewMode === 'grid' ? (
           <VirtuosoGrid
             ref={virtuosoRef}
-            data={list}
+            data={displayList}
             components={gridComponents}
             itemContent={renderGridItem}
             overscan={600}
@@ -695,7 +799,7 @@ export default function CatalogScreen() {
         ) : (
           <Virtuoso
             ref={virtuosoRef}
-            data={list}
+            data={displayList}
             itemContent={renderListItem}
             overscan={600}
             components={{ Footer: ListFooter }}

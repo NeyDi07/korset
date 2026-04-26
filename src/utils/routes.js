@@ -38,6 +38,10 @@ export function buildProfileEditPath(storeSlug = null) {
   return storeSlug ? `${buildStoreAppBase(storeSlug)}/profile/edit` : '/profile/edit'
 }
 
+export function buildAccountPath(storeSlug = null) {
+  return storeSlug ? `${buildStoreAppBase(storeSlug)}/account` : '/account'
+}
+
 export function buildHistoryPath(storeSlug = null, tab = null) {
   const base = storeSlug ? `${buildStoreAppBase(storeSlug)}/history` : '/history'
   return tab ? `${base}?tab=${tab}` : base

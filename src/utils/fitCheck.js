@@ -399,7 +399,6 @@ export function checkProductFit(product, profile) {
     verdict,
     fits,
     reasons: displayReasons,
-    score: product.qualityScore || 100,
     checkedAt: new Date().toISOString(),
   }
 }
@@ -410,8 +409,7 @@ export function getAlternatives(product, profile) {
 
   const sortFn = (a, b) => {
     if (priority === 'price') return (a.priceKzt || Infinity) - (b.priceKzt || Infinity)
-    if (priority === 'quality') return (b.qualityScore || 0) - (a.qualityScore || 0)
-    return (b.qualityScore || 0) - (a.qualityScore || 0)
+    return 0
   }
 
   const sameGroup = baseProducts
@@ -455,7 +453,7 @@ function buildWhyFits(alt, original, profile) {
   if ((alt.priceKzt ?? Infinity) < (original.priceKzt ?? Infinity)) {
     return `Дешевле на ${((original.priceKzt || 0) - (alt.priceKzt || 0)).toLocaleString('ru-RU')} ₸`
   }
-  return `Рейтинг ${alt.qualityScore || 0}/100`
+  return 'Похожий товар'
 }
 
 export function formatPrice(kzt) {
@@ -465,6 +463,22 @@ export function formatPrice(kzt) {
 
 export const CATEGORY_LABELS = {
   grocery: 'Продукты',
+  dairy: 'Молочные',
+  snacks: 'Снеки',
+  drinks: 'Напитки',
+  meat: 'Мясо',
+  bakery: 'Выпечка',
   electronics: 'Электроника',
   diy: 'Стройматериалы',
+}
+
+export const CATEGORY_LABELS_KZ = {
+  grocery: 'Азық-түлік',
+  dairy: 'Сүт өнімдері',
+  snacks: 'Жұмсақ тағамдар',
+  drinks: 'Сусындар',
+  meat: 'Ет',
+  bakery: 'Нан өнімдері',
+  electronics: 'Электроника',
+  diy: 'Құрылыс материалдары',
 }

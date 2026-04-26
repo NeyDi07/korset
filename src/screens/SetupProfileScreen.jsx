@@ -508,7 +508,7 @@ export default function SetupProfileScreen() {
                 minHeight: 20,
                 paddingTop: 10,
                 fontSize: 12,
-                color: nameError ? '#FCA5A5' : 'var(--text-disabled)',
+                color: nameError ? 'var(--error-bright)' : 'var(--text-disabled)',
               }}
             >
               {nameError || `${name.trim().length}/24`}
@@ -714,7 +714,7 @@ export default function SetupProfileScreen() {
                 minHeight: 22,
                 paddingTop: 10,
                 fontSize: 12,
-                color: nameError ? '#FCA5A5' : 'var(--text-disabled)',
+                color: nameError ? 'var(--error-bright)' : 'var(--text-disabled)',
               }}
             >
               {nameError || `${name.trim().length}/24`}

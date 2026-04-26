@@ -26,7 +26,8 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 /s/:storeSlug/product/:ean  → Карточка товара
 /s/:storeSlug/history       → История
 /s/:storeSlug/profile       → Профиль
-/s/:storeSlug/profile/edit  → Редактирование профиля
+/s/:storeSlug/profile/edit  → Редактирование профиля (аватар, баннер, ник)
+/s/:storeSlug/account       → Личные данные (email, пароль, ID)
 /retail/:storeSlug/...      → Retail Cabinet
 ```
 
@@ -44,6 +45,9 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - RLS на 13 таблицах, JWT auth на API
 - Светлая + тёмная тема (3 этапа завершены, semantic tokens на всём UI)
 - Профиль: баннер + аватар + редактирование (ProfileEditScreen)
+- Личные данные: AccountScreen — email, дата регистрации, ID, смена пароля, статус владельца магазина
+- ProfileScreen: тема-зависимые цвета (name pill, guest banner), Retail Cabinet только для owner_id
+- Footer: v1.0.0 + SVG флаг Казахстана (без эмодзи)
 - Каталог: Virtuoso виртуализация + двухэтапная загрузка + light поля
 
 ---

@@ -11,13 +11,11 @@ import { buildProductAIPath } from '../utils/routes.js'
 function calcCompareScore(product, fitResult, profile) {
   let score = 0
 
-  // 1. Safety (0-35) — primary factor
   score += fitResult.fits ? 35 : 15
   score -= fitResult.reasons.filter((r) => r.type === 'fail').length * 6
   score += fitResult.reasons.filter((r) => r.type === 'pass').length * 3
 
-  // 2. Quality score (0-25)
-  score += ((product.qualityScore || 50) / 100) * 25
+  score += 25
 
   // 3. Ingredient purity — count E-additives (0-20)
   const eCount = ((product.ingredients || '').match(/\bЕ\d{3,4}/gi) || []).length
@@ -115,7 +113,6 @@ function buildRows(productA, productB, t) {
     return p.halalStatus ? t.compare.halalUnk : null
   })
   push(t.compare.price, (p) => (p.priceKzt != null ? formatPrice(p.priceKzt) : null), 'price')
-  push(t.compare.score, (p) => (p.qualityScore != null ? `${p.qualityScore}/100` : null), 'higher')
 
   // Food rows
   if (cat === 'grocery') {

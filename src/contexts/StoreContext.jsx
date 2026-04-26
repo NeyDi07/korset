@@ -24,7 +24,7 @@ export const STORE_KEY = 'korset_store_slug'
 const STORE_CACHE_PREFIX = 'korset_store_data_'
 
 const LIGHT_FIELDS =
-  'ean, name, name_kz, brand, category, subcategory, quantity, image_url, allergens_json, diet_tags_json, halal_status, nutriscore, data_quality_score, group'
+  'ean, name, name_kz, brand, category, subcategory, quantity, image_url, allergens_json, diet_tags_json, halal_status, nutriscore, group'
 
 const FULL_FIELDS =
   'ean, name, name_kz, brand, category, subcategory, quantity, description, ingredients_raw, ingredients_kz, allergens_json, diet_tags_json, tags_json, additives_tags_json, traces_json, categories_tags_json, halal_status, nutriscore, nutriments_json, alcohol_100g, saturated_fat_100g, nova_group, image_ingredients_url, image_nutrition_url, image_url, images, manufacturer, country_of_origin, specs_json, data_quality_score, source_primary, source_confidence, is_verified, needs_review, group, alternate_eans'
@@ -63,11 +63,6 @@ function mapRowToProduct(row) {
     images: parseJson(gp.images, []),
     manufacturer: gp.manufacturer ? { name: gp.manufacturer, country: gp.country_of_origin } : null,
     specs: gp.specs_json || null,
-    qualityScore: gp.data_quality_score ?? 0,
-    sourceConfidence: gp.source_confidence ?? null,
-    sourcePrimary: gp.source_primary || null,
-    isVerified: gp.is_verified || false,
-    needsReview: gp.needs_review || false,
     priceKzt: row.price_kzt,
     shelf: row.shelf_zone,
     stockStatus: row.stock_status,

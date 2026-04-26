@@ -2,6 +2,19 @@ import { useEffect, useState } from 'react'
 
 const LANG_KEY = 'korset_lang'
 
+export function plural(n, one, few, many) {
+  const abs = Math.abs(n) % 100
+  const last = abs % 10
+  if (abs > 10 && abs < 20) return many
+  if (last > 1 && last < 5) return few
+  if (last === 1) return one
+  return many
+}
+
+export function pluralKz(n, singular, plural) {
+  return n === 1 ? singular : plural
+}
+
 export const dictionaries = {
   ru: {
     langShort: 'Рус',
@@ -145,10 +158,20 @@ export const dictionaries = {
       loading: 'Загрузка...',
       loadingMore: 'ещё загружается...',
       loadingSearch: 'Каталог загружается...',
+      searchingServer: 'Ищем на сервере...',
+      fits: 'Подходит',
+      check: 'Проверить',
+      noBrand: 'Без бренда',
+      shelfTbd: 'Полка уточняется',
       filters: {
         all: 'Все',
         fit: 'Для вас',
         grocery: 'Продукты',
+        dairy: 'Молочные',
+        snacks: 'Снеки',
+        drinks: 'Напитки',
+        meat: 'Мясо',
+        bakery: 'Выпечка',
         electronics: 'Электроника',
         diy: 'Стройка',
       },
@@ -156,7 +179,6 @@ export const dictionaries = {
         fit: 'Подходящие мне',
         cheap: 'Сначала дешевле',
         pricey: 'Сначала дороже',
-        rating: 'По рейтингу',
       },
     },
     alternatives: {
@@ -313,6 +335,22 @@ export const dictionaries = {
         uploadFailed: 'Не удалось загрузить фото',
         offline: 'Нет интернета — попробуйте позже',
       },
+      helpAbout: 'Помощь и о приложении',
+      helpAboutAria: 'Справка и информация о приложении',
+    },
+    account: {
+      title: 'Личные данные',
+      sectionAccount: 'Аккаунт',
+      emailLabel: 'Email',
+      joinedLabel: 'Дата регистрации',
+      idLabel: 'ID пользователя',
+      sectionSecurity: 'Безопасность',
+      changePassword: 'Сменить пароль',
+      resetSent: 'Ссылка для сброса пароля отправлена на ваш email',
+      resetError: 'Не удалось отправить ссылку. Проверьте email и попробуйте позже.',
+      sectionDanger: 'Опасная зона',
+      logout: 'Выйти из аккаунта',
+      storeOwnerTitle: 'Владелец магазина',
     },
     qr: {
       title: 'QR-коды для ценников',
@@ -359,7 +397,6 @@ export const dictionaries = {
       halal: 'Халал-статус',
       ingredients: 'Состав',
       allergens: 'Аллергены',
-      score: 'Рейтинг Körset',
       price: 'Цена',
       protein: 'Белки',
       fat: 'Жиры',
@@ -738,10 +775,20 @@ export const dictionaries = {
       loading: 'Жүктелуде...',
       loadingMore: 'жүктелуде...',
       loadingSearch: 'Каталог жүктелуде...',
+      searchingServer: 'Серверден іздеп жатырмыз...',
+      fits: 'Сай келеді',
+      check: 'Тексеру',
+      noBrand: 'Брендсіз',
+      shelfTbd: 'Желек анықталуда',
       filters: {
         all: 'Барлығы',
         fit: 'Сізге сай',
         grocery: 'Азық-түлік',
+        dairy: 'Сүт өнімдері',
+        snacks: 'Жұмсақ тағамдар',
+        drinks: 'Сусындар',
+        meat: 'Ет',
+        bakery: 'Нан өнімдері',
         electronics: 'Электроника',
         diy: 'Құрылыс',
       },
@@ -749,7 +796,6 @@ export const dictionaries = {
         fit: 'Сізге сай',
         cheap: 'Арзанынан',
         pricey: 'Қымбатынан',
-        rating: 'Рейтинг бойынша',
       },
     },
     alternatives: {
@@ -905,6 +951,22 @@ export const dictionaries = {
         uploadFailed: 'Фотосуретті жүктеу мүмкін болмады',
         offline: 'Интернет жоқ — кейінірек көріңіз',
       },
+      helpAbout: 'Анықтама және қосымша туралы',
+      helpAboutAria: 'Анықтама және қосымша туралы ақпарат',
+    },
+    account: {
+      title: 'Жеке деректер',
+      sectionAccount: 'Аккаунт',
+      emailLabel: 'Email',
+      joinedLabel: 'Тіркелген күні',
+      idLabel: 'Пайдаланушы ID',
+      sectionSecurity: 'Қауіпсіздік',
+      changePassword: 'Құпия сөзді ауыстыру',
+      resetSent: 'Құпия сөзді ауыстыру сілтемесі email-ге жіберілді',
+      resetError: 'Сілтемені жіберу мүмкін болмады. Email-ді тексеріп, қайта байқап көріңіз.',
+      sectionDanger: 'Қауіпті аймақ',
+      logout: 'Аккаунттан шығу',
+      storeOwnerTitle: 'Дүкен иесі',
     },
     qr: {
       title: 'Баға белгілеріне арналған QR-кодтар',
@@ -951,7 +1013,6 @@ export const dictionaries = {
       halal: 'Халал мәртебесі',
       ingredients: 'Құрамы',
       allergens: 'Аллергендер',
-      score: 'Körset рейтингі',
       price: 'Баға',
       protein: 'Ақуыз',
       fat: 'Май',

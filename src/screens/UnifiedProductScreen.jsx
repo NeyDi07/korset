@@ -19,28 +19,6 @@ function getPrimaryImage(product) {
   return null
 }
 
-function ratingFromQuality(qualityScore) {
-  const raw = (Number(qualityScore || 0) / 100) * 5
-  return Math.max(0, Math.min(5, Math.round(raw * 2) / 2))
-}
-
-function Star({ filled }) {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill={filled ? 'currentColor' : 'none'}
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M12 2.5l2.9 6.1 6.7.9-4.9 4.7 1.2 6.7L12 18.8 6.1 20.9 7.3 14.2 2.4 9.5l6.7-.9L12 2.5z" />
-    </svg>
-  )
-}
-
 function StatusCard({ fits, reasons, t }) {
   const title = fits ? t.product.fits : t.product.notFits
   const subtitle = fits ? t.product.fitsDesc : t.product.notFitsDesc
@@ -197,7 +175,6 @@ export default function UnifiedProductScreen({ mode = 'canonical' }) {
     .filter(Boolean)
     .join(' · ')
   const specsEntries = Object.entries(product?.specs || {}).filter(([, value]) => value)
-  const rating = ratingFromQuality(product?.qualityScore)
 
   const goBack = () => navigate(-1)
   const goToAI = () => {
@@ -374,26 +351,6 @@ export default function UnifiedProductScreen({ mode = 'canonical' }) {
                 {[product.brand, product.quantity].filter(Boolean).join(' · ') || '—'}
               </div>
             </div>
-            {product.qualityScore != null && (
-              <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                <div style={{ color: 'var(--text)', fontWeight: 800, fontSize: 16 }}>
-                  {product.qualityScore}/100
-                </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    gap: 2,
-                    justifyContent: 'flex-end',
-                    marginTop: 4,
-                    color: 'var(--primary-bright)',
-                  }}
-                >
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} filled={i < Math.round(rating)} />
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
 
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 12 }}>

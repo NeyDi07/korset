@@ -249,10 +249,10 @@ export default function ProfileEditScreen() {
           position: 'sticky',
           top: 0,
           zIndex: 10,
-          background: 'rgba(12,12,14,0.85)',
+          background: 'var(--glass-strong)',
           backdropFilter: 'blur(12px)',
           WebkitBackdropFilter: 'blur(12px)',
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
+          borderBottom: '1px solid var(--glass-border)',
           padding: '14px 20px',
           display: 'flex',
           alignItems: 'center',
@@ -267,8 +267,8 @@ export default function ProfileEditScreen() {
             width: 38,
             height: 38,
             borderRadius: 12,
-            border: '1px solid rgba(255,255,255,0.1)',
-            background: 'rgba(255,255,255,0.05)',
+            border: '1px solid var(--glass-border)',
+            background: 'var(--glass-muted)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -281,7 +281,7 @@ export default function ProfileEditScreen() {
             height="18"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="rgba(255,255,255,0.9)"
+            stroke="var(--text)"
             strokeWidth="2.5"
             strokeLinecap="round"
           >
@@ -296,7 +296,7 @@ export default function ProfileEditScreen() {
             fontSize: 15,
             fontWeight: 700,
             fontFamily: 'var(--font-display)',
-            color: '#fff',
+            color: 'var(--text)',
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
@@ -314,7 +314,7 @@ export default function ProfileEditScreen() {
             background: canSave
               ? 'linear-gradient(135deg, #7C3AED, #6D28D9)'
               : 'rgba(124,58,237,0.25)',
-            color: '#fff',
+            color: 'var(--text-inverse)',
             fontFamily: 'var(--font-display)',
             fontSize: 13,
             fontWeight: 700,
@@ -404,8 +404,8 @@ export default function ProfileEditScreen() {
                 maxWidth: '85%',
                 padding: '6px 16px',
                 borderRadius: 12,
-                background: 'rgba(15,10,30,0.55)',
-                border: '1px solid rgba(255,255,255,0.08)',
+                background: 'var(--glass-strong)',
+                border: '1px solid var(--glass-border)',
                 backdropFilter: 'blur(6px)',
                 WebkitBackdropFilter: 'blur(6px)',
                 fontFamily: 'var(--font-display)',
@@ -436,9 +436,9 @@ export default function ProfileEditScreen() {
               width: '100%',
               padding: '14px 16px',
               borderRadius: 14,
-              background: 'rgba(255,255,255,0.04)',
-              border: `1px solid ${nameError ? 'rgba(239,68,68,0.5)' : 'rgba(255,255,255,0.08)'}`,
-              color: '#fff',
+              background: 'var(--glass-bg)',
+              border: `1px solid ${nameError ? 'var(--error-bright)' : 'var(--glass-border)'}`,
+              color: 'var(--text)',
               fontSize: 15,
               fontFamily: 'var(--font-display)',
               outline: 'none',
@@ -446,7 +446,9 @@ export default function ProfileEditScreen() {
             }}
           />
           {nameError && (
-            <div style={{ fontSize: 12, color: '#EF4444', marginTop: 6 }}>{nameError}</div>
+            <div style={{ fontSize: 12, color: 'var(--error-bright)', marginTop: 6 }}>
+              {nameError}
+            </div>
           )}
         </Section>
 
@@ -483,7 +485,7 @@ export default function ProfileEditScreen() {
                       height: '100%',
                       borderRadius: 18,
                       overflow: 'hidden',
-                      border: selected ? '2px solid #7C3AED' : '1px solid rgba(255,255,255,0.08)',
+                      border: selected ? '2px solid #7C3AED' : '1px solid var(--glass-border)',
                       boxShadow: selected ? '0 6px 18px rgba(124,58,237,0.35)' : 'none',
                     }}
                   >
@@ -530,7 +532,7 @@ export default function ProfileEditScreen() {
                       height: '100%',
                       borderRadius: 16,
                       overflow: 'hidden',
-                      border: selected ? '2px solid #7C3AED' : '1px solid rgba(255,255,255,0.08)',
+                      border: selected ? '2px solid #7C3AED' : '1px solid var(--glass-border)',
                       boxShadow: selected ? '0 6px 18px rgba(124,58,237,0.35)' : 'none',
                     }}
                   >
@@ -629,7 +631,7 @@ export default function ProfileEditScreen() {
               borderRadius: 12,
               background: 'rgba(239,68,68,0.1)',
               border: '1px solid rgba(239,68,68,0.3)',
-              color: '#FCA5A5',
+              color: 'var(--error-bright)',
               fontSize: 13,
               fontFamily: 'var(--font-display)',
             }}
@@ -674,7 +676,7 @@ function SelectedDot() {
         height: 22,
         borderRadius: '50%',
         background: '#10B981',
-        border: '2.5px solid #0c0c0e',
+        border: '2.5px solid var(--bg-app)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -686,7 +688,7 @@ function SelectedDot() {
         height="10"
         viewBox="0 0 24 24"
         fill="none"
-        stroke="#fff"
+        stroke="currentColor"
         strokeWidth="3.5"
         strokeLinecap="round"
         strokeLinejoin="round"
