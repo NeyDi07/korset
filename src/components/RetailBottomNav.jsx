@@ -10,12 +10,12 @@ export default function RetailBottomNav() {
 
   const getActive = () => {
     if (pathname.includes('/products')) return 'products'
+    if (pathname.includes('/ean-recovery')) return 'eanRecovery'
     if (pathname.includes('/settings')) return 'settings'
     return 'dashboard'
   }
 
   const active = getActive()
-  const col = (on) => (on ? 'var(--retail-accent)' : 'var(--nav-muted)')
   const storeSlug = currentStore?.slug || 'store-one'
 
   const TABS = [
@@ -30,6 +30,13 @@ export default function RetailBottomNav() {
       label: t.retail.nav.products,
       path: `/retail/${storeSlug}/products`,
       icon: 'shopping_bag',
+    },
+    {
+      id: 'eanRecovery',
+      label: t.retail.nav.eanRecovery,
+      path: `/retail/${storeSlug}/ean-recovery`,
+      icon: 'qr_code_scanner',
+      accent: true,
     },
     {
       id: 'settings',
@@ -48,7 +55,7 @@ export default function RetailBottomNav() {
         right: 0,
         zIndex: 100,
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr 1fr',
+        gridTemplateColumns: '1fr 1fr 1fr 1fr',
         alignItems: 'end',
         columnGap: 4,
         padding: `8px 8px calc(12px + env(safe-area-inset-bottom, 0px))`,
@@ -61,6 +68,7 @@ export default function RetailBottomNav() {
     >
       {TABS.map((tab) => {
         const on = active === tab.id
+        const tabCol = on ? (tab.accent ? '#FB923C' : 'var(--retail-accent)') : 'var(--nav-muted)'
 
         return (
           <button
@@ -89,7 +97,7 @@ export default function RetailBottomNav() {
                 className="material-symbols-outlined"
                 style={{
                   fontSize: 22,
-                  color: col(on),
+                  color: tabCol,
                   display: 'block',
                   fontVariationSettings: on ? "'FILL' 1" : "'FILL' 0",
                 }}
@@ -101,7 +109,7 @@ export default function RetailBottomNav() {
               style={{
                 fontSize: 10.5,
                 fontWeight: on ? 700 : 500,
-                color: col(on),
+                color: tabCol,
                 fontFamily: 'var(--font-body)',
                 transition: 'color 0.2s',
                 lineHeight: 1.1,

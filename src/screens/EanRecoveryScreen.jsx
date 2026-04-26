@@ -12,11 +12,7 @@ function isValidEan(code) {
   const pre = clean.substring(0, 3)
   if (pre >= '020' && pre <= '029') return false
   if (pre >= '040' && pre <= '049') return false
-  if (pre >= '200' && pre <= '299') return false
-  if (clean.length === 12) {
-    const sum = clean.split('').reduce((s, d, i) => s + parseInt(d) * (i % 2 === 0 ? 1 : 3), 0)
-    return true
-  }
+  if (clean.length === 12) return true
   if (clean.length !== 13) return false
   const sum = clean
     .slice(0, 12)
@@ -27,7 +23,8 @@ function isValidEan(code) {
 }
 
 export default function EanRecoveryScreen() {
-  const { t: _t } = useI18n()
+  const { t } = useI18n()
+  const p = t.retail.products
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(null)
@@ -37,6 +34,7 @@ export default function EanRecoveryScreen() {
   const [success, setSuccess] = useState(null)
   const [filter, setFilter] = useState('all')
   const [search, setSearch] = useState('')
+  const [initialTotal, setInitialTotal] = useState(0)
 
   const loadProducts = useCallback(async () => {
     setLoading(true)
@@ -56,6 +54,7 @@ export default function EanRecoveryScreen() {
       if (data.length < PAGE_SIZE) break
     }
     setProducts(all)
+    setInitialTotal(all.length)
     setLoading(false)
   }, [])
 
@@ -67,7 +66,7 @@ export default function EanRecoveryScreen() {
     const code = editEan.trim()
     if (!code) return
     if (!isValidEan(code)) {
-      setError('Невалидный штрихкод — проверьте цифры')
+      setError(p.invalidEan)
       return
     }
 
@@ -81,7 +80,7 @@ export default function EanRecoveryScreen() {
 
     if (dbError) {
       if (dbError.message.includes('duplicate key')) {
-        setError('Этот штрихкод уже есть в базе — дубль')
+        setError(p.duplicateEan)
       } else {
         setError(dbError.message)
       }
@@ -97,7 +96,7 @@ export default function EanRecoveryScreen() {
 
     if (_spError) console.log('store_products ean update:', _spError.message)
 
-    setProducts((prev) => prev.filter((p) => p.id !== product.id))
+    setProducts((prev) => prev.filter((pr) => pr.id !== product.id))
     setEditingId(null)
     setEditEan('')
     setSaving(null)
@@ -113,25 +112,25 @@ export default function EanRecoveryScreen() {
       .update({ is_active: false })
       .eq('global_product_id', product.id)
       .eq('is_active', true)
-    setProducts((prev) => prev.filter((p) => p.id !== product.id))
+    setProducts((prev) => prev.filter((pr) => pr.id !== product.id))
     setSaving(null)
   }
 
-  const filtered = products.filter((p) => {
-    if (filter === 'branded' && (!p.brand || p.brand.length <= 1)) return false
-    if (filter === 'nobrand' && p.brand && p.brand.length > 1) return false
+  const filtered = products.filter((pr) => {
+    if (filter === 'branded' && (!pr.brand || pr.brand.length <= 1)) return false
+    if (filter === 'nobrand' && pr.brand && pr.brand.length > 1) return false
     if (search.trim()) {
       const q = search.toLowerCase()
       return (
-        (p.name || '').toLowerCase().includes(q) ||
-        (p.brand || '').toLowerCase().includes(q) ||
-        (p.ean || '').toLowerCase().includes(q)
+        (pr.name || '').toLowerCase().includes(q) ||
+        (pr.brand || '').toLowerCase().includes(q) ||
+        (pr.ean || '').toLowerCase().includes(q)
       )
     }
     return true
   })
 
-  const resolved = 154 - products.length
+  const resolved = initialTotal - products.length
 
   return (
     <div style={{ minHeight: '100dvh', background: 'var(--retail-bg)', paddingBottom: 90 }}>
@@ -148,36 +147,52 @@ export default function EanRecoveryScreen() {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-          <span
-            className="material-symbols-outlined"
-            style={{ color: 'var(--retail-accent)', fontSize: 24 }}
-          >
+          <span className="material-symbols-outlined" style={{ color: '#FB923C', fontSize: 24 }}>
             qr_code_scanner
           </span>
           <h1 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)', margin: 0 }}>
-            EAN Recovery
+            {p.eanRecovery}
           </h1>
-          <span
-            style={{
-              marginLeft: 'auto',
-              fontSize: 12,
-              fontWeight: 600,
-              color: 'var(--success-bright)',
-              background: 'var(--success-dim)',
-              padding: '3px 10px',
-              borderRadius: 20,
-            }}
-          >
-            {resolved}/154 resolved
-          </span>
+          {products.length === 0 && !loading ? (
+            <span
+              style={{
+                marginLeft: 'auto',
+                fontSize: 12,
+                fontWeight: 600,
+                color: '#10B981',
+                background: 'rgba(16,185,129,0.12)',
+                padding: '3px 10px',
+                borderRadius: 20,
+              }}
+            >
+              Все решены
+            </span>
+          ) : (
+            <span
+              style={{
+                marginLeft: 'auto',
+                fontSize: 12,
+                fontWeight: 600,
+                color: '#FB923C',
+                background: 'rgba(251,146,60,0.12)',
+                padding: '3px 10px',
+                borderRadius: 20,
+              }}
+            >
+              {products.length} без штрихкода
+            </span>
+          )}
         </div>
         <div style={{ fontSize: 13, color: 'var(--text-sub)', marginBottom: 12 }}>
-          Products without scannable barcode. Scan in-store → paste EAN below.
+          {p.eanRecoveryDesc}
+          {resolved > 0 && (
+            <span style={{ color: '#10B981', marginLeft: 8 }}>Решено: {resolved}</span>
+          )}
         </div>
 
         <input
           type="text"
-          placeholder="Search by name or brand..."
+          placeholder="Поиск по названию или бренду..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           style={{
@@ -190,14 +205,15 @@ export default function EanRecoveryScreen() {
             borderRadius: 12,
             outline: 'none',
             boxSizing: 'border-box',
+            fontFamily: 'var(--font-body)',
           }}
         />
 
         <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
           {[
-            { id: 'all', label: `All (${products.length})` },
-            { id: 'branded', label: 'Branded' },
-            { id: 'nobrand', label: 'No brand' },
+            { id: 'all', label: `Все (${products.length})` },
+            { id: 'branded', label: 'С брендом' },
+            { id: 'nobrand', label: 'Без бренда' },
           ].map((f) => (
             <button
               key={f.id}
@@ -212,6 +228,7 @@ export default function EanRecoveryScreen() {
                 background: filter === f.id ? 'var(--retail-accent)' : 'var(--glass-bg)',
                 color: filter === f.id ? '#fff' : 'var(--text-sub)',
                 outline: filter === f.id ? 'none' : '1px solid var(--glass-border)',
+                fontFamily: 'var(--font-body)',
               }}
             >
               {f.label}
@@ -226,14 +243,14 @@ export default function EanRecoveryScreen() {
             margin: '12px 16px',
             padding: '10px 16px',
             borderRadius: 12,
-            background: 'var(--success-dim)',
-            border: '1px solid var(--success)',
-            color: 'var(--success-bright)',
+            background: 'rgba(16,185,129,0.1)',
+            border: '1px solid rgba(16,185,129,0.3)',
+            color: '#10B981',
             fontSize: 13,
             fontWeight: 600,
           }}
         >
-          Saved: {success}
+          Сохранено: {success}
         </div>
       )}
 
@@ -243,9 +260,9 @@ export default function EanRecoveryScreen() {
             margin: '12px 16px',
             padding: '10px 16px',
             borderRadius: 12,
-            background: 'var(--error-dim)',
-            border: '1px solid var(--error)',
-            color: 'var(--error-bright)',
+            background: 'rgba(239,68,68,0.1)',
+            border: '1px solid rgba(239,68,68,0.3)',
+            color: '#F87171',
             fontSize: 13,
             fontWeight: 600,
           }}
@@ -255,16 +272,18 @@ export default function EanRecoveryScreen() {
       )}
 
       {loading ? (
-        <div style={{ padding: 40, textAlign: 'center', color: 'var(--text-dim)' }}>Loading...</div>
+        <div style={{ padding: 40, textAlign: 'center', color: 'var(--text-dim)' }}>
+          Загрузка...
+        </div>
       ) : filtered.length === 0 ? (
         <div style={{ padding: 40, textAlign: 'center', color: 'var(--text-dim)' }}>
-          {products.length === 0 ? 'All products have real EANs!' : 'No matches'}
+          {products.length === 0 ? 'У всех товаров есть штрихкод!' : 'Ничего не найдено'}
         </div>
       ) : (
         <div style={{ padding: '8px 12px' }}>
-          {filtered.map((p) => (
+          {filtered.map((pr) => (
             <div
-              key={p.id}
+              key={pr.id}
               style={{
                 background: 'var(--glass-bg)',
                 border: '1px solid var(--glass-soft-border)',
@@ -287,9 +306,9 @@ export default function EanRecoveryScreen() {
                     justifyContent: 'center',
                   }}
                 >
-                  {p.image_url ? (
+                  {pr.image_url ? (
                     <img
-                      src={getImageUrl(p.image_url)}
+                      src={getImageUrl(pr.image_url)}
                       alt=""
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     />
@@ -315,12 +334,12 @@ export default function EanRecoveryScreen() {
                       whiteSpace: 'nowrap',
                     }}
                   >
-                    {p.name || '—'}
+                    {pr.name || '—'}
                   </div>
                   <div style={{ fontSize: 12, color: 'var(--text-sub)', marginTop: 2 }}>
-                    {p.brand || <span style={{ color: 'var(--text-disabled)' }}>no brand</span>}
+                    {pr.brand || <span style={{ color: 'var(--text-disabled)' }}>без бренда</span>}
                     <span style={{ color: 'var(--text-disabled)', marginLeft: 8 }}>
-                      {p.source_primary}
+                      {pr.source_primary}
                     </span>
                   </div>
                   <div
@@ -331,17 +350,17 @@ export default function EanRecoveryScreen() {
                       fontFamily: 'monospace',
                     }}
                   >
-                    {p.ean}
+                    {pr.ean}
                   </div>
                 </div>
 
                 <button
-                  onClick={() => handleDeactivate(p)}
-                  disabled={saving === p.id}
-                  title="Remove (no barcode possible)"
+                  onClick={() => handleDeactivate(pr)}
+                  disabled={saving === pr.id}
+                  title="Удалить (штрихкод невозможен)"
                   style={{
-                    background: 'var(--error-dim)',
-                    border: '1px solid var(--error)',
+                    background: 'rgba(239,68,68,0.1)',
+                    border: '1px solid rgba(239,68,68,0.25)',
                     borderRadius: 10,
                     width: 34,
                     height: 34,
@@ -354,22 +373,22 @@ export default function EanRecoveryScreen() {
                 >
                   <span
                     className="material-symbols-outlined"
-                    style={{ fontSize: 18, color: 'var(--error-bright)' }}
+                    style={{ fontSize: 18, color: '#F87171' }}
                   >
                     delete
                   </span>
                 </button>
               </div>
 
-              {editingId === p.id ? (
+              {editingId === pr.id ? (
                 <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
                   <input
                     type="text"
-                    placeholder="Paste real EAN-13 here..."
+                    placeholder="Вставь EAN-13 штрихкод..."
                     value={editEan}
                     onChange={(e) => setEditEan(e.target.value)}
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter') handleSaveEan(p)
+                      if (e.key === 'Enter') handleSaveEan(pr)
                     }}
                     autoFocus
                     style={{
@@ -386,8 +405,8 @@ export default function EanRecoveryScreen() {
                     }}
                   />
                   <button
-                    onClick={() => handleSaveEan(p)}
-                    disabled={saving === p.id || !editEan.trim()}
+                    onClick={() => handleSaveEan(pr)}
+                    disabled={saving === pr.id || !editEan.trim()}
                     style={{
                       padding: '10px 18px',
                       fontSize: 13,
@@ -398,9 +417,10 @@ export default function EanRecoveryScreen() {
                       borderRadius: 12,
                       cursor: 'pointer',
                       opacity: !editEan.trim() ? 0.5 : 1,
+                      fontFamily: 'var(--font-body)',
                     }}
                   >
-                    {saving === p.id ? '...' : 'Save'}
+                    {saving === pr.id ? '...' : p.saveBarcode}
                   </button>
                   <button
                     onClick={() => {
@@ -416,6 +436,7 @@ export default function EanRecoveryScreen() {
                       border: '1px solid var(--glass-border)',
                       borderRadius: 12,
                       cursor: 'pointer',
+                      fontFamily: 'var(--font-body)',
                     }}
                   >
                     X
@@ -424,7 +445,7 @@ export default function EanRecoveryScreen() {
               ) : (
                 <button
                   onClick={() => {
-                    setEditingId(p.id)
+                    setEditingId(pr.id)
                     setEditEan('')
                     setError(null)
                   }}
@@ -434,11 +455,12 @@ export default function EanRecoveryScreen() {
                     padding: '8px 0',
                     fontSize: 13,
                     fontWeight: 600,
-                    background: 'var(--accent-sky-dim)',
-                    color: 'var(--accent-sky)',
-                    border: '1px solid var(--accent-sky-border)',
+                    background: 'rgba(56,189,248,0.08)',
+                    color: '#38BDF8',
+                    border: '1px solid rgba(56,189,248,0.2)',
                     borderRadius: 10,
                     cursor: 'pointer',
+                    fontFamily: 'var(--font-body)',
                   }}
                 >
                   <span
@@ -447,7 +469,7 @@ export default function EanRecoveryScreen() {
                   >
                     edit
                   </span>
-                  Add Barcode
+                  {p.addBarcode}
                 </button>
               )}
             </div>

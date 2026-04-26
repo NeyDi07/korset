@@ -21,6 +21,7 @@ import {
 } from '../utils/routes.js'
 import ProfileAvatar from '../components/ProfileAvatar.jsx'
 import AuthPromptModal from '../components/AuthPromptModal.jsx'
+import SegmentedToggle from '../components/SegmentedToggle.jsx'
 import { ALLERGENS } from '../constants/allergens.js'
 import { DIET_GOALS } from '../constants/dietGoals.js'
 import { buildAuthNavigateState } from '../utils/authFlow.js'
@@ -283,114 +284,89 @@ export function DietIcon({ name, size = 24 }) {
 
 import { useUserData } from '../contexts/UserDataContext.jsx'
 
-/**
- * ThemeModeToggle — segmented control matching the language toggle style exactly.
- * Instead of sliding thumb, uses two adjacent buttons like RU/KZ toggle.
- * Sun icon = light mode active, Moon icon = dark mode active.
- */
-function ThemeModeToggle({ theme, onToggle, label }) {
-  const isLight = theme === 'light'
+/* ─── Sun / Moon SVG glyphs (outline + filled variants) ───
+ * Same 18×18 viewbox as the language buttons' visual height so both
+ * controls end up identically sized. The "filled" variant kicks in when
+ * the option is active, giving a subtle hint that the option is "lit". */
 
+function SunGlyph({ filled }) {
   return (
-    <div
-      role="group"
-      aria-label={label}
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill={filled ? 'currentColor' : 'none'}
+      stroke="currentColor"
+      strokeWidth={filled ? 1.6 : 2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
       style={{
-        display: 'flex',
-        background: 'var(--glass-subtle)',
-        borderRadius: 10,
-        padding: 3,
-        gap: 2,
+        transition: 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        transform: filled ? 'scale(1.05) rotate(0deg)' : 'scale(0.92) rotate(-12deg)',
       }}
     >
-      {/* Sun — Light mode */}
-      <button
-        type="button"
-        onClick={(e) => {
-          e.stopPropagation()
-          if (!isLight) onToggle()
-        }}
-        aria-pressed={isLight}
-        style={{
-          background: isLight ? 'var(--primary)' : 'transparent',
-          border: 'none',
-          color: isLight ? '#fff' : 'var(--text-sub)',
-          padding: '5px 12px',
-          borderRadius: 8,
-          fontSize: 12,
-          fontWeight: 600,
-          fontFamily: 'var(--font-display)',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          transition: 'background 0.2s, color 0.2s',
-        }}
-        aria-label="Светлая тема"
-        title="Светлая тема"
-      >
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <circle cx="12" cy="12" r="5" />
-          <line x1="12" y1="1" x2="12" y2="3" />
-          <line x1="12" y1="21" x2="12" y2="23" />
-          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-          <line x1="1" y1="12" x2="3" y2="12" />
-          <line x1="21" y1="12" x2="23" y2="12" />
-          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-        </svg>
-      </button>
+      <circle cx="12" cy="12" r="4.6" />
+      <line x1="12" y1="2" x2="12" y2="4" />
+      <line x1="12" y1="20" x2="12" y2="22" />
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+      <line x1="2" y1="12" x2="4" y2="12" />
+      <line x1="20" y1="12" x2="22" y2="12" />
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+    </svg>
+  )
+}
 
-      {/* Moon — Dark mode */}
-      <button
-        type="button"
-        onClick={(e) => {
-          e.stopPropagation()
-          if (isLight) onToggle()
-        }}
-        aria-pressed={!isLight}
-        style={{
-          background: !isLight ? 'var(--primary)' : 'transparent',
-          border: 'none',
-          color: !isLight ? '#fff' : 'var(--text-sub)',
-          padding: '5px 12px',
-          borderRadius: 8,
-          fontSize: 12,
-          fontWeight: 600,
-          fontFamily: 'var(--font-display)',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          transition: 'background 0.2s, color 0.2s',
-        }}
-        aria-label="Тёмная тема"
-        title="Тёмная тема"
-      >
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-        </svg>
-      </button>
-    </div>
+function MoonGlyph({ filled }) {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill={filled ? 'currentColor' : 'none'}
+      stroke="currentColor"
+      strokeWidth={filled ? 1.4 : 2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      style={{
+        transition: 'transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        transform: filled ? 'scale(1.05) rotate(-8deg)' : 'scale(0.92) rotate(12deg)',
+      }}
+    >
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+    </svg>
+  )
+}
+
+/**
+ * ThemeModeToggle — wrapper around SegmentedToggle. Always renders Sun
+ * on the left, Moon on the right. Active glyph is "filled", inactive is
+ * outline; the sliding thumb plus the glyph fill swap give the toggle
+ * a tactile, animated feel without any of the layout-based jankiness
+ * that the previous (sliding thumb + box-shadow) implementation had.
+ */
+function ThemeModeToggle({ theme, onToggle, label }) {
+  return (
+    <SegmentedToggle
+      ariaLabel={label}
+      activeKey={theme === 'light' ? 'light' : 'dark'}
+      onChange={() => onToggle()}
+      options={[
+        {
+          key: 'light',
+          ariaLabel: 'Светлая тема',
+          render: (active) => <SunGlyph filled={active} />,
+        },
+        {
+          key: 'dark',
+          ariaLabel: 'Тёмная тема',
+          render: (active) => <MoonGlyph filled={active} />,
+        },
+      ]}
+    />
   )
 }
 
@@ -1270,37 +1246,15 @@ export default function ProfileScreen() {
                   ),
                   label: t.profile.languageHeader,
                   right: (
-                    <div
-                      style={{
-                        display: 'flex',
-                        background: 'var(--glass-subtle)',
-                        borderRadius: 10,
-                        padding: 3,
-                      }}
-                    >
-                      {['ru', 'kz'].map((l) => (
-                        <button
-                          key={l}
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            setLang(l)
-                          }}
-                          style={{
-                            background: lang === l ? 'var(--primary)' : 'transparent',
-                            border: 'none',
-                            color: lang === l ? '#fff' : 'var(--text-sub)',
-                            padding: '5px 14px',
-                            borderRadius: 8,
-                            fontSize: 12,
-                            fontWeight: 600,
-                            fontFamily: 'var(--font-display)',
-                            cursor: 'pointer',
-                          }}
-                        >
-                          {l.toUpperCase()}
-                        </button>
-                      ))}
-                    </div>
+                    <SegmentedToggle
+                      ariaLabel={t.profile.languageHeader}
+                      activeKey={lang}
+                      onChange={(k) => setLang(k)}
+                      options={[
+                        { key: 'ru', label: 'RU', ariaLabel: 'Русский' },
+                        { key: 'kz', label: 'KZ', ariaLabel: 'Қазақ' },
+                      ]}
+                    />
                   ),
                 },
                 {
