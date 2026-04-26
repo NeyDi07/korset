@@ -34,7 +34,7 @@ const INITIAL_PAGE_SIZE = 50
 function mapRowToProduct(row) {
   const gp = row.global_products || {}
   return {
-    ean: row.ean || gp.ean,
+    ean: gp.ean || row.ean,
     name: row.local_name || gp.name,
     nameKz: gp.name_kz,
     brand: gp.brand,
@@ -139,7 +139,7 @@ export async function fetchFullProduct(storeId, ean) {
     .eq('store_id', storeId)
     .eq('is_active', true)
     .eq('global_products.is_active', true)
-    .eq('ean', String(ean))
+    .eq('global_products.ean', String(ean))
     .maybeSingle()
   if (error || !data) return null
   return mapRowToProduct(data)

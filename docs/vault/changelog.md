@@ -232,3 +232,35 @@
 3. Data Moat — data_quality_score, каскад источников
 4. БД-фиксы — CASCADE, GIN, триггеры
 5. Метрики в тенге
+
+---
+
+## 2026-04-27 — Сессия 17: Banner Overhaul + PWA Precache Fix + Guest Empty States
+
+**Выполнено:**
+- **7 фото-баннеров**: golden-samurai, starlit-observatory, witching-hour, teal-moonlight, crescent-nightingale, dawn-ronin, midnight-grove — оптимизированы в WebP (160KB total, 99% compression от ~13MB PNG)
+- **`scripts/optimize-banners.mjs`**: Pipeline Sharp — resize 1200×450 → WebP quality 80 + thumbnails 240×90
+- **Удалены 5 старых SVG баннеров** из presets и с диска
+- **PWA precache fix**: `globPatterns` перенесён из `workbox` в `injectManifest` config — webp теперь в precache manifest (36 entries вместо 9). Фиксит отсутствие баннеров в Chrome.
+- **SelectedDot clipping fix**: `overflow:hidden` на upload tile обрезал галочку → обёртка `position:relative` div + dot рендерится снаружи button
+- **Guest empty states (Favorites + History)**: Текст «Войдите, чтобы сохранять...» + кликабельный блок → открывает AuthPromptModal. RU/KZ i18n ключи добавлены.
+- **ProfileEditScreen**: ровная сетка 2×4 (7 пресетов + 1 upload tile)
+
+**Файлы:**
+- `src/constants/bannerPresets.js` — 7 presets, default golden-samurai
+- `src/screens/ProfileEditScreen.jsx` — SelectedDot fix, grid layout
+- `src/components/profile/ProfileStatsTabs.jsx` — isGuest + onAuthPrompt, clickable TabEmptyState
+- `src/screens/ProfileScreen.jsx` — `onAuthPrompt={() => setAuthPromptOpen(true)}`
+- `src/utils/i18n.js` — `favoritesEmptyGuest`, `historyEmptyGuest` (RU/KZ)
+- `vite.config.js` — `injectManifest.globPatterns` includes webp/jpg/jpeg
+- `src/sw.js` — runtime `CacheFirst` route для изображений
+- `scripts/optimize-banners.mjs` — Sharp pipeline
+- `.gitignore` — `public/banners/raw/`, `public/banners/thumbs/`
+
+**Коммиты:** `e03210e` (баннеры), `cfe9428` (PWA fix), `0b29105` (globPatterns injectManifest), `session-commit` (guest empty states)
+
+**Следующие приоритеты:**
+1. Проверить баннеры в Chrome после деплоя
+2. Retail Import — P0 блокер продаж
+3. Data Moat — каскад источников
+4. i18n хардкод русского текста (EanRecoveryScreen, ProductScreen, CatalogScreen)

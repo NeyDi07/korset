@@ -184,7 +184,7 @@ export default function CatalogScreen() {
 
   const handleNavigate = useCallback(
     (product) => {
-      if (virtuosoRef.current) {
+      if (virtuosoRef.current?.getState) {
         virtuosoRef.current.getState((state) => {
           if (state?.range?.startIndex != null) {
             sessionStorage.setItem('korset_catalog_scroll', String(state.range.startIndex))

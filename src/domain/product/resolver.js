@@ -48,6 +48,28 @@ export function getDemoProductForEntity(product) {
 
 async function findStoreProduct(ean, storeId) {
   try {
+    if (storeId) {
+      const { data: gpData } = await supabase
+        .from('store_products')
+        .select(
+          'id, ean, price_kzt, shelf_zone, shelf_position, local_name, local_sku, stock_status, global_product_id, store_id, is_active, global_products!inner(*)'
+        )
+        .eq('store_id', storeId)
+        .eq('is_active', true)
+        .eq('global_products.is_active', true)
+        .eq('global_products.ean', ean)
+        .maybeSingle()
+
+      if (gpData?.global_products) {
+        return normalizeGlobalProduct(gpData.global_products, {
+          storeProductId: gpData.id,
+          priceKzt: gpData.price_kzt || null,
+          shelf: [gpData.shelf_zone, gpData.shelf_position].filter(Boolean).join(' / ') || null,
+          stockStatus: gpData.stock_status || null,
+        })
+      }
+    }
+
     let query = supabase
       .from('store_products')
       .select(
@@ -77,25 +99,27 @@ async function findStoreProduct(ean, storeId) {
       }
     }
 
-    const { data: altStoreData } = await supabase
-      .from('store_products')
-      .select(
-        'id, ean, price_kzt, shelf_zone, shelf_position, stock_status, global_product_id, global_products!inner(*)'
-      )
-      .eq('store_id', storeId || '')
-      .eq('is_active', true)
-      .contains('global_products.alternate_eans', [ean])
-      .maybeSingle()
+    if (storeId) {
+      const { data: altStoreData } = await supabase
+        .from('store_products')
+        .select(
+          'id, ean, price_kzt, shelf_zone, shelf_position, stock_status, global_product_id, global_products!inner(*)'
+        )
+        .eq('store_id', storeId)
+        .eq('is_active', true)
+        .contains('global_products.alternate_eans', [ean])
+        .maybeSingle()
 
-    if (altStoreData?.global_products) {
-      return normalizeGlobalProduct(altStoreData.global_products, {
-        storeProductId: altStoreData.id,
-        priceKzt: altStoreData.price_kzt || null,
-        shelf:
-          [altStoreData.shelf_zone, altStoreData.shelf_position].filter(Boolean).join(' / ') ||
-          null,
-        stockStatus: altStoreData.stock_status || null,
-      })
+      if (altStoreData?.global_products) {
+        return normalizeGlobalProduct(altStoreData.global_products, {
+          storeProductId: altStoreData.id,
+          priceKzt: altStoreData.price_kzt || null,
+          shelf:
+            [altStoreData.shelf_zone, altStoreData.shelf_position].filter(Boolean).join(' / ') ||
+            null,
+          stockStatus: altStoreData.stock_status || null,
+        })
+      }
     }
 
     return null

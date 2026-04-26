@@ -120,7 +120,7 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 |---|--------|--------|-------------|
 | 1 | **i18n: хардкод русский текст** | 🔴 НЕ НАЧАТО | EanRecoveryScreen, ProductScreen, CatalogScreen — массовый хардкод, KZ язык невозможен для этих экранов. Нарушает правило #7. |
 | 2 | **Фронтенд: name_kz по языку** | 🔴 НЕ НАЧАТО | Данные (name_kz) готовы в БД→normalizer→model, но ProductScreen/CatalogScreen/RetailProductsScreen показывают только `product.name`. Нужно: `lang === 'kz' && product.nameKz ? product.nameKz : product.name` |
-| 3 | **Migration 016** — проверить и применить | 🟡 ПРОВЕРИТЬ | profile-banners bucket + avatar_id/banner_url колонки. AuthContext уже использует с graceful fallback. |
+| 3 | **Migration 016** — проверить и применить | ✅ ПРИМЕНЕНА | profile-banners bucket + avatar_id/banner_url колонки. AuthContext уже использует с graceful fallback. Баннеры работают: 7 пресетов + custom upload. |
 
 ### P1 — Важно для продукта
 
@@ -150,9 +150,10 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - ✅ **Retail Products** — infinite query, серверный поиск с debounce, inline edit (₸), barcode scanner, delete с confirm
 - ✅ **Retail Settings** — лого upload, описание, контакты (IG/WA/2GIS/сайт/телефон), QR-код, push toggles, danger zone
 - ✅ **EAN Recovery** — serverless API (JWT + service_role), DELETE/update-EAN/update-name, barcode scanner, inline name edit
-- ✅ **Profile Edit** — баннеры (5 пресетов + upload), аватары (9 пресетов), Supabase Storage
+- ✅ **Profile Edit** — баннеры (7 photo presets WebP + custom upload), аватары (9 presets), Supabase Storage
 - ✅ **БД-фиксы (миграции 012-015)** — CASCADE FK, GIN indexes, tsvector полнотекстовый поиск, data_quality_score, TTL, bulk RPC
 - ✅ **Каталог: Virtuoso + двухэтапная загрузка** — light поля, scroll position, viewMode
+- ✅ **Banner overhaul (2026-04-27)** — 7 фото-баннеров в WebP (160KB total, 99% compression), `scripts/optimize-banners.mjs` pipeline, PWA precache fix (`globPatterns` → `injectManifest` config), SelectedDot clipping fix, clean 2×4 grid
 - ✅ **R2 CDN миграция** — 99.96% картинок на cdn.korset.app
 - ✅ **Состав: перевод через OpenAI** — 100% русский состав
 - ✅ **Batch upsert** — arbuz-catalog-parser 100x быстрее

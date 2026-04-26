@@ -123,7 +123,7 @@ export async function getStoreCatalogProductsFromDB(storeId) {
     id: sp.id,
     storeProductId: sp.id,
     storeId: sp.store_id,
-    ean: sp.ean,
+    ean: sp.global_products?.ean || sp.ean,
     priceKzt: sp.price_kzt || null,
     stockStatus: sp.stock_status,
     shelfZone: sp.shelf_zone,
