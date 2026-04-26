@@ -101,14 +101,14 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - **NPC name search** = даёт EAN для ~40% продуктов
 - **82 категорий** обойдены через search queries
 
-**ТЕКУЩИЕ СТАТИСТИКИ БД (2026-04-26):**
-- **7104 active** global_products
-- **Реальные EAN: 7031** (99.0%) — было 6984 (97.8%) в начале сессии
-- **Fake EAN: 73** — arbuz_ 29 + kaspi_ 0 + korzinavdom_ 44
-- **Состав: 87.6%** (6233/7104)
+**ТЕКУЩИЕ СТАТИСТИКИ БД (2026-04-27):**
+- **~7099 active** global_products (пользователь удалил несколько через EAN Recovery)
+- **Реальные EAN: ~7031** (~99.0%) — пользователь дочищает остатки вручную
+- **Fake EAN: ~68** — arbuz_ ~25 + kaspi_ 0 + korzinavdom_ ~43
+- **Состав: ~87.5%**
 - **Нутриенты: ~81%** (5767)
-- **R2 CDN: 8115/8118** (99.96% продуктов с картинками)
-- store_products для ERALY: 8760
+- **R2 CDN: 8115/11** (99.96% продуктов с картинками)
+- store_products для MARS (store-one): ~8755
 
 **EAN MATCHING — ИТОГИ ТЕСТИРОВАНИЯ:**
 - NPC + DDG + OFF кросс-валидация: 25% verified, 85% any EAN
@@ -429,9 +429,34 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - Полная интеграция темы с PWA manifest и system shell была завершена на этапе 1.
 
 **Следующий фокус:** 
-- Вернуться к продуктовым задачам B2B (data moat, bulk RPC, неизвестные EAN), как планировалось ранее. Светлая тема внедрена.
+1. Дочистить ~68 fake EAN через EAN Recovery (пользователь в процессе)
+2. **Импорт прайс-листа** — P0 блокер продаж, нужен реальный тест CSV
+3. **Data Moat** — data_quality_score, каскад источников
+4. **БД-фиксы** — CASCADE, GIN, триггеры
+5. **Метрики в тенге** — дашборд не продаёт без денег
 
-## Заметка сессии — 2026-04-26 EAN Coverage Final Push (97.8% → 99.0%)
+## Заметка сессии — 2026-04-27 EAN Recovery UI + RLS Fix
+
+- **Проблема:** Удаление товаров через EAN Recovery не работало — RLS блокировал DELETE/UPDATE из фронтенда (anon key), Supabase молча возвращал `data: null, error: null`
+- **Решение:** Создан serverless API `/api/ean-recovery` — JWT-авторизация + service_role key (обходит RLS)
+- **EAN Recovery Screen (`src/screens/EanRecoveryScreen.jsx`) — полностью переписан:**
+  - **Удаление = полное DELETE** из `global_products` + `store_products` (через API, service_role)
+  - **Сканер штрихкода** — оранжевая кнопка «Сканировать», открывает камеру → отсканированный EAN автоматически вставляется
+  - **Карточка товара** — клик на название/картинку → ProductScreen в новой вкладке
+  - **Редактирование названия** — иконка ✏️ → инлайн-редактор, сохраняет в `global_products` через API
+  - **Подтверждение удаления** — модал «Удалить навсегда» с названием товара
+  - Всё на русском языке
+- **Retail Bottom Nav** — добавлена 4-я вкладка «Штрихкоды» (оранжевый qr_code_scanner) между «Товары» и «Настройки»
+- **API-эндпоинт `api/ean-recovery.js`:**
+  - `action: delete` — DELETE из store_products + global_products
+  - `action: update-ean` — UPDATE ean в global_products + store_products
+  - `action: update-name` — UPDATE name в global_products
+  - JWT верификация через `supabase.auth.getUser(token)`
+  - Service_role key для обхода RLS
+- **Магазин:** slug = `store-one`, name = `MARS`, город = Усть-Каменогорск, Новаторова 7
+- **i18n:** Добавлен ключ `eanRecovery` в retail.nav (RU: «Штрихкоды», KZ: «Штрихкодтар»)
+
+## Заметка сессии — 2026-04-26 EAN Coverage Final Push (77.2% → 99.0%)
 
 - **Цель:** 100% EAN coverage, избавиться от всех fake EAN (arbuz_/kaspi_/korzinavdom_)
 - **Результат:** 99.0% (7031/7104 реальных EAN), 73 fake EAN остались

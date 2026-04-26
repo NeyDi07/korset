@@ -1,7 +1,7 @@
 /* global self, clients, event */
 import { precacheAndRoute } from 'workbox-precaching'
 import { registerRoute } from 'workbox-routing'
-import { NetworkFirst } from 'workbox-strategies'
+import { NetworkFirst, CacheFirst } from 'workbox-strategies'
 import { ExpirationPlugin } from 'workbox-expiration'
 
 precacheAndRoute(self.__WB_MANIFEST)
@@ -15,6 +15,21 @@ registerRoute(
       new ExpirationPlugin({
         maxEntries: 50,
         maxAgeSeconds: 60 * 60,
+      }),
+    ],
+  })
+)
+
+registerRoute(
+  ({ request, url }) =>
+    request.destination === 'image' ||
+    /\.(webp|png|jpg|jpeg|svg|gif|avif)(\?.*)?$/i.test(url.pathname),
+  new CacheFirst({
+    cacheName: 'images-cache',
+    plugins: [
+      new ExpirationPlugin({
+        maxEntries: 100,
+        maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
       }),
     ],
   })

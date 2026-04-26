@@ -212,3 +212,23 @@
 
 **Результат:**
 - Корсет теперь имеет 100% визуальный паритет между темной и светлой темами во всех ключевых сценариях использования (Сканирование, Чат с ИИ, Профиль, Каталог).
+
+---
+
+## 2026-04-27 — Сессия 16: EAN Recovery UI + RLS Fix + Vault Context Save
+
+**Выполнено:**
+- **RLS bug fix:** Обнаружено что Supabase RLS с anon key молча блокирует DELETE/UPDATE на global_products (возвращает `data:null, error:null`). Создан serverless API `api/ean-recovery.js` с JWT + service_role key для обхода.
+- **EAN Recovery Screen** полностью переписан: сканер штрихкода, карточка товара в новой вкладке, инлайн-редактирование названия, полное DELETE с модалом подтверждения. Всё на русском.
+- **Retail Bottom Nav:** 4-я вкладка «Штрихкоды» (оранжевый qr_code_scanner)
+- **i18n:** eanRecovery nav key (RU: Штрихкоды, KZ: Штрихкодтар)
+- **Vault:** созданы `docs/vault/architecture/ean-recovery-system.md` и `docs/vault/decisions/ean-recovery-rls-decision.md`
+
+**EAN Coverage:** 77.2% → 99.0% (7031/7104 реальных EAN). ~68 fake EAN остаются для ручной обработки.
+
+**Следующие приоритеты:**
+1. Дочистить fake EAN вручную через EAN Recovery
+2. Импорт прайс-листа — P0 блокер продаж
+3. Data Moat — data_quality_score, каскад источников
+4. БД-фиксы — CASCADE, GIN, триггеры
+5. Метрики в тенге
