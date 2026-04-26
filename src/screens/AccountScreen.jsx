@@ -141,6 +141,7 @@ export default function AccountScreen() {
   const [resetError, setResetError] = useState('')
   const [resetLoading, setResetLoading] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
   const [deleteLoading, setDeleteLoading] = useState(false)
   const [deleteError, setDeleteError] = useState('')
 
@@ -439,7 +440,7 @@ export default function AccountScreen() {
             }
             label={tr(t.account?.logout) || 'Выйти из аккаунта'}
             danger
-            onClick={handleLogout}
+            onClick={() => setShowLogoutConfirm(true)}
           />
 
           <ActionRow
@@ -470,16 +471,107 @@ export default function AccountScreen() {
         </div>
       </div>
 
+      {/* Logout Confirmation Modal */}
+      {showLogoutConfirm && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 200,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px',
+            background: 'rgba(0,0,0,0.55)',
+            backdropFilter: 'blur(4px)',
+          }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setShowLogoutConfirm(false)
+          }}
+        >
+          <div
+            style={{
+              width: '100%',
+              maxWidth: 360,
+              background: 'var(--bg-surface)',
+              borderRadius: 20,
+              border: '1px solid var(--glass-border)',
+              padding: '24px',
+              boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
+            }}
+          >
+            <div
+              style={{
+                fontSize: 17,
+                fontWeight: 700,
+                color: 'var(--text)',
+                fontFamily: 'var(--font-display)',
+                marginBottom: 8,
+              }}
+            >
+              {tr(t.account?.logoutConfirmTitle) || 'Выйти из аккаунта?'}
+            </div>
+            <div
+              style={{
+                fontSize: 14,
+                color: 'var(--text-sub)',
+                lineHeight: 1.5,
+                marginBottom: 20,
+              }}
+            >
+              {tr(t.account?.logoutConfirmBody) || 'Вы сможете войти снова в любой момент.'}
+            </div>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button
+                onClick={() => setShowLogoutConfirm(false)}
+                style={{
+                  flex: 1,
+                  padding: '12px 16px',
+                  borderRadius: 12,
+                  border: '1px solid var(--glass-border)',
+                  background: 'var(--glass-bg)',
+                  color: 'var(--text)',
+                  fontSize: 14,
+                  fontWeight: 600,
+                  fontFamily: 'var(--font-display)',
+                  cursor: 'pointer',
+                }}
+              >
+                {tr(t.account?.logoutCancel) || 'Отмена'}
+              </button>
+              <button
+                onClick={handleLogout}
+                style={{
+                  flex: 1,
+                  padding: '12px 16px',
+                  borderRadius: 12,
+                  border: 'none',
+                  background: 'var(--primary)',
+                  color: '#fff',
+                  fontSize: 14,
+                  fontWeight: 600,
+                  fontFamily: 'var(--font-display)',
+                  cursor: 'pointer',
+                }}
+              >
+                {tr(t.account?.logoutConfirmBtn) || 'Выйти'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Delete Account Confirmation Modal */}
       {showDeleteConfirm && (
         <div
           style={{
             position: 'fixed',
             inset: 0,
-            zIndex: 100,
+            zIndex: 200,
             display: 'flex',
-            alignItems: 'flex-end',
+            alignItems: 'center',
             justifyContent: 'center',
+            padding: '20px 20px calc(80px + env(safe-area-inset-bottom))',
             background: 'rgba(0,0,0,0.6)',
             backdropFilter: 'blur(4px)',
           }}
@@ -492,11 +584,12 @@ export default function AccountScreen() {
               width: '100%',
               maxWidth: 420,
               background: 'var(--bg-surface)',
-              borderRadius: '24px 24px 0 0',
+              borderRadius: 20,
               border: '1px solid var(--glass-border)',
-              borderBottom: 'none',
-              padding: '28px 24px 32px',
-              animation: 'slideUp 0.2s ease-out',
+              padding: '24px',
+              maxHeight: 'calc(100vh - 120px)',
+              overflowY: 'auto',
+              boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
             }}
           >
             <div

@@ -361,6 +361,10 @@ export const dictionaries = {
       deleteConfirmBtn: 'Удалить навсегда',
       deleteDeleting: 'Удаление...',
       deleteError: 'Не удалось удалить аккаунт. Попробуйте позже или свяжитесь с поддержкой.',
+      logoutConfirmTitle: 'Выйти из аккаунта?',
+      logoutConfirmBody: 'Вы сможете войти снова в любой момент.',
+      logoutCancel: 'Отмена',
+      logoutConfirmBtn: 'Выйти',
     },
     qr: {
       title: 'QR-коды для ценников',
@@ -990,6 +994,10 @@ export const dictionaries = {
       deleteDeleting: 'Жою...',
       deleteError:
         'Аккаунтты жою мүмкін болмады. Кейінірек қайта байқап көріңіз немесе қолдау қызметіне хабарласыңыз.',
+      logoutConfirmTitle: 'Аккаунттан шығу?',
+      logoutConfirmBody: 'Кез келген уақытта қайта кіре аласыз.',
+      logoutCancel: 'Болдырмау',
+      logoutConfirmBtn: 'Шығу',
     },
     qr: {
       title: 'Баға белгілеріне арналған QR-кодтар',
