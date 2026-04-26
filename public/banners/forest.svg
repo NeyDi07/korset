@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 360" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="sky4" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#064E3B"/>
+      <stop offset="60%" stop-color="#065F46"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="360" fill="url(#sky4)"/>
+  <g opacity="0.4" fill="#fff">
+    <ellipse cx="200" cy="60" rx="60" ry="8"/>
+    <ellipse cx="500" cy="40" rx="80" ry="10"/>
+    <ellipse cx="680" cy="80" rx="50" ry="6"/>
+  </g>
+  <g fill="#022C22">
+    <path d="M0 250 L60 130 L120 250 Z"/>
+    <path d="M80 270 L150 120 L220 270 Z"/>
+    <path d="M180 260 L240 150 L300 260 Z"/>
+    <path d="M280 270 L360 100 L440 270 Z"/>
+    <path d="M420 260 L490 140 L560 260 Z"/>
+    <path d="M540 270 L620 110 L700 270 Z"/>
+    <path d="M680 260 L750 150 L800 230 L800 270 Z"/>
+  </g>
+  <rect y="260" width="800" height="100" fill="#022C22"/>
+  <g fill="#064E3B" opacity="0.6">
+    <ellipse cx="100" cy="290" rx="40" ry="5"/>
+    <ellipse cx="400" cy="310" rx="60" ry="6"/>
+    <ellipse cx="700" cy="295" rx="45" ry="5"/>
+  </g>
+</svg>

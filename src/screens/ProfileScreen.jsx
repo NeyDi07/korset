@@ -16,6 +16,7 @@ import { ALLERGENS } from '../constants/allergens.js'
 import { DIET_GOALS } from '../constants/dietGoals.js'
 import { buildAuthNavigateState } from '../utils/authFlow.js'
 import { useTheme } from '../utils/theme.js'
+import { resolveBannerSrc } from '../constants/bannerPresets.js'
 
 /* ─── DIET/ALLERGEN ICONS ─── */
 export function DietIcon({ name, size = 24 }) {
@@ -445,13 +446,13 @@ export default function ProfileScreen() {
 
         {/* All content above orbs */}
         <div style={{ position: 'relative', zIndex: 1 }}>
-          {/* ── HEADER ── */}
+          {/* ── HEADER (compact) ── */}
           <div
             style={{
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              padding: '16px 22px 0',
+              padding: '14px 22px 10px',
             }}
           >
             <h1
@@ -469,24 +470,23 @@ export default function ProfileScreen() {
             {user && (
               <button
                 onClick={() => navigate('/setup-profile?mode=edit')}
+                aria-label={t.profile.editBtn}
                 style={{
-                  background: 'rgba(124,58,237,0.12)',
-                  border: '1px solid rgba(124,58,237,0.2)',
-                  padding: '8px 16px',
+                  width: 38,
+                  height: 38,
                   borderRadius: 12,
+                  background: 'rgba(124,58,237,0.12)',
+                  border: '1px solid rgba(124,58,237,0.22)',
                   color: '#A78BFA',
-                  fontSize: 12,
-                  fontWeight: 600,
-                  fontFamily: 'var(--font-display)',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 6,
+                  justifyContent: 'center',
                 }}
               >
                 <svg
-                  width="14"
-                  height="14"
+                  width="16"
+                  height="16"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -496,135 +496,167 @@ export default function ProfileScreen() {
                 >
                   <path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" />
                 </svg>
-                {t.profile.editBtn}
               </button>
             )}
           </div>
 
-          {/* ── AVATAR + NAME ── */}
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              padding: '28px 22px 28px',
-            }}
-          >
+          {/* ── BANNER CARD (background image + avatar + name overlay) ── */}
+          <div style={{ padding: '0 16px 8px' }}>
             <div
               style={{
-                width: 120,
-                height: 120,
-                borderRadius: '50%',
-                border: '3.5px solid #7C3AED',
-                padding: 4,
-                boxShadow: '0 0 40px rgba(124,58,237,0.25), inset 0 0 20px rgba(124,58,237,0.1)',
-                marginBottom: 16,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxSizing: 'border-box',
+                position: 'relative',
+                width: '100%',
+                aspectRatio: '16 / 8',
+                maxHeight: 220,
+                minHeight: 170,
+                borderRadius: 24,
+                overflow: 'hidden',
+                background: 'linear-gradient(135deg, #1E0A3C 0%, #6D28D9 100%)',
+                boxShadow: '0 12px 40px rgba(0,0,0,0.35)',
               }}
             >
-              {user ? (
-                <ProfileAvatar
-                  avatarId={avatarId || user?.user_metadata?.avatar_id}
-                  name={displayName || user?.user_metadata?.full_name}
-                  rounded="circle"
-                />
-              ) : (
-                <div
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    borderRadius: '50%',
-                    background: '#7C3AED',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <svg
-                    width="48"
-                    height="48"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#fff"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+              <img
+                src={resolveBannerSrc(user?.user_metadata?.banner_url || null)}
+                alt=""
+                aria-hidden="true"
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  pointerEvents: 'none',
+                }}
+              />
+              {/* Bottom gradient for legibility */}
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  background: 'linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.55) 100%)',
+                  pointerEvents: 'none',
+                }}
+              />
+              {/* Avatar — centered, slightly above bottom */}
+              <div
+                style={{
+                  position: 'absolute',
+                  left: '50%',
+                  top: '22%',
+                  transform: 'translateX(-50%)',
+                  width: 96,
+                  height: 96,
+                  borderRadius: '50%',
+                  border: '3px solid #7C3AED',
+                  padding: 3,
+                  background: 'rgba(12,10,30,0.55)',
+                  boxShadow:
+                    '0 6px 24px rgba(124,58,237,0.45), inset 0 0 14px rgba(124,58,237,0.18)',
+                  boxSizing: 'border-box',
+                }}
+              >
+                {user ? (
+                  <ProfileAvatar
+                    avatarId={avatarId || user?.user_metadata?.avatar_id}
+                    name={displayName || user?.user_metadata?.full_name}
+                    rounded="circle"
+                  />
+                ) : (
+                  <div
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      borderRadius: '50%',
+                      background: '#7C3AED',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
                   >
-                    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
-                    <circle cx="12" cy="7" r="4" />
-                  </svg>
-                </div>
-              )}
+                    <svg
+                      width="40"
+                      height="40"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#fff"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                      <circle cx="12" cy="7" r="4" />
+                    </svg>
+                  </div>
+                )}
+              </div>
+              {/* Name pill — bottom center */}
+              <div
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  bottom: 14,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  padding: '0 16px',
+                  pointerEvents: 'none',
+                }}
+              >
+                {user ? (
+                  <div
+                    style={{
+                      maxWidth: '85%',
+                      padding: '6px 16px',
+                      borderRadius: 12,
+                      background: 'rgba(15,10,30,0.55)',
+                      border: '1px solid rgba(255,255,255,0.08)',
+                      backdropFilter: 'blur(6px)',
+                      WebkitBackdropFilter: 'blur(6px)',
+                      fontFamily: 'var(--font-display)',
+                      fontSize: 22,
+                      fontWeight: 800,
+                      color: '#fff',
+                      textTransform: 'uppercase',
+                      letterSpacing: 1.2,
+                      lineHeight: 1.1,
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    }}
+                  >
+                    {displayName || user?.user_metadata?.full_name || 'Körset User'}
+                  </div>
+                ) : (
+                  <button
+                    onClick={() =>
+                      navigate('/auth', {
+                        state: buildAuthNavigateState(location, {
+                          reason: 'profile_required',
+                          message: t.profile.authRequiredMsg,
+                        }),
+                      })
+                    }
+                    style={{
+                      pointerEvents: 'auto',
+                      background: 'rgba(15,10,30,0.65)',
+                      border: '1px solid rgba(255,255,255,0.18)',
+                      color: '#fff',
+                      fontSize: 13,
+                      fontFamily: 'var(--font-display)',
+                      fontWeight: 600,
+                      padding: '9px 22px',
+                      borderRadius: 12,
+                      cursor: 'pointer',
+                      letterSpacing: 0.5,
+                      backdropFilter: 'blur(6px)',
+                      WebkitBackdropFilter: 'blur(6px)',
+                    }}
+                  >
+                    {t.profile.loginBtn}
+                  </button>
+                )}
+              </div>
             </div>
-            {user ? (
-              <>
-                <h2
-                  style={{
-                    fontFamily: 'var(--font-display)',
-                    fontSize: 26,
-                    fontWeight: 700,
-                    color: 'var(--text)',
-                    margin: '0 0 4px',
-                    textTransform: 'uppercase',
-                    letterSpacing: 1,
-                  }}
-                >
-                  {displayName || user?.user_metadata?.full_name || 'Körset User'}
-                </h2>
-                <div
-                  style={{
-                    fontSize: 13,
-                    color: 'var(--text-disabled)',
-                    fontFamily: 'var(--font-display)',
-                  }}
-                >
-                  {user.email || ''}
-                </div>
-              </>
-            ) : (
-              <>
-                <h2
-                  style={{
-                    fontFamily: 'var(--font-display)',
-                    fontSize: 28,
-                    fontWeight: 700,
-                    color: 'var(--text)',
-                    margin: '0 0 12px',
-                    textTransform: 'uppercase',
-                    letterSpacing: 2,
-                  }}
-                >
-                  {t.profile.guest}
-                </h2>
-                <button
-                  onClick={() =>
-                    navigate('/auth', {
-                      state: buildAuthNavigateState(location, {
-                        reason: 'profile_required',
-                        message: t.profile.authRequiredMsg,
-                      }),
-                    })
-                  }
-                  style={{
-                    background: 'transparent',
-                    border: '1.5px solid var(--glass-border)',
-                    color: 'var(--text)',
-                    fontSize: 13,
-                    fontFamily: 'var(--font-display)',
-                    fontWeight: 500,
-                    padding: '10px 28px',
-                    borderRadius: 12,
-                    cursor: 'pointer',
-                    letterSpacing: 0.5,
-                  }}
-                >
-                  {t.profile.loginBtn}
-                </button>
-              </>
-            )}
           </div>
 
           {/* ── STATS — 3 GLASS CARDS ── */}

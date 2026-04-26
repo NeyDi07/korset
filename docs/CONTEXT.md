@@ -63,7 +63,7 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 
 | Фокус | Статус |
 |-------|--------|
-| **Light theme rollout planning** | 🔍 DISCOVERY — системы темы нет, 34 UI-файла с hardcoded dark-цветами, ждём продуктовые решения по scope/default/persistence |
+| **Light theme rollout** | ✅ COMPLETED — Full UI parity across all 34+ files, semantic variables implemented, AI Chat & ScanScreen polished |
 | **Zero-Friction onboarding pivot** | 🗺️ PLANNED FOR V1 — убрать блокирующий buyer-onboarding, перенести обучение в store HomeScreen + физические материалы, реализацию отложить на отдельный этап |
 | **Arbuz catalog import** | ✅ 2228 продуктов из Arbuz → 3236 активных в DB |
 | **Каталог: русские имена** | ✅ NPC --fix-names |
@@ -280,6 +280,15 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - `src/utils/i18n.js` расширен по `retail.import` на RU/KZ под новый flow шаблона и отчёта.
 - Проверки на 2026-04-25: `node --test tests/unit/retailImportCore.test.mjs` — 3/3; `npm run lint` — без новых ошибок, прежние 46 warning; `npm test` — 4/4; `npm run build` — OK.
 - Следующий оптимальный фокус: staging/bulk RPC flow для `unknown EAN`, затем ручное подтверждение миграции `011_add_korzinavdom_image_source.sql`, потом DB fixes (`CASCADE`, `GIN`) и search/scaling.
+
+## Заметка сессии — 2026-04-26 ProfileScreen Banner (Этап 1)
+
+- Редизайн верхней части `src/screens/ProfileScreen.jsx`: убран email, компактный header (Профиль + edit-карандаш-кнопка 38×38), добавлена баннер-карточка `aspect-ratio 16/8` с фоновой картинкой, аватарка 96px по центру, имя в стеклянной "плашке" внизу баннера (UPPERCASE).
+- Новый модуль: `src/constants/bannerPresets.js` (5 пресетов + `resolveBannerSrc()`), читает `user_metadata.banner_url` (preset:id или URL); fallback на `sunset`.
+- Новые SVG-заглушки в `public/banners/`: sunset, mountains, purple, forest, ocean (легковесные, ~1KB каждая). Пользователь заменит реальными фото позже.
+- `src/utils/i18n.js`: добавлены `profile.banner.*` и `profile.edit.*` для RU/KZ (для Этапа 2).
+- Карандаш пока ведёт на старый `/setup-profile?mode=edit` (TODO Этап 2 — отдельный `/profile/edit`).
+- Проверки: `npm run build` OK, `npx eslint` на изменённых файлах — 0 ошибок.
 
 ## Заметка сессии — 2026-04-25 multi-LLM coordination
 
