@@ -35,14 +35,14 @@ export function DietIcon({ name, size = 24 }) {
         height={h}
         viewBox="0 0 24 24"
         fill="none"
-        stroke="#FFFFFF"
+        stroke="currentColor"
         strokeWidth="1.8"
         strokeLinecap={lc}
         strokeLinejoin={lj}
       >
         <path d="M12 4l7 3.5v7l-7 3.5-7-3.5v-7l7-3.5z" />
         <path d="M12 10.5l7-3.5M12 10.5l-7-3.5M12 10.5v7" />
-        <line x1="2" y1="22" x2="22" y2="2" stroke="#FFFFFF" />
+        <line x1="2" y1="22" x2="22" y2="2" stroke="currentColor" />
       </svg>
     ),
     nodairy: (
@@ -130,7 +130,7 @@ export function DietIcon({ name, size = 24 }) {
         height={h}
         viewBox="0 0 24 24"
         fill="none"
-        stroke="#FFFFFF"
+        stroke="currentColor"
         strokeWidth="1.8"
         strokeLinecap={lc}
         strokeLinejoin={lj}
@@ -159,7 +159,7 @@ export function DietIcon({ name, size = 24 }) {
         height={h}
         viewBox="0 0 24 24"
         fill="none"
-        stroke="#FFFFFF"
+        stroke="currentColor"
         strokeWidth="1.8"
         strokeLinecap={lc}
         strokeLinejoin={lj}
@@ -186,7 +186,7 @@ export function DietIcon({ name, size = 24 }) {
         height={h}
         viewBox="0 0 24 24"
         fill="none"
-        stroke="#FFFFFF"
+        stroke="currentColor"
         strokeWidth="1.8"
         strokeLinecap={lc}
         strokeLinejoin={lj}
@@ -200,7 +200,7 @@ export function DietIcon({ name, size = 24 }) {
         height={h}
         viewBox="0 0 24 24"
         fill="none"
-        stroke="#FFFFFF"
+        stroke="currentColor"
         strokeWidth="1.8"
         strokeLinecap={lc}
         strokeLinejoin={lj}
@@ -214,7 +214,7 @@ export function DietIcon({ name, size = 24 }) {
         height={h}
         viewBox="0 0 24 24"
         fill="none"
-        stroke="#FFFFFF"
+        stroke="currentColor"
         strokeWidth="1.8"
         strokeLinecap={lc}
         strokeLinejoin={lj}
@@ -229,7 +229,7 @@ export function DietIcon({ name, size = 24 }) {
         height={h}
         viewBox="0 0 24 24"
         fill="none"
-        stroke="#FFFFFF"
+        stroke="currentColor"
         strokeWidth="1.8"
         strokeLinecap={lc}
         strokeLinejoin={lj}
@@ -243,7 +243,7 @@ export function DietIcon({ name, size = 24 }) {
         height={h}
         viewBox="0 0 24 24"
         fill="none"
-        stroke="#FFFFFF"
+        stroke="currentColor"
         strokeWidth="1.8"
         strokeLinecap={lc}
         strokeLinejoin={lj}
@@ -258,7 +258,7 @@ export function DietIcon({ name, size = 24 }) {
         height={h}
         viewBox="0 0 24 24"
         fill="none"
-        stroke="#FFFFFF"
+        stroke="currentColor"
         strokeWidth="1.8"
         strokeLinecap={lc}
         strokeLinejoin={lj}
@@ -548,7 +548,7 @@ export default function ProfileScreen() {
                     height="48"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke="rgba(255,255,255,0.7)"
+                    stroke="#fff"
                     strokeWidth="1.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -577,7 +577,7 @@ export default function ProfileScreen() {
                 <div
                   style={{
                     fontSize: 13,
-                    color: 'rgba(255,255,255,0.3)',
+                    color: 'var(--text-disabled)',
                     fontFamily: 'var(--font-display)',
                   }}
                 >
@@ -610,7 +610,7 @@ export default function ProfileScreen() {
                   }
                   style={{
                     background: 'transparent',
-                    border: '1.5px solid rgba(255,255,255,0.2)',
+                    border: '1.5px solid var(--glass-border)',
                     color: 'var(--text)',
                     fontSize: 13,
                     fontFamily: 'var(--font-display)',
@@ -690,7 +690,7 @@ export default function ProfileScreen() {
                 <div
                   style={{
                     fontSize: 11,
-                    color: 'rgba(255,255,255,0.4)',
+                    color: 'var(--text-disabled)',
                     marginTop: 8,
                     fontFamily: 'var(--font-display)',
                     fontWeight: 500,
@@ -775,7 +775,7 @@ export default function ProfileScreen() {
                 <div
                   style={{
                     fontSize: 11,
-                    color: 'rgba(255,255,255,0.4)',
+                    color: 'var(--text-disabled)',
                     marginTop: 8,
                     fontFamily: 'var(--font-display)',
                     fontWeight: 500,
@@ -855,7 +855,7 @@ export default function ProfileScreen() {
                 <div
                   style={{
                     fontSize: 11,
-                    color: 'rgba(255,255,255,0.4)',
+                    color: 'var(--text-disabled)',
                     marginTop: 8,
                     fontFamily: 'var(--font-display)',
                     fontWeight: 500,
@@ -908,17 +908,14 @@ export default function ProfileScreen() {
                         gap: 7,
                         padding: '8px 14px',
                         borderRadius: 14,
-                        background: profile.halal
-                          ? 'rgba(124,58,237,0.2)'
-                          : 'rgba(255,255,255,0.03)',
-                        border: `1px solid ${profile.halal ? 'rgba(124,58,237,0.4)' : 'rgba(255,255,255,0.06)'}`,
+                        background: profile.halal ? 'rgba(124,58,237,0.2)' : 'var(--glass-subtle)',
+                        border: `1px solid ${profile.halal ? 'rgba(124,58,237,0.4)' : 'var(--glass-soft-border)'}`,
                       }}
                     >
                       <svg
                         width="24"
-                        height="24"
                         viewBox="0 0 16 16"
-                        fill="#FFFFFF"
+                        fill="currentColor"
                         style={{
                           transition: 'opacity 0.2s ease',
                           opacity: profile.halal ? 1 : 0.3,
@@ -931,7 +928,7 @@ export default function ProfileScreen() {
                           fontFamily: 'var(--font-display)',
                           fontSize: 13,
                           fontWeight: 500,
-                          color: profile.halal ? '#10B981' : 'rgba(255,255,255,0.4)',
+                          color: profile.halal ? '#10B981' : 'var(--text-disabled)',
                           transition: 'color 0.2s ease',
                         }}
                       >
@@ -951,8 +948,8 @@ export default function ProfileScreen() {
                             gap: 7,
                             padding: '8px 14px',
                             borderRadius: 14,
-                            background: a ? 'rgba(124,58,237,0.2)' : 'rgba(255,255,255,0.03)',
-                            border: `1px solid ${a ? 'rgba(124,58,237,0.4)' : 'rgba(255,255,255,0.06)'}`,
+                            background: a ? 'rgba(124,58,237,0.2)' : 'var(--glass-subtle)',
+                            border: `1px solid ${a ? 'rgba(124,58,237,0.4)' : 'var(--glass-soft-border)'}`,
                           }}
                         >
                           <DietIcon name={d.icon} size={24} />
@@ -961,7 +958,7 @@ export default function ProfileScreen() {
                               fontFamily: 'var(--font-display)',
                               fontSize: 13,
                               fontWeight: 500,
-                              color: a ? '#C4B5FD' : 'rgba(255,255,255,0.4)',
+                              color: a ? 'var(--primary)' : 'var(--text-disabled)',
                             }}
                           >
                             {tr(d.label)}
@@ -973,7 +970,7 @@ export default function ProfileScreen() {
                 </div>
 
                 <div
-                  style={{ height: 1, background: 'rgba(255,255,255,0.06)', margin: '0 0 20px' }}
+                  style={{ height: 1, background: 'var(--glass-soft-border)', margin: '0 0 20px' }}
                 />
 
                 {/* Allergens */}
@@ -1009,8 +1006,8 @@ export default function ProfileScreen() {
                             gap: 7,
                             padding: '8px 12px',
                             borderRadius: 14,
-                            background: a ? 'rgba(239,68,68,0.15)' : 'rgba(255,255,255,0.03)',
-                            border: `1px solid ${a ? 'rgba(239,68,68,0.3)' : 'rgba(255,255,255,0.06)'}`,
+                            background: a ? 'rgba(239,68,68,0.15)' : 'var(--glass-subtle)',
+                            border: `1px solid ${a ? 'rgba(239,68,68,0.3)' : 'var(--glass-soft-border)'}`,
                           }}
                         >
                           <DietIcon name={al.icon} size={14} />
@@ -1019,7 +1016,7 @@ export default function ProfileScreen() {
                               fontFamily: 'var(--font-display)',
                               fontSize: 12,
                               fontWeight: 500,
-                              color: a ? '#FCA5A5' : 'rgba(255,255,255,0.4)',
+                              color: a ? '#EF4444' : 'var(--text-disabled)',
                             }}
                           >
                             {tr(al.label)}
@@ -1038,7 +1035,7 @@ export default function ProfileScreen() {
                       style={{
                         flex: 1,
                         background: 'var(--glass-bg)',
-                        border: '1px solid rgba(255,255,255,0.08)',
+                        border: '1px solid var(--glass-soft-border)',
                         borderRadius: 12,
                         padding: '10px 14px',
                         color: 'var(--text)',
@@ -1052,7 +1049,7 @@ export default function ProfileScreen() {
                       style={{
                         padding: '10px 14px',
                         borderRadius: 12,
-                        background: '#7C3AED',
+                        background: 'var(--primary)',
                         border: 'none',
                         color: '#fff',
                         fontSize: 12,
@@ -1192,7 +1189,7 @@ export default function ProfileScreen() {
                     <div
                       style={{
                         display: 'flex',
-                        background: 'rgba(255,255,255,0.04)',
+                        background: 'var(--glass-subtle)',
                         borderRadius: 10,
                         padding: 3,
                       }}
@@ -1467,7 +1464,7 @@ export default function ProfileScreen() {
                     </span>
                   </div>
                   <div
-                    style={{ height: 1, background: 'rgba(255,255,255,0.03)', margin: '0 18px' }}
+                    style={{ height: 1, background: 'var(--glass-soft-border)', margin: '0 18px' }}
                   />
                 </>
               )}
@@ -1524,7 +1521,7 @@ export default function ProfileScreen() {
               {user && (
                 <>
                   <div
-                    style={{ height: 1, background: 'rgba(255,255,255,0.03)', margin: '0 18px' }}
+                    style={{ height: 1, background: 'var(--glass-soft-border)', margin: '0 18px' }}
                   />
                   <div
                     className="settings-item"
@@ -1587,7 +1584,7 @@ export default function ProfileScreen() {
               style={{
                 fontFamily: 'var(--font-display)',
                 fontSize: 11,
-                color: 'rgba(255,255,255,0.1)',
+                color: 'var(--text-faint)',
                 fontWeight: 400,
               }}
             >

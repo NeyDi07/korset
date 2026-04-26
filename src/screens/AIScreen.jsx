@@ -93,11 +93,11 @@ export default function AIScreen() {
       >
         <span
           className="material-symbols-outlined"
-          style={{ fontSize: 48, color: 'rgba(255,255,255,0.3)' }}
+          style={{ fontSize: 48, color: 'var(--text-disabled)' }}
         >
           cloud_off
         </span>
-        <p style={{ color: 'rgba(255,255,255,0.5)', textAlign: 'center', fontSize: 14 }}>
+        <p style={{ color: 'var(--text-faint)', textAlign: 'center', fontSize: 14 }}>
           {lang === 'kz'
             ? 'Желі қосылуынсыз ИИ көмекші қол жеткізбейді'
             : 'ИИ-ассистент недоступен без интернета'}
@@ -123,7 +123,7 @@ export default function AIScreen() {
         style={{
           padding: '14px 20px 14px',
           background: 'var(--bg)',
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
+          borderBottom: '1px solid var(--glass-soft-border)',
           display: 'flex',
           alignItems: 'center',
           gap: 12,
@@ -144,8 +144,8 @@ export default function AIScreen() {
             width: 38,
             height: 38,
             borderRadius: 12,
-            border: '1px solid rgba(255,255,255,0.1)',
-            background: 'rgba(255,255,255,0.05)',
+            border: '1px solid var(--glass-soft-border)',
+            background: 'var(--glass-subtle)',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
@@ -158,7 +158,7 @@ export default function AIScreen() {
             height="18"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="rgba(255,255,255,0.8)"
+            stroke="var(--text)"
             strokeWidth="2"
             strokeLinecap="round"
           >
@@ -175,7 +175,7 @@ export default function AIScreen() {
             style={{
               fontSize: 16,
               fontWeight: 700,
-              color: '#fff',
+              color: 'var(--text)',
               fontFamily: 'var(--font-display)',
               lineHeight: 1.2,
             }}
@@ -193,8 +193,8 @@ export default function AIScreen() {
         style={{
           margin: '12px 16px 4px',
           padding: '10px 14px',
-          background: 'rgba(255,255,255,0.04)',
-          border: '1px solid rgba(255,255,255,0.08)',
+          background: 'var(--glass-subtle)',
+          border: '1px solid var(--glass-soft-border)',
           borderRadius: 14,
           display: 'flex',
           alignItems: 'center',
@@ -210,7 +210,7 @@ export default function AIScreen() {
             borderRadius: 10,
             overflow: 'hidden',
             flexShrink: 0,
-            background: 'rgba(255,255,255,0.06)',
+            background: 'var(--glass-muted)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -230,7 +230,7 @@ export default function AIScreen() {
           <div
             style={{
               fontSize: 10,
-              color: 'rgba(255,255,255,0.4)',
+              color: 'var(--text-disabled)',
               fontWeight: 600,
               letterSpacing: '0.5px',
               textTransform: 'uppercase',
@@ -242,7 +242,7 @@ export default function AIScreen() {
           <div
             style={{
               fontSize: 14,
-              color: 'rgba(255,255,255,0.85)',
+              color: 'var(--text)',
               fontWeight: 600,
               whiteSpace: 'nowrap',
               overflow: 'hidden',
@@ -278,7 +278,7 @@ export default function AIScreen() {
           }}
         >
           <span style={{ fontSize: 16 }}>⚠️</span>
-          <div style={{ fontSize: 11, color: '#FDE68A', lineHeight: 1.4, opacity: 0.9 }}>
+          <div style={{ fontSize: 11, color: 'var(--text-sub)', lineHeight: 1.4, opacity: 0.9 }}>
             {lang === 'kz'
               ? 'Ескерту: Жасанды интеллект қателесуі мүмкін. Құрамды әрқашан қаптамадан тексеріңіз. Бұл тек ұсыныс ретінде берілген ақпарат.'
               : 'Внимание: ИИ может ошибаться. Всегда проверяйте состав на упаковке (особенно при строгих правилах Халяль и сильных аллергиях).'}
@@ -293,17 +293,17 @@ export default function AIScreen() {
             <KorsetAvatar size={34} />
             <div
               style={{
-                background: '#151525',
-                border: '1px solid rgba(255,255,255,0.08)',
+                background: 'var(--glass-bg)',
+                border: '1px solid var(--glass-soft-border)',
                 padding: '13px 16px',
                 borderRadius: '4px 18px 18px 18px',
                 maxWidth: '85%',
                 fontSize: 15,
                 lineHeight: 1.65,
-                color: 'rgba(255,255,255,0.85)',
+                color: 'var(--text)',
               }}
             >
-              {t.ai.welcomeProduct} <strong style={{ color: '#fff' }}>{product.name}</strong>{' '}
+              {t.ai.welcomeProduct} <strong style={{ color: 'var(--text)' }}>{product.name}</strong>{' '}
               {t.ai.welcomeProductEnd}
             </div>
           </div>
@@ -327,24 +327,24 @@ export default function AIScreen() {
               style={
                 msg.role === 'user'
                   ? {
-                      background: '#7C3AED',
+                      background: 'var(--primary)',
                       padding: '12px 16px',
                       borderRadius: '18px 18px 4px 18px',
                       maxWidth: '78%',
                       fontSize: 15,
                       lineHeight: 1.65,
                       color: '#fff',
-                      boxShadow: '0 4px 16px rgba(124,58,237,0.35)',
+                      boxShadow: 'var(--shadow-soft)',
                     }
                   : {
-                      background: '#151525',
-                      border: '1px solid rgba(255,255,255,0.08)',
+                      background: 'var(--glass-bg)',
+                      border: '1px solid var(--glass-soft-border)',
                       padding: '13px 16px',
                       borderRadius: '4px 18px 18px 18px',
                       maxWidth: '85%',
                       fontSize: 15,
                       lineHeight: 1.65,
-                      color: 'rgba(255,255,255,0.85)',
+                      color: 'var(--text)',
                     }
               }
             >
@@ -359,8 +359,8 @@ export default function AIScreen() {
             <KorsetAvatar size={34} />
             <div
               style={{
-                background: '#151525',
-                border: '1px solid rgba(255,255,255,0.08)',
+                background: 'var(--glass-bg)',
+                border: '1px solid var(--glass-soft-border)',
                 padding: '14px 18px',
                 borderRadius: '4px 18px 18px 18px',
               }}
@@ -373,7 +373,7 @@ export default function AIScreen() {
                       width: 7,
                       height: 7,
                       borderRadius: '50%',
-                      background: 'rgba(167,139,250,0.7)',
+                      background: 'var(--primary-bright)',
                       animation: `bounce 1.2s ease-in-out ${i * 0.2}s infinite`,
                     }}
                   />
@@ -405,8 +405,8 @@ export default function AIScreen() {
       <div
         style={{
           padding: '10px 16px calc(108px + env(safe-area-inset-bottom, 0px))',
-          background: '#0C0C18',
-          borderTop: '1px solid rgba(255,255,255,0.06)',
+          background: 'var(--bg)',
+          borderTop: '1px solid var(--glass-border)',
           flexShrink: 0,
         }}
       >
@@ -433,9 +433,9 @@ export default function AIScreen() {
                   fontSize: 13,
                   fontWeight: 500,
                   cursor: 'pointer',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  background: 'rgba(255,255,255,0.05)',
-                  color: 'rgba(255,255,255,0.7)',
+                  border: '1px solid var(--glass-soft-border)',
+                  background: 'var(--glass-subtle)',
+                  color: 'var(--text-sub)',
                   fontFamily: 'var(--font-body)',
                   whiteSpace: 'nowrap',
                 }}
@@ -461,12 +461,12 @@ export default function AIScreen() {
             disabled={loading}
             style={{
               flex: 1,
-              background: 'rgba(255,255,255,0.06)',
-              border: '1px solid rgba(255,255,255,0.1)',
+              background: 'var(--input-bg)',
+              border: '1px solid var(--input-border)',
               borderRadius: 24,
               padding: '13px 18px',
               fontSize: 15,
-              color: '#fff',
+              color: 'var(--text)',
               fontFamily: 'var(--font-body)',
               outline: 'none',
             }}

@@ -532,10 +532,10 @@ export default function ScanScreen() {
           paddingBottom: 10,
           paddingLeft: 12,
           paddingRight: 12,
-          background: 'rgba(5,5,15,0.8)',
+          background: 'var(--glass-bg)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
-          borderBottom: '1px solid rgba(139,92,246,0.15)',
+          borderBottom: '1px solid var(--glass-soft-border)',
           zIndex: 20,
           gap: 8,
         }}
@@ -546,9 +546,9 @@ export default function ScanScreen() {
             width: 38,
             height: 38,
             borderRadius: 12,
-            background: 'rgba(255,255,255,0.06)',
-            border: '1px solid rgba(255,255,255,0.1)',
-            color: 'rgba(255,255,255,0.85)',
+            background: 'var(--glass-subtle)',
+            border: '1px solid var(--glass-border)',
+            color: 'var(--text)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -562,7 +562,7 @@ export default function ScanScreen() {
         </button>
 
         <div style={{ textAlign: 'center', flex: 1 }}>
-          <p style={{ fontSize: 16, fontWeight: 700, color: '#E8E8FF', lineHeight: 1.2 }}>
+          <p style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)', lineHeight: 1.2 }}>
             {t.scan.scanTitle || t.scan.title}
           </p>
           <p
@@ -712,7 +712,7 @@ export default function ScanScreen() {
             style={{
               position: 'absolute',
               inset: 0,
-              background: '#07070F',
+              background: 'var(--bg)',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
@@ -730,7 +730,7 @@ export default function ScanScreen() {
                 animation: 'spin 0.75s linear infinite',
               }}
             />
-            <p style={{ color: '#9898B8', fontSize: 14 }}>{t.scan.startCamera}</p>
+            <p style={{ color: 'var(--text-disabled)', fontSize: 14 }}>{t.scan.startCamera}</p>
           </div>
         )}
 
@@ -740,7 +740,7 @@ export default function ScanScreen() {
             style={{
               position: 'absolute',
               inset: 0,
-              background: 'rgba(0,0,0,0.85)',
+              background: 'var(--glass-bg)',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
@@ -758,7 +758,9 @@ export default function ScanScreen() {
                 animation: 'spin 0.75s linear infinite',
               }}
             />
-            <p style={{ color: '#C4B5FD', fontSize: 15, fontWeight: 500 }}>{t.scan.searching}</p>
+            <p style={{ color: 'var(--primary-bright)', fontSize: 15, fontWeight: 500 }}>
+              {t.scan.searching}
+            </p>
           </div>
         )}
 
@@ -768,7 +770,7 @@ export default function ScanScreen() {
             style={{
               position: 'absolute',
               inset: 0,
-              background: '#07070F',
+              background: 'var(--bg)',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
@@ -780,10 +782,10 @@ export default function ScanScreen() {
           >
             <div style={{ fontSize: 52 }}>📷</div>
             <div>
-              <p style={{ color: '#F87171', fontSize: 16, fontWeight: 700, marginBottom: 8 }}>
+              <p style={{ color: 'var(--red)', fontSize: 16, fontWeight: 700, marginBottom: 8 }}>
                 {t.scan.cameraAccessDeniedTitle}
               </p>
-              <p style={{ color: '#6060A0', fontSize: 13, lineHeight: 1.7 }}>
+              <p style={{ color: 'var(--text-sub)', fontSize: 13, lineHeight: 1.7 }}>
                 {t.scan.cameraPermission}
               </p>
             </div>
@@ -792,9 +794,9 @@ export default function ScanScreen() {
               style={{
                 padding: '13px 28px',
                 borderRadius: 14,
-                background: 'rgba(167,139,250,0.12)',
-                border: '1px solid rgba(167,139,250,0.3)',
-                color: '#C4B5FD',
+                background: 'var(--primary-dim)',
+                border: '1px solid var(--primary)',
+                color: 'var(--primary)',
                 fontSize: 14,
                 fontWeight: 600,
                 cursor: 'pointer',
@@ -813,8 +815,8 @@ export default function ScanScreen() {
               bottom: 12,
               left: '50%',
               transform: 'translateX(-50%)',
-              background: 'rgba(12,8,22,0.94)',
-              border: '1px solid rgba(248,113,113,0.35)',
+              background: 'var(--glass-bg)',
+              border: '1px solid var(--red)',
               borderRadius: 14,
               padding: '10px 20px',
               textAlign: 'center',
@@ -822,10 +824,10 @@ export default function ScanScreen() {
               animation: 'toastUp 0.25s ease',
             }}
           >
-            <p style={{ color: '#F87171', fontSize: 14, fontWeight: 700, marginBottom: 3 }}>
+            <p style={{ color: 'var(--red)', fontSize: 14, fontWeight: 700, marginBottom: 3 }}>
               {!isOnline ? t.scan.offlineNotFound : t.scan.notFoundToast}
             </p>
-            <p style={{ color: 'rgba(180,100,100,0.7)', fontSize: 11, fontFamily: 'monospace' }}>
+            <p style={{ color: 'var(--text-disabled)', fontSize: 11, fontFamily: 'monospace' }}>
               {notFoundEan}
             </p>
           </div>
@@ -839,8 +841,8 @@ export default function ScanScreen() {
               bottom: 12,
               left: 16,
               right: 16,
-              background: 'rgba(12,8,22,0.94)',
-              border: '1px solid rgba(248,113,113,0.3)',
+              background: 'var(--glass-bg)',
+              border: '1px solid var(--red)',
               borderRadius: 14,
               padding: '12px 16px',
               textAlign: 'center',
@@ -848,7 +850,7 @@ export default function ScanScreen() {
               animation: 'toastUp 0.2s ease',
             }}
           >
-            <p style={{ color: '#F87171', fontSize: 13, fontWeight: 600 }}>
+            <p style={{ color: 'var(--red)', fontSize: 13, fontWeight: 600 }}>
               {galleryError === 'noBarcode' ? t.scan.galleryNoBarcode : t.scan.galleryError}
             </p>
           </div>
@@ -864,12 +866,12 @@ export default function ScanScreen() {
               transform: 'translateX(-50%)',
               zIndex: 40,
               whiteSpace: 'nowrap',
-              background: 'rgba(12,8,22,0.92)',
-              border: '1px solid rgba(248,113,113,0.35)',
+              background: 'var(--glass-bg)',
+              border: '1px solid var(--red)',
               borderRadius: 12,
               padding: '8px 16px',
               fontSize: 12,
-              color: '#FCA5A5',
+              color: 'var(--red)',
               fontWeight: 500,
               backdropFilter: 'blur(10px)',
             }}
@@ -887,8 +889,8 @@ export default function ScanScreen() {
               left: 16,
               right: 16,
               zIndex: 31,
-              background: 'rgba(124,58,237,0.18)',
-              border: '1.5px solid rgba(139,92,246,0.5)',
+              background: 'var(--primary-dim)',
+              border: '1.5px solid var(--primary)',
               borderRadius: 14,
               padding: '8px 14px',
               backdropFilter: 'blur(10px)',
@@ -900,11 +902,13 @@ export default function ScanScreen() {
           >
             <span
               className="material-symbols-outlined"
-              style={{ fontSize: 16, color: '#A78BFA', flexShrink: 0 }}
+              style={{ fontSize: 16, color: 'var(--primary)', flexShrink: 0 }}
             >
               compare_arrows
             </span>
-            <span style={{ fontSize: 12, fontWeight: 700, color: '#C4B5FD', lineHeight: 1.4 }}>
+            <span
+              style={{ fontSize: 12, fontWeight: 700, color: 'var(--primary)', lineHeight: 1.4 }}
+            >
               {pinnedProduct
                 ? `${t.compare?.modeBannerPinned || 'Первый товар выбран'}: ${pinnedProduct.name}`
                 : t.compare?.modeBanner || 'Режим сравнения: выберите товар'}
@@ -917,8 +921,8 @@ export default function ScanScreen() {
       <div
         style={{
           flex: 4,
-          background: 'rgba(7,7,15,0.97)',
-          borderTop: '1px solid rgba(139,92,246,0.15)',
+          background: 'var(--bg)',
+          borderTop: '1px solid var(--glass-soft-border)',
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
@@ -1002,9 +1006,9 @@ export default function ScanScreen() {
                 borderRadius: 14,
                 cursor: 'pointer',
                 transition: 'all 0.2s ease',
-                background: 'rgba(255,255,255,0.04)',
-                border: '1.5px solid rgba(255,255,255,0.08)',
-                color: 'rgba(180,180,220,0.8)',
+                background: 'var(--glass-subtle)',
+                border: '1.5px solid var(--glass-soft-border)',
+                color: 'var(--text-disabled)',
               }}
             >
               <IconSwitchCamera size={20} />
@@ -1027,10 +1031,10 @@ export default function ScanScreen() {
               borderRadius: 14,
               cursor: 'pointer',
               transition: 'all 0.2s ease',
-              background: compareModeActive ? 'rgba(124,58,237,0.2)' : 'rgba(255,255,255,0.04)',
-              border: `1.5px solid ${compareModeActive ? 'rgba(139,92,246,0.5)' : 'rgba(255,255,255,0.08)'}`,
-              color: compareModeActive ? '#C4B5FD' : 'rgba(180,180,220,0.8)',
-              boxShadow: compareModeActive ? '0 0 14px rgba(124,58,237,0.2)' : 'none',
+              background: compareModeActive ? 'var(--primary-dim)' : 'var(--glass-subtle)',
+              border: `1.5px solid ${compareModeActive ? 'var(--primary)' : 'var(--glass-soft-border)'}`,
+              color: compareModeActive ? 'var(--primary)' : 'var(--text-disabled)',
+              boxShadow: compareModeActive ? 'var(--shadow-soft)' : 'none',
             }}
           >
             <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
@@ -1053,8 +1057,8 @@ export default function ScanScreen() {
               display: 'flex',
               alignItems: 'center',
               gap: 8,
-              background: 'rgba(255,255,255,0.05)',
-              border: `1px solid ${manualError ? 'rgba(248,113,113,0.4)' : 'rgba(255,255,255,0.09)'}`,
+              background: 'var(--input-bg)',
+              border: `1px solid ${manualError ? 'var(--red)' : 'var(--input-border)'}`,
               borderRadius: 12,
               padding: '0 12px',
               height: 42,
@@ -1062,7 +1066,7 @@ export default function ScanScreen() {
           >
             <span
               className="material-symbols-outlined"
-              style={{ fontSize: 17, color: 'rgba(150,150,200,0.5)', flexShrink: 0 }}
+              style={{ fontSize: 17, color: 'var(--text-faint)', flexShrink: 0 }}
             >
               search
             </span>
@@ -1081,7 +1085,7 @@ export default function ScanScreen() {
                 background: 'none',
                 border: 'none',
                 outline: 'none',
-                color: '#E0E0FF',
+                color: 'var(--text)',
                 fontSize: 14,
                 fontFamily: 'monospace',
               }}
@@ -1093,9 +1097,9 @@ export default function ScanScreen() {
               width: 42,
               height: 42,
               borderRadius: 12,
-              background: 'rgba(167,139,250,0.15)',
-              border: '1.5px solid rgba(167,139,250,0.35)',
-              color: '#C4B5FD',
+              background: 'var(--primary-dim)',
+              border: '1.5px solid var(--primary)',
+              color: 'var(--primary)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -1120,7 +1124,7 @@ export default function ScanScreen() {
             <p
               style={{
                 fontSize: 11,
-                color: 'rgba(120,120,180,0.7)',
+                color: 'var(--text-sub)',
                 fontWeight: 700,
                 letterSpacing: '0.06em',
                 textTransform: 'uppercase',
@@ -1163,8 +1167,8 @@ export default function ScanScreen() {
                       height: 56,
                       borderRadius: 12,
                       overflow: 'hidden',
-                      background: 'rgba(255,255,255,0.06)',
-                      border: '1px solid rgba(255,255,255,0.08)',
+                      background: 'var(--glass-subtle)',
+                      border: '1px solid var(--glass-soft-border)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -1179,7 +1183,7 @@ export default function ScanScreen() {
                     ) : (
                       <span
                         className="material-symbols-outlined"
-                        style={{ fontSize: 22, color: '#3B3B6B' }}
+                        style={{ fontSize: 22, color: 'var(--text-disabled)' }}
                       >
                         barcode
                       </span>
@@ -1188,7 +1192,7 @@ export default function ScanScreen() {
                   <p
                     style={{
                       fontSize: 10,
-                      color: 'rgba(170,170,210,0.8)',
+                      color: 'var(--text-sub)',
                       textAlign: 'center',
                       width: '100%',
                       overflow: 'hidden',

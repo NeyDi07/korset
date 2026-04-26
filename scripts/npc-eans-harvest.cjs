@@ -150,8 +150,21 @@ async function main() {
     const bc = classifyBarcode(p.ean)
     return !bc.valid
   }).filter(p => p.brand && p.brand.length > 1 && p.brand !== '?')
+    .filter(p => {
+      if (!p.alternate_eans || p.alternate_eans.length === 0) return true
+      const hasRealGtin = p.alternate_eans.some(e => { const c = classifyBarcode(e); return c.valid && c.type === 'gtin' })
+      return !hasRealGtin
+    })
 
-  console.log(`Need EAN enrichment (with brand): ${needsEan.length}`)
+  const withExistingGtin = allProducts.filter(p => {
+    if (!p.ean) return false
+    if (!p.ean.startsWith('arbuz_') && !p.ean.startsWith('kaspi_') && !p.ean.startsWith('korzinavdom_')) return false
+    const bc = classifyBarcode(p.ean)
+    if (bc.valid) return false
+    return p.alternate_eans && p.alternate_eans.some(e => { const c = classifyBarcode(e); return c.valid && c.type === 'gtin' })
+  }).filter(p => p.brand && p.brand.length > 1 && p.brand !== '?')
+
+  console.log(`Need EAN enrichment (with brand): ${needsEan.length} (+ ${withExistingGtin.length} already have GTIN in alt, skipped)`)
 
   const sliced = opts.skip > 0 ? needsEan.slice(opts.skip) : needsEan
   const toProcess = opts.limit > 0 ? sliced.slice(0, opts.limit) : sliced
