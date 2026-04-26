@@ -41,6 +41,7 @@ export default function ProfileStatsTabs({
   onViewAllFavorites,
   onViewAllHistory,
   t,
+  isGuest,
 }) {
   const toggleTab = (tab) => onTabChange(activeTab === tab ? null : tab)
 
@@ -141,8 +142,8 @@ export default function ProfileStatsTabs({
       return (
         <TabEmptyState
           tone="favorites"
-          title={t.profile.favoritesEmpty}
-          hint={t.profile.favoritesEmptyHint}
+          title={isGuest ? t.profile.favoritesEmptyGuest : t.profile.favoritesEmpty}
+          hint={isGuest ? t.profile.favoritesEmptyGuestHint : t.profile.favoritesEmptyHint}
         />
       )
     }

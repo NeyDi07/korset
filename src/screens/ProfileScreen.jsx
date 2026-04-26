@@ -911,6 +911,7 @@ export default function ProfileScreen() {
                 navigate(buildHistoryPath(currentStore?.slug || null, 'history'))
               }
               t={t}
+              isGuest={!user}
               preferencesContent={
                 <>
                   {/* Diet */}
