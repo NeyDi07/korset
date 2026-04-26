@@ -372,7 +372,13 @@ export const dictionaries = {
       compareMode: 'Сравнить',
     },
     retail: {
-      nav: { dashboard: 'Дашборд', products: 'Товары', import: 'Импорт', settings: 'Настройки' },
+      nav: {
+        dashboard: 'Дашборд',
+        products: 'Товары',
+        import: 'Импорт',
+        settings: 'Настройки',
+        eanRecovery: 'Штрихкоды',
+      },
       authRequired: 'Вход в Retail Cabinet',
       authRequiredSub: 'Авторизуйтесь, чтобы управлять магазином',
       loginBtn: 'Войти',
@@ -959,6 +965,7 @@ export const dictionaries = {
         products: 'Тауарлар',
         import: 'Импорт',
         settings: 'Параметрлер',
+        eanRecovery: 'Штрихкодтар',
       },
       authRequired: 'Retail Cabinet-ке кіру',
       authRequiredSub: 'Дүкенді басқару үшін аккаунтқа кіріңіз',

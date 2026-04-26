@@ -283,33 +283,114 @@ export function DietIcon({ name, size = 24 }) {
 
 import { useUserData } from '../contexts/UserDataContext.jsx'
 
+/**
+ * ThemeModeToggle — segmented control matching the language toggle style exactly.
+ * Instead of sliding thumb, uses two adjacent buttons like RU/KZ toggle.
+ * Sun icon = light mode active, Moon icon = dark mode active.
+ */
 function ThemeModeToggle({ theme, onToggle, label }) {
   const isLight = theme === 'light'
 
   return (
-    <button
-      type="button"
-      className={`theme-toggle ${isLight ? 'is-light' : 'is-dark'}`}
-      aria-pressed={isLight}
-      onClick={(e) => {
-        e.stopPropagation()
-        onToggle()
-      }}
+    <div
+      role="group"
       aria-label={label}
-      title={label}
+      style={{
+        display: 'flex',
+        background: 'var(--glass-subtle)',
+        borderRadius: 10,
+        padding: 3,
+        gap: 2,
+      }}
     >
-      <span className="theme-toggle__thumb" />
-      <span className="theme-toggle__icon sun" aria-hidden="true">
-        <span className="material-symbols-outlined" style={{ fontSize: 21 }}>
-          light_mode
-        </span>
-      </span>
-      <span className="theme-toggle__icon moon" aria-hidden="true">
-        <span className="material-symbols-outlined" style={{ fontSize: 21 }}>
-          dark_mode
-        </span>
-      </span>
-    </button>
+      {/* Sun — Light mode */}
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation()
+          if (!isLight) onToggle()
+        }}
+        aria-pressed={isLight}
+        style={{
+          background: isLight ? 'var(--primary)' : 'transparent',
+          border: 'none',
+          color: isLight ? '#fff' : 'var(--text-sub)',
+          padding: '5px 12px',
+          borderRadius: 8,
+          fontSize: 12,
+          fontWeight: 600,
+          fontFamily: 'var(--font-display)',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transition: 'background 0.2s, color 0.2s',
+        }}
+        aria-label="Светлая тема"
+        title="Светлая тема"
+      >
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <circle cx="12" cy="12" r="5" />
+          <line x1="12" y1="1" x2="12" y2="3" />
+          <line x1="12" y1="21" x2="12" y2="23" />
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+          <line x1="1" y1="12" x2="3" y2="12" />
+          <line x1="21" y1="12" x2="23" y2="12" />
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+        </svg>
+      </button>
+
+      {/* Moon — Dark mode */}
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation()
+          if (isLight) onToggle()
+        }}
+        aria-pressed={!isLight}
+        style={{
+          background: !isLight ? 'var(--primary)' : 'transparent',
+          border: 'none',
+          color: !isLight ? '#fff' : 'var(--text-sub)',
+          padding: '5px 12px',
+          borderRadius: 8,
+          fontSize: 12,
+          fontWeight: 600,
+          fontFamily: 'var(--font-display)',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transition: 'background 0.2s, color 0.2s',
+        }}
+        aria-label="Тёмная тема"
+        title="Тёмная тема"
+      >
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
+      </button>
+    </div>
   )
 }
 
