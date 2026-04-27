@@ -1,14 +1,36 @@
 import { test, expect } from '@playwright/test'
 
-test('landing page loads', async ({ page }) => {
+test('landing page is consumer-first and keeps retail separate', async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' })
-  await expect(page).toHaveTitle(/Körset/)
-  await expect(page.getByRole('heading', { name: /Körset/i })).toBeVisible()
+
+  await expect(page).toHaveTitle(/Körset|KГ¶rset/)
+  await expect(
+    page.getByRole('heading', { name: /Проверьте, подходит ли товар именно вам/i })
+  ).toBeVisible()
+  await expect(page.getByTestId('landing-consumer')).toBeVisible()
+  await expect(page.getByTestId('landing-retail')).toBeVisible()
+
+  await expect(
+    page.getByTestId('landing-consumer').getByRole('link', { name: /Выбрать магазин/i })
+  ).toHaveAttribute(
+    'href',
+    '/stores'
+  )
+  await expect(
+    page.getByTestId('landing-pricing').getByRole('link', { name: /Подключить магазин/i })
+  ).toHaveAttribute(
+    'href',
+    '/retail'
+  )
 })
 
-test('retail cabinet button is visible', async ({ page }) => {
+test('landing exposes theme toggle and early access after retail entry', async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' })
-  await expect(page.locator('text=Кабинет')).toBeVisible()
+
+  await expect(page.getByRole('button', { name: /Переключить тему/i })).toBeVisible()
+  await expect(page.getByTestId('landing-pricing')).toContainText('15 000')
+  await expect(page.getByTestId('landing-pricing')).toContainText('Premium')
+  await expect(page.getByTestId('landing-pricing')).toContainText('Enterprise')
 })
 
 test('/retail redirects to /auth when not logged in', async ({ page }) => {

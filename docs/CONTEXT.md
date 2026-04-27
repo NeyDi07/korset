@@ -40,6 +40,7 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - Fit-Check (Red/Orange — детерминированный, Yellow — AI)
 - Push-уведомления, История + Избранное, Smart Merge
 - Retail Cabinet: Dashboard (тенге метрики), Products (inline edit, barcode search), Import (CSV/XLS/XLSX + unknown EAN staging), Settings (лого, контакты, QR), EAN Recovery (serverless API)
+- CompareScreen: двухэтапный scan flow, multi-factor scoring, dynamic rows, AI commentary
 - Офлайн: App Shell + IndexedDB каталог + очередь сканов + OfflineBanner
 - RAG через Supabase pgvector
 - RLS на 13 таблицах, JWT auth на API
@@ -130,7 +131,7 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 
 | # | Задача | Статус | Комментарий |
 |---|--------|--------|-------------|
-| 4 | **Data Moat: data_quality_score → каскад** | 🔴 НЕ НАЧАТО | Score существует в БД (миграция 012), но resolver.js НЕ использует его для приоритизации источников. Каскад фиксированный: IndexedDB → store_products → global → demo → cache → OFF → AI. Нужно: auto-refresh при низком качестве, TTL-refresh цикл. |
+| 4 | **Data Moat: data_quality_score → каскад** | � ЧАСТИЧНО | `resolver.js` реализует каскад: IndexedDB → store_products → global_products → external_product_cache (TTL 30д OFF) → demo → AI enrichment. `data_quality_score` и `source_confidence` пробрасываются через `normalizers.js` → `product.sourceMeta`. НЕТ: отображения confidence-бейджа в UI, сплит-теста <80 предупреждение, TTL 7д для AI. |
 | 5 | **USDA enrichment** — проверить proxy | 🟡 ПРОВЕРИТЬ | Скрипт использует Vercel proxy `/api/usda`, не прямые вызовы. Статус proxy неясен. ~457 продуктов без состава. |
 | 6 | **Zero-Friction onboarding** | 🗺️ PLANNED | Убрать блокирующий OnboardingScreen из first-run, перенести обучение на HomeScreen + физматериалы. Подтверждено владельцем, отложено на отдельный этап. |
 
@@ -151,6 +152,8 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - ✅ **EAN Coverage 77.2% → 99.0%** — resolver v2/v3, NPC harvest, OFF search, weight cleanup, alternate_eans
 - ✅ **Retail Dashboard: метрики в тенге** — Упущённая выручка ₸, Покупатели, Покрытие каталога %, Топ-5, период 7/30 дней
 - ✅ **Retail Import** — CSV/XLS/XLSX парсинг, preview, bulk RPC, unknown EAN staging, CSV экспорт отчёта, шаблоны
+- ✅ **CompareScreen** — двухэтапный scan flow (pin → navigate), multi-factor scoring (safety 35 + quality 25 + E-additive 20 + halal 10), dynamic rows по категории, AI commentary, i18n RU+KZ
+- ✅ **Data Moat каскад** — `resolver.js`: IndexedDB → store_products → global_products → external_product_cache (TTL 30д) → demo → AI enrichment. `data_quality_score` + `source_confidence` в `product.sourceMeta`
 - ✅ **Retail Products** — infinite query, серверный поиск с debounce, inline edit (₸), barcode scanner, delete с confirm
 - ✅ **Retail Settings** — лого upload, описание, контакты (IG/WA/2GIS/сайт/телефон), QR-код, push toggles, danger zone
 - ✅ **EAN Recovery** — serverless API (JWT + service_role), DELETE/update-EAN/update-name, barcode scanner, inline name edit
@@ -159,6 +162,7 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - ✅ **Каталог: Virtuoso + двухэтапная загрузка** — light поля, scroll position, viewMode
 - ✅ **Каталог: i18n + nameKz полировка** — весь хардкод убран, compare.cancel/selectSecond RU+KZ, nameKz в grid/list/comparePin, гибридный поиск (клиент+сервер), fit-бейджи, вес/объём вместо EAN, plural склонения
 - ✅ **Quantity parser** — `src/utils/parseQuantity.js`: извлечение веса/объёма/шт из названия продукта. Fallback: DB→name→nameKz→specs.weight. 25/25 тестов. i18n: шт→дана, за кг→кг үшін. Интегрирован в: mapRowToProduct, normalizers, storeCatalog, CatalogScreen search, offlineDB. UI: CatalogScreen (grid+list), UnifiedProductScreen, ProductScreen, CompareScreen, ProductMiniCard, ExternalProductScreen — все используют getDisplayQuantity().
+- ✅ **Quantity DB Backfill** — `scripts/backfill-quantity.mjs`: 718 продуктов обновлено (quantity из name), покрытие 96.4% (было ~85%). 0 ошибок. Dry run → --live.
 - ✅ **Banner overhaul (2026-04-27)** — 7 фото-баннеров в WebP (160KB total, 99% compression), `scripts/optimize-banners.mjs` pipeline, PWA precache fix (`globPatterns` → `injectManifest` config), SelectedDot clipping fix, clean 2×4 grid
 - ✅ **R2 CDN миграция** — 99.96% картинок на cdn.korset.app
 - ✅ **Состав: перевод через OpenAI** — 100% русский состав

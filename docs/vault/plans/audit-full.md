@@ -8,27 +8,27 @@
 
 ## Roadmap: заявлено vs реальность
 
-| Фича                         | Статус                             |
-| ---------------------------- | ---------------------------------- |
-| Лендинг Glassmorphism        | Частично — работает, но техдолг    |
-| Supabase Auth (Google OAuth) | Да                                 |
-| Онбординг 2-шаговый          | Да, но SVG + хардкод RU            |
-| ProfileAvatar                | Да                                 |
-| Сканер штрихкодов            | Да, был stale closure (исправлен)  |
-| AIScreen (чат с ИИ)          | Да + RAG через pgvector            |
-| Push-уведомления             | Да, теперь с auth                  |
-| Rapid-Scan Admin             | НЕ РАБОТАЕТ — экран не существует  |
-| История + Избранное          | Да                                 |
-| Smart Merge                  | Да, UI кривой                      |
-| Retail Cabinet               | Да, базово                         |
-| Fit-Check Red (аллергены)    | Частично — нет хард-блока фруктозы |
-| Fit-Check Orange (следы)     | Да                                 |
-| Fit-Check Yellow (Халал/AI)  | НЕТ LLM для Е-добавок              |
-| Сравнение (Split-Screen)     | Частично — UI есть, логика сырая   |
-| Offline Sync                 | ДА — реализовано (6 слоёв)         |
-| /join/:code QR-роутинг       | НЕТ                                |
-| Apple ID авторизация         | НЕТ                                |
-| Импорт прайс-листа           | НЕТ — RetailImportScreen пустой   |
+| Фича | Статус |
+| ---- | ------ |
+| Лендинг Glassmorphism | Частично |
+| Supabase Auth (Google OAuth) | Да |
+| Онбординг 2-шаговый | Да, SVG + хардкод RU |
+| ProfileAvatar | Да |
+| Сканер штрихкодов | Да |
+| AIScreen (чат с ИИ) | Да + RAG |
+| Push-уведомления | Да, с auth |
+| Rapid-Scan Admin | НЕТ |
+| История + Избранное | Да |
+| Smart Merge | Да, UI кривой |
+| Retail Cabinet | ✅ Полностью |
+| Fit-Check Red (аллергены) | ✅ Да |
+| Fit-Check Orange (следы) | ✅ Да |
+| Fit-Check Yellow (Халал/AI) | ✅ Да |
+| Сравнение (Split-Screen) | ✅ Полностью |
+| Offline Sync | ✅ Да, 6 слоёв |
+| /join/:code QR-роутинг | НЕТ |
+| Apple ID авторизация | НЕТ |
+| Импорт прайс-листа | ✅ Полностью |
 
 ---
 
@@ -111,29 +111,28 @@
 
 ## АРХИТЕКТУРНЫЙ АУДИТ — 6 слабых мест (оценки /100)
 
-### 1. Data Moat (25/100) ← СЛЕДУЮЩИЙ ФОКУС
+### 1. Data Moat (55/100) ← ЧАСТИЧНО РЕАЛИЗОВАНО
 
 Подробно → [[data-moat-strategy]]
 
-База штрихкодов ЕАЭС практически пуста. Open Food Facts покрывает ~30% рынка КЗ. Ни одного казахстанского источника.
+**Реализовано:**
 
-Конкретные баги:
-- `data_quality_score` объявлен в схеме, но НИГДЕ не используется — нет логики расчёта, нет фильтрации
-- `external_product_cache` БЕЗ TTL — закэшированные данные из OFF никогда не инвалидируются
-- AI-enriched данные НЕ маркируются как ненадёжные — покупатель видит Fit-Check без указания достоверности
-- Нет структурированного каскада источников: магазин → подтверждённая база КЗ → OFF → AI
-- Нет механики обратной связи от магазинов для обогащения базы
-- OFF — волонтёрская база, хрупкий фундамент
-- AI-зависимость убивает Data Moat: если AI генерирует данные для любого штрихкода, зачем строить базу?
+- `data_quality_score` есть в схеме (миграция 012), передаётся в `normalizers.js` → `qualityScore`/`sourceConfidence` в `product.sourceMeta`
+- `resolver.js` реализует каскад: **IndexedDB → store_products → global_products (по EAN) → external_product_cache (TTL 30д OFF) → demo → AI enrichment**
+- `external_product_cache` имеет `ttl_expires_at` (30 дней для OFF) — `getFromCache()` фильтрует `.or('ttl_expires_at.is.null,ttl_expires_at.gt.now')`
+- AI-enriched данные маркируются: `sourceMeta: { aiEnriched: true }` в `resolver.js`, `aiEnriched: row.source_primary === 'ai_enriched'` в `normalizers.js`
+
+**Осталось:**
+
+- НЕТ отображения `sourceConfidence` / `qualityScore` в UI (`ProductScreen.jsx` не показывает бейдж достоверности)
+- НЕТ сплит-теста: данные >=80 — полный Fit-Check, <80 — с предупреждением
+- НЕТ каскада по источнику в UI (покупатель не видит "Это AI-предположение")
+- НЕТ TTL 7 дней для AI (сейчас только 30д для OFF)
+- База штрихкодов ЕАЭС практически пуста — ~99% real EAN через NPC+OFF+парсинг
 
 Что нужно:
-- Реализовать data_quality_score логику (магазин=100, подтверждённый КЗ=80, OFF=50, AI=20)
-- Добавить TTL в external_product_cache (30д OFF, 7д AI)
-- Добавить source_type и confidence поля в global_products
-- Построить каскад resolver с приоритетом источников
-- Маркировать AI-данные в UI как "предположительно" / "не проверено"
-- Исследовать казахстанские источники: ЕАЭС реестры, API магазинов (Магнум, Меломан)
-- Сплит-тест: данные с качеством >=80 показывают полный Fit-Check, <80 — с предупреждением
+- Добавить confidence-бейдж в `ProductScreen.jsx` (зелёный/жёлтый/красный по `sourceConfidence`)
+- Сплит-тест: `qualityScore >= 80` → полный Fit-Check, `< 80` → предупреждение "Данные предварительные"
 
 ### 2. Офлайн-режим (10/100 → ИСПРАВЛЕНО, 85/100)
 
@@ -170,17 +169,17 @@
 - Нет GIN на JSONB колонках — медленный поиск по allergens, diets, nutrients
 - missing_products INSERT с WITH CHECK (true) — RLS дыра
 
-### Общая оценка проекта: 35/100 (до) → ~50/100 (после офлайн)
+### Общая оценка проекта: ~65/100 (после офлайн + импорта + compare + data_quality)
 
 ---
 
-## Приоритеты на следующие сессии
+## Приоритеты на следующие сессии (обновлено 2026-04-27)
 
-1. **Data Moat** — качество данных, каскад источников, TTL, data_quality_score
-2. **Импорт прайс-листа** — P0 блокер первой продажи (RetailImportScreen пустой)
-3. **БД-фиксы** — UNIQUE, триггеры, GIN, RLS column whitelist, ON DELETE CASCADE
-4. **Метрики в тенге** — дашборд не продаёт подписку без денег
-5. **Масштабирование** — партицирование scan_events, денормализация RLS
+1. **ProductScreen.jsx рефакторинг** — монолит 1400+ строк, 8 inline-компонентов, не использует готовые компоненты из `src/components/`. Confidence-бейдж (`sourceConfidence`) не отображается.
+2. **Data Moat UI** — `sourceConfidence`/`qualityScore` уже в данных (normalizers.js), нужно добавить визуальный бейдж + сплит-тест <80 предупреждение.
+3. **БД-фиксы** — партицирование scan_events (миграции 013-015 ✅ применены, но партицирование не сделано), rate limiting in-memory → KV-store.
+4. **i18n ProductScreen** — хардкод "Альтернативы", "Спросить AI" без `useI18n` (строки 1333, 1359).
+5. **nameKz в ProductScreen** — `CatalogScreen` уже поддерживает `nameKz`, `ProductScreen` — НЕТ (только строка 967 для auth message).
 
 ---
 

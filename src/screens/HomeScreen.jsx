@@ -3,6 +3,7 @@ import { useI18n } from '../utils/i18n.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import { buildAuthNavigateState } from '../utils/authFlow.js'
+import LandingScreen from './LandingScreen.jsx'
 
 export default function HomeScreen() {
   const navigate = useNavigate()
@@ -557,6 +558,10 @@ export default function HomeScreen() {
         </div>
       </div>
     )
+  }
+
+  if (!isStoreApp) {
+    return <LandingScreen />
   }
 
   return (

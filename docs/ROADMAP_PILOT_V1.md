@@ -29,13 +29,14 @@
 *Большая часть данных уже собирается, нужно довести UX до премиум-стандарта.*
 - [x] Статистика сканирований (7/30 дней).
 - [x] Дашборд: "Спасенные продажи" (Saved Sales) и "Радар дефицита" (Упущенная выгода).
-- [ ] **Финансовая Метрика Dashboard:** Перевод метрики "Спасенные продажи" из штук в тенге. ИИ должен считать: "Предложен аналог за X тенге -> магазин не потерял прибыль". Без этого дашборд не продаст подписку.
-- [ ] **Доработка Dashboard:** Полировка визуальных составляющих (Metrics Widgets), добавление глубокой аналитики предпочтений (Тепловая карта аллергий посетителей), GMROI.
+- [x] **Финансовая Метрика Dashboard:** Перевод метрики "Спасенные продажи" из штук в тенге. `getLostRevenue` → `~X ₸` на карточке. ✅ Реализовано в `RetailDashboardScreen.jsx`.
+- [ ] **Доработка Dashboard:** Полировка визуальных составляющих (Metrics Widgets), добавление глубокой аналитики предпочтений (Тепловая карта аллергий посетителей), GMROI. *Отложено за рамки V1.*
 
 ### 📦 Фаза 2: Retail Products & Catalog Admin [OWNER: Windsurf]
 - [x] Аккордеон-редактор: Управление ценой, наличием, полкой.
 - [x] Встроенный HTML5-сканер штрихкодов в Sticky Header.
-- [ ] **Доработка UI:** Исправление багов верстки аккордеона, приведение иконок к `Material Symbols`, добавление кнопки ручного создания товара и импорта базы (Excel/CSV парсер или UI-интерфейс).
+- [x] **Импорт прайс-листа:** ✅ Полностью реализован. `RetailImportScreen.jsx` (445 строк): drag&drop CSV/XLS/XLSX, preview, mapping, bulk RPC `apply_retail_import`, unknown EAN staging, template download, report export. `retailImport.js` — парсер и apply-логика. *Бывший "P0 блокер" — решён.*
+- [ ] **Доработка UI:** Исправление багов верстки аккордеона, приведение иконок к `Material Symbols`.
 
 ### 🛠 Фаза 3: Retail Settings & B2B Premium Cabinet [OWNER: Antigravity] ✅
 *Перевод кабинета управления магазином в рабочий Production-ready вид.*
@@ -47,28 +48,28 @@
 
 ### 📱 Фаза 4: Consumer App: "Fit-Check" Engine & AI Intelligence [OWNER: Antigravity]
 *Ядро безопасности и ценности для пользователя. Строгое разделение логики.*
-- [ ] **Красный уровень (Аллергены & Диабет):** Детерминированный код (IF/ELSE на основе ТР ТС 022/2011). Жесткий блок сахара, фруктозы, глютена. Никаких обращений к галлюцинирующим нейросетям.
-- [ ] **Оранжевый уровень (Следы):** Детерминированный скрипт для обработки "Произведено на линии, где используется...". Пользователь решает сам (Warning).
-- [ ] **Желтый уровень (Халал / Lifestyle):** Умный LLM-агент. Проверка сомнительных Е-добавок (кармин, желатин). Обход ИИ, если в БД уже загружен официальный сертификат Халал. **[⚠️ ТРЕБУЕТ ГЛУБОКОГО ОБСУЖДЕНИЯ ЛОГИКИ]**
-- [ ] **Контекстный Чат с ИИ:** Полноценный, умный диалоговый интерфейс по отсканированному продукту (расшифровка состава "человеческим языком"). **[⚠️ ТРЕБУЕТ ОБСУЖДЕНИЯ (Промпты и защита)]**
+- [x] **Красный уровень (Аллергены & Диабет):** ✅ Детерминированный код в `fitCheck.js`. Жесткий блок сахара, фруктозы, глютена. `checkProductFit()` возвращает severity: red/orange/yellow/ok.
+- [x] **Оранжевый уровень (Следы):** ✅ Реализован — "Произведено на оборудовании..." обрабатывается как warning.
+- [x] **Желтый уровень (Халал / Lifestyle):** ✅ `halal_status` в БД + AI fallback через `resolver.js`. Если `halal_status` известен — используется напрямую. Если нет — AI-обогащение с маркировкой `aiEnriched`.
+- [x] **Контекстный Чат с ИИ:** ✅ `AIScreen.jsx` + `api/ai.js` — диалоговый интерфейс с RAG через `vault_embeddings`. Режимы: general, product, compare.
 
-### 📡 Фаза 5-OFFLINE: Офлайн-режим — Critical Infrastructure [OWNER: Antigravity]
-*Без офлайн продукт мёртв в подвале магазина — основном юзкейсе.*
-- [ ] **App Shell Precache:** vite-plugin-pwa → sw.js с Workbox precache + fetch handler
-- [ ] **IndexedDB каталог:** offlineDB.js — saveCatalog/getCatalog при входе в магазин (~9MB, без картинок)
-- [ ] **Офлайн-резолвер:** resolver.js — IndexedDB-лукуп, ранний выход при offline
-- [ ] **Очередь scan_events:** pending_scans в IndexedDB, 100 FIFO, Background Sync + fallback
-- [ ] **OfflineContext + OfflineBanner:** isOnline, cacheAge, pendingCount — жёлтая полоса, метка "из кэша"
-- [ ] **SWR при возврате сети:** flush pending scans, обновление кэша каталога
-- [ ] **Кэш свежести:** 7 дней TTL, потом пометка "устарел" (не стирается)
+### 📡 Фаза 5-OFFLINE: Офлайн-режим — ✅ ЗАВЕРШЕНО [OWNER: Antigravity]
+*Без офлайн продукт мёртв в подвале магазина — основном юзкейсе. 6 слоёв реализованы.*
+- [x] **App Shell Precache:** ✅ `vite-plugin-pwa` + `sw.js` (Workbox precache + fetch handler + push).
+- [x] **IndexedDB каталог:** ✅ `offlineDB.js` — `saveCatalog/getCatalog` при входе в магазин (~9MB, без картинок).
+- [x] **Офлайн-резолвер:** ✅ `resolver.js` — IndexedDB lookup, ранний выход при offline (`isOffline` → return cached).
+- [x] **Очередь scan_events:** ✅ `pending_scans` в IndexedDB, 100 FIFO, Background Sync (`sync.register('flush-pending-scans')`), fallback в `App.jsx`.
+- [x] **OfflineContext + OfflineBanner:** ✅ `isOnline`, `cacheAge`, `cacheStale`, `pendingCount` — жёлтая/оранжевая полоса, i18n RU+KZ.
+- [x] **SWR при возврате сети:** ✅ `flushPendingScans()` при `FLUSH_PENDING_SCANS` message от SW.
+- [x] **Кэш свежести:** ✅ 7 дней TTL, метка "устарел" (не стирается). `cacheAge` в OfflineContext.
 
 ### ⚖️ Фаза 5: Consumer App: Core Features & Flow [OWNER: Windsurf]
-- [ ] **Split-Screen (Сравнение):** Удержание первого сканирования в памяти, добавление второго -> ИИ вывод победителя по безопасности для пользователя. **[⚠️ ТРЕБУЕТ ОБСУЖДЕНИЯ (UI-поток)]**
-- [ ] **Smart Upsell (Кросс-сейл):** ИИ-алгоритм на кассе/полке, который при сканировании базы (например ТВ) предлагает докупить кабель/гарантию. (Вытягивает средний чек магазина). **[⚠️ ТРЕБУЕТ ОБСУЖДЕНИЯ (Бизнес-логика)]**
-- [ ] **Микролокация:** Вывод номера стеллажа и полки в карточке товара (`shelf_zone`).
-- [ ] **Real Prices (Интеграция цен):** Подтягивание `price_kzt` из `store_products` в UI покупателя.
-- [ ] **Стоун-Роутинг (QR):** Реализовать маршрут `/join/:code` для перехвата сканирования QR-кода магазина (сохранение магазина в LocalStorage и редирект на каталог).
-- [ ] **Apple ID Авторизация:** Добавить вход через Apple.
+- [x] **Split-Screen (Сравнение):** ✅ Полностью реализован. `CompareScreen.jsx` (481+ строк): двухэтапный scan flow в `ScanScreen.jsx` (pin → navigate), multi-factor scoring (safety 35 + quality 25 + E-additive purity 20 + halal 10), dynamic rows по категории, AI commentary. Маршрут `/s/:storeSlug/product/:ean/compare/:ean2`.
+- [ ] **Smart Upsell (Кросс-сейл):** ИИ-алгоритм на кассе/полке. **[⚠️ ЗАМОРОЖЕНО V1]**
+- [x] **Микролокация:** ✅ `shelf_zone` из `store_products` отображается в `ProductScreen.jsx`.
+- [x] **Real Prices (Интеграция цен):** ✅ `price_kzt` подтягивается из `store_products` в `ProductScreen.jsx` через `storeOverlay` в `resolver.js`. Отображается рядом с названием.
+- [ ] **Стоун-Роутинг (QR):** Маршрут `/join/:code` — НЕТ в `App.jsx`. `[⚠️ ОСТАЛОСЬ]`
+- [ ] **Apple ID Авторизация:** НЕТ. `[⚠️ ОСТАЛОСЬ]`
 
 ### 💎 Фаза 6: Редизайн и UX Полировка Consumer App [OWNER: Windsurf]
 *То, что уже пытались реализовать, но нужно "довести до идеала Dark Premium".*
@@ -89,7 +90,7 @@
 - [ ] **Отказ от JSON:** Тотальное удаление `products.json` и локальных моков. 100% переезд на SQL.
 - [ ] **Скорость SWR:** Тотальная отладка `Stale-while-revalidate` (кэширование Supabase -> localStorage) для загрузки UI за 0.1 сек (Skeleton loaders без мерцаний белого экрана).
 - [ ] **Рефакторинг React:** Ленивая загрузка (`React.lazy()` + Suspense), логичный перенос `UserDataContext` и `Provider` наверх древа дерева (App.jsx).
-- [ ] **Иконки:** Везде снести SVG, внедрить `Material Symbols`.
+- [ ] **Иконки:** 
 - [ ] **ErrorBoundary:** Сделать резервный экран падения в корпоративном стиле.
 
 ### 🏁 Фаза 9: Запуск Офлайн-Пилота (Launch Prep)
