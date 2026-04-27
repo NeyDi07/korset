@@ -264,3 +264,10 @@
 2. Retail Import — P0 блокер продаж
 3. Data Moat — каскад источников
 4. i18n хардкод русского текста (EanRecoveryScreen, ProductScreen, CatalogScreen)
+# 2026-04-28 — Landing redesign Stage 1
+
+- Реализован новый публичный лендинг `/` как отдельный `LandingScreen` вместо продолжения старого inline-лендинга внутри `HomeScreen`.
+- Стратегия: B2C-first hero (“Проверьте, подходит ли товар именно вам”), B2B-секция ниже и отдельно, без смешивания сообщений.
+- Визуал: один сканируемый продукт, телефонный mockup, Fit-Check, glass cards, theme toggle, scan-beam, лёгкие CSS-анимации без WebGL.
+- B2B: отдельный retail-разворот, сценарий роста продаж/лояльности, Early Access 15 000 ₸, Premium/Enterprise “скоро”.
+- Проверки: e2e landing spec, build, lint. Остались только существующие warnings вне новой поверхности.

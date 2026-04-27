@@ -7,6 +7,7 @@
   background:
     radial-gradient(90% 36% at 50% -8%, var(--primary-dim), transparent 62%),
     radial-gradient(70% 34% at 100% 18%, var(--accent-sky-dim), transparent 60%),
+    radial-gradient(44% 28% at 42% 34%, rgba(124, 58, 237, 0.08), transparent 70%),
     var(--bg-app);
   color: var(--text);
   font-family: var(--font-body);
@@ -277,8 +278,8 @@
 }
 
 .landing-product-pack {
-  width: 142px;
-  min-height: 178px;
+  width: 150px;
+  min-height: 190px;
   border: 1px solid var(--glass-border);
   border-radius: 20px;
   padding: 18px 14px;
@@ -302,9 +303,9 @@
 .landing-product-pack__name {
   color: var(--text);
   font-family: var(--font-display);
-  font-size: 30px;
+  font-size: 28px;
   font-weight: 800;
-  line-height: 0.95;
+  line-height: 1;
 }
 
 .landing-product-pack__meta {
@@ -341,6 +342,7 @@
   border-radius: 999px;
   background: var(--accent-sky);
   box-shadow: 0 0 22px var(--accent-sky);
+  opacity: 0.82;
   animation: scanLine 2.8s ease-in-out infinite;
 }
 
