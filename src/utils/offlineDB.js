@@ -55,6 +55,7 @@ export async function saveCatalogToIndexedDB(products, storeId) {
       category: product.category || null,
       subcategory: product.subcategory || null,
       quantity: product.quantity || null,
+      quantityParsed: product.quantityParsed || null,
       group: product.group || null,
       description: product.description || null,
       ingredients: product.ingredients || product.ingredients_raw || null,

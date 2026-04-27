@@ -158,6 +158,7 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - ✅ **БД-фиксы (миграции 012-015)** — CASCADE FK, GIN indexes, tsvector полнотекстовый поиск, data_quality_score, TTL, bulk RPC
 - ✅ **Каталог: Virtuoso + двухэтапная загрузка** — light поля, scroll position, viewMode
 - ✅ **Каталог: i18n + nameKz полировка** — весь хардкод убран, compare.cancel/selectSecond RU+KZ, nameKz в grid/list/comparePin, гибридный поиск (клиент+сервер), fit-бейджи, вес/объём вместо EAN, plural склонения
+- ✅ **Quantity parser** — `src/utils/parseQuantity.js`: извлечение веса/объёма/шт из названия продукта. Fallback: DB→name→nameKz→specs.weight. 25/25 тестов. i18n: шт→дана, за кг→кг үшін. Интегрирован в: mapRowToProduct, normalizers, storeCatalog, CatalogScreen search, offlineDB. UI: CatalogScreen (grid+list), UnifiedProductScreen, ProductScreen, CompareScreen, ProductMiniCard, ExternalProductScreen — все используют getDisplayQuantity().
 - ✅ **Banner overhaul (2026-04-27)** — 7 фото-баннеров в WebP (160KB total, 99% compression), `scripts/optimize-banners.mjs` pipeline, PWA precache fix (`globPatterns` → `injectManifest` config), SelectedDot clipping fix, clean 2×4 grid
 - ✅ **R2 CDN миграция** — 99.96% картинок на cdn.korset.app
 - ✅ **Состав: перевод через OpenAI** — 100% русский состав

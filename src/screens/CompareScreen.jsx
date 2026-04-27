@@ -1,6 +1,7 @@
 import { useMemo, useState, useEffect } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { checkProductFit, formatPrice } from '../utils/fitCheck.js'
+import { getDisplayQuantity } from '../utils/parseQuantity.js'
 import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { useI18n } from '../utils/i18n.js'
@@ -138,7 +139,7 @@ function buildRows(productA, productB, t) {
       (p) => (p.nutritionPer100?.kcal != null ? `${p.nutritionPer100.kcal} ккал` : null),
       'lower'
     )
-    push(t.compare.weight, (p) => p.specs?.weight || p.quantity || null)
+    push(t.compare.weight, (p) => getDisplayQuantity(p, lang))
     push(t.compare.ingredients, (p) =>
       p.ingredients ? p.ingredients.slice(0, 80) + (p.ingredients.length > 80 ? '...' : '') : null
     )
@@ -227,7 +228,7 @@ export default function CompareScreen() {
   const location = useLocation()
   const { profile } = useProfile()
   const { currentStore } = useStore()
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
 
   const [aiText, setAiText] = useState(null)
   const [aiLoading, setAiLoading] = useState(false)

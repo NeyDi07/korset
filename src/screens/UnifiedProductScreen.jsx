@@ -6,6 +6,7 @@ import { useUserData } from '../contexts/UserDataContext.jsx'
 import { useStoreId } from '../contexts/StoreContext.jsx'
 import { buildAuthNavigateState } from '../utils/authFlow.js'
 import { useI18n } from '../utils/i18n.js'
+import { getDisplayQuantity } from '../utils/parseQuantity.js'
 import { checkProductFit, formatPrice, CATEGORY_LABELS } from '../utils/fitCheck.js'
 import { resolveProductByRef, getDemoProductForEntity } from '../domain/product/resolver.js'
 import { coerceProductEntity } from '../domain/product/normalizers.js'
@@ -348,7 +349,8 @@ export default function UnifiedProductScreen({ mode = 'canonical' }) {
                 {product.name}
               </div>
               <div style={{ color: 'var(--text-dim)', fontSize: 13, marginTop: 4 }}>
-                {[product.brand, product.quantity].filter(Boolean).join(' · ') || '—'}
+                {[product.brand, getDisplayQuantity(product, lang)].filter(Boolean).join(' · ') ||
+                  '—'}
               </div>
             </div>
           </div>

@@ -16,6 +16,7 @@ import { getCatalogFromIndexedDB } from '../utils/offlineDB.js'
 import { buildProductPath, buildComparePath } from '../utils/routes.js'
 import { supabase } from '../utils/supabase.js'
 import { getImageUrl } from '../utils/imageUrl.js'
+import { enrichQuantity, getDisplayQuantity } from '../utils/parseQuantity.js'
 
 function ProductThumb({ product }) {
   const [imgOk, setImgOk] = useState(true)
@@ -214,7 +215,7 @@ export default function CatalogScreen() {
                 source: 'server_search',
               }
             })
-            setServerResults(mapped)
+            setServerResults(mapped.map((p) => enrichQuantity(p)))
           }
           setIsSearchingServer(false)
         })
@@ -357,13 +358,24 @@ export default function CatalogScreen() {
               style={{
                 fontSize: 11,
                 color: 'var(--text-soft)',
-                marginBottom: 6,
+                marginBottom: getDisplayQuantity(product, lang) ? 0 : 6,
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
               }}
             >
               {product.brand}
+            </div>
+          )}
+          {getDisplayQuantity(product, lang) && (
+            <div
+              style={{
+                fontSize: 11,
+                color: 'var(--text-dim)',
+                marginBottom: 6,
+              }}
+            >
+              {getDisplayQuantity(product, lang)}
             </div>
           )}
           <div
@@ -489,7 +501,9 @@ export default function CatalogScreen() {
               </div>
             </div>
             <div style={{ fontSize: 12, color: 'var(--text-soft)', marginBottom: 10 }}>
-              {[product.brand || t.catalog.noBrand, product.quantity].filter(Boolean).join(' · ')}
+              {[product.brand || t.catalog.noBrand, getDisplayQuantity(product, lang)]
+                .filter(Boolean)
+                .join(' · ')}
             </div>
             <div
               style={{

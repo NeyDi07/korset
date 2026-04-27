@@ -1,6 +1,8 @@
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../contexts/StoreContext.jsx'
+import { useI18n } from '../utils/i18n.js'
 import { buildProductPath } from '../utils/routes.js'
+import { getDisplayQuantity } from '../utils/parseQuantity.js'
 
 /**
  * Compact product card used in profile tabs (favorites / history).
@@ -9,12 +11,15 @@ import { buildProductPath } from '../utils/routes.js'
 export default function ProductMiniCard({ product }) {
   const navigate = useNavigate()
   const { currentStore } = useStore()
+  const { lang } = useI18n()
 
   if (!product?.ean && !product?.id) return null
 
   const image = product.image || product.images?.[0] || null
   const country = product.manufacturer?.country || null
-  const meta = [product.quantity, country || product.brand].filter(Boolean).join(' • ')
+  const meta = [country || product.brand, getDisplayQuantity(product, lang)]
+    .filter(Boolean)
+    .join(' · ')
 
   const handleOpen = () => {
     if (!product.ean) return

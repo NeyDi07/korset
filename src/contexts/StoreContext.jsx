@@ -6,6 +6,7 @@ import { loadPrivacySettings, PRIVACY_EVENT } from '../utils/privacySettings.js'
 import { getStoreBySlug } from '../data/stores.js'
 import { saveCatalogToIndexedDB } from '../utils/offlineDB.js'
 import { getImageUrl } from '../utils/imageUrl.js'
+import { enrichQuantity } from '../utils/parseQuantity.js'
 import {
   buildAIHomePath,
   buildCatalogPath,
@@ -33,7 +34,7 @@ const INITIAL_PAGE_SIZE = 50
 
 function mapRowToProduct(row) {
   const gp = row.global_products || {}
-  return {
+  const result = {
     ean: gp.ean || row.ean,
     name: row.local_name || gp.name,
     nameKz: gp.name_kz,
@@ -71,6 +72,7 @@ function mapRowToProduct(row) {
     source: 'cache',
     alternateEans: parseJson(gp.alternate_eans, []),
   }
+  return enrichQuantity(result)
 }
 
 function getStoreSlugFromPath(pathname) {

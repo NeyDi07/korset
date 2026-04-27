@@ -4,6 +4,7 @@ import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { buildProductAIPath, buildScanPath } from '../utils/routes.js'
 import { useI18n } from '../utils/i18n.js'
+import { getDisplayQuantity } from '../utils/parseQuantity.js'
 import { ALLERGEN_NAMES, OFF_ALLERGEN_MAP } from '../constants/allergens.js'
 import { coerceProductEntity } from '../domain/product/normalizers.js'
 
@@ -452,9 +453,9 @@ export default function ExternalProductScreen() {
           >
             {product.name}
           </h2>
-          {(product.brand || product.quantity) && (
+          {(product.brand || getDisplayQuantity(product, lang)) && (
             <div style={{ fontSize: 14, color: 'var(--text-sub)', marginBottom: 10 }}>
-              {[product.brand, product.quantity].filter(Boolean).join(' · ')}
+              {[product.brand, getDisplayQuantity(product, lang)].filter(Boolean).join(' · ')}
             </div>
           )}
 

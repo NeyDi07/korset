@@ -1,6 +1,7 @@
 import { useMemo, useState, useRef, useEffect } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { checkProductFit, formatPrice } from '../utils/fitCheck.js'
+import { getDisplayQuantity, computePricePerUnit } from '../utils/parseQuantity.js'
 import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import { useI18n } from '../utils/i18n.js'
@@ -83,48 +84,6 @@ function getCountry(product) {
     return product.manufacturer.country || null
   }
   return product.country || null
-}
-
-// Парсим количество ("100 г", "950 мл") → {num, unit}
-function parseQuantity(quantityStr) {
-  if (!quantityStr) return null
-  const match = String(quantityStr).match(
-    /(\d+[.,]?\d*)\s*(г|гр|кг|мл|л|грамм|килограмм|миллилитр|литр)/i
-  )
-  if (!match) return null
-  const num = Number(match[1].replace(',', '.'))
-  if (!Number.isFinite(num) || num <= 0) return null
-  const unitRaw = match[2].toLowerCase()
-  const isWeight = ['г', 'гр', 'кг', 'грамм', 'килограмм'].some((u) => unitRaw.startsWith(u))
-  const isVolume = ['мл', 'л', 'миллилитр', 'литр'].some((u) => unitRaw.startsWith(u))
-  return { num, unit: unitRaw, isWeight, isVolume }
-}
-
-// Цена за 100 г или 100 мл
-function computePricePerUnit(priceKzt, quantity) {
-  if (!priceKzt || !quantity) return null
-  const q = parseQuantity(quantity)
-  if (!q) return null
-  let per100, suffix
-  if (q.unit.startsWith('кг') || q.unit.startsWith('килограмм')) {
-    per100 = priceKzt / q.num / 10
-    suffix = '100 г'
-  } else if (q.unit.startsWith('г') || q.unit.startsWith('гр') || q.unit.startsWith('грамм')) {
-    per100 = (priceKzt / q.num) * 100
-    suffix = '100 г'
-  } else if (q.unit.startsWith('л') && !q.unit.startsWith('литр')) {
-    // "л" (но не "литр")
-    per100 = priceKzt / q.num / 10
-    suffix = '100 мл'
-  } else if (q.unit.startsWith('литр')) {
-    per100 = priceKzt / q.num / 10
-    suffix = '100 мл'
-  } else if (q.unit.startsWith('мл') || q.unit.startsWith('миллилитр')) {
-    per100 = (priceKzt / q.num) * 100
-    suffix = '100 мл'
-  }
-  if (!per100) return null
-  return { per100: Math.round(per100), suffix }
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -851,12 +810,24 @@ function SpecsGrid({ product }) {
   if (s.bestBefore) specs.push({ label: 'Срок годности', value: s.bestBefore })
 
   // Цена за 100 г/мл
-  const perUnit = computePricePerUnit(product.priceKzt, product.quantity || s.weight)
-  if (perUnit)
-    specs.push({
-      label: `Цена за ${perUnit.suffix}`,
-      value: `${perUnit.per100.toLocaleString('ru-RU')} ₸`,
-    })
+  const perUnit = computePricePerUnit(
+    product.priceKzt,
+    product.quantityParsed || product.quantity || s.weight
+  )
+  if (perUnit) {
+    if (perUnit.per100 != null) {
+      specs.push({
+        label: `Цена за ${perUnit.suffix}`,
+        value: `${perUnit.per100.toLocaleString('ru-RU')} ₸`,
+      })
+    }
+    if (perUnit.perUnit != null) {
+      specs.push({
+        label: `Цена за ${perUnit.unitSuffix}`,
+        value: `${perUnit.perUnit.toLocaleString('ru-RU')} ₸`,
+      })
+    }
+  }
 
   // Динамические поля: вкус, категория (подкатегория), alcohol, etc.
   if (product.flavor) specs.push({ label: 'Вкус', value: product.flavor })
@@ -1058,14 +1029,16 @@ export default function ProductScreen() {
 
   const manufacturerText = getManufacturerText(product)
   const country = getCountry(product)
-  const quantity = product.quantity || product.specs?.weight
-  const perUnit = computePricePerUnit(product.priceKzt, quantity)
+  const quantityDisplay = getDisplayQuantity(product, lang)
+  const perUnit = computePricePerUnit(
+    product.priceKzt,
+    product.quantityParsed || product.quantity || product.specs?.weight
+  )
 
-  // Подстрока "Бренд · Страна · Вес"
   const subtitleParts = [
     product.brand,
     country && (typeof country === 'string' ? country : null),
-    quantity,
+    quantityDisplay,
   ].filter(Boolean)
   // Fallback: если нет brand, используем manufacturer name
   const subtitleText = subtitleParts.length > 0 ? subtitleParts.join(' · ') : manufacturerText || ''
