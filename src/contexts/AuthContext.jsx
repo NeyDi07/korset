@@ -10,7 +10,14 @@ import {
   writeCachedProfileName,
 } from '../utils/userIdentity.js'
 
-const AuthContext = createContext({ user: null, session: null, loading: true })
+const AuthContext = createContext({ user: null, session: null, loading: true, isAdmin: false })
+
+// Читает admin-флаг из app_metadata (JWT claim, модифицируется ТОЛЬКО service_role).
+// НЕ используем user_metadata — оно модифицируемо самим юзером и не является источником истины.
+// Синхронизация users.is_admin → app_metadata делается в supabase/migrations/021.
+function extractIsAdmin(authUser) {
+  return Boolean(authUser?.app_metadata?.is_admin)
+}
 
 function buildFallbackName(authUser) {
   return (
@@ -85,6 +92,7 @@ export function AuthProvider({ children }) {
   const [displayName, setDisplayName] = useState(null)
   const [avatarId, setAvatarId] = useState(null)
   const [bannerUrl, setBannerUrl] = useState(null)
+  const [isAdmin, setIsAdmin] = useState(false)
 
   const mountedRef = useRef(true)
   const userRef = useRef(null)
@@ -99,6 +107,7 @@ export function AuthProvider({ children }) {
     setDisplayName(null)
     setAvatarId(null)
     setBannerUrl(null)
+    setIsAdmin(false)
   }, [])
 
   const applyProfileSnapshot = useCallback((authId, snapshot = {}) => {
@@ -178,6 +187,7 @@ export function AuthProvider({ children }) {
     userRef.current = nextSession?.user ?? null
     setSession(nextSession)
     setUser(nextSession?.user ?? null)
+    setIsAdmin(extractIsAdmin(nextSession?.user))
     setLoading(false)
   }, [])
 
@@ -238,6 +248,7 @@ export function AuthProvider({ children }) {
         displayName,
         avatarId,
         bannerUrl,
+        isAdmin,
         refreshAccountProfile,
         applyProfileSnapshot,
         logout,

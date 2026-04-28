@@ -1,33 +1,102 @@
 import { openDB } from 'idb'
 
 const DB_NAME = 'korset-offline-db'
-const DB_VERSION = 1
+
+// ════════════════════════════════════════════════════════════════
+// DB VERSION CHANGELOG
+// ════════════════════════════════════════════════════════════════
+// При изменении схемы IndexedDB:
+//   1. Bump DB_VERSION на следующее число
+//   2. Добавь новый блок `if (oldVersion < N) { ... }` в upgrade()
+//   3. Опиши изменение в этом списке
+//   4. НИКОГДА не правь существующие блоки `if (oldVersion < X)` —
+//      пользователи с очень старой версией могут пропустить миграции
+//
+// v1 (initial, 2026-01-XX):
+//   - store_catalog (keyPath: ean, indexes: store_id, category)
+//   - store_meta (keyPath: key)
+//   - pending_scans (keyPath: id autoIncrement, indexes: created_at, status)
+//
+// v2 (2026-04-28):
+//   - pending_scans: + index 'client_token' (для дедуп flush'а на сервере)
+// ════════════════════════════════════════════════════════════════
+const DB_VERSION = 2
+
 const STORE_CATALOG = 'store_catalog'
 const STORE_META = 'store_meta'
 const STORE_PENDING_SCANS = 'pending_scans'
 
 let dbPromise = null
 
+/**
+ * IndexedDB upgrade migrations.
+ * Each `if (oldVersion < N)` block runs sequentially для пользователей
+ * у которых текущая версия БД меньше N. Это позволяет миграциям накапливаться.
+ *
+ * @param {IDBDatabase} db
+ * @param {number} oldVersion - версия БД до upgrade (0 если БД создаётся впервые)
+ * @param {number} newVersion
+ * @param {IDBTransaction} tx - транзакция, в которой выполняются миграции
+ */
+function runMigrations(db, oldVersion, newVersion, tx) {
+  // ──────────────────────────────────────────────────────────────
+  // Migration v0 → v1: initial schema
+  // ──────────────────────────────────────────────────────────────
+  if (oldVersion < 1) {
+    if (!db.objectStoreNames.contains(STORE_CATALOG)) {
+      const catalogStore = db.createObjectStore(STORE_CATALOG, { keyPath: 'ean' })
+      catalogStore.createIndex('store_id', 'store_id')
+      catalogStore.createIndex('category', 'category')
+    }
+    if (!db.objectStoreNames.contains(STORE_META)) {
+      db.createObjectStore(STORE_META, { keyPath: 'key' })
+    }
+    if (!db.objectStoreNames.contains(STORE_PENDING_SCANS)) {
+      const scanStore = db.createObjectStore(STORE_PENDING_SCANS, {
+        keyPath: 'id',
+        autoIncrement: true,
+      })
+      scanStore.createIndex('created_at', 'created_at')
+      scanStore.createIndex('status', 'status')
+    }
+  }
+
+  // ──────────────────────────────────────────────────────────────
+  // Migration v1 → v2: client_token index (для дедуп flush'а)
+  // ──────────────────────────────────────────────────────────────
+  if (oldVersion < 2) {
+    // tx — versionchange transaction, через неё получаем доступ к существующему store
+    const scanStore = tx.objectStore(STORE_PENDING_SCANS)
+    if (!scanStore.indexNames.contains('client_token')) {
+      // unique=false: один client_token может попасть в несколько pending scans
+      // (например, если scan повторился с тем же токеном при offline reconnect)
+      scanStore.createIndex('client_token', 'client_token', { unique: false })
+    }
+  }
+}
+
 function getDB() {
   if (!dbPromise) {
     dbPromise = openDB(DB_NAME, DB_VERSION, {
-      upgrade(db) {
-        if (!db.objectStoreNames.contains(STORE_CATALOG)) {
-          const catalogStore = db.createObjectStore(STORE_CATALOG, { keyPath: 'ean' })
-          catalogStore.createIndex('store_id', 'store_id')
-          catalogStore.createIndex('category', 'category')
+      upgrade: runMigrations,
+      blocked() {
+        // Старые вкладки с открытой БД блокируют upgrade — предупредим в console.
+        // В production реально стоит показать toast пользователю с предложением закрыть другие вкладки.
+        console.warn(
+          '[offlineDB] upgrade blocked by another open tab — close other Körset tabs to apply DB migration'
+        )
+      },
+      blocking() {
+        // Эта вкладка блокирует upgrade в другой вкладке — закроем соединение чтобы пропустить.
+        if (dbPromise) {
+          dbPromise.then((db) => db.close()).catch(() => {})
+          dbPromise = null
         }
-        if (!db.objectStoreNames.contains(STORE_META)) {
-          db.createObjectStore(STORE_META, { keyPath: 'key' })
-        }
-        if (!db.objectStoreNames.contains(STORE_PENDING_SCANS)) {
-          const scanStore = db.createObjectStore(STORE_PENDING_SCANS, {
-            keyPath: 'id',
-            autoIncrement: true,
-          })
-          scanStore.createIndex('created_at', 'created_at')
-          scanStore.createIndex('status', 'status')
-        }
+      },
+      terminated() {
+        // БД закрыта аномально (например, low-disk space на устройстве). Пересоздадим dbPromise.
+        console.warn('[offlineDB] connection terminated — will reopen on next call')
+        dbPromise = null
       },
     })
   }
