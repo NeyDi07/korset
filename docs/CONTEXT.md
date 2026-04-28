@@ -257,15 +257,24 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 
 ## ТЕКУЩИЙ ФОКУС (2026-04-28)
 
-- **Data Quality Cleanup ЗАВЕРШЁН** — non-food/pet_food деактивированы, fake EAN синхронизированы, garbage quantity почищена.
-- **Landing visual system Stage 1 ЗАВЕРШЁН** — B2C hero не смешивает аудитории; центральный диагональный glare удалён; hero получил 3D-сцену; CTA без бликов; Advent Pro; B2B Retail Cabinet preview. landing e2e 4 passed, build passed, lint 0 errors.
-- **HARDENING Этап 1 ЗАВЕРШЁН (security pass 1)** — 10 критичных дыр закрыты. Migrations 017+018: RBAC через `is_admin_user`, RLS scan_events anti-spam с client_token, RLS stores billing protection, audit_stores trigger, atomic RPC для cache/missing_products (race fix), `search_path` на всех SECURITY DEFINER функциях, vault_embeddings закрыт от anon. Code: api/ean-search REMOVED (public proxy), error sanitization во всех api/, xlsx → exceljs (CVE-2023-30533), validation в api/ai. ✅ Vercel autodeploy.
-- **HARDENING Этап 2 ЗАВЕРШЁН (TR TS 022/2011 allergen audit)** — юр.критичный пласт. 8 пробелов в словарях исправлено (gluten/fish/halal/diabetes/vegan/dairy_free + 2 false-positive). Все legacy allergen IDs зачищены: migrations 019+019a+020 (8211 global_products + 8 cache + 9 user profiles), 5 источников в коде (Onboarding/AI prompt/3 import scripts/mock screen). ExternalProductScreen унифицирован на canonical `checkProductFit` — drift источник убран.
-- **HARDENING Этап 3 ЗАВЕРШЁН (Tests + CI + Health)** — 93 unit-тестов (было 0), GitHub Actions CI (lint→test→build), `/api/health` endpoint для мониторинга. Все тесты passed на каждый коммит.
+- **Data Quality Cleanup ЗАВЕРШЁН** — non-food/pet_food деактивированы, fake EAN синхронизированы, garbage quantity почищена. **7046 active global_products, 6867 store_products active в MARS**.
+- **Landing visual system Stage 1 ЗАВЕРШЁН** — Advent Pro, hero 3D-сцена, B2B Retail Cabinet preview.
+- **HARDENING Этап 1 ЗАВЕРШЁН (security pass 1, commit 518839c)** — 10 критичных дыр. Migrations 017+018: RBAC, RLS, atomic RPC, audit_stores, search_path, vault_embeddings closed. Code: api/ean-search REMOVED, error sanitization, xlsx→exceljs (CVE-2023-30533), validation в api/ai. ✅ Vercel autodeploy live.
+- **HARDENING Этап 2 ЗАВЕРШЁН (TR TS allergen audit, commit 883e94e)** — 8 пробелов (gluten/fish/halal/diabetes/vegan/dairy_free + 2 false-positive). Migrations 019+019a+020 (legacy ID purge: nuts→tree_nuts, shellfish→crustaceans, molluscs→mollusks, sulphites→sulfites, tree-nuts→tree_nuts). 5 источников в коде. ExternalProductScreen унифицирован на canonical `checkProductFit`.
+- **HARDENING Этап 3 ЗАВЕРШЁН (Tests + CI + Health, commit 883e94e)** — **93 unit-теста** (было 0), GitHub Actions, `/api/health`.
+- **HARDENING Этап 4 ЗАВЕРШЁН (security pass 2 + DB framework, commit 011211f)** — **🚨 КРИТИЧНАЯ дыра закрыта**: `RetailLayout.jsx` читал `user_metadata?.role==='admin'` (модифицируется клиентом!). Migration 021: trigger sync `users.is_admin → auth.users.raw_app_meta_data.is_admin` (server-controlled JWT claim) + backfill + verify. AuthContext.isAdmin из app_metadata. RetailLayout.jsx использует useAuth().isAdmin. **Migration 021 запущена в production 2026-04-28 ~07:50 UTC+05** (✅ verified, NOTICE: backfilled N users, verification OK). offlineDB: DB_VERSION framework v1→v2 с `runMigrations(db,oldV,newV,tx)` + `blocked/blocking/terminated` callbacks + `client_token` index. Background Sync direct API → отложен (требует idb в sw.js + auth tokens в SW storage, >1 час риска).
 - **Следующие шаги (по приоритету):**
-  1. 384 non-fake EAN mismatches — ручная проверка (ALPRO/Cadbury/Ferrero мёржи)
-  2. **HARDENING Этап 4** — Offline + RBAC: DB_VERSION migration в `offlineDB.js`, Background Sync direct API, `isAdmin` через `app_metadata` для UI-полировки.
-  3. i18n ProductScreen, EanRecoveryScreen — хардкод русский текст; name_kz в ProductScreen
-  4. Лендинг Stage 2 — глубокая полировка B2C-секций (сценарий у полки, Fit-Check)
-  5. **HARDENING Этап 5** — рефакторинг ProductScreen.jsx (1400+ строк), HomeScreen, ProfileScreen + lazy-routes + Data Moat UI бейдж.
-  6. Data Moat (слабое место #1, оценка 25/100) — data_quality_score, TTL источников, каскад OFF→USDA→AI, КЗ-базы.
+  1. **HARDENING Этап 5 (СЛЕДУЮЩИЙ ФОКУС)** — рефакторинг крупных монолитных компонентов: `ProductScreen.jsx` (1400+ строк), `HomeScreen.jsx`, `ProfileScreen.jsx` + lazy-routes + Data Moat UI бейдж. См. `docs/HANDOFF_2026-04-28.md` для детального брифа.
+  2. **Data Moat (слабое место #1, 25/100)** — data_quality_score column + триггер, TTL источников, каскад OFF→USDA→AI, КЗ-базы. P0 для пилота.
+  3. 384 non-fake EAN mismatches — ручная проверка (ALPRO/Cadbury/Ferrero мёржи)
+  4. i18n ProductScreen, EanRecoveryScreen; name_kz в ProductScreen
+  5. Лендинг Stage 2 — B2C-секции (сценарий у полки, Fit-Check)
+
+## HANDOFF NOTES
+
+Если ты — следующий ИИ, начинающий новый чат:
+
+1. **Прочитай `docs/HANDOFF_2026-04-28.md`** — детальный бриф со списком задач, acceptance criteria, и git workflow.
+2. **Прочитай `AGENTS.md`** — железные правила проекта (Vault Protocol, language, темы, etc.).
+3. **Прочитай этот файл** — текущий фокус.
+4. **Сделай Vault RAG-запрос** для специфичной задачи: `node scripts/query-vault.mjs "запрос" --domain knowledge`
