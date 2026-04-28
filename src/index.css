@@ -258,6 +258,31 @@ body {
   animation: retail-skel-pulse 1.4s ease-in-out infinite;
 }
 
+/* ─── Route Loader (Suspense fallback) ───────────── */
+.route-loader {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-app);
+  z-index: 100;
+}
+
+.route-loader__spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--glass-border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: route-loader-spin 0.8s linear infinite;
+}
+
+@keyframes route-loader-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 
 /* ─── Header ──────────────────────────────────────── */
 .header {
