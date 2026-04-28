@@ -43,6 +43,78 @@ function corsHeaders(req, res) {
   res.setHeader('Vary', 'Origin')
 }
 
+// ── Input validation & sanitization ─────────────────────────────
+
+const MAX_MESSAGES = 20
+const MAX_MESSAGE_LEN = 4000
+const MAX_TOTAL_LEN = 16000
+
+function validateMessages(messages) {
+  if (!Array.isArray(messages) || messages.length === 0 || messages.length > MAX_MESSAGES) {
+    return null
+  }
+  let total = 0
+  for (const m of messages) {
+    if (!m || typeof m !== 'object') return null
+    if (m.role !== 'user' && m.role !== 'assistant') return null
+    if (typeof m.content !== 'string' || m.content.length === 0 || m.content.length > MAX_MESSAGE_LEN) {
+      return null
+    }
+    total += m.content.length
+    if (total > MAX_TOTAL_LEN) return null
+  }
+  return messages
+}
+
+function cleanString(value, max = 200) {
+  if (typeof value !== 'string') return ''
+  return value.replace(/[\r\n\t]+/g, ' ').trim().slice(0, max)
+}
+
+function sanitizeProduct(product) {
+  if (!product || typeof product !== 'object') return null
+  return {
+    name: cleanString(product.name, 200),
+    brand: cleanString(product.brand, 100),
+    ingredients: cleanString(product.ingredients, 1500),
+    halalStatus: ['yes', 'no', 'unknown'].includes(product.halalStatus)
+      ? product.halalStatus
+      : 'unknown',
+    allergens: Array.isArray(product.allergens)
+      ? product.allergens
+          .filter((a) => typeof a === 'string')
+          .slice(0, 20)
+          .map((a) => cleanString(a, 50))
+      : [],
+    nutrition:
+      product.nutrition && typeof product.nutrition === 'object' ? product.nutrition : null,
+    nutritionPer100:
+      product.nutritionPer100 && typeof product.nutritionPer100 === 'object'
+        ? product.nutritionPer100
+        : null,
+  }
+}
+
+function sanitizeProfile(profile) {
+  if (!profile || typeof profile !== 'object') return null
+  return {
+    halal: !!(profile.halal || profile.halalOnly),
+    halalOnly: !!profile.halalOnly,
+    allergens: Array.isArray(profile.allergens)
+      ? profile.allergens
+          .filter((a) => typeof a === 'string')
+          .slice(0, 20)
+          .map((a) => cleanString(a, 50))
+      : [],
+    dietGoals: Array.isArray(profile.dietGoals)
+      ? profile.dietGoals
+          .filter((g) => typeof g === 'string')
+          .slice(0, 20)
+          .map((g) => cleanString(g, 50))
+      : [],
+  }
+}
+
 async function verifyAuth(req) {
   const authHeader = req.headers.authorization
   if (!authHeader?.startsWith('Bearer ')) return { user: null, authenticated: false }
@@ -165,23 +237,32 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { messages, mode, product, profile, lang } = req.body
+    const body = req.body || {}
+    const rawMode = body.mode
+    const allowedModes = ['product', 'enrich', 'compare', 'general']
+    const mode = allowedModes.includes(rawMode) ? rawMode : 'general'
+    const lang = body.lang === 'kz' ? 'kz' : 'ru'
 
-    if (!messages || !Array.isArray(messages)) {
-      return res.status(400).json({ error: 'messages array required' })
+    const validMessages = validateMessages(body.messages)
+    if (!validMessages) {
+      return res.status(400).json({ error: 'Invalid messages payload' })
     }
+
+    const product = sanitizeProduct(body.product)
+    const productA = sanitizeProduct(body.productA)
+    const productB = sanitizeProduct(body.productB)
+    const profile = sanitizeProfile(body.profile)
+    const winner = ['A', 'B', 'draw'].includes(body.winner) ? body.winner : null
 
     // ── RAG: подтягиваем релевантный контекст из vault ──
     let ragContext = null
     if (mode === 'product' && product) {
       ragContext = await fetchRagContext(product, mode, profile, lang)
-    } else if (mode === 'compare' && req.body.productA && req.body.productB) {
+    } else if (mode === 'compare' && productA && productB) {
       const combinedProduct = {
-        name: `${req.body.productA.name} vs ${req.body.productB.name}`,
-        ingredients: [req.body.productA.ingredients, req.body.productB.ingredients]
-          .filter(Boolean)
-          .join('; '),
-        allergens: [...(req.body.productA.allergens || []), ...(req.body.productB.allergens || [])],
+        name: `${productA.name} vs ${productB.name}`,
+        ingredients: [productA.ingredients, productB.ingredients].filter(Boolean).join('; '),
+        allergens: [...(productA.allergens || []), ...(productB.allergens || [])],
       }
       ragContext = await fetchRagContext(combinedProduct, mode, profile, lang)
     }
@@ -193,15 +274,8 @@ export default async function handler(req, res) {
       systemPrompt = buildProductPrompt(product, profile, lang, ragContext)
     } else if (mode === 'enrich' && product) {
       systemPrompt = buildEnrichPrompt(product)
-    } else if (mode === 'compare' && req.body.productA && req.body.productB) {
-      systemPrompt = buildComparePrompt(
-        req.body.productA,
-        req.body.productB,
-        profile,
-        req.body.winner,
-        lang,
-        ragContext
-      )
+    } else if (mode === 'compare' && productA && productB) {
+      systemPrompt = buildComparePrompt(productA, productB, profile, winner, lang, ragContext)
     } else {
       systemPrompt = buildGeneralPrompt(lang)
     }
@@ -217,16 +291,14 @@ export default async function handler(req, res) {
         model: 'gpt-4.1-nano',
         max_tokens: mode === 'enrich' ? 300 : mode === 'compare' ? 200 : 400,
         temperature: mode === 'enrich' ? 0.3 : 0.7,
-        messages: [{ role: 'system', content: systemPrompt }, ...messages],
+        messages: [{ role: 'system', content: systemPrompt }, ...validMessages],
       }),
     })
 
     if (!openaiRes.ok) {
       const err = await openaiRes.json().catch(() => ({}))
-      console.error('OpenAI error:', err)
-      return res.status(openaiRes.status).json({
-        error: err.error?.message || `OpenAI HTTP ${openaiRes.status}`,
-      })
+      console.error('[ai] OpenAI error', err)
+      return res.status(502).json({ error: 'AI service unavailable' })
     }
 
     const data = await openaiRes.json()
@@ -299,10 +371,13 @@ ${winnerLine}${ragSection}`
 }
 
 function buildEnrichPrompt(product) {
+  // ID аллергенов — canonical из ТР ТС 022/2011 (см. src/constants/allergens.js).
+  // ВАЖНО: НЕ 'nuts' (legacy) → 'tree_nuts'; НЕ 'shellfish' → 'crustaceans';
+  // НЕ 'molluscs'/'sulphites' (OFF-форма) → 'mollusks'/'sulfites' (наша форма).
   return `Товар: "${product.name}"${product.brand ? `, бренд: ${product.brand}` : ''}.
 Ответь ТОЛЬКО JSON без markdown:
-{"ingredients":"состав на русском","allergens":["milk","gluten","nuts","eggs","fish","soy","peanuts","shellfish"],"dietTags":["halal","vegan","vegetarian","gluten_free","dairy_free","sugar_free"],"description":"1 предложение о товаре"}
-Оставь в allergens и dietTags ТОЛЬКО те, которые реально относятся к этому товару.`
+{"ingredients":"состав на русском","allergens":["milk","eggs","gluten","peanuts","tree_nuts","soy","fish","crustaceans","mollusks","sesame","celery","mustard","lupin","sulfites"],"dietTags":["halal","vegan","vegetarian","gluten_free","dairy_free","sugar_free"],"description":"1 предложение о товаре"}
+Оставь в allergens и dietTags ТОЛЬКО те, которые реально относятся к этому товару. Используй ТОЛЬКО перечисленные ID, не выдумывай свои.`
 }
 
 function formatNutrition(product) {

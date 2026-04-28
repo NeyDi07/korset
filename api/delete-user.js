@@ -71,11 +71,13 @@ export default async function handler(req, res) {
     const { error } = await admin.auth.admin.deleteUser(user.id)
 
     if (error) {
-      return json(res, 500, { error: 'delete_failed', details: error.message })
+      console.error('[delete-user] auth.deleteUser error', error)
+      return json(res, 500, { error: 'delete_failed' })
     }
 
     return json(res, 200, { success: true, message: 'user_deleted' })
   } catch (err) {
-    return json(res, 500, { error: 'internal_error', details: err.message })
+    console.error('[delete-user] handler exception', err)
+    return json(res, 500, { error: 'internal_error' })
   }
 }

@@ -11,6 +11,7 @@ import { loadPrivacySettings } from '../../utils/privacySettings.js'
 import {
   getOrCreateDeviceId,
   getOrCreateSessionId,
+  getOrCreateClientToken,
   resolveCurrentInternalUserId,
 } from '../../utils/userIdentity.js'
 import { getProductFromIndexedDB, addPendingScan } from '../../utils/offlineDB.js'
@@ -181,13 +182,9 @@ async function findCacheProduct(ean) {
 
     if (error || !data) return null
 
+    // Atomic increment via RPC (migration 018) — нет race read-modify-write.
     supabase
-      .from('external_product_cache')
-      .update({
-        scan_count: (data.scan_count || 0) + 1,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('ean', ean)
+      .rpc('increment_cache_scan_count', { p_ean: ean })
       .then(() => {})
       .catch(() => {})
 
@@ -235,49 +232,38 @@ async function enrichProduct(product) {
 
 async function saveToCache(product, rawPayload = {}) {
   try {
-    await supabase.from('external_product_cache').upsert(
-      {
-        ean: product.ean,
-        source: product.sourceMeta?.externalSource || 'openfoodfacts',
-        raw_payload: rawPayload,
-        normalized_name: product.name,
-        normalized_brand: product.brand || null,
-        normalized_description: product.description || null,
-        normalized_category: product.category || null,
-        normalized_quantity: product.quantity || null,
-        normalized_ingredients: product.ingredients || null,
-        normalized_allergens_json: product.allergens || [],
-        normalized_diet_tags_json: product.dietTags || [],
-        normalized_additives_tags_json: product.additivesTags || [],
-        normalized_traces_json: product.traces || [],
-        normalized_nutriments_json: product.nutritionPer100 || {},
-        image_url: product.image || null,
-        nutriscore: product.nutriscore || null,
-        nova_group: product.novaGroup || null,
-        scan_count: 1,
-        ttl_expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: 'ean' }
-    )
+    // Through SECURITY DEFINER RPC (migration 018) — обходит RLS-deny для anon.
+    // Раньше прямой upsert от anon всегда падал на RLS → кэш не работал.
+    await supabase.rpc('upsert_external_cache', {
+      p_ean: product.ean,
+      p_source: product.sourceMeta?.externalSource || 'openfoodfacts',
+      p_normalized_name: product.name || null,
+      p_normalized_brand: product.brand || null,
+      p_normalized_description: product.description || null,
+      p_normalized_category: product.category || null,
+      p_normalized_quantity: product.quantity || null,
+      p_normalized_ingredients: product.ingredients || null,
+      p_normalized_allergens: product.allergens || [],
+      p_normalized_diet_tags: product.dietTags || [],
+      p_normalized_additives_tags: product.additivesTags || [],
+      p_normalized_traces: product.traces || [],
+      p_normalized_nutriments: product.nutritionPer100 || {},
+      p_image_url: product.image || null,
+      p_nutriscore: product.nutriscore || null,
+      p_nova_group: product.novaGroup || null,
+      p_raw_payload: rawPayload || {},
+    })
   } catch {
-    // silent
+    // silent: кэш — оптимизация, не блокер
   }
 }
 
 async function logMissingProduct(ean, storeId) {
+  if (!storeId) return // RPC требует store_id, без него нет смысла в метрике "upset магазина".
   try {
-    await supabase.from('missing_products').upsert(
-      {
-        ean,
-        store_id: storeId || null,
-        scan_count: 1,
-        first_seen_at: new Date().toISOString(),
-        last_seen_at: new Date().toISOString(),
-        resolved: false,
-      },
-      { onConflict: 'store_id,ean' }
-    )
+    // Atomic INSERT/INCREMENT via RPC (migration 018) — раньше упсерт сбрасывал
+    // scan_count = 1 на каждом повторном скане → дашборд недосчитывал хиты.
+    await supabase.rpc('increment_missing_scan_count', { p_ean: ean, p_store_id: storeId })
   } catch {
     // silent
   }
@@ -301,6 +287,8 @@ async function logScan({ ean, foundStatus, product, storeId, fitResult }) {
     product?.sourceMeta?.globalProductId || (isUuid(product?.id) ? product.id : null)
   const storeProductId = product?.sourceMeta?.storeProductId || null
 
+  const clientToken = getOrCreateClientToken()
+
   if (typeof navigator !== 'undefined' && !navigator.onLine) {
     try {
       const internalUserId = await resolveCurrentInternalUserId({ ensureRow: false })
@@ -313,6 +301,7 @@ async function logScan({ ean, foundStatus, product, storeId, fitResult }) {
         user_id: internalUserId,
         device_id: getOrCreateDeviceId(),
         session_id: getOrCreateSessionId(),
+        client_token: clientToken,
         fit_result: fitResult ?? null,
         fit_reasons_json: [],
         app_version: '1.0',
@@ -336,6 +325,7 @@ async function logScan({ ean, foundStatus, product, storeId, fitResult }) {
       fit_result: fitResult ?? null,
       device_id: getOrCreateDeviceId(),
       session_id: getOrCreateSessionId(),
+      client_token: clientToken,
       app_version: '1.0',
     })
     if (error) console.error('logScan error', error)

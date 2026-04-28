@@ -25,13 +25,14 @@ export async function downloadRetailImportTemplate(format = 'csv') {
   const rows = buildRetailImportTemplateRows()
 
   if (format === 'xlsx') {
-    const XLSX = await import('xlsx')
-    const workbook = XLSX.utils.book_new()
-    const sheet = XLSX.utils.aoa_to_sheet(rows)
-    XLSX.utils.book_append_sheet(workbook, sheet, 'Import')
-    const output = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' })
+    const ExcelJSMod = await import('exceljs')
+    const ExcelJS = ExcelJSMod.default || ExcelJSMod
+    const workbook = new ExcelJS.Workbook()
+    const sheet = workbook.addWorksheet('Import')
+    rows.forEach((row) => sheet.addRow(row))
+    const buffer = await workbook.xlsx.writeBuffer()
     downloadBlob(
-      new globalThis.Blob([output], {
+      new globalThis.Blob([buffer], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       }),
       'korset-import-template.xlsx'
@@ -64,6 +65,21 @@ export function downloadUnknownEansReport(rows) {
   )
 }
 
+function cellToString(value) {
+  if (value == null) return ''
+  if (typeof value === 'object') {
+    // exceljs returns rich text objects { richText: [...] } and hyperlinks { text, hyperlink }
+    if (Array.isArray(value.richText)) {
+      return value.richText.map((part) => part.text || '').join('')
+    }
+    if (typeof value.text === 'string') return value.text
+    if (typeof value.result !== 'undefined') return String(value.result)
+    if (value instanceof Date) return value.toISOString()
+    return ''
+  }
+  return String(value)
+}
+
 export async function parseRetailImportFile(file) {
   const ext = file.name.split('.').pop()?.toLowerCase()
 
@@ -72,12 +88,22 @@ export async function parseRetailImportFile(file) {
     return buildRetailImportPreview(parseCsv(text))
   }
 
-  const XLSX = await import('xlsx')
+  const ExcelJSMod = await import('exceljs')
+  const ExcelJS = ExcelJSMod.default || ExcelJSMod
   const buffer = await file.arrayBuffer()
-  const workbook = XLSX.read(buffer, { type: 'array' })
-  const sheetName = workbook.SheetNames[0]
-  const sheet = workbook.Sheets[sheetName]
-  const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, blankrows: false })
+  const workbook = new ExcelJS.Workbook()
+  await workbook.xlsx.load(buffer)
+  const sheet = workbook.worksheets[0]
+  if (!sheet) return buildRetailImportPreview([])
+
+  const rows = []
+  sheet.eachRow({ includeEmpty: false }, (row) => {
+    // row.values — array с пустым элементом на 0-ой позиции (1-indexed cells)
+    const values = Array.isArray(row.values) ? row.values.slice(1) : []
+    const normalized = values.map(cellToString)
+    if (normalized.some((v) => v && v.length > 0)) rows.push(normalized)
+  })
+
   return buildRetailImportPreview(rows)
 }
 
@@ -134,7 +160,10 @@ export async function applyRetailImport(storeId, rows, _fileName) {
         const batch = knownRows.slice(i, i + batchSize)
         const updates = await Promise.all(
           batch.map(async (row) => {
-            const product = existing.get(row.ean)
+            const product = existing.get(String(row.ean))
+            if (!product) {
+              return { ok: false, row, reason: 'Строка отсутствует (race кэша)' }
+            }
             const payload = {
               price_kzt: row.priceKzt,
               stock_status: row.stockStatus,

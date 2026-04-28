@@ -58,7 +58,24 @@ export default async function handler(req, res) {
 
   const admin = getAdmin()
   if (!admin) {
+    console.error('[ean-recovery] Server misconfiguration: SUPABASE_SERVICE_ROLE_KEY missing')
     return res.status(500).set(cors).json({ error: 'Server misconfiguration' })
+  }
+
+  // Admin-only endpoint (migration 017_security_hardening.sql).
+  try {
+    const { data: isAdmin, error: rpcError } = await admin.rpc('is_admin_user', { p_auth_id: user.id })
+    if (rpcError) {
+      console.error('[ean-recovery] is_admin_user rpc error', rpcError)
+      return res.status(500).set(cors).json({ error: 'Authorization check failed' })
+    }
+    if (isAdmin !== true) {
+      console.warn('[ean-recovery] Forbidden attempt by user', user.id)
+      return res.status(403).set(cors).json({ error: 'Forbidden' })
+    }
+  } catch (e) {
+    console.error('[ean-recovery] admin check exception', e)
+    return res.status(500).set(cors).json({ error: 'Authorization check failed' })
   }
 
   const { action, id, ean, name } = req.body || {}
@@ -71,7 +88,10 @@ export default async function handler(req, res) {
     if (action === 'delete') {
       await admin.from('store_products').delete().eq('global_product_id', id)
       const { error: gpError } = await admin.from('global_products').delete().eq('id', id)
-      if (gpError) return res.status(500).set(cors).json({ error: gpError.message })
+      if (gpError) {
+        console.error('[ean-recovery] delete error', gpError)
+        return res.status(500).set(cors).json({ error: 'Delete failed' })
+      }
       return res.status(200).set(cors).json({ ok: true, action: 'delete' })
     }
 
@@ -79,10 +99,11 @@ export default async function handler(req, res) {
       if (!ean) return res.status(400).set(cors).json({ error: 'Missing ean' })
       const { error: gpError } = await admin.from('global_products').update({ ean }).eq('id', id)
       if (gpError) {
-        if (gpError.message.includes('duplicate key')) {
+        if (gpError.code === '23505' || gpError.message?.includes('duplicate key')) {
           return res.status(409).set(cors).json({ error: 'duplicate', message: 'EAN already exists' })
         }
-        return res.status(500).set(cors).json({ error: gpError.message })
+        console.error('[ean-recovery] update-ean error', gpError)
+        return res.status(500).set(cors).json({ error: 'Update failed' })
       }
       await admin.from('store_products').update({ ean }).eq('global_product_id', id).eq('is_active', true)
       return res.status(200).set(cors).json({ ok: true, action: 'update-ean' })
@@ -91,12 +112,16 @@ export default async function handler(req, res) {
     if (action === 'update-name') {
       if (!name) return res.status(400).set(cors).json({ error: 'Missing name' })
       const { error: gpError } = await admin.from('global_products').update({ name }).eq('id', id)
-      if (gpError) return res.status(500).set(cors).json({ error: gpError.message })
+      if (gpError) {
+        console.error('[ean-recovery] update-name error', gpError)
+        return res.status(500).set(cors).json({ error: 'Update failed' })
+      }
       return res.status(200).set(cors).json({ ok: true, action: 'update-name' })
     }
 
     return res.status(400).set(cors).json({ error: 'Unknown action' })
   } catch (e) {
-    return res.status(500).set(cors).json({ error: e.message || 'Internal error' })
+    console.error('[ean-recovery] handler exception', e)
+    return res.status(500).set(cors).json({ error: 'Internal error' })
   }
 }

@@ -1,15 +1,30 @@
 import { supabase } from './supabase.js'
 
+function makeRandomId(prefix) {
+  // Prefer cryptographically strong UUID. Fallback only when crypto API unavailable.
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return `${prefix}_${crypto.randomUUID()}`
+  }
+  return `${prefix}_${Math.random().toString(36).slice(2)}${Date.now().toString(36)}`
+}
+
+// Singleton fallback when storage is unavailable (e.g. Safari Private + iframe).
+// Without this, every call would generate a NEW id → anti-spam broken, history lost.
+const inMemoryIds = new Map()
+
 function getOrCreateLocalId(storage, key, prefix) {
   try {
     let value = storage.getItem(key)
     if (!value) {
-      value = `${prefix}_${Math.random().toString(36).slice(2)}${Date.now().toString(36)}`
+      value = makeRandomId(prefix)
       storage.setItem(key, value)
     }
     return value
   } catch {
-    return `${prefix}_${Math.random().toString(36).slice(2)}${Date.now().toString(36)}`
+    if (!inMemoryIds.has(key)) {
+      inMemoryIds.set(key, makeRandomId(prefix))
+    }
+    return inMemoryIds.get(key)
   }
 }
 
@@ -19,6 +34,35 @@ export function getOrCreateDeviceId() {
 
 export function getOrCreateSessionId() {
   return getOrCreateLocalId(sessionStorage, 'korset_session_id', 'ses')
+}
+
+// client_token — UUID v4, стабильный для устройства. Используется RLS-policy
+// scan_events_insert_anon_safe (миграция 017) для anti-spam анонимных инсертов.
+// Формат — чистый UUID (без префикса), потому что колонка scan_events.client_token — uuid type.
+export function getOrCreateClientToken() {
+  const KEY = 'korset_client_token'
+  try {
+    let value = localStorage.getItem(KEY)
+    if (!value) {
+      value =
+        typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+          ? crypto.randomUUID()
+          : null
+      if (!value) return null // Нет crypto → anti-spam не работает, лучше отправить null и получить RLS-deny.
+      localStorage.setItem(KEY, value)
+    }
+    return value
+  } catch {
+    if (!inMemoryIds.has(KEY)) {
+      const fallback =
+        typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+          ? crypto.randomUUID()
+          : null
+      if (!fallback) return null
+      inMemoryIds.set(KEY, fallback)
+    }
+    return inMemoryIds.get(KEY)
+  }
 }
 
 export async function resolveCurrentAuthUser() {

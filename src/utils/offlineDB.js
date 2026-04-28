@@ -216,6 +216,7 @@ export async function flushPendingScans(supabaseClient) {
     user_id: s.user_id || null,
     device_id: s.device_id || null,
     session_id: s.session_id || null,
+    client_token: s.client_token || null,
     fit_result: s.fit_result ?? null,
     fit_reasons_json: s.fit_reasons_json || [],
     app_version: s.app_version || '1.0',
