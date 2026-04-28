@@ -7,8 +7,7 @@ import { useI18n } from '../utils/i18n.js'
 import { getDisplayQuantity } from '../utils/parseQuantity.js'
 import { ALLERGEN_NAMES, OFF_ALLERGEN_MAP } from '../constants/allergens.js'
 import { coerceProductEntity } from '../domain/product/normalizers.js'
-
-const ALLERGEN_MAP = OFF_ALLERGEN_MAP
+import { checkProductFit } from '../utils/fitCheck.js'
 
 const NUTRISCORE_COLORS = {
   a: { bg: 'rgba(3,129,65,0.15)', border: 'rgba(3,129,65,0.4)', text: '#22c55e' },
@@ -20,7 +19,7 @@ const NUTRISCORE_COLORS = {
 
 function parseAllergens(product) {
   const raw = product.allergens_tags || product.allergens_hierarchy || []
-  return [...new Set(raw.map((item) => ALLERGEN_MAP[item]).filter(Boolean))]
+  return [...new Set(raw.map((item) => OFF_ALLERGEN_MAP[item]).filter(Boolean))]
 }
 
 function detectHalal(labelsTag = []) {
@@ -75,92 +74,42 @@ function toExternalProductShape(raw, lang) {
   }
 }
 
-function checkFit(product, profile, t) {
-  const reasons = []
-  const halalOn = profile.halal || profile.halalOnly || profile.religion?.includes('halal')
-  const ingredients = (product.ingredients || '').toLowerCase()
-  const allergens = product.allergens || []
-
-  if (halalOn) {
-    if (product.isHalal === false) reasons.push({ type: 'fail', text: t.product.halalNot })
-    else if (product.isHalal == null) reasons.push({ type: 'warn', text: t.product.halalUnknown })
+// Связует external-shape (упрощённый OFF-продукт) с каноническим checkProductFit.
+// Раньше здесь была 3-я копия проверки аллергенов со своими словарями (dairyWords/meatWords/
+// упрощённый gluten) — drift с fitCheck.js порождал расхождения. Теперь вся логика = checkProductFit.
+function checkFit(externalProduct, profile, lang) {
+  const canonicalForFit = {
+    ean: externalProduct.ean,
+    name: externalProduct.name,
+    brand: externalProduct.brand,
+    ingredients: externalProduct.ingredients,
+    allergens: externalProduct.allergens || [],
+    halalStatus:
+      externalProduct.isHalal === true
+        ? 'yes'
+        : externalProduct.isHalal === false
+          ? 'no'
+          : 'unknown',
+    nutritionPer100: externalProduct.nutrition || {},
   }
+  const fitResult = checkProductFit(canonicalForFit, profile)
 
-  const profileAllergens = profile.allergens || []
-  const found = allergens.filter((item) => profileAllergens.includes(item))
-  found.forEach((item) =>
-    reasons.push({
-      type: 'fail',
-      text: `${t.product.containsAllergen} ${ALLERGEN_NAMES[item] || item}`,
-    })
-  )
+  // verdict (safe/caution/warning/danger) → fits boolean (для старого UI)
+  const fits = fitResult.verdict === 'safe' || fitResult.verdict === 'caution'
 
-  const customAllergens = profile.customAllergens || []
-  customAllergens.forEach((item) => {
-    if (ingredients.includes(item.toLowerCase()))
-      reasons.push({ type: 'fail', text: `${t.product.contains} ${item}` })
-  })
-
-  const goals = profile.dietGoals || []
-  if (goals.includes('sugar_free') || profile.sugarFree) {
-    const sugarWords = ['сахар', 'sugar', 'sucre', 'zucker', 'глюкоз', 'фруктоз', 'сироп']
-    if (sugarWords.some((word) => ingredients.includes(word)))
-      reasons.push({ type: 'fail', text: t.product.containsSugar })
+  // severity → type (для старого UI — легко потом перевести на severity напрямую)
+  const TYPE_BY_SEVERITY = {
+    danger: 'fail',
+    warning: 'warn',
+    caution: 'warn',
+    positive: 'pass',
   }
+  const reasons = (fitResult.reasons || []).slice(0, 3).map((r) => ({
+    type: TYPE_BY_SEVERITY[r.severity] || 'warn',
+    text: lang === 'kz' && r.textKz ? r.textKz : r.text,
+  }))
 
-  if (goals.includes('dairy_free')) {
-    const dairyWords = [
-      'молок',
-      'сливк',
-      'масло слив',
-      'сметан',
-      'сыр',
-      'milk',
-      'cream',
-      'butter',
-      'cheese',
-      'whey',
-      'casein',
-      'лактоз',
-    ]
-    if (allergens.includes('milk') || dairyWords.some((word) => ingredients.includes(word)))
-      reasons.push({ type: 'fail', text: t.product.containsDairy })
-  }
-
-  if (goals.includes('gluten_free')) {
-    if (
-      allergens.includes('gluten') ||
-      allergens.includes('wheat') ||
-      ['пшениц', 'wheat', 'gluten', 'ячмен', 'рожь'].some((word) => ingredients.includes(word))
-    ) {
-      reasons.push({ type: 'fail', text: t.product.containsGluten })
-    }
-  }
-
-  if (goals.includes('vegan')) {
-    const meatWords = ['говядин', 'свинин', 'курин', 'мясо', 'beef', 'pork', 'chicken', 'meat']
-    if (
-      allergens.includes('milk') ||
-      allergens.includes('eggs') ||
-      meatWords.some((word) => ingredients.includes(word))
-    ) {
-      reasons.push({ type: 'fail', text: t.product.notForVegans })
-    }
-  }
-
-  const fits = !reasons.some((reason) => reason.type === 'fail')
-
-  if (fits) {
-    const positive = []
-    if (halalOn && product.isHalal === true)
-      positive.push({ type: 'pass', text: t.product.halalConfirmed })
-    if (profileAllergens.length > 0 && allergens.length === 0)
-      positive.push({ type: 'pass', text: t.product.noAllergens })
-    if (positive.length === 0) positive.push({ type: 'pass', text: t.product.matchesPrefs })
-    return { fits, reasons: [...reasons, ...positive].slice(0, 3) }
-  }
-
-  return { fits, reasons: reasons.slice(0, 3) }
+  return { fits, reasons }
 }
 
 function formatNutri(val) {
@@ -269,7 +218,7 @@ export default function ExternalProductScreen() {
     if (navState?.product) {
       const parsed = toExternalProductShape(navState.product, lang)
       setProduct(parsed)
-      setFitResult(checkFit(parsed, profile, t))
+      setFitResult(checkFit(parsed, profile, lang))
       setStatus('found')
       return () => {}
     }
@@ -297,7 +246,7 @@ export default function ExternalProductScreen() {
 
         if (!cancelled) {
           setProduct(parsed)
-          setFitResult(checkFit(parsed, profile, t))
+          setFitResult(checkFit(parsed, profile, lang))
           setStatus('found')
         }
       } catch {
@@ -309,7 +258,7 @@ export default function ExternalProductScreen() {
     return () => {
       cancelled = true
     }
-  }, [ean, navState, lang, profile, t])
+  }, [ean, navState, lang, profile])
 
   const nutr = useMemo(() => product?.nutrition || product?.nutritionPer100 || {}, [product])
 

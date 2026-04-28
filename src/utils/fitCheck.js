@@ -1,7 +1,50 @@
-import { getGlobalDemoProducts } from './storeCatalog.js'
+// NOTE: getGlobalDemoProducts импортируется лениво в getAlternatives — чтобы unit-тесты checkProductFit
+// не тянули products.json (Node статик-импорт JSON требует with { type: 'json' }, чего Vite раньше не делал).
 import { ALLERGEN_NAMES, getAllergenName } from '../constants/allergens.js'
-import { ALLERGEN_SYNONYMS, ASPARTAME_SYNONYMS } from '../constants/allergenSynonyms.js'
+import {
+  ALLERGEN_SYNONYMS,
+  ASPARTAME_SYNONYMS,
+  SUGAR_SYNONYMS,
+} from '../constants/allergenSynonyms.js'
 import { extractTraceAllergens } from '../constants/tracePhrases.js'
+
+// Veganизм: ключевые маркеры животных продуктов в составе.
+// Используется только в vegan-проверке (не в аллергенах — это предпочтение, не юр.риск).
+const NON_VEGAN_INGREDIENT_MARKERS = [
+  'мяс',
+  'говяд',
+  'свинин',
+  'свиной',
+  'баранин',
+  'конин',
+  'крольч',
+  'курин',
+  'индейк',
+  'утк',
+  'гус',
+  'желатин',
+  'желток',
+  'яичн',
+  'яйц',
+  'мёд',
+  'прополис',
+  'воск пчел',
+  'фарш',
+  'бекон',
+  'ветчин',
+  'сало',
+  // EN fallback
+  'meat',
+  'beef',
+  'pork',
+  'chicken',
+  'turkey',
+  'gelatin',
+  'gelatine',
+  'honey',
+  'lard',
+  'bacon',
+]
 
 export { ALLERGEN_NAMES }
 
@@ -138,10 +181,9 @@ export function checkProductFit(product, profile) {
   // 4. Health Conditions
   if (healthConditions.includes('diabetes')) {
     const sugars100g = parseFloat(sugar100g)
-    const hasSugarKeywords =
-      ingredientsRaw.includes('сахар') ||
-      ingredientsRaw.includes('сироп') ||
-      ingredientsRaw.includes('фруктоз')
+    // Раньше было только 3 ключева слова — диабетик не предупреждался о
+    // мальтодекстрине, декстрозе, патоке, мёде и т.д.
+    const hasSugarKeywords = SUGAR_SYNONYMS.some((kw) => ingredientsRaw.includes(kw))
 
     if (!isNaN(sugars100g)) {
       if (sugars100g > 22.5) {
@@ -279,17 +321,67 @@ export function checkProductFit(product, profile) {
   }
 
   if (halalOn && halalStatus === 'unknown' && !alcoholInProduct) {
+    // НЕ используем 'винов' (ловит "виноватый") и 'ром' (ловит "хром", "аромат").
+    // Используем более узкие корни и полные слова.
     const haramKeywords = [
-      'винов',
+      // Вино и винные напитки
+      'вино ', // с пробелом — избежать "виноватый"
+      'вино,',
+      'вино.',
+      'вина ',
+      'кагор',
+      'херес',
+      'портвейн',
+      'вермут',
+      'шампанск',
+      'игристое',
+      // Крепкий алкоголь
       'коньяк',
-      'ром',
+      'водк',
+      'виски',
+      'джин ',
+      'джин,',
+      'текил',
+      'абсент',
+      'бренди',
+      'ром ', // с пробелом — избежать "хроматический", "аромат"
+      'ром,',
+      'ром.',
+      // Пиво и ликёры
       'ликёр',
-      'пив',
+      'ликер',
+      'пиво',
+      'эль ', // эль (пиво)
+      // Спирт и этанол
       'этиловый спирт',
+      'этанол',
+      'спирт этил',
+      'медицинский спирт',
+      // Восточные напитки
+      'арак',
+      'саке ',
+      'саке,',
+      // EN fallback
       'wine',
       'beer',
-      'rum',
+      'rum ',
+      'rum,',
       'vodka',
+      'whisky',
+      'whiskey',
+      'gin ',
+      'gin,',
+      'liqueur',
+      'liquor',
+      'ethanol',
+      'spirits',
+      'champagne',
+      'cognac',
+      'brandy',
+      'absinthe',
+      'tequila',
+      'sake ',
+      'sake,',
     ]
     const foundHaram = haramKeywords.find((kw) => ingredientsRaw.includes(kw))
     if (foundHaram) {
@@ -312,16 +404,8 @@ export function checkProductFit(product, profile) {
       source: 'structured',
     })
   }
-  if (goals.includes('dairy_free') && dietTags.includes('contains_dairy')) {
-    addReason({
-      severity: 'caution',
-      category: 'diet',
-      text: 'Содержит молочные продукты',
-      source: 'structured',
-    })
-  }
   if (
-    goals.includes('vegan') &&
+    goals.includes('dairy_free') &&
     (dietTags.includes('contains_dairy') ||
       prodAllergens.includes('milk') ||
       prodAllergens.includes('en:milk'))
@@ -329,9 +413,46 @@ export function checkProductFit(product, profile) {
     addReason({
       severity: 'caution',
       category: 'diet',
-      text: 'Не подходит для веганов',
+      text: 'Содержит молочные продукты',
       source: 'structured',
     })
+  }
+  if (goals.includes('vegan')) {
+    const veganViolations = []
+    if (
+      dietTags.includes('contains_dairy') ||
+      prodAllergens.includes('milk') ||
+      prodAllergens.includes('en:milk')
+    ) {
+      veganViolations.push('молочные продукты')
+    }
+    if (prodAllergens.includes('eggs') || prodAllergens.includes('en:eggs')) {
+      veganViolations.push('яйца')
+    }
+    if (prodAllergens.includes('fish') || prodAllergens.includes('en:fish')) {
+      veganViolations.push('рыба')
+    }
+    if (
+      prodAllergens.includes('crustaceans') ||
+      prodAllergens.includes('en:crustaceans') ||
+      prodAllergens.includes('mollusks') ||
+      prodAllergens.includes('en:molluscs')
+    ) {
+      veganViolations.push('морепродукты')
+    }
+    if (ingredientsRaw) {
+      const foundAnimal = NON_VEGAN_INGREDIENT_MARKERS.find((m) => ingredientsRaw.includes(m))
+      if (foundAnimal) veganViolations.push(`животные ингредиенты «${foundAnimal}»`)
+    }
+    if (veganViolations.length > 0) {
+      addReason({
+        severity: 'caution',
+        category: 'diet',
+        text: `Не подходит для веганов: ${veganViolations.join(', ')}`,
+        textKz: `Вегандарға жарамайды: ${veganViolations.join(', ')}`,
+        source: 'structured',
+      })
+    }
   }
 
   // 8. Determine Verdict
@@ -403,7 +524,9 @@ export function checkProductFit(product, profile) {
   }
 }
 
-export function getAlternatives(product, profile) {
+// Async версия — использует dynamic import для изоляции products.json от unit-тестов fitCheck.
+export async function getAlternatives(product, profile) {
+  const { getGlobalDemoProducts } = await import('./storeCatalog.js')
   const priority = profile.priority || 'balanced'
   const baseProducts = getGlobalDemoProducts()
 

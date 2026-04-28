@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install deps (without scripts to skip husky)
+        run: npm ci --ignore-scripts
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit tests (fitCheck + retailImport)
+        run: npm run test:unit
+
+      - name: Build (Vite)
+        run: npm run build
+        env:
+          # Build не требует реальных secret'ов, но Vite читает env при resolve.
+          # Используем placeholder'ы, чтобы import.meta.env не упал.
+          VITE_SUPABASE_URL: 'https://placeholder.supabase.co'
+          VITE_SUPABASE_ANON_KEY: 'placeholder'
+
+      - name: Verify dist/ exists
+        run: |
+          test -f dist/index.html || (echo "Build did not produce dist/index.html" && exit 1)
+          test -f dist/sw.js || (echo "Build did not produce dist/sw.js" && exit 1)
+          echo "Build artefacts OK"

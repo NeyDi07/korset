@@ -96,11 +96,23 @@ const EAN_LIST = [
 ]
 
 // ── Маппинг аллергенов ────────────────────────────────────────────────────────
+// Источник истины: src/constants/allergens.js (ТР ТС 022/2011 canonical IDs).
+// До 2026-04-28 здесь были legacy IDs ('nuts','shellfish').
 const ALLERGEN_MAP = {
-  'en:milk': 'milk', 'en:gluten': 'gluten', 'en:nuts': 'nuts',
-  'en:peanuts': 'peanuts', 'en:soybeans': 'soy', 'en:eggs': 'eggs',
-  'en:fish': 'fish', 'en:crustaceans': 'shellfish', 'en:wheat': 'gluten',
-  'en:sesame': 'sesame', 'en:celery': 'celery', 'en:mustard': 'mustard',
+  'en:milk': 'milk',
+  'en:eggs': 'eggs',
+  'en:gluten': 'gluten', 'en:wheat': 'gluten',
+  'en:peanuts': 'peanuts',
+  'en:nuts': 'tree_nuts', 'en:tree-nuts': 'tree_nuts',
+  'en:soybeans': 'soy', 'en:soy': 'soy',
+  'en:fish': 'fish',
+  'en:crustaceans': 'crustaceans', 'en:shellfish': 'crustaceans',
+  'en:molluscs': 'mollusks',
+  'en:sesame': 'sesame', 'en:sesame-seeds': 'sesame',
+  'en:celery': 'celery',
+  'en:mustard': 'mustard',
+  'en:lupin': 'lupin',
+  'en:sulphur-dioxide-and-sulphites': 'sulfites',
 }
 
 function normalizeOFF(ean, p) {

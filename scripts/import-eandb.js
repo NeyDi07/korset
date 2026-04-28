@@ -89,11 +89,25 @@ function extractAdditives(metadata) {
 
 function extractAllergens(metadata, ingredientsRaw) {
   const allergens = new Set()
+  // Canonical IDs из src/constants/allergens.js (ТР ТС 022/2011).
+  // ДО 2026-04-28 здесь было: shellfish, nuts (legacy) → теперь crustaceans, tree_nuts.
+  // coconut технически не tree_nut по FDA, но по факту покупатели с орех-аллергией
+  // часто его избегают; оставлен в tree_nuts для безопасности.
   const ALLERGEN_IDS = {
-    milk: 'milk', wheat: 'gluten', gluten: 'gluten', eggs: 'eggs',
-    fish: 'fish', shellfish: 'shellfish', peanuts: 'peanuts', nuts: 'nuts',
-    soy: 'soy', sesame: 'sesame', celery: 'celery', mustard: 'mustard',
-    lactose: 'milk', 'tree-nuts': 'nuts', coconut: 'nuts',
+    milk: 'milk', lactose: 'milk',
+    eggs: 'eggs',
+    wheat: 'gluten', gluten: 'gluten',
+    peanuts: 'peanuts',
+    nuts: 'tree_nuts', 'tree-nuts': 'tree_nuts', coconut: 'tree_nuts',
+    soy: 'soy',
+    fish: 'fish',
+    shellfish: 'crustaceans', crustaceans: 'crustaceans',
+    molluscs: 'mollusks', mollusks: 'mollusks',
+    sesame: 'sesame', 'sesame-seeds': 'sesame',
+    celery: 'celery',
+    mustard: 'mustard',
+    lupin: 'lupin',
+    sulphites: 'sulfites', sulfites: 'sulfites',
   }
   if (metadata?.generic?.ingredients) {
     for (const group of metadata.generic.ingredients) {

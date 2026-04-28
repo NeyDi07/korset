@@ -11,19 +11,18 @@ import {
   withProductImage,
 } from './model.js'
 import { enrichQuantity } from '../../utils/parseQuantity.js'
+import { OFF_ALLERGEN_MAP as CANONICAL_OFF_MAP } from '../../constants/allergens.js'
 
+// Используем единственный источник истины (allergens.js) — раньше здесь был
+// УСТАРЕВШИЙ дубликат, который маппил OFF-теги в legacy ID:
+//   • 'en:nuts'        → 'nuts'      (а должно tree_nuts)        — пользователи с аллергией на орехи получали safe
+//   • 'en:crustaceans' → 'shellfish' (а должно crustaceans)      — пользователи с аллергией на ракообразные тоже
+//   • 6 ТР ТС аллергенов вообще не покрывались (mollusks/sesame/celery/mustard/lupin/sulfites)
+// В сумме >50% обязательных аллергенов терялось при импорте из OpenFoodFacts.
+// Дополнения локальные:
 const OFF_ALLERGEN_MAP = {
-  'en:milk': 'milk',
-  'en:gluten': 'gluten',
-  'en:nuts': 'nuts',
-  'en:peanuts': 'peanuts',
-  'en:soybeans': 'soy',
-  'en:soy': 'soy',
-  'en:eggs': 'eggs',
-  'en:fish': 'fish',
-  'en:crustaceans': 'shellfish',
-  'en:shellfish': 'shellfish',
-  'en:wheat': 'gluten',
+  ...CANONICAL_OFF_MAP,
+  'en:soy': 'soy', // alias для en:soybeans (встречается в старых дампах OFF)
 }
 
 export function normalizeDemoProduct(row) {

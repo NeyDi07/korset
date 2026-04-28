@@ -43,14 +43,24 @@ const TARGET_BRANDS = [
   'makfa','galya-gourmet','sloboda',
 ]
 
+// Источник истины: src/constants/allergens.js (ТР ТС 022/2011 canonical IDs).
+// Этот файл — .cjs, не может import ES module, поэтому копия.
+// ДО фикса (2026-04-28) здесь были legacy IDs и разные формы: 'nuts'/'shellfish'/'molluscs'/'sulphites'.
 const ALLERGEN_MAP = {
-  'en:milk':'milk','en:gluten':'gluten','en:nuts':'nuts',
-  'en:peanuts':'peanuts','en:soybeans':'soy','en:soy':'soy',
-  'en:eggs':'eggs','en:fish':'fish','en:crustaceans':'shellfish',
-  'en:shellfish':'shellfish','en:wheat':'gluten',
-  'en:sesame':'sesame','en:celery':'celery','en:mustard':'mustard',
-  'en:lupin':'lupin','en:molluscs':'molluscs',
-  'en:sulphur-dioxide-and-sulphites':'sulphites',
+  'en:milk':'milk',
+  'en:eggs':'eggs',
+  'en:gluten':'gluten','en:wheat':'gluten',
+  'en:peanuts':'peanuts',
+  'en:nuts':'tree_nuts','en:tree-nuts':'tree_nuts',
+  'en:soybeans':'soy','en:soy':'soy',
+  'en:fish':'fish',
+  'en:crustaceans':'crustaceans','en:shellfish':'crustaceans',
+  'en:molluscs':'mollusks','en:molluscs-and-products-thereof':'mollusks',
+  'en:sesame':'sesame','en:sesame-seeds':'sesame',
+  'en:celery':'celery',
+  'en:mustard':'mustard',
+  'en:lupin':'lupin',
+  'en:sulphur-dioxide-and-sulphites':'sulfites','en:sulphites':'sulfites',
 }
 
 function shouldInclude(p) {
