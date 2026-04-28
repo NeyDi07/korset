@@ -535,6 +535,26 @@ export const dictionaries = {
         title: 'Покупателям проще выбирать — магазину проще возвращать их снова',
         text: 'Körset превращает обычную полку в цифровой сервис: покупатель получает пользу, а магазин — лояльность, сканы и понимание спроса.',
         cta: 'Подключить магазин',
+        dashboard: {
+          aria: 'Превью Retail Cabinet Körset',
+          kicker: 'Retail Cabinet',
+          title: 'Что видит магазин после запуска',
+          status: 'живые данные',
+          chartTitle: 'Сканы за неделю',
+          chartValue: '+18%',
+          qr: 'QR у полки',
+          bars: [38, 54, 46, 72, 63, 88, 78],
+          metrics: [
+            { value: '42', label: 'скана сегодня' },
+            { value: '87%', label: 'покрытие каталога' },
+            { value: '₸ 128k', label: 'упущенная выручка' },
+          ],
+          feed: [
+            { icon: 'upload_file', title: 'Прайс обновлён', value: '1 248 SKU' },
+            { icon: 'barcode_scanner', title: 'Неизвестные EAN', value: '12' },
+            { icon: 'swap_horiz', title: 'Выбрали альтернативу', value: '31 раз' },
+          ],
+        },
         scenario: [
           {
             icon: 'qr_code_2',
@@ -1683,6 +1703,26 @@ dictionaries.kz.landing = {
     title: 'Сатып алушыға таңдау оңай — дүкенге оны қайтару оңай',
     text: 'Körset кәдімгі сөрені цифрлық сервиске айналдырады: сатып алушы пайда көреді, ал дүкен лоялдық, скандар және сұраныс түсінігін алады.',
     cta: 'Дүкенді қосу',
+    dashboard: {
+      aria: 'Körset Retail Cabinet превьюі',
+      kicker: 'Retail Cabinet',
+      title: 'Іске қосылғаннан кейін дүкен не көреді',
+      status: 'тірі деректер',
+      chartTitle: 'Аптадағы скандар',
+      chartValue: '+18%',
+      qr: 'Сөредегі QR',
+      bars: [38, 54, 46, 72, 63, 88, 78],
+      metrics: [
+        { value: '42', label: 'бүгінгі скан' },
+        { value: '87%', label: 'каталог қамтуы' },
+        { value: '₸ 128k', label: 'жоғалған табыс' },
+      ],
+      feed: [
+        { icon: 'upload_file', title: 'Прайс жаңартылды', value: '1 248 SKU' },
+        { icon: 'barcode_scanner', title: 'Белгісіз EAN', value: '12' },
+        { icon: 'swap_horiz', title: 'Балама таңдалды', value: '31 рет' },
+      ],
+    },
     scenario: [
       {
         icon: 'qr_code_2',

@@ -9,6 +9,9 @@ test('landing page is consumer-first and keeps retail separate', async ({ page }
   ).toBeVisible()
   await expect(page.getByTestId('landing-consumer')).toBeVisible()
   await expect(page.getByTestId('landing-retail')).toBeVisible()
+  await expect(page.getByTestId('landing-retail-dashboard')).toBeVisible()
+  await expect(page.getByTestId('landing-retail-dashboard')).toContainText('₸')
+  await expect(page.getByTestId('landing-retail-dashboard')).toContainText(/скан|scan/i)
 
   await expect(
     page.getByTestId('landing-consumer').getByRole('link', { name: /Выбрать магазин/i })

@@ -20,6 +20,69 @@ function SectionTitle({ eyebrow, title, text }) {
   )
 }
 
+function RetailDashboardPreview({ dashboard }) {
+  return (
+    <aside
+      className="landing-retail-dashboard"
+      data-testid="landing-retail-dashboard"
+      aria-label={dashboard.aria}
+    >
+      <div className="landing-retail-dashboard__top">
+        <div>
+          <span>{dashboard.kicker}</span>
+          <h3>{dashboard.title}</h3>
+        </div>
+        <div className="landing-retail-dashboard__status">
+          <span />
+          {dashboard.status}
+        </div>
+      </div>
+
+      <div className="landing-retail-dashboard__metrics">
+        {dashboard.metrics.map((metric) => (
+          <div key={metric.label}>
+            <strong>{metric.value}</strong>
+            <span>{metric.label}</span>
+          </div>
+        ))}
+      </div>
+
+      <div className="landing-retail-dashboard__middle">
+        <div className="landing-retail-dashboard__chart">
+          <div className="landing-retail-dashboard__chart-head">
+            <span>{dashboard.chartTitle}</span>
+            <strong>{dashboard.chartValue}</strong>
+          </div>
+          <div className="landing-retail-dashboard__bars" aria-hidden="true">
+            {dashboard.bars.map((bar, index) => (
+              <i key={`${bar}-${index}`} style={{ '--bar-height': `${bar}%` }} />
+            ))}
+          </div>
+        </div>
+
+        <div className="landing-retail-dashboard__qr">
+          <div aria-hidden="true">
+            {Array.from({ length: 16 }).map((_, index) => (
+              <i key={index} />
+            ))}
+          </div>
+          <span>{dashboard.qr}</span>
+        </div>
+      </div>
+
+      <div className="landing-retail-dashboard__feed">
+        {dashboard.feed.map((item) => (
+          <div key={item.title}>
+            <Icon name={item.icon} />
+            <span>{item.title}</span>
+            <strong>{item.value}</strong>
+          </div>
+        ))}
+      </div>
+    </aside>
+  )
+}
+
 export default function LandingScreen() {
   const { t } = useI18n()
   const { theme, toggleTheme } = useTheme()
@@ -27,7 +90,6 @@ export default function LandingScreen() {
 
   return (
     <main className="landing-page-v2">
-      <div className="landing-scan-beam" aria-hidden="true" />
       <header className="landing-header">
         <a className="landing-brand" href="/" aria-label="Körset">
           <img src="/icon_logo.svg" alt="" />
@@ -70,38 +132,60 @@ export default function LandingScreen() {
         </div>
 
         <div className="landing-hero__visual" aria-label={d.demo.aria}>
+          <div className="landing-kinetic-glass" aria-hidden="true">
+            <span />
+          </div>
           <div className="landing-orbit-card landing-orbit-card--top">
             <Icon name="verified" />
             <span>{d.demo.orbitTop}</span>
           </div>
-          <div className="landing-phone">
-            <div className="landing-phone__top">
-              <span>{d.demo.phoneTitle}</span>
-              <Icon name="qr_code_scanner" />
-            </div>
-            <div className="landing-scan-window">
-              <div className="landing-product-pack">
-                <span className="landing-product-pack__brand">{d.demo.productBrand}</span>
-                <span className="landing-product-pack__name">{d.demo.productName}</span>
-                <span className="landing-product-pack__meta">{d.demo.productMeta}</span>
-              </div>
-              <div className="landing-barcode" aria-hidden="true">
-                {Array.from({ length: 18 }).map((_, index) => (
+          <div className="landing-scan-stage">
+            <div className="landing-shelf-product" aria-hidden="true">
+              <span className="landing-product-pack__brand">{d.demo.productBrand}</span>
+              <span className="landing-product-pack__name">{d.demo.productName}</span>
+              <span className="landing-product-pack__meta">{d.demo.productMeta}</span>
+              <div className="landing-shelf-product__barcode">
+                {Array.from({ length: 14 }).map((_, index) => (
                   <i key={index} />
                 ))}
               </div>
-              <div className="landing-scan-line" />
             </div>
-            <div className="landing-result-card">
-              <div>
-                <span className="landing-status-dot" />
-                <strong>{d.demo.status}</strong>
+            <div className="landing-hand" aria-hidden="true">
+              <span className="landing-hand__finger landing-hand__finger--one" />
+              <span className="landing-hand__finger landing-hand__finger--two" />
+              <span className="landing-hand__finger landing-hand__finger--three" />
+              <span className="landing-hand__thumb" />
+              <span className="landing-hand__palm" />
+            </div>
+            <div className="landing-phone">
+              <div className="landing-phone__top">
+                <span>{d.demo.phoneTitle}</span>
+                <Icon name="qr_code_scanner" />
               </div>
-              <p>{d.demo.result}</p>
-              <div className="landing-result-card__chips">
-                {d.demo.chips.map((chip) => (
-                  <span key={chip}>{chip}</span>
-                ))}
+              <div className="landing-scan-window">
+                <div className="landing-product-pack">
+                  <span className="landing-product-pack__brand">{d.demo.productBrand}</span>
+                  <span className="landing-product-pack__name">{d.demo.productName}</span>
+                  <span className="landing-product-pack__meta">{d.demo.productMeta}</span>
+                </div>
+                <div className="landing-barcode" aria-hidden="true">
+                  {Array.from({ length: 18 }).map((_, index) => (
+                    <i key={index} />
+                  ))}
+                </div>
+                <div className="landing-scan-line" />
+              </div>
+              <div className="landing-result-card">
+                <div>
+                  <span className="landing-status-dot" />
+                  <strong>{d.demo.status}</strong>
+                </div>
+                <p>{d.demo.result}</p>
+                <div className="landing-result-card__chips">
+                  {d.demo.chips.map((chip) => (
+                    <span key={chip}>{chip}</span>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -205,7 +289,12 @@ export default function LandingScreen() {
           <div className="landing-eyebrow">{d.retail.eyebrow}</div>
           <h2>{d.retail.title}</h2>
           <p>{d.retail.text}</p>
+          <a className="landing-btn landing-btn--ghost landing-retail__cta" href="/retail">
+            {d.retail.cta}
+            <Icon name="arrow_forward" />
+          </a>
         </div>
+        <RetailDashboardPreview dashboard={d.retail.dashboard} />
         <div className="landing-retail__scenario">
           {d.retail.scenario.map((item) => (
             <article key={item.title}>
