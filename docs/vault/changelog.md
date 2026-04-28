@@ -271,3 +271,26 @@
 - Визуал: один сканируемый продукт, телефонный mockup, Fit-Check, glass cards, theme toggle, scan-beam, лёгкие CSS-анимации без WebGL.
 - B2B: отдельный retail-разворот, сценарий роста продаж/лояльности, Early Access 15 000 ₸, Premium/Enterprise “скоро”.
 - Проверки: e2e landing spec, build, lint. Остались только существующие warnings вне новой поверхности.
+
+# 2026-04-28 — Landing redesign Stage 2
+
+- Усилен B2B-разворот без вмешательства в B2C hero: добавлен лёгкий HTML/CSS preview Retail Cabinet с метриками сканов, покрытием каталога, упущенной выручкой, QR, импортом прайса и неизвестными EAN.
+- Визуальная полировка: dashboard glass surface, sweep-подсветка, бар-чарт, pricing sweep, responsive grid для desktop/mobile, `scroll-margin-top` для sticky header anchors.
+- RU/KZ i18n обновлён для новых retail dashboard-текстов.
+- E2E обновлён: проверяет `landing-retail-dashboard`, знак ₸ и скан-метрики. Проверки: `npm test -- tests/e2e/landing.spec.js` 4 passed; `npm run build` passed; `npm run lint` 0 errors, 56 existing warnings.
+
+# 2026-04-28 — Landing hero polish after design feedback
+
+- Удалён центральный диагональный beam/glare из hero — больше нет прямоугольного блика поверх текста и CTA.
+- Hero-визуал перестроен в более смелую 3D-сцену: телефон, один продукт за телефоном, нижний hand-silhouette и кинетические стеклянные слои с scroll-driven/fallback CSS-анимацией.
+- Основные CTA больше не используют дешёвый фиолетовый градиент: заменены на premium dark/glass стиль в dark theme и контрастный solid стиль в light theme.
+- Акценты в hero/bar chart переведены с primary-purple на cyan/green premium-tech.
+- Проверки после правок: `npm test -- tests/e2e/landing.spec.js` 4 passed; `npm run build` passed; `npm run lint` 0 errors, 56 existing warnings.
+
+# 2026-04-28 — Landing visual system Stage 1
+
+- По новому фидбеку убраны CTA sheen/glare-эффекты полностью: primary CTA теперь простой solid accent (`--accent-sky`) без бликов, полос и фиолетового градиента.
+- Весь публичный лендинг переведён на Advent Pro как основной шрифт; текстовые веса/размеры подняты, чтобы уйти от generic UI-ощущения.
+- Массовый glassmorphism снят с обычных информационных карточек: базовые блоки теперь solid/surface с 8px radius, а glass оставлен как намеренный визуальный слой для hero-мокапа, floating chips и retail dashboard.
+- Визуальный Stage 1 проверен на desktop dark, mobile dark, desktop light и первом scroll-блоке. Проверки: `npm test -- tests/e2e/landing.spec.js` 4 passed; `npm run build` passed; `npm run lint` 0 errors, 56 existing warnings.
+- Следующие дизайн-этапы: отдельно перепроектировать B2C sections (`у полки`, Fit-Check, возможности) и затем B2B/pricing/footer, не смешивая всё в один заход.

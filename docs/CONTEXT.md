@@ -70,15 +70,15 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 
 ---
 
-## АКТУАЛЬНЫЕ СТАТИСТИКИ БД (2026-04-27)
+## АКТУАЛЬНЫЕ СТАТИСТИКИ БД (2026-04-28)
 
-- **~7099 active** global_products
-- **Реальные EAN: ~7031** (~99.0%)
-- **Fake EAN: ~73** — arbuz_ ~29 + korzinavdom_ ~44 (kaspi_ = 0)
-- **Состав: ~87.5%**
-- **Нутриенты: ~81%** (5767)
+- **7046 active** global_products (51 non-food + pet_food деактивировано)
+- **Реальные EAN: 6980** (99.1%), **Fake EAN: 66** (0.9% — реальные продукты без штрихкода)
+- **store_products active: 6859** (1 магазин MARS, 187 gp ещё не завезены)
+- **EAN совпадение: 100%** (0 mismatches, 0 сирот)
+- **208 garbage quantity** → null (weight-by-weight товары)
+- **Состав: ~81%** (5767)
 - **R2 CDN: 99.96%** продуктов с картинками на cdn.korset.app
-- store_products для MARS (store-one): ~8755
 
 ---
 
@@ -114,18 +114,63 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 9. `scripts/validate-ean.cjs`, `audit-catalog.cjs`, `add-category-prefix.cjs`
 10. `scripts/migrate-images-to-r2.mjs`, `embed-vault.mjs`, `query-vault.mjs`
 11. `scripts/translate-composition.cjs` — перевод состава через OpenAI
+12. `scripts/backfill-quantity.mjs` — обновление quantityParsed в Supabase из name
+13. `scripts/cleanup-nonfood.mjs` — деактивация non-food/pet_food, фикс garbage quantity
+14. `scripts/sync-store-product-eans.mjs` — синхронизация fake→real EAN, деактивация дублей
 
 ---
 
-## АКТУАЛЬНЫЙ СПИСОК ПЛАНОВ (по приоритету)
+## 🚨 АКТУАЛЬНЫЙ ПРИОРИТЕТ (2026-04-28)
 
-### P0 — Критичные для продаж
+**Полный архитектурно-безопасный аудит выполнен** — см. `docs/AUDIT_2026-04-28.md` (1300+ строк, 92 находки: 10🔴 / 30🟠 / 34🟡 / 18🟢).
+
+**План восстановления** — см. `docs/HARDENING_PLAN.md` (5 этапов, ~10 рабочих дней).
+
+### Этапы (выполнять строго по порядку, БЕЗ визуала пока):
+
+1. **🔴 Этап 1 — Безопасность (1.5–2 дня)** — закрыть 10 критичных дыр (RBAC ean-recovery, ean-search auth, RLS plan/expires, scan_events anon spam, xlsx CVE, vite.config dup, error-leak, /api/off, валидация AI).
+2. **🟠 Этап 2 — Фундамент БД (1 день)** — индексы, search_path, atomic increments, audit_log, cleanup cron.
+3. **🟢 Этап 3 — Тесты + CI + Sentry (1 день)** — fitCheck unit-тесты, GitHub Actions, /api/health, supabase CLI.
+4. **🔵 Этап 4 — Офлайн + RBAC (1 день)** — DB_VERSION migration, SW Background Sync, isAdmin через server.
+5. **🟣 Этап 5 — Рефакторинг + чистка (2–3 дня)** — разрезать монолиты (Product/Profile/Home), lazy-routes, Data Moat UI, чистка корня.
+
+### Топ-10 критичных дыр (must fix Этап 1):
+
+1. `api/ean-recovery.js` — любой залогиненный юзер удаляет каталог.
+2. `api/ean-search.js` — public proxy без auth, выжирает платный ключ.
+3. RLS `stores_update_owner` — владелец апит себе тариф бесплатно.
+4. RLS `scan_events_insert_anon` — анон-спам метрик любого магазина.
+5. Нет `idx_users_auth_id` — RLS делает full-scan на каждый запрос.
+6. `xlsx ^0.18.5` — CVE-2023-30533 + CVE-2024-22363 в импорте Excel.
+7. `localApiPlugin` в `vite.config.js` — dev-эндпоинт без auth/rate-limit.
+8. `fitCheck.js` — 0 тестов на юр.критичный код.
+9. `offlineDB.js` — нет `client_token`, anti-spam защита нерабочая.
+10. `/api/off` эндпоинт не существует — каскад резолвера обрывается.
+
+**Общая оценка проекта:** ~50/100 (документация говорила 65 — была оптимистична).
+
+---
+
+## ЗАМОРОЖЕНО до завершения Этапов 1-5
+
+- Визуал / Premium Glassmorphism Landing
+- Smart Merge UI редизайн
+- Grid/List Switch полировка
+- Footer + логотипы
+- Home Stories
+- Юр.лицо, оферта, биллинг-энфорсмент (отложено до первых продаж)
+
+---
+
+## СТАРЫЕ P0/P1 — переехали в HARDENING_PLAN Этап 5
+
+### P0 (старые) — теперь в Этапе 5
 
 | # | Задача | Статус | Комментарий |
 |---|--------|--------|-------------|
-| 1 | **i18n: хардкод русский текст** | 🟡 CatalogScreen ✅ | CatalogScreen — весь хардкод убран (compare.cancel/selectSecond, loading/loadingMore/searchingServer, modeBanner). Остальные экраны (ProductScreen, EanRecoveryScreen) — НЕ НАЧАТО |
-| 2 | **Фронтенд: name_kz по языку** | 🟡 CatalogScreen ✅ | CatalogScreen + comparePin — отображает nameKz при lang=kz. ProductScreen/RetailProductsScreen — НЕ НАЧАТО. Нужно: `lang === 'kz' && product.nameKz ? product.nameKz : product.name` |
-| 3 | **Migration 016** — проверить и применить | ✅ ПРИМЕНЕНА | profile-banners bucket + avatar_id/banner_url колонки. AuthContext уже использует с graceful fallback. Баннеры работают: 7 пресетов + custom upload. |
+| 1 | **i18n: хардкод русский текст** | 🟡 CatalogScreen ✅ | ProductScreen/EanRecoveryScreen — Этап 5.19 |
+| 2 | **Фронтенд: name_kz по языку** | 🟡 CatalogScreen ✅ | ProductScreen — Этап 5.19 |
+| 3 | **Migration 016** — проверить и применить | ✅ ПРИМЕНЕНА | profile-banners bucket + avatar_id/banner_url. |
 
 ### P1 — Важно для продукта
 
@@ -139,7 +184,7 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 
 | # | Задача | Статус | Комментарий |
 |---|--------|--------|-------------|
-| 7 | **~73 fake EAN дочистка** | 🔄 В ПРОЦЕССЕ | Пользователь вносит штрихкоды вручную через EAN Recovery screen. Автоматизированные подходы исчерпаны. |
+| 7 | **Fake EAN дочистка** | ✅ ЗАВЕРШЕНО | 5988 fake→real EAN синхронизировано в store_products, 345 дублей деактивировано. 0 fake EAN осталось. |
 | 8 | **USDA enrichment** — обогащение продуктов без состава | 🔜 После проверки proxy | ~457 продуктов без состава |
 | 9 | **Офлайн-режим refinements** | 🔜 | 85/100, основа работает |
 | 10 | **Масштабирование** — партицирование scan_events | 🔜 НЕ НАЧАТО | Аудит: 40/100 |
@@ -163,6 +208,8 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - ✅ **Каталог: i18n + nameKz полировка** — весь хардкод убран, compare.cancel/selectSecond RU+KZ, nameKz в grid/list/comparePin, гибридный поиск (клиент+сервер), fit-бейджи, вес/объём вместо EAN, plural склонения
 - ✅ **Quantity parser** — `src/utils/parseQuantity.js`: извлечение веса/объёма/шт из названия продукта. Fallback: DB→name→nameKz→specs.weight. 25/25 тестов. i18n: шт→дана, за кг→кг үшін. Интегрирован в: mapRowToProduct, normalizers, storeCatalog, CatalogScreen search, offlineDB. UI: CatalogScreen (grid+list), UnifiedProductScreen, ProductScreen, CompareScreen, ProductMiniCard, ExternalProductScreen — все используют getDisplayQuantity().
 - ✅ **Quantity DB Backfill** — `scripts/backfill-quantity.mjs`: 718 продуктов обновлено (quantity из name), покрытие 96.4% (было ~85%). 0 ошибок. Dry run → --live.
+- ✅ **Data Quality Cleanup** — `scripts/cleanup-nonfood.mjs`: 51 non-food+pet_food деактивировано (is_active=false), 208 garbage quantity → null, linked store_products → is_active=false
+- ✅ **Fake EAN Sync** — `scripts/sync-store-product-eans.mjs`: 5988 store_products.ean обновлены arbuz_/kaspi_/korzinavdom_ → real EAN, 345 дубликатов деактивировано, пагинация (8686→8341 active). 384 non-fake mismatches отложены (ручная проверка).
 - ✅ **Banner overhaul (2026-04-27)** — 7 фото-баннеров в WebP (160KB total, 99% compression), `scripts/optimize-banners.mjs` pipeline, PWA precache fix (`globPatterns` → `injectManifest` config), SelectedDot clipping fix, clean 2×4 grid
 - ✅ **R2 CDN миграция** — 99.96% картинок на cdn.korset.app
 - ✅ **Состав: перевод через OpenAI** — 100% русский состав
@@ -210,9 +257,15 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 
 ## ТЕКУЩИЙ ФОКУС (2026-04-28)
 
-- Лендинг `/` редизайнится по стратегии **B2C First, B2B Separate**: первый экран только для покупателей, блок магазинов ниже отдельным разворотом.
-- Реализация Stage 1: новый публичный `LandingScreen` + `LandingScreen.css`, один сканируемый продукт в hero, без AI-сгенерированных пачек и мыльных иконок.
-- Добавлены: theme toggle, glass/scan-beam визуальная система, B2C-секции, отдельный retail-блок, Early Access 15 000 ₸, FAQ/footer.
-- `/s/:storeSlug` home не переписывался; магазинный сценарий остаётся на старой логике HomeScreen.
-- Проверено: `npm test -- tests/e2e/landing.spec.js`, `npm run build`, `npm run lint` (только старые warnings).
-- Следующий фокус: визуальная полировка Stage 2/3 — B2B-сценарий, KZ-тексты без fallback, desktop/tablet polish, финальная анимация и browser QA.
+- **Data Quality Cleanup ЗАВЕРШЁН** — non-food/pet_food деактивированы, fake EAN синхронизированы, garbage quantity почищена.
+- **Landing visual system Stage 1 ЗАВЕРШЁН** — B2C hero не смешивает аудитории; центральный диагональный glare удалён; hero получил 3D-сцену; CTA без бликов; Advent Pro; B2B Retail Cabinet preview. landing e2e 4 passed, build passed, lint 0 errors.
+- **HARDENING Этап 1 ЗАВЕРШЁН (security pass 1)** — 10 критичных дыр закрыты. Migrations 017+018: RBAC через `is_admin_user`, RLS scan_events anti-spam с client_token, RLS stores billing protection, audit_stores trigger, atomic RPC для cache/missing_products (race fix), `search_path` на всех SECURITY DEFINER функциях, vault_embeddings закрыт от anon. Code: api/ean-search REMOVED (public proxy), error sanitization во всех api/, xlsx → exceljs (CVE-2023-30533), validation в api/ai. ✅ Vercel autodeploy.
+- **HARDENING Этап 2 ЗАВЕРШЁН (TR TS 022/2011 allergen audit)** — юр.критичный пласт. 8 пробелов в словарях исправлено (gluten/fish/halal/diabetes/vegan/dairy_free + 2 false-positive). Все legacy allergen IDs зачищены: migrations 019+019a+020 (8211 global_products + 8 cache + 9 user profiles), 5 источников в коде (Onboarding/AI prompt/3 import scripts/mock screen). ExternalProductScreen унифицирован на canonical `checkProductFit` — drift источник убран.
+- **HARDENING Этап 3 ЗАВЕРШЁН (Tests + CI + Health)** — 93 unit-тестов (было 0), GitHub Actions CI (lint→test→build), `/api/health` endpoint для мониторинга. Все тесты passed на каждый коммит.
+- **Следующие шаги (по приоритету):**
+  1. 384 non-fake EAN mismatches — ручная проверка (ALPRO/Cadbury/Ferrero мёржи)
+  2. **HARDENING Этап 4** — Offline + RBAC: DB_VERSION migration в `offlineDB.js`, Background Sync direct API, `isAdmin` через `app_metadata` для UI-полировки.
+  3. i18n ProductScreen, EanRecoveryScreen — хардкод русский текст; name_kz в ProductScreen
+  4. Лендинг Stage 2 — глубокая полировка B2C-секций (сценарий у полки, Fit-Check)
+  5. **HARDENING Этап 5** — рефакторинг ProductScreen.jsx (1400+ строк), HomeScreen, ProfileScreen + lazy-routes + Data Moat UI бейдж.
+  6. Data Moat (слабое место #1, оценка 25/100) — data_quality_score, TTL источников, каскад OFF→USDA→AI, КЗ-базы.
