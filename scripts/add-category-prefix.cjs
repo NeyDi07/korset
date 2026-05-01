@@ -1,3 +1,10 @@
+// ══════════════════════════════════════════════════════════════
+// DEPRECATED — This script is superseded by categoryMap.js + normalize-categories.mjs
+// The old approach (prepending Russian category to product name) is replaced
+// by stable English category keys (dairy_eggs, meat, etc.) stored in DB.
+// Do not use this script for new imports. Use normalizeCategory() instead.
+// ══════════════════════════════════════════════════════════════
+
 const fs = require('fs')
 const path = require('path')
 

@@ -1,3 +1,12 @@
+import {
+  checkRateLimit,
+  PROXY_RATE_LIMITS,
+  getRateLimitKey,
+  isValidEAN,
+  fetchWithTimeout,
+  captureApiError,
+} from './_monitoring.js'
+
 const CORS_ORIGINS = [
   'https://korset.app',
   'https://www.korset.app',
@@ -18,18 +27,35 @@ export default async function handler(req, res) {
 
   const ean = String(req.query?.ean || '').trim()
   if (!ean) return res.status(400).json({ error: 'ean query param is required' })
+  if (!isValidEAN(ean)) {
+    return res.status(400).json({ error: 'Invalid EAN format (expected 8–14 digits)' })
+  }
+
+  // ── Rate limit ──
+  const rateKey = getRateLimitKey(req, { authenticated: false })
+  const rateResult = checkRateLimit(rateKey, PROXY_RATE_LIMITS.anonymous)
+  res.setHeader('X-RateLimit-Remaining', String(rateResult.remaining))
+  if (!rateResult.allowed) {
+    return res.status(429).json({ error: 'Rate limit exceeded', retryAfterMs: PROXY_RATE_LIMITS.anonymous.windowMs })
+  }
 
   try {
     const url = `https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(ean)}?fields=product_name,brands,ingredients_text_ru,ingredients_text,allergens_tags,allergens_hierarchy,nutriments,image_front_url,labels_tags,nutriscore_grade,quantity`
-    const response = await fetch(url, {
+    const response = await fetchWithTimeout(url, {
       headers: {
         'User-Agent': 'Korset/1.0 (https://korset.app)',
         From: 'hello@korset.app',
       },
-    })
+    }, 10000)
 
     if (!response.ok) {
-      return res.status(response.status).json({ error: `OFF HTTP ${response.status}` })
+      const status = response.status
+      if (status === 404) {
+        return res.status(404).json({ error: 'Product not found' })
+      }
+      // Log 4xx/5xx from OFF for monitoring but don't leak to client
+      console.error(`[off] OFF API HTTP ${status} for EAN ${ean}`)
+      return res.status(502).json({ error: 'External API unavailable' })
     }
 
     const json = await response.json()
@@ -39,6 +65,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ product: json.product })
   } catch (error) {
+    captureApiError(error, req, { ean })
     console.error('OFF proxy error', error)
     return res.status(500).json({ error: 'Failed to fetch product from Open Food Facts' })
   }

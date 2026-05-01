@@ -4,8 +4,8 @@ import { Virtuoso, VirtuosoGrid } from 'react-virtuoso'
 import {
   checkProductFit,
   formatPrice,
-  CATEGORY_LABELS,
-  CATEGORY_LABELS_KZ,
+  getCategoryLabel,
+  getAllCategoryKeys,
 } from '../utils/fitCheck.js'
 import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useStore } from '../contexts/StoreContext.jsx'
@@ -127,11 +127,12 @@ export default function CatalogScreen() {
   const hasProfile = Boolean(
     profile?.halal || profile?.halalOnly || profile?.allergens?.length || profile?.dietGoals?.length
   )
-  const categoryLabels = lang === 'kz' ? CATEGORY_LABELS_KZ : CATEGORY_LABELS
+  const categoryLabels = (catKey) => getCategoryLabel(catKey, lang)
 
   const categoryOptions = useMemo(() => {
     const dynamic = [...new Set(baseProducts.map((product) => product.category).filter(Boolean))]
-    return ['all', ...(hasProfile ? ['fit'] : []), ...dynamic]
+    const allKeys = getAllCategoryKeys()
+    return ['all', ...(hasProfile ? ['fit'] : []), ...allKeys.filter(k => dynamic.includes(k))]
   }, [baseProducts, hasProfile])
 
   const list = useMemo(() => {
@@ -697,7 +698,7 @@ export default function CatalogScreen() {
                 ? t.catalog.filters.all
                 : option === 'fit'
                   ? t.catalog.filters.fit
-                  : categoryLabels[option] || t.catalog.filters[option] || option}
+                  : categoryLabels(option) || t.catalog.filters[option] || option}
             </button>
           ))}
         </div>

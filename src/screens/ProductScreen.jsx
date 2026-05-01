@@ -1,6 +1,6 @@
 import { useMemo, useState, useRef, useEffect } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
-import { checkProductFit, formatPrice } from '../utils/fitCheck.js'
+import { checkProductFit, formatPrice, getCategoryLabel } from '../utils/fitCheck.js'
 import { getDisplayQuantity, computePricePerUnit } from '../utils/parseQuantity.js'
 import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useAuth } from '../contexts/AuthContext.jsx'
@@ -832,7 +832,7 @@ function SpecsGrid({ product }) {
   // Динамические поля: вкус, категория (подкатегория), alcohol, etc.
   if (product.flavor) specs.push({ label: 'Вкус', value: product.flavor })
   if (s.flavor && !product.flavor) specs.push({ label: 'Вкус', value: s.flavor })
-  if (product.subcategory && !['grocery', 'general'].includes(product.subcategory)) {
+  if (product.subcategory) {
     specs.push({ label: 'Подкатегория', value: product.subcategory })
   }
   if (specs.length === 0) return null
@@ -1108,7 +1108,7 @@ export default function ProductScreen() {
             textOverflow: 'ellipsis',
           }}
         >
-          {product.category || product.subcategory || ''}
+          {getCategoryLabel(product.category, 'ru') || getCategoryLabel(product.subcategory, 'ru') || ''}
         </div>
         <button
           onClick={handleToggleFavorite}

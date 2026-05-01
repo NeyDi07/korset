@@ -1,4 +1,5 @@
 import { Component } from 'react'
+import * as Sentry from '@sentry/react'
 
 export default class ErrorBoundary extends Component {
   constructor(props) {
@@ -12,6 +13,12 @@ export default class ErrorBoundary extends Component {
 
   componentDidCatch(error, errorInfo) {
     console.error('Körset ErrorBoundary:', error, errorInfo)
+    // Send to Sentry (production only, DSN must be configured in main.jsx)
+    Sentry.withScope((scope) => {
+      scope.setExtra('errorInfo', errorInfo)
+      scope.setExtra('location', window.location.href)
+      Sentry.captureException(error)
+    })
   }
 
   render() {

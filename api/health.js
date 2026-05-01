@@ -37,26 +37,46 @@ async function checkSupabase() {
   }
 }
 
+function checkPush() {
+  const hasPublic = !!(process.env.VAPID_PUBLIC_KEY || process.env.VITE_VAPID_PUBLIC_KEY)
+  const hasPrivate = !!process.env.VAPID_PRIVATE_KEY
+  return {
+    configured: hasPublic && hasPrivate,
+    vapidPublic: hasPublic,
+    vapidPrivate: hasPrivate,
+  }
+}
+
+function checkSentry() {
+  return {
+    configured: !!process.env.SENTRY_DSN || !!process.env.NEXT_PUBLIC_SENTRY_DSN,
+    release: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) || 'dev',
+  }
+}
+
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store, max-age=0')
   res.setHeader('Content-Type', 'application/json')
 
   const startedAt = Date.now()
+  const supabaseCheck = await checkSupabase()
   const checks = {
-    supabase: await checkSupabase(),
+    supabase: supabaseCheck,
     openai: {
       configured: !!process.env.OPENAI_API_KEY,
     },
     rag: {
       configured: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
     },
+    push: checkPush(),
+    sentry: checkSentry(),
   }
 
-  const isOk =
-    checks.supabase.status === 'ok' && checks.openai.configured && checks.rag.configured
+  const criticalOk = checks.supabase.status === 'ok' && checks.openai.configured
+  const isOk = criticalOk && checks.rag.configured
 
   const body = {
-    status: isOk ? 'ok' : 'degraded',
+    status: isOk ? 'ok' : criticalOk ? 'degraded' : 'down',
     timestamp: new Date().toISOString(),
     durationMs: Date.now() - startedAt,
     version: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) || 'dev',
@@ -64,5 +84,5 @@ export default async function handler(req, res) {
     checks,
   }
 
-  res.status(isOk ? 200 : 503).end(JSON.stringify(body))
+  res.status(isOk ? 200 : criticalOk ? 503 : 503).end(JSON.stringify(body))
 }

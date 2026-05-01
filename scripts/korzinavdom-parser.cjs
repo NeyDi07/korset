@@ -124,16 +124,18 @@ function extractHalalStatus(detail) {
 function mapToGlobalProduct(item, detail) {
   const ean = `korzinavdom_${detail.quantumNumber || item.quantumNumber}`
   const catPath = detail.catalogPath || item.catalogPath || []
-  const category = catPath.map(c => c.title).filter(Boolean).join(' / ') || null
-  const subcategory = catPath.length > 0 ? catPath[catPath.length - 1].title : null
+  const rawCategory = catPath.map(c => c.title).filter(Boolean).join(' / ') || null
+  const rawSubcategory = catPath.length > 0 ? catPath[catPath.length - 1].title : null
+
+  const norm = globalThis._normalizeCategory(rawCategory, rawSubcategory, detail.productName || item.productName, detail.brand)
 
   return {
     ean,
     name: detail.productName || item.productName,
     name_kz: null,
     brand: detail.brand || null,
-    category,
-    subcategory,
+    category: norm.category,
+    subcategory: norm.subcategory,
     quantity: item.quantumUnit === 'кг' ? 'вес' : item.quantumUnit || null,
     image_url: detail.imagePath || item.imagePath || null,
     images: null,
@@ -243,6 +245,9 @@ async function batchUpsert(sb, products) {
 }
 
 async function main() {
+  const { normalizeCategory } = await import('../src/domain/product/categoryMap.js')
+  globalThis._normalizeCategory = normalizeCategory
+
   const opts = parseArgs()
   if (!SUPABASE_URL || !SUPABASE_KEY) { console.error('Supabase keys not set'); process.exit(1) }
 

@@ -36,8 +36,7 @@ export function createEmptyProduct(overrides = {}) {
     nameKz: overrides.nameKz || overrides.name_kz || null,
     brand: overrides.brand || null,
     category: overrides.category || 'grocery',
-    subcategory: overrides.subcategory || null,
-    quantity: overrides.quantity || null,
+    subcategory: overrides.subcategory || null,    quantity: overrides.quantity || null,
     group: overrides.group || null,
 
     images,

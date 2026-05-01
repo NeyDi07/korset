@@ -584,24 +584,4 @@ export function formatPrice(kzt) {
   return kzt.toLocaleString('ru-RU') + ' ₸'
 }
 
-export const CATEGORY_LABELS = {
-  grocery: 'Продукты',
-  dairy: 'Молочные',
-  snacks: 'Снеки',
-  drinks: 'Напитки',
-  meat: 'Мясо',
-  bakery: 'Выпечка',
-  electronics: 'Электроника',
-  diy: 'Стройматериалы',
-}
-
-export const CATEGORY_LABELS_KZ = {
-  grocery: 'Азық-түлік',
-  dairy: 'Сүт өнімдері',
-  snacks: 'Жұмсақ тағамдар',
-  drinks: 'Сусындар',
-  meat: 'Ет',
-  bakery: 'Нан өнімдері',
-  electronics: 'Электроника',
-  diy: 'Құрылыс материалдары',
-}
+export { getCategoryLabel as getCategoryLabel, getSubcategoryLabel as getSubcategoryLabel, getAllCategoryKeys as getAllCategoryKeys, CATEGORIES as CATEGORY_LABELS_MAP } from '../domain/product/categoryMap.js'

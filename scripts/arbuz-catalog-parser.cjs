@@ -181,6 +181,9 @@ function parseArgs() {
 }
 
 async function main() {
+  const { normalizeCategory } = await import('../src/domain/product/categoryMap.js')
+  globalThis._normalizeCategory = normalizeCategory
+
   const opts = parseArgs()
   if (!SUPABASE_URL || !SUPABASE_KEY) { console.error('Supabase keys not set'); process.exit(1) }
   if (!fs.existsSync(OUT_DIR)) fs.mkdirSync(OUT_DIR, { recursive: true })
@@ -380,7 +383,9 @@ async function main() {
       merge.source_confidence = 90
       merge.is_verified = true
       merge.is_active = true
-      merge.category = existing.category || p.category || 'grocery'
+      const norm = globalThis._normalizeCategory(existing.category || p.category || null, null, p.name, p.brand)
+      merge.category = norm.category
+      merge.subcategory = norm.subcategory
 
       merge.data_quality_score = calcQualityScore({ ...existing, ...merge })
 
@@ -401,7 +406,7 @@ async function main() {
         is_verified: true,
         country_of_origin: p.country,
         manufacturer: p.brand,
-        category: p.category || 'grocery',
+        ...globalThis._normalizeCategory(p.category || null, null, p.name, p.brand),
         specs_json: { arbuz_id: p.arbuzId, arbuz_price: p.price },
         is_active: true,
         created_at: now,

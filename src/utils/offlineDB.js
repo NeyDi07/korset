@@ -19,8 +19,10 @@ const DB_NAME = 'korset-offline-db'
 //
 // v2 (2026-04-28):
 //   - pending_scans: + index 'client_token' (для дедуп flush'а на сервере)
-// ════════════════════════════════════════════════════════════════
-const DB_VERSION = 2
+// v3 (2026-05-01):
+//   - store_catalog: category index remains (now uses normalized keys)
+// ══════════════════════════════════════════════════════════════════
+const DB_VERSION = 3
 
 const STORE_CATALOG = 'store_catalog'
 const STORE_META = 'store_meta'
@@ -73,6 +75,13 @@ function runMigrations(db, oldVersion, newVersion, tx) {
       scanStore.createIndex('client_token', 'client_token', { unique: false })
     }
   }
+
+  // ──────────────────────────────────────────────────────────────
+  // Migration v2 → v3: category index rebuild (normalized keys)
+  // No schema change needed — category index already exists from v1.
+  // The index will automatically reflect updated category values
+  // when the catalog is re-synced from the server.
+  // ──────────────────────────────────────────────────────────────
 }
 
 function getDB() {

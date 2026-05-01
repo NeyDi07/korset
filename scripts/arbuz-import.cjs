@@ -424,7 +424,9 @@ async function processProduct(d, opts, stats) {
     }
   }
 
-  const category = d.categoryName ? mapArbuzCategory(d.categoryName) : (d.category ? mapArbuzCategory(d.category) : 'grocery')
+  const rawCategory = d.categoryName || d.category || null
+  const norm = globalThis._normalizeCategory(rawCategory, null, d.name, d.brandName)
+  const category = norm.category
 
   const product = {
     ean,
@@ -569,6 +571,9 @@ async function processProduct(d, opts, stats) {
 }
 
 async function main() {
+  const { normalizeCategory } = await import('../src/domain/product/categoryMap.js')
+  globalThis._normalizeCategory = normalizeCategory
+
   const opts = parseArgs()
 
   if (!SUPABASE_URL || !SUPABASE_KEY) { console.error('Supabase keys not set'); process.exit(1) }

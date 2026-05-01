@@ -7,7 +7,7 @@ import { useStoreId } from '../contexts/StoreContext.jsx'
 import { buildAuthNavigateState } from '../utils/authFlow.js'
 import { useI18n } from '../utils/i18n.js'
 import { getDisplayQuantity } from '../utils/parseQuantity.js'
-import { checkProductFit, formatPrice, CATEGORY_LABELS } from '../utils/fitCheck.js'
+import { checkProductFit, formatPrice, getCategoryLabel } from '../utils/fitCheck.js'
 import { resolveProductByRef, getDemoProductForEntity } from '../domain/product/resolver.js'
 import { coerceProductEntity } from '../domain/product/normalizers.js'
 import { HeartIcon } from '../components/icons/HeartIcon.jsx'
@@ -281,7 +281,7 @@ export default function UnifiedProductScreen({ mode = 'canonical' }) {
               {product.name}
             </div>
             <div style={{ color: 'var(--text-dim)', fontSize: 12 }}>
-              {product.brand || CATEGORY_LABELS[product.category] || t.product.foodCategory}
+              {product.brand || getCategoryLabel(product.category, 'ru') || t.product.foodCategory}
             </div>
           </div>
           <button
@@ -399,7 +399,7 @@ export default function UnifiedProductScreen({ mode = 'canonical' }) {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
               <InfoCard
                 label={lang === 'kz' ? 'Санат' : 'Категория'}
-                value={CATEGORY_LABELS[product.category] || product.category || '—'}
+                value={getCategoryLabel(product.category, 'ru') || product.category || '—'}
               />
               <InfoCard
                 label={lang === 'kz' ? 'Халал' : 'Халал'}

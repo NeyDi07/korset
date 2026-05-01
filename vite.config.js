@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
+import { sentryVitePlugin } from '@sentry/vite-plugin'
 
 // ЛОКАЛЬНЫЙ DEV С API:
 // `npm run dev` — только Vite (5173). Серверные функции /api/* не работают → в UI будут ошибки на AI/импорт/etc.
@@ -39,9 +40,20 @@ export default defineConfig({
         // Runtime caching options (precache manifest is built by injectManifest above)
       },
     }),
+    // Sentry source maps — enabled only when SENTRY_AUTH_TOKEN is present (CI/production).
+    // Safe to leave in config; if token missing, plugin skips silently.
+    sentryVitePlugin({
+      org: process.env.SENTRY_ORG || 'korset',
+      project: process.env.SENTRY_PROJECT || 'korset-web',
+      authToken: process.env.SENTRY_AUTH_TOKEN,
+      sourcemaps: {
+        filesToDeleteAfterUpload: ['**/*.map'],
+      },
+    }),
   ],
   base: '/',
   build: {
     chunkSizeWarningLimit: 1500,
+    sourcemap: true,
   },
 })
