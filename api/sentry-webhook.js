@@ -10,29 +10,20 @@
 
 const TELEGRAM_API = 'https://api.telegram.org'
 
-function json(body, status = 200) {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { 'Content-Type': 'application/json' },
-  })
-}
-
-function escapeMarkdown(text) {
-  if (!text) return ''
-  return text
-    .replace(/[_*\[\]()~`>#+=|{}.!-]/g, '\\$&')
-    .replace(/\\+/g, '\\+')
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
 }
 
 async function sendTelegram(token, chatId, text) {
-  const url = `${TELEGRAM_API}/bot${token}/sendMessage`
-  const res = await fetch(url, {
+  const res = await fetch(`${TELEGRAM_API}/bot${token}/sendMessage`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       chat_id: chatId,
       text,
-      parse_mode: 'MarkdownV2',
+      parse_mode: 'HTML',
       disable_web_page_preview: true,
     }),
   })
@@ -46,73 +37,62 @@ async function sendTelegram(token, chatId, text) {
 function formatAlert(payload) {
   const event = payload?.event || payload?.data?.event || {}
   const issue = payload?.issue || payload?.data?.issue || {}
-  
+
   const title = event.title || issue.title || 'Unknown error'
   const culprit = event.culprit || event.transaction || '—'
-  const url = issue.url || payload?.url || '—'
+  const issueUrl = issue.url || payload?.url || ''
   const level = (event.level || 'error').toUpperCase()
-  
-  // Count info
   const count = issue.count || event.count || 1
-  const userCount = event.userCount || issue.userCount || '—'
-  const project = payload?.project_name || payload?.project || 'korset-web'
-  
-  // Environment
+  const userCount = event.userCount || issue.userCount || 0
   const env = event.environment || 'production'
-  const release = event.release || '—'
-  
-  // Emojis by level
-  const emojis = {
-    FATAL: '💥',
-    ERROR: '🚨',
-    WARNING: '⚠️',
-    INFO: 'ℹ️',
-  }
-  const emoji = emojis[level] || emojis.ERROR
-  
-  return `${emoji} *Sentry Alert* \| ${escapeMarkdown(project)} \| ${escapeMarkdown(env)}
+  const project = payload?.project_name || payload?.project || 'korset-web'
 
-*${escapeMarkdown(title)}*
-\`${escapeMarkdown(culprit)}\`
+  const emojis = { FATAL: '💥', ERROR: '🚨', WARNING: '⚠️', INFO: 'ℹ️' }
+  const emoji = emojis[level] || '🚨'
 
-*Level:* ${escapeMarkdown(level)}
-*Events:* ${count} \| *Users:* ${userCount}
-*Release:* ${escapeMarkdown(release)}
+  const link = issueUrl ? `\n<a href="${issueUrl}">Open in Sentry</a>` : ''
 
-[Open in Sentry](${escapeMarkdown(url)})`
+  return `${emoji} <b>Sentry ${level}</b> | ${project} | ${env}
+
+<b>${title}</b>
+<code>${culprit}</code>
+
+Events: ${count} | Users: ${userCount}${link}`
 }
 
-export default async function handler(req) {
-  // Only accept POST
-  if (req.method !== 'POST') {
-    return json({ error: 'Method not allowed' }, 405)
-  }
-  
+export default async function handler(req, res) {
+  Object.entries(corsHeaders).forEach(([k, v]) => res.setHeader(k, v))
+
+  if (req.method === 'OPTIONS') return res.status(204).end()
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
+
   const token = process.env.TELEGRAM_BOT_TOKEN
   const chatId = process.env.TELEGRAM_ALERT_CHAT_ID
-  
+
   if (!token || !chatId) {
     console.error('[sentry-webhook] Missing TELEGRAM_BOT_TOKEN or TELEGRAM_ALERT_CHAT_ID')
-    return json({ error: 'Webhook not configured' }, 503)
+    return res.status(200).json({ ok: false, error: 'Webhook not configured' })
   }
-  
-  let payload
+
+  let payload = {}
   try {
-    payload = await req.json()
+    if (typeof req.body === 'string') {
+      payload = JSON.parse(req.body)
+    } else if (req.body && typeof req.body === 'object') {
+      payload = req.body
+    }
   } catch (e) {
-    return json({ error: 'Invalid JSON' }, 400)
+    return res.status(400).json({ error: 'Invalid JSON' })
   }
-  
-  // Support both Sentry webhook v0 and Issue Alert formats
+
   const text = formatAlert(payload)
-  
+
   try {
     await sendTelegram(token, chatId, text)
-    console.log('[sentry-webhook] Alert sent:', payload?.event?.title || payload?.issue?.title)
-    return json({ ok: true })
+    console.log('[sentry-webhook] Sent:', payload?.event?.title || payload?.issue?.title || 'unknown')
+    return res.status(200).json({ ok: true })
   } catch (e) {
-    console.error('[sentry-webhook] Telegram send failed:', e.message)
-    // Return 200 so Sentry doesn't retry infinitely (we logged the error)
-    return json({ ok: false, error: 'Telegram send failed' }, 200)
+    console.error('[sentry-webhook] Telegram error:', e.message)
+    return res.status(200).json({ ok: false, error: 'Telegram send failed' })
   }
 }
