@@ -13,7 +13,7 @@ import {
 import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { useOffline } from '../contexts/OfflineContext.jsx'
-import { useI18n, plural, pluralKz } from '../utils/i18n.js'
+import { useI18n } from '../utils/i18n.js'
 import { getGlobalDemoProducts, getStoreCatalogProducts } from '../utils/storeCatalog.js'
 import { getCatalogFromIndexedDB } from '../utils/offlineDB.js'
 import { buildProductPath, buildComparePath } from '../utils/routes.js'
@@ -211,7 +211,7 @@ export default function CatalogScreen() {
       supabase
         .from('store_products')
         .select(
-          `ean, price_kzt, shelf_zone, stock_status, local_name, global_products!inner(ean, name, name_kz, brand, category, subcategory, quantity, image_url, halal_status, nutriscore)`
+          `ean, price_kzt, shelf_zone, stock_status, local_name, global_products!inner(ean, name, name_kz, brand, category, subcategory, quantity, image_url, halal_status, packaging_type, fat_percent, diet_tags_json, nutriscore)`
         )
         .eq('store_id', storeId)
         .eq('is_active', true)
@@ -240,9 +240,11 @@ export default function CatalogScreen() {
                 shelf: sp.shelf_zone || null,
                 stockStatus: sp.stock_status || null,
                 halalStatus: gp.halal_status || 'unknown',
+                packagingType: gp.packaging_type || null,
+                fatPercent: gp.fat_percent ?? null,
+                dietTags: gp.diet_tags_json ? (typeof gp.diet_tags_json === 'string' ? JSON.parse(gp.diet_tags_json) : gp.diet_tags_json) : [],
                 nutriscore: gp.nutriscore || null,
                 allergens: [],
-                dietTags: [],
                 source: 'server_search',
               }
             })
@@ -324,11 +326,6 @@ export default function CatalogScreen() {
     : lang === 'kz'
       ? 'Körset каталогі'
       : 'Каталог Körset'
-
-  const productCountText =
-    lang === 'kz'
-      ? `${displayList.length} ${pluralKz(displayList.length, 'тауар', 'тауар')}`
-      : `${displayList.length} ${plural(displayList.length, 'товар', 'товара', 'товаров')}`
 
   const searchHint = !isCatalogReady && q.trim() ? t.catalog.loadingSearch : null
 

@@ -65,6 +65,9 @@ export function createEmptyProduct(overrides = {}) {
 
     manufacturer: normalizeManufacturer(overrides.manufacturer, overrides.country),
 
+    packagingType: overrides.packagingType ?? overrides.packaging_type ?? null,
+    fatPercent: normalizeNumber(overrides.fatPercent ?? overrides.fat_percent),
+
     specs: normalizeSpecs(overrides.specs),
 
     priceKzt: normalizeNumber(overrides.priceKzt),

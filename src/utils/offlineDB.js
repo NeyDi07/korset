@@ -145,6 +145,8 @@ export async function saveCatalogToIndexedDB(products, storeId) {
       traces: product.traces || [],
       categoriesTags: product.categoriesTags || product.categories_tags || [],
       halalStatus: product.halalStatus || product.halal_status || 'unknown',
+      packagingType: product.packagingType || product.packaging_type || null,
+      fatPercent: product.fatPercent || product.fat_percent || null,
       nutriscore: product.nutriscore || null,
       nutritionPer100:
         product.nutritionPer100 || product.nutriments_json || product.nutriments || {},

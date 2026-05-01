@@ -449,6 +449,12 @@ async function processProduct(d, opts, stats) {
     is_active: true,
   }
 
+  const extAttrs = globalThis._extractAttributes({ name: product.name, category, halalStatus: product.halal_status, dietTags: [] })
+  if (extAttrs.packaging_type) product.packaging_type = extAttrs.packaging_type
+  if (extAttrs.fat_percent != null) product.fat_percent = extAttrs.fat_percent
+  if (extAttrs.halal_status !== product.halal_status && extAttrs.halal_status !== 'unknown') product.halal_status = extAttrs.halal_status
+  if (extAttrs.diet_tags_json) product.diet_tags_json = extAttrs.diet_tags_json
+
   product.data_quality_score = calcQualityScore(product)
 
   let npcItem = null
@@ -572,7 +578,9 @@ async function processProduct(d, opts, stats) {
 
 async function main() {
   const { normalizeCategory } = await import('../src/domain/product/categoryMap.js')
+  const { extractAllAttributes } = await import('../src/domain/product/attributeExtractor.js')
   globalThis._normalizeCategory = normalizeCategory
+  globalThis._extractAttributes = extractAllAttributes
 
   const opts = parseArgs()
 

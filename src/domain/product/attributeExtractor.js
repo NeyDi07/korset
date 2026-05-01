@@ -1,0 +1,185 @@
+export const PACKAGING_TYPES = {
+  bottle_plastic: { keywords: ['пэт', 'пет', 'п/э', 'пэт-бутылка', 'бут.пет', 'бут.пэт', 'бутылка пет', 'pet'], label: { ru: 'ПЭТ-бутылка', kz: 'ПЭТ-бөтелке' } },
+  bottle_glass: { keywords: ['стекло', 'стеклянная'], label: { ru: 'Стеклянная бутылка', kz: 'Шыны бөтелке' } },
+  can: { keywords: ['ж/б', 'жб', 'жестебанка', 'жесть', 'консервная'], label: { ru: 'Жестяная банка', kz: 'Қаңылтыр банка' } },
+  tetrapak: { keywords: ['тба', 'т/б', 'тетра', 'тетрапак', 'тетра-пак', 'tetra', 'тетра брик'], label: { ru: 'Тетра-пак', kz: 'Тетра-пак' } },
+  pouch: { keywords: ['п/б', 'пб', 'пакет', 'пачка', 'дой-пак', 'дойпак', 'п/пакете', 'flow-pack', 'флоу-пак'], label: { ru: 'Пакет/пачка', kz: 'Пакет' } },
+  tub: { keywords: ['тб', 'туба', 'ведёрко', 'контейнер', 'пл/б'], label: { ru: 'Пластиковый контейнер', kz: 'Пластикалық контейнер' } },
+}
+
+const VALID_PACKAGING_KEYS = new Set(Object.keys(PACKAGING_TYPES))
+
+const PACKAGING_REGEXES = []
+for (const [key, def] of Object.entries(PACKAGING_TYPES)) {
+  for (const kw of def.keywords) {
+    const escaped = kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    PACKAGING_REGEXES.push({ key, regex: new RegExp(`(?:^|\\s|[,./])${escaped}(?:$|\\s|[,./]|\\d)`, 'i') })
+  }
+}
+
+const FAT_PERCENT_REGEX = /(\d{1,2}[,.]?\d?)\s*%/g
+
+const CATEGORY_FAT_HINTS = {
+  dairy_eggs: true,
+  meat: true,
+  deli: true,
+  fish: false,
+  sauces_spices: false,
+  healthy: true,
+  ready_meals: true,
+  personal_care: false,
+  household: false,
+  baby_food: true,
+}
+
+const DIET_PATTERNS = [
+  { tag: 'sugar_free', patterns: [/без\s*сахара/i, /б\.?\s*сах/i, /без\s*сах\./i, /no\s*sugar/i, /sugar\s*free/i, /без\s*добавлен.*сахар/i] },
+  { tag: 'gluten_free', patterns: [/без\s*глютен/i, /безглютен/i, /gluten\s*free/i, /без\s*глют/i] },
+  { tag: 'lactose_free', patterns: [/без\s*лактоз/i, /безлактозн/i, /лактоз\s*фри/i, /lactose\s*free/i] },
+  { tag: 'vegan', patterns: [/\bvegan\b/i] },
+  { tag: 'vegetarian', patterns: [/\bвегетариан/i, /\bvegetarian\b/i] },
+  { tag: 'fitness', patterns: [/\bфитнес\b/i, /\bfitness\b/i, /\bспорт\b/i, /\bprot?ein\b/i, /\bпротеин\b/i, /\bдиетич/i] },
+  { tag: 'organic', patterns: [/\borganic\b/i, /\bорганик\b/i, /\bэко\s/i, /\beco\s/i, /\bбио\s/i, /\bbio\s/i, /\bнатуральн/i] },
+  { tag: 'kosher', patterns: [/\bkosher\b/i, /\bкошерн/i] },
+  { tag: 'diabetic', patterns: [/\bдиабетич/i, /\bdiabetic\b/i] },
+  { tag: 'low_calorie', patterns: [/\bнизкокалор/i, /\bмало калор/i, /\blow\s*cal/i] },
+  { tag: 'low_fat', patterns: [/\bнизк.*жирн/i, /\bобезжирен/i, /\blow\s*fat\b/i, /\b0\s*%?\s*жир/i] },
+  { tag: 'enriched', patterns: [/\bобогащ[ёе]н/i, /\bfortified\b/i, /\bс\s*витамин/i] },
+]
+
+const HALAL_PATTERNS = [
+  /\bhalal\b/i,
+  /\bхаляль\b/i,
+  /\bхалял\b/i,
+  /\bхалал\b/i,
+  /\bhalal\s*certified\b/i,
+  /\bхалал\s*серт/i,
+  /\bхаляльн/i,
+]
+
+export function extractPackaging(name) {
+  if (!name) return null
+  const upper = name.toUpperCase()
+
+  const SUFFIX_PRIORITY = ['КНВРТ', 'ТБА', 'Т/Б', 'Ж/Б', 'ЖБ', 'П/Б', 'ПБ', 'ПЭТ', 'ПЕТ', 'П/Э', 'ТБ', 'С/Б']
+  const SUFFIX_WORD_CHECK = new Set(['СТБ', 'СТ.Б'])
+  for (const suffix of SUFFIX_PRIORITY) {
+    const idx = upper.indexOf(suffix)
+    if (idx >= 0) {
+      const before = idx > 0 ? upper[idx - 1] : ' '
+      const after = idx + suffix.length < upper.length ? upper[idx + suffix.length] : ' '
+      if (before === ' ' || before === ',' || before === '/' || before === '-' || before === '(') {
+        if (after === ' ' || after === '' || after === ',' || after === '/' || after === '-' || after === ')' || /\d/.test(after)) {
+          if (suffix === 'Ж/Б' || suffix === 'ЖБ') {
+            if (/консерв|туш[ёе]|сардин|скумбр|шпрот|кильк|горбуш|сайр|икр|печен|сгущён|сгущен|фасол|кублей|чахохб|кофе|напиток|пиво|энерг|кол|пепси|фант|лимон|сидр|джин|тоник|персик|оливк|анчо|тун[её]|рыб|горош|кукуруз|гриб|томат|закуск|маринад|сироп/i.test(name)) return 'can'
+            if (/фрукт|ягод|овощ|маслин|капер|шпинат|баклажан|перц|патиссон|кабачок|томат|паштет|сосиск|сард/i.test(name)) return 'can'
+            return 'bottle_glass'
+          }
+          if (suffix === 'ТБ') return 'tub'
+          if (suffix === 'КНВРТ') return 'pouch'
+          if (suffix === 'ТБА' || suffix === 'Т/Б') return 'tetrapak'
+          if (suffix === 'П/Б' || suffix === 'ПБ') return 'pouch'
+          if (suffix === 'ПЭТ' || suffix === 'ПЕТ' || suffix === 'П/Э') return 'bottle_plastic'
+          if (suffix === 'С/Б') return 'bottle_glass'
+        }
+      }
+    }
+  }
+
+  for (const suffix of SUFFIX_WORD_CHECK) {
+    const wordRegex = new RegExp(`(?:^|\\s)${suffix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?:\\s|$|,|\\.|\\d)`, 'i')
+    if (wordRegex.test(name)) {
+      return 'bottle_glass'
+    }
+  }
+
+  for (const { key, regex } of PACKAGING_REGEXES) {
+    if (regex.test(name)) return key
+  }
+
+  return null
+}
+
+export function extractFatPercent(name, category) {
+  if (!name) return null
+
+  if (category && !CATEGORY_FAT_HINTS[category]) return null
+
+  const matches = []
+  let match
+  FAT_PERCENT_REGEX.lastIndex = 0
+  while ((match = FAT_PERCENT_REGEX.exec(name)) !== null) {
+    const raw = match[1].replace(',', '.')
+    const val = parseFloat(raw)
+    if (!isNaN(val) && val >= 0 && val <= 100) {
+      matches.push({ value: val, index: match.index, fullMatch: match[0] })
+    }
+  }
+
+  if (matches.length === 0) return null
+
+  const fatContextBefore = /(?:жир|жирн|fat|масл|сливочн|сливк|сметан|кефир|йогурт|творог|сыр|молочн|слив|морож|крем|кисломол|м\.д\.ж|мдж)/i
+  const fatContextAfter = /(?:жир|жирн|fat)/i
+
+  for (const m of matches) {
+    const before = name.slice(Math.max(0, m.index - 30), m.index)
+    const after = name.slice(m.index + m.fullMatch.length, m.index + m.fullMatch.length + 20)
+    if (fatContextBefore.test(before) || fatContextAfter.test(after)) {
+      return m.value
+    }
+  }
+
+  if (category && CATEGORY_FAT_HINTS[category] === true) {
+  if (matches.length === 1) {
+    if (matches[0].value >= 0.5) return matches[0].value
+    if (fatContextBefore.test(name.slice(0, matches[0].index)) || fatContextAfter.test(name.slice(matches[0].index + matches[0].fullMatch.length))) {
+      return matches[0].value
+    }
+    return null
+  }
+
+  const sorted = [...matches].sort((a, b) => a.index - b.index)
+    const first = sorted[0]
+    const before = name.slice(Math.max(0, first.index - 15), first.index)
+    const weightPattern = /\d{2,5}\s*[гк]/
+    if (!weightPattern.test(before)) return first.value
+  }
+
+  return null
+}
+
+export function extractDietTags(name, existingTags = []) {
+  if (!name) return [...new Set(existingTags)]
+  const tags = [...existingTags]
+  for (const { tag, patterns } of DIET_PATTERNS) {
+    if (tags.includes(tag)) continue
+    if (patterns.some((p) => p.test(name))) tags.push(tag)
+  }
+  return [...new Set(tags)]
+}
+
+export function extractHalalFromName(name, currentStatus = 'unknown') {
+  if (!name) return currentStatus
+  if (currentStatus === 'yes') return 'yes'
+  if (currentStatus === 'no') return 'no'
+  if (HALAL_PATTERNS.some((p) => p.test(name))) return 'yes'
+  return currentStatus
+}
+
+export function extractAllAttributes({ name, category, halalStatus, dietTags }) {
+  const packaging = extractPackaging(name)
+  const fatPercent = extractFatPercent(name, category)
+  const newDietTags = extractDietTags(name, dietTags || [])
+  const newHalalStatus = extractHalalFromName(name, halalStatus || 'unknown')
+
+  return {
+    packaging_type: packaging,
+    fat_percent: fatPercent,
+    diet_tags_json: newDietTags.length > 0 ? JSON.stringify([...new Set(newDietTags)]) : null,
+    halal_status: newHalalStatus,
+  }
+}
+
+export function isValidPackagingType(value) {
+  return value === null || VALID_PACKAGING_KEYS.has(value)
+}

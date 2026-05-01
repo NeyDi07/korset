@@ -165,7 +165,14 @@ function mapToGlobalProduct(item, detail) {
     is_active: true,
     image_source: inferSource(detail.imagePath || item.imagePath),
   }
-}
+
+  const attrs = globalThis._extractAttributes({ name: mapped.name, category: norm.category, halalStatus: mapped.halal_status, dietTags: [] })
+  if (attrs.packaging_type) mapped.packaging_type = attrs.packaging_type
+  if (attrs.fat_percent != null) mapped.fat_percent = attrs.fat_percent
+  if (attrs.halal_status !== mapped.halal_status && attrs.halal_status !== 'unknown') mapped.halal_status = attrs.halal_status
+  if (attrs.diet_tags_json) mapped.diet_tags_json = attrs.diet_tags_json
+
+  return mapped
 
 function calcQualityScore(p) {
   let s = 0
@@ -246,7 +253,9 @@ async function batchUpsert(sb, products) {
 
 async function main() {
   const { normalizeCategory } = await import('../src/domain/product/categoryMap.js')
+  const { extractAllAttributes } = await import('../src/domain/product/attributeExtractor.js')
   globalThis._normalizeCategory = normalizeCategory
+  globalThis._extractAttributes = extractAllAttributes
 
   const opts = parseArgs()
   if (!SUPABASE_URL || !SUPABASE_KEY) { console.error('Supabase keys not set'); process.exit(1) }

@@ -72,11 +72,30 @@ Set in **Vercel Environment Variables** → Production.
 | API | 500 errors, unhandled exceptions, external API failures |
 | Performance | Web Vitals (Vercel Analytics), Sentry traces (sampled 10%) |
 
-### Sentry Alert Rules (Recommended)
+### Telegram Alerts (Primary — instant push notifications)
 
-1. **New Issue** → Slack / Email (immediate)
-2. **Issue > 10 events / hour** → PagerDuty / Telegram (urgent)
-3. **Regression** → Slack (immediate)
+**Setup:**
+1. Bot: @BotFather → `/newbot` → `korset_alerts_bot` → save token
+2. Chat ID: Message bot `/start` → check `https://api.telegram.org/bot<TOKEN>/getUpdates` → extract `chat.id`
+3. Vercel env vars: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_ALERT_CHAT_ID`
+4. Sentry: Settings → Alerts → Create Rule → Webhook → `https://korset.app/api/sentry-webhook`
+
+**Alert Rules:**
+| Rule | Trigger | Frequency | Message |
+|------|---------|-----------|---------|
+| New Issue | Any new error | Each issue | 🚨 Error title + culprit + Sentry URL |
+| Spike | >10 events / 1h | Max 1 per 30min | 💥 Error + event count + user count |
+
+**Environment Variables:**
+```
+TELEGRAM_BOT_TOKEN=8607158022:AAGcqjuIKLNJ17asgp1FswZbZkM5jN3Qe7I
+TELEGRAM_ALERT_CHAT_ID=1003080635
+```
+
+**Endpoint:** `POST https://korset.app/api/sentry-webhook`
+- Formats Sentry JSON → MarkdownV2 Telegram message
+- Handles both Issue Alert and Event formats
+- Returns 200 even if Telegram fails (prevents Sentry retry loops)
 
 ## Common Issues & Playbook
 

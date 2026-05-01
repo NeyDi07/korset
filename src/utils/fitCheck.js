@@ -93,6 +93,7 @@ export function checkProductFit(product, profile) {
   const nutrition = product.nutritionPer100 || product.nutriments || product.nutriments_json || {}
   const sugar100g = nutrition.sugar ?? nutrition.sugars ?? nutrition.sugars_100g
   const protein100g = nutrition.protein ?? nutrition.proteins ?? nutrition.proteins_100g
+  const fatPercent = product.fatPercent ?? product.fat_percent ?? null
 
   // 1. Structured Allergens
   if (userAllergens.length > 0) {
@@ -401,6 +402,42 @@ export function checkProductFit(product, profile) {
       severity: 'caution',
       category: 'diet',
       text: 'Содержит добавленный сахар',
+      source: 'structured',
+    })
+  }
+  if (goals.includes('low_fat') && fatPercent != null && fatPercent > 20) {
+    addReason({
+      severity: 'caution',
+      category: 'diet',
+      text: `Высокая жирность: ${fatPercent}%`,
+      textKz: `Жоғары майлылық: ${fatPercent}%`,
+      source: 'structured',
+    })
+  }
+  if (goals.includes('low_fat') && fatPercent != null && fatPercent <= 5) {
+    addReason({
+      severity: 'safe',
+      category: 'diet',
+      text: `Низкая жирность: ${fatPercent}%`,
+      textKz: `Төмен майлылық: ${fatPercent}%`,
+      source: 'structured',
+    })
+  }
+  if (goals.includes('sugar_free') && dietTags.includes('sugar_free')) {
+    addReason({
+      severity: 'safe',
+      category: 'diet',
+      text: 'Без сахара ✓',
+      textKz: 'Қантсыз ✓',
+      source: 'structured',
+    })
+  }
+  if (goals.includes('gluten_free') && dietTags.includes('gluten_free')) {
+    addReason({
+      severity: 'safe',
+      category: 'diet',
+      text: 'Без глютена ✓',
+      textKz: 'Глютенсіз ✓',
       source: 'structured',
     })
   }

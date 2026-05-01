@@ -103,8 +103,9 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 | 017-018 | Security hardening + DB foundation (RLS, audit, atomic RPC, tsvector) | ✅ применены |
 | 019-021 | Allergen normalization, app_metadata sync, admin trigger | ✅ применены |
 | 022 | idx_users_auth_id (RLS perf) | ✅ создана, применить через SQL Editor |
-| 022b | category normalization (category_raw/subcategory_raw + CHECK + index) | ⚠️ Шаги 1-2 применены (колонки), Шаги 3-4 (CHECK+index) нужно применить отдельно |
+| 022b | category normalization (category_raw/subcategory_raw + CHECK + index) | ✅ применена |
 | 023 | Fix SECURITY DEFINER on analytics views | ✅ применена |
+| 024 | Attribute extraction (packaging_type + fat_percent + quality score update) | ✅ применена, backfill выполнен |
 
 ---
 
@@ -290,17 +291,27 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 
 ## ТЕКУЩИЙ ФОКУС (2026-05-01)
 
-- **Нормализация категорий — Этап 1 ПОЧТИ ЗАВЕРШЁН** (код готов, ждёт применения миграции):
-  - `src/domain/product/categoryMap.js` — 18 категорий + ~85 подкатегорий, RAW_CATEGORY_MAP (~170), RAW_SUBCATEGORY_MAP (~90), NAME_KEYWORDS (~280), classifyByName(), normalizeCategory(), VALID_CATEGORIES, GENERIC_CATEGORIES
-  - `scripts/normalize-categories.mjs` — 3-pass нормализация (--dry-run/--live), 7038/7046 classified, 8 deactivate
-  - `supabase/migrations/022_category_normalization.sql` — category_raw/subcategory_raw, CHECK constraint, index
-  - Pipeline скрипты обновлены: arbuz-import.cjs, arbuz-catalog-parser.cjs, korzinavdom-parser.cjs — используют `normalizeCategory()` из categoryMap.js через dynamic import
-  - `scripts/add-category-prefix.cjs` — DEPRECATED
-  - Frontend: CatalogScreen, ProductScreen, UnifiedProductScreen, fitCheck.js — используют getCategoryLabel/getAllCategoryKeys
-  - offlineDB.js DB_VERSION=3
-  - **БЛОКЕР: Migration 022 нужно применить вручную через Supabase SQL Editor** → затем `node scripts/normalize-categories.mjs --live`
-  - **ПОСЛЕ МИГРАЦИИ:** проверить `SELECT category, count(*) FROM global_products WHERE is_active=true GROUP BY category` — должно быть 18 категорий
-- **СЛЕДУЮЩИЙ ФОКУС (после миграции):** Этап 2 — извлечение данных из названий (упаковка, жирность %, диета, халяль)
+- **Этап 2 — Извлечение атрибутов из названий — ЗАВЕРШЕНО:**
+  - `src/domain/product/attributeExtractor.js` — rule-based extraction: packaging_type (6 типов), fat_percent (numeric), diet_tags (12 паттернов), halal (из названия)
+  - `supabase/migrations/024_attribute_extraction.sql` — применена: packaging_type + fat_percent + CHECK + indexes + updated calc_data_quality_score
+  - `scripts/extract-attributes.mjs` — backfill выполнен --live: 866 обновлено, 0 ошибок
+  - Результат: 195 упаковок (can 50, pouch 68, bottle_glass 38, bottle_plastic 35, tub 4), 689 fat_percent
+  - Pipeline обновлены: arbuz-import, arbuz-catalog-parser, korzinavdom-parser
+  - Frontend: model.js, normalizers.js, fitCheck.js (low_fat + diet positive), offlineDB.js, StoreContext (LIGHT_FIELDS + FULL_FIELDS), storeCatalog.js, CatalogScreen
+- **Этап 1 — Категории ЗАВЕРШЁН:** 18 категорий, 7008 active, CHECK constraint + index применены
+- **СЛЕДУЮЩИЙ ФОКУС (после миграции 024):** Этап 3 — нормализация названий (Title Case, мусор, двойной вес)
+
+## АТРИБУТЫ ПРОДУКТОВ — EXTRACTION RULES
+
+| Атрибут | Источник | Хранение | Ожидаемое кол-во |
+|---------|----------|----------|-------------------|
+| packaging_type | Суффиксы (КНВРТ, ТБА, Ж/Б, П/Б, ПЭТ, СТБ) | `packaging_type text` CHECK 6 типов | ~126 |
+| fat_percent | Цифра+`%` в названии + category hint | `fat_percent numeric(4,1)` | ~590 |
+| diet_tags | Ключевые слова (БЕЗ САХАРА, безглютен, vegan, organic) | `diet_tags_json` (уже есть, append) | ~94 |
+| halal_status | HALAL/ХАЛЯЛЬ в названии | `halal_status` (уже есть, upgrade unknown→yes) | ~10 |
+
+6 типов упаковки: bottle_plastic, bottle_glass, can, tetrapak, pouch, tub
+13 diet-тегов: sugar_free, gluten_free, lactose_free, vegan, vegetarian, fitness, organic, kosher, diabetic, low_calorie, low_fat, enriched
 
 ## КЛЮЧЕВЫЕ ПРОБЛЕМЫ НАЗВАНИЙ (анализ 7046 продуктов)
 

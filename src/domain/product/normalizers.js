@@ -84,6 +84,8 @@ export function normalizeGlobalProduct(row, storeOverlay = null) {
       traces: normalizeStringArray(parseJson(row.traces_json, [])),
       categoriesTags: normalizeStringArray(parseJson(row.categories_tags_json, [])),
       halalStatus: row.halal_status,
+      packagingType: row.packaging_type || null,
+      fatPercent: row.fat_percent ?? null,
       nutritionPer100: normalizeNutrition(row.nutriments_json),
       alcohol100g: row.alcohol_100g ?? null,
       saturatedFat100g: row.saturated_fat_100g ?? null,

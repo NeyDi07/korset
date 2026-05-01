@@ -182,7 +182,9 @@ function parseArgs() {
 
 async function main() {
   const { normalizeCategory } = await import('../src/domain/product/categoryMap.js')
+  const { extractAllAttributes } = await import('../src/domain/product/attributeExtractor.js')
   globalThis._normalizeCategory = normalizeCategory
+  globalThis._extractAttributes = extractAllAttributes
 
   const opts = parseArgs()
   if (!SUPABASE_URL || !SUPABASE_KEY) { console.error('Supabase keys not set'); process.exit(1) }
@@ -387,6 +389,12 @@ async function main() {
       merge.category = norm.category
       merge.subcategory = norm.subcategory
 
+      const attrs = globalThis._extractAttributes({ name: merge.name, category: norm.category, halalStatus: merge.halal_status, dietTags: existing.diet_tags_json || [] })
+      if (attrs.packaging_type) merge.packaging_type = attrs.packaging_type
+      if (attrs.fat_percent != null) merge.fat_percent = attrs.fat_percent
+      if (attrs.halal_status !== merge.halal_status && attrs.halal_status !== 'unknown') merge.halal_status = attrs.halal_status
+      if (attrs.diet_tags_json) merge.diet_tags_json = attrs.diet_tags_json
+
       merge.data_quality_score = calcQualityScore({ ...existing, ...merge })
 
       toUpsert.push(merge)
@@ -412,6 +420,11 @@ async function main() {
         created_at: now,
         updated_at: now,
       }
+      const attrs = globalThis._extractAttributes({ name: newProduct.name, category: newProduct.category, halalStatus: newProduct.halal_status, dietTags: [] })
+      if (attrs.packaging_type) newProduct.packaging_type = attrs.packaging_type
+      if (attrs.fat_percent != null) newProduct.fat_percent = attrs.fat_percent
+      if (attrs.halal_status !== newProduct.halal_status && attrs.halal_status !== 'unknown') newProduct.halal_status = attrs.halal_status
+      if (attrs.diet_tags_json) newProduct.diet_tags_json = attrs.diet_tags_json
       newProduct.data_quality_score = calcQualityScore(newProduct)
 
       toUpsert.push(newProduct)

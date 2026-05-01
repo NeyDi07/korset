@@ -25,10 +25,10 @@ export const STORE_KEY = 'korset_store_slug'
 const STORE_CACHE_PREFIX = 'korset_store_data_'
 
 const LIGHT_FIELDS =
-  'ean, name, name_kz, brand, category, subcategory, quantity, image_url, allergens_json, diet_tags_json, halal_status, nutriscore, group'
+  'ean, name, name_kz, brand, category, subcategory, quantity, image_url, allergens_json, diet_tags_json, halal_status, packaging_type, fat_percent, nutriscore, group'
 
 const FULL_FIELDS =
-  'ean, name, name_kz, brand, category, subcategory, quantity, description, ingredients_raw, ingredients_kz, allergens_json, diet_tags_json, tags_json, additives_tags_json, traces_json, categories_tags_json, halal_status, nutriscore, nutriments_json, alcohol_100g, saturated_fat_100g, nova_group, image_ingredients_url, image_nutrition_url, image_url, images, manufacturer, country_of_origin, specs_json, data_quality_score, source_primary, source_confidence, is_verified, needs_review, group, alternate_eans'
+  'ean, name, name_kz, brand, category, subcategory, quantity, description, ingredients_raw, ingredients_kz, allergens_json, diet_tags_json, tags_json, additives_tags_json, traces_json, categories_tags_json, halal_status, packaging_type, fat_percent, nutriscore, nutriments_json, alcohol_100g, saturated_fat_100g, nova_group, image_ingredients_url, image_nutrition_url, image_url, images, manufacturer, country_of_origin, specs_json, data_quality_score, source_primary, source_confidence, is_verified, needs_review, group, alternate_eans'
 
 const INITIAL_PAGE_SIZE = 50
 
@@ -53,6 +53,8 @@ function mapRowToProduct(row) {
     traces: parseJson(gp.traces_json, []),
     categoriesTags: parseJson(gp.categories_tags_json, []),
     halalStatus: gp.halal_status || 'unknown',
+    packagingType: gp.packaging_type || null,
+    fatPercent: gp.fat_percent ?? null,
     nutriscore: gp.nutriscore,
     nutritionPer100: parseJson(gp.nutriments_json, {}),
     alcohol100g: gp.alcohol_100g ?? null,
