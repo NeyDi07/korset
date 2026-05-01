@@ -5,7 +5,10 @@ import {
   checkProductFit,
   formatPrice,
   getCategoryLabel,
+  getSubcategoryLabel,
   getAllCategoryKeys,
+  getSubcategoryKeys,
+  CATEGORY_ICONS,
 } from '../utils/fitCheck.js'
 import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useStore } from '../contexts/StoreContext.jsx'
@@ -93,7 +96,6 @@ export default function CatalogScreen() {
   const { storeId, currentStore, catalogProducts, isCatalogReady } = useStore()
   const { isOnline } = useOffline()
   const [q, setQ] = useState('')
-  const [filter, setFilter] = useState('all')
   const [sort, setSort] = useState('fit')
   const [viewMode, setViewMode] = useState(
     () => sessionStorage.getItem('korset_catalog_view') || 'list'
@@ -106,6 +108,11 @@ export default function CatalogScreen() {
   const [offlineCatalog, setOfflineCatalog] = useState([])
   const [serverResults, setServerResults] = useState([])
   const [isSearchingServer, setIsSearchingServer] = useState(false)
+
+  const [selectedCategory, setSelectedCategory] = useState(null)
+  const [selectedSubcategory, setSelectedSubcategory] = useState(null)
+
+  const isSearching = q.trim().length > 0
 
   useEffect(() => {
     if (!isOnline && (!catalogProducts || catalogProducts.length === 0)) {
@@ -124,27 +131,49 @@ export default function CatalogScreen() {
     return getGlobalDemoProducts()
   }, [storeId, catalogProducts, currentStore, isOnline, offlineCatalog])
 
-  const hasProfile = Boolean(
-    profile?.halal || profile?.halalOnly || profile?.allergens?.length || profile?.dietGoals?.length
-  )
-  const categoryLabels = (catKey) => getCategoryLabel(catKey, lang)
+  const categoryCountMap = useMemo(() => {
+    const map = {}
+    for (const p of baseProducts) {
+      if (p.category) {
+        map[p.category] = (map[p.category] || 0) + 1
+      }
+    }
+    return map
+  }, [baseProducts])
 
-  const categoryOptions = useMemo(() => {
-    const dynamic = [...new Set(baseProducts.map((product) => product.category).filter(Boolean))]
-    const allKeys = getAllCategoryKeys()
-    return ['all', ...(hasProfile ? ['fit'] : []), ...allKeys.filter(k => dynamic.includes(k))]
-  }, [baseProducts, hasProfile])
+  const activeCategoryKeys = useMemo(
+    () => getAllCategoryKeys().filter((k) => categoryCountMap[k]),
+    [categoryCountMap]
+  )
+
+  const subcategoryCountMap = useMemo(() => {
+    if (!selectedCategory) return {}
+    const map = {}
+    for (const p of baseProducts) {
+      if (p.category === selectedCategory && p.subcategory) {
+        map[p.subcategory] = (map[p.subcategory] || 0) + 1
+      }
+    }
+    return map
+  }, [baseProducts, selectedCategory])
+
+  const activeSubcategoryKeys = useMemo(() => {
+    if (!selectedCategory) return []
+    return getSubcategoryKeys(selectedCategory).filter((k) => subcategoryCountMap[k])
+  }, [selectedCategory, subcategoryCountMap])
 
   const list = useMemo(() => {
     let arr = [...baseProducts]
-    if (filter === 'fit') {
-      arr = arr.filter((product) => checkProductFit(product, profile).fits)
-    } else if (filter !== 'all') {
-      arr = arr.filter((product) => product.category === filter)
+
+    if (!isSearching && selectedCategory) {
+      arr = arr.filter((product) => product.category === selectedCategory)
+      if (selectedSubcategory) {
+        arr = arr.filter((product) => product.subcategory === selectedSubcategory)
+      }
     }
 
-    const query = q.trim().toLowerCase()
-    if (query) {
+    if (isSearching) {
+      const query = q.trim().toLowerCase()
       arr = arr.filter((product) => {
         const haystack =
           `${product.name} ${product.nameKz || ''} ${product.brand || ''} ${(product.ingredients || '').slice(0, 200)} ${(product.tags || []).join(' ')}`.toLowerCase()
@@ -162,9 +191,9 @@ export default function CatalogScreen() {
     })
 
     return arr
-  }, [baseProducts, filter, profile, q, sort])
+  }, [baseProducts, selectedCategory, selectedSubcategory, profile, q, sort, isSearching])
 
-  const clientEmpty = q.trim().length > 0 && list.length === 0
+  const clientEmpty = isSearching && list.length === 0
 
   useEffect(() => {
     if (!isOnline || !q.trim() || !storeId) {
@@ -182,7 +211,7 @@ export default function CatalogScreen() {
       supabase
         .from('store_products')
         .select(
-          `ean, price_kzt, shelf_zone, stock_status, local_name, global_products!inner(ean, name, name_kz, brand, category, quantity, image_url, halal_status, nutriscore)`
+          `ean, price_kzt, shelf_zone, stock_status, local_name, global_products!inner(ean, name, name_kz, brand, category, subcategory, quantity, image_url, halal_status, nutriscore)`
         )
         .eq('store_id', storeId)
         .eq('is_active', true)
@@ -203,6 +232,7 @@ export default function CatalogScreen() {
                 nameKz: gp.name_kz || null,
                 brand: gp.brand || null,
                 category: gp.category || null,
+                subcategory: gp.subcategory || null,
                 quantity: gp.quantity || null,
                 image: getImageUrl(gp.image_url) || null,
                 images: [],
@@ -279,6 +309,16 @@ export default function CatalogScreen() {
     [currentStore, navigate]
   )
 
+  const handleCategoryClick = useCallback((catKey) => {
+    setSelectedCategory(catKey)
+    setSelectedSubcategory(null)
+  }, [])
+
+  const handleBackToCategories = useCallback(() => {
+    setSelectedCategory(null)
+    setSelectedSubcategory(null)
+  }, [])
+
   const storeTitle = currentStore
     ? currentStore.name
     : lang === 'kz'
@@ -291,6 +331,9 @@ export default function CatalogScreen() {
       : `${displayList.length} ${plural(displayList.length, 'товар', 'товара', 'товаров')}`
 
   const searchHint = !isCatalogReady && q.trim() ? t.catalog.loadingSearch : null
+
+  const showCategories = !isSearching && !selectedCategory
+  const showSubcategories = !isSearching && selectedCategory
 
   const renderGridItem = useCallback(
     (index, product) => {
@@ -589,24 +632,76 @@ export default function CatalogScreen() {
     <div className="screen" style={{ display: 'flex', flexDirection: 'column', height: '100dvh' }}>
       <div style={{ padding: '16px 20px 0', flexShrink: 0 }}>
         <div style={{ marginBottom: 16 }}>
-          <div
-            style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 28,
-              fontWeight: 900,
-              color: 'var(--text)',
-              lineHeight: 1,
-            }}
-          >
-            {t.catalog.title}
-          </div>
-          <div
-            style={{ fontSize: 12, color: 'rgba(167,139,250,0.7)', marginTop: 6, fontWeight: 600 }}
-          >
-            {storeTitle} ·{' '}
-            {!isCatalogReady && catalogProducts.length === 0
-              ? t.catalog.loading
-              : `${productCountText}${!isCatalogReady ? ' · ' + t.catalog.loadingMore : ''}${isSearchingServer ? ' · ' + t.catalog.searchingServer : ''}`}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            {showSubcategories && (
+              <button
+                onClick={handleBackToCategories}
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 12,
+                  background: 'var(--glass-muted)',
+                  border: '1px solid var(--glass-soft-border)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  color: 'var(--text-soft)',
+                  flexShrink: 0,
+                }}
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
+                  arrow_back
+                </span>
+              </button>
+            )}
+            <div style={{ flex: 1 }}>
+              <div
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 28,
+                  fontWeight: 900,
+                  color: 'var(--text)',
+                  lineHeight: 1,
+                }}
+              >
+                {showSubcategories ? getCategoryLabel(selectedCategory, lang) : t.catalog.title}
+              </div>
+              <div
+                style={{
+                  fontSize: 12,
+                  color: 'rgba(167,139,250,0.7)',
+                  marginTop: 6,
+                  fontWeight: 600,
+                }}
+              >
+                {storeTitle}
+                {!isSearching && showSubcategories && (
+                  <>
+                    {' '}
+                    · {categoryCountMap[selectedCategory] || 0} {t.catalog.productsIn}
+                  </>
+                )}
+                {!isSearching && showCategories && (
+                  <>
+                    {' '}
+                    ·{' '}
+                    {!isCatalogReady && catalogProducts.length === 0
+                      ? t.catalog.loading
+                      : `${baseProducts.length} ${t.catalog.productsCount}${!isCatalogReady ? ' · ' + t.catalog.loadingMore : ''}`}
+                  </>
+                )}
+                {isSearching && (
+                  <>
+                    {' '}
+                    ·{' '}
+                    {isSearchingServer
+                      ? t.catalog.searchingServer
+                      : `${displayList.length} ${t.catalog.productsCount}`}
+                  </>
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -650,83 +745,109 @@ export default function CatalogScreen() {
               </div>
             )}
           </div>
-          <button
-            onClick={() => {
-              const next = viewMode === 'list' ? 'grid' : 'list'
-              setViewMode(next)
-              sessionStorage.setItem('korset_catalog_view', next)
-            }}
-            style={{
-              width: 44,
-              height: 44,
-              borderRadius: 14,
-              background: 'var(--glass-muted)',
-              border: '1px solid var(--glass-soft-border)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              color: 'var(--text-soft)',
-            }}
-          >
-            <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
-              {viewMode === 'list' ? 'grid_view' : 'view_list'}
-            </span>
-          </button>
+          {!showCategories && (
+            <button
+              onClick={() => {
+                const next = viewMode === 'list' ? 'grid' : 'list'
+                setViewMode(next)
+                sessionStorage.setItem('korset_catalog_view', next)
+              }}
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: 14,
+                background: 'var(--glass-muted)',
+                border: '1px solid var(--glass-soft-border)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                color: 'var(--text-soft)',
+              }}
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
+                {viewMode === 'list' ? 'grid_view' : 'view_list'}
+              </span>
+            </button>
+          )}
         </div>
 
-        <div
-          style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 4, marginBottom: 10 }}
-        >
-          {categoryOptions.map((option) => (
+        {showSubcategories && activeSubcategoryKeys.length > 1 && (
+          <div
+            style={{
+              display: 'flex',
+              gap: 8,
+              overflowX: 'auto',
+              paddingBottom: 4,
+              marginBottom: 10,
+            }}
+          >
             <button
-              key={option}
-              onClick={() => setFilter(option)}
+              onClick={() => setSelectedSubcategory(null)}
               style={{
                 padding: '8px 12px',
                 borderRadius: 999,
                 whiteSpace: 'nowrap',
                 cursor: 'pointer',
-                background: filter === option ? 'var(--badge-bg)' : 'var(--glass-muted)',
-                border: `1px solid ${filter === option ? 'var(--badge-border)' : 'var(--glass-soft-border)'}`,
-                color: filter === option ? 'var(--primary-bright)' : 'var(--text-soft)',
+                background: !selectedSubcategory ? 'var(--badge-bg)' : 'var(--glass-muted)',
+                border: `1px solid ${!selectedSubcategory ? 'var(--badge-border)' : 'var(--glass-soft-border)'}`,
+                color: !selectedSubcategory ? 'var(--primary-bright)' : 'var(--text-soft)',
                 fontSize: 12,
                 fontWeight: 600,
               }}
             >
-              {option === 'all'
-                ? t.catalog.filters.all
-                : option === 'fit'
-                  ? t.catalog.filters.fit
-                  : categoryLabels(option) || t.catalog.filters[option] || option}
+              {t.catalog.allSubcategories}
             </button>
-          ))}
-        </div>
+            {activeSubcategoryKeys.map((subKey) => (
+              <button
+                key={subKey}
+                onClick={() => setSelectedSubcategory(subKey)}
+                style={{
+                  padding: '8px 12px',
+                  borderRadius: 999,
+                  whiteSpace: 'nowrap',
+                  cursor: 'pointer',
+                  background:
+                    selectedSubcategory === subKey ? 'var(--badge-bg)' : 'var(--glass-muted)',
+                  border: `1px solid ${selectedSubcategory === subKey ? 'var(--badge-border)' : 'var(--glass-soft-border)'}`,
+                  color:
+                    selectedSubcategory === subKey ? 'var(--primary-bright)' : 'var(--text-soft)',
+                  fontSize: 12,
+                  fontWeight: 600,
+                }}
+              >
+                {getSubcategoryLabel(selectedCategory, subKey, lang)}
+              </button>
+            ))}
+          </div>
+        )}
 
-        <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
-          {[
-            { id: 'fit', label: t.catalog.sort.fit },
-            { id: 'cheap', label: t.catalog.sort.cheap },
-            { id: 'pricey', label: t.catalog.sort.pricey },
-          ].map((option) => (
-            <button
-              key={option.id}
-              onClick={() => setSort(option.id)}
-              style={{
-                padding: '7px 10px',
-                borderRadius: 12,
-                cursor: 'pointer',
-                background: sort === option.id ? 'var(--accent-sky-dim)' : 'var(--glass-muted)',
-                border: `1px solid ${sort === option.id ? 'var(--accent-sky-border)' : 'var(--glass-soft-border)'}`,
-                color: sort === option.id ? 'var(--accent-sky)' : 'var(--text-soft)',
-                fontSize: 11,
-                fontWeight: 600,
-              }}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
+        {showSubcategories && (
+          <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+            {[
+              { id: 'fit', label: t.catalog.sort.fit },
+              { id: 'cheap', label: t.catalog.sort.cheap },
+              { id: 'pricey', label: t.catalog.sort.pricey },
+            ].map((option) => (
+              <button
+                key={option.id}
+                onClick={() => setSort(option.id)}
+                style={{
+                  padding: '7px 10px',
+                  borderRadius: 12,
+                  cursor: 'pointer',
+                  background: sort === option.id ? 'var(--accent-sky-dim)' : 'var(--glass-muted)',
+                  border: `1px solid ${sort === option.id ? 'var(--accent-sky-border)' : 'var(--glass-soft-border)'}`,
+                  color: sort === option.id ? 'var(--accent-sky)' : 'var(--text-soft)',
+                  fontSize: 11,
+                  fontWeight: 600,
+                }}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {comparePin && (
@@ -798,27 +919,113 @@ export default function CatalogScreen() {
         </div>
       )}
 
-      <div style={{ flex: 1, minHeight: 0 }}>
-        {viewMode === 'grid' ? (
-          <VirtuosoGrid
-            ref={virtuosoRef}
-            data={displayList}
-            components={gridComponents}
-            itemContent={renderGridItem}
-            overscan={600}
-            initialTopMostItemIndex={initialScrollIndex}
-          />
-        ) : (
-          <Virtuoso
-            ref={virtuosoRef}
-            data={displayList}
-            itemContent={renderListItem}
-            overscan={600}
-            components={{ Footer: ListFooter }}
-            initialTopMostItemIndex={initialScrollIndex}
-          />
-        )}
-      </div>
+      {showCategories && (
+        <div
+          style={{
+            flex: 1,
+            overflowY: 'auto',
+            WebkitOverflowScrolling: 'touch',
+            padding: '0 20px 100px',
+          }}
+        >
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
+            {activeCategoryKeys.map((catKey) => {
+              const count = categoryCountMap[catKey] || 0
+              const icon = CATEGORY_ICONS[catKey] || 'category'
+              const label = getCategoryLabel(catKey, lang)
+              return (
+                <div
+                  key={catKey}
+                  onClick={() => handleCategoryClick(catKey)}
+                  style={{
+                    width: 'calc(50% - 6px)',
+                    aspectRatio: '4/3',
+                    borderRadius: 20,
+                    background: 'var(--glass-bg)',
+                    border: '1px solid var(--glass-border)',
+                    overflow: 'hidden',
+                    cursor: 'pointer',
+                    position: 'relative',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'flex-end',
+                  }}
+                >
+                  <div
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      background:
+                        'radial-gradient(ellipse at 50% 30%, var(--primary-dim) 0%, transparent 70%)',
+                    }}
+                  >
+                    <span
+                      className="material-symbols-outlined"
+                      style={{
+                        fontSize: 52,
+                        color: 'var(--primary-bright)',
+                        opacity: 0.5,
+                      }}
+                    >
+                      {icon}
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      position: 'relative',
+                      padding: '12px 14px',
+                      background: 'linear-gradient(transparent, var(--glass-bg) 30%)',
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontFamily: 'var(--font-display)',
+                        fontSize: 14,
+                        fontWeight: 800,
+                        color: 'var(--text)',
+                        lineHeight: 1.25,
+                        marginBottom: 2,
+                      }}
+                    >
+                      {label}
+                    </div>
+                    <div style={{ fontSize: 11, color: 'var(--text-dim)' }}>
+                      {count} {t.catalog.productsIn}
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
+      {!showCategories && (
+        <div style={{ flex: 1, minHeight: 0 }}>
+          {viewMode === 'grid' ? (
+            <VirtuosoGrid
+              ref={virtuosoRef}
+              data={displayList}
+              components={gridComponents}
+              itemContent={renderGridItem}
+              overscan={600}
+              initialTopMostItemIndex={initialScrollIndex}
+            />
+          ) : (
+            <Virtuoso
+              ref={virtuosoRef}
+              data={displayList}
+              itemContent={renderListItem}
+              overscan={600}
+              components={{ Footer: ListFooter }}
+              initialTopMostItemIndex={initialScrollIndex}
+            />
+          )}
+        </div>
+      )}
 
       <style>{`
         @keyframes compareBarIn {

@@ -584,4 +584,11 @@ export function formatPrice(kzt) {
   return kzt.toLocaleString('ru-RU') + ' ₸'
 }
 
-export { getCategoryLabel as getCategoryLabel, getSubcategoryLabel as getSubcategoryLabel, getAllCategoryKeys as getAllCategoryKeys, CATEGORIES as CATEGORY_LABELS_MAP } from '../domain/product/categoryMap.js'
+export {
+  getCategoryLabel as getCategoryLabel,
+  getSubcategoryLabel as getSubcategoryLabel,
+  getAllCategoryKeys as getAllCategoryKeys,
+  getSubcategoryKeys as getSubcategoryKeys,
+  CATEGORY_ICONS as CATEGORY_ICONS,
+  CATEGORIES as CATEGORY_LABELS_MAP,
+} from '../domain/product/categoryMap.js'

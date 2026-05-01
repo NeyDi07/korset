@@ -70,9 +70,11 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 
 ---
 
-## АКТУАЛЬНЫЕ СТАТИСТИКИ БД (2026-04-28)
+## АКТУАЛЬНЫЕ СТАТИСТИКИ БД (2026-05-01)
 
-- **7046 active** global_products (51 non-food + pet_food деактивировано)
+- **7008 active** global_products (38 деактивировано: 4 не-еда + 33 pet_food + 1 вино)
+- **18 категорий** (было 227 хаотичных значений), 0 некорректных категорий
+- **category_raw/subcategory_raw** — оригинальные значения сохранены для аудита
 - **Реальные EAN: 6980** (99.1%), **Fake EAN: 66** (0.9% — реальные продукты без штрихкода)
 - **store_products active: 6859** (1 магазин MARS, 187 gp ещё не завезены)
 - **EAN совпадение: 100%** (0 mismatches, 0 сирот)
@@ -101,7 +103,7 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 | 017-018 | Security hardening + DB foundation (RLS, audit, atomic RPC, tsvector) | ✅ применены |
 | 019-021 | Allergen normalization, app_metadata sync, admin trigger | ✅ применены |
 | 022 | idx_users_auth_id (RLS perf) | ✅ создана, применить через SQL Editor |
-| 022b | category normalization (category_raw/subcategory_raw + CHECK + index) | ⏳ ЖДЁТ применения через SQL Editor |
+| 022b | category normalization (category_raw/subcategory_raw + CHECK + index) | ⚠️ Шаги 1-2 применены (колонки), Шаги 3-4 (CHECK+index) нужно применить отдельно |
 | 023 | Fix SECURITY DEFINER on analytics views | ✅ применена |
 
 ---
@@ -307,7 +309,9 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 Маппинг: `src/domain/product/categoryMap.js` → normalizeCategory(rawCategory, rawSubcategory, name, brand) → {category, subcategory}
 Pipeline: arbuz-import, arbuz-catalog-parser, korzinavdom-parser — все используют normalizeCategory()
 Dry-run: 7038/7046 classified, 8 deactivate (алкоголь/не-еда)
-**ЖДЁТ:** Migration 022 (Supabase SQL Editor) + `node scripts/normalize-categories.mjs --live`
+Dry-run: 6515 обновлено, 527 unchanged, 4 deactivate + 33 pet_food + 1 wine = 38 total deactivated
+**ВЫПОЛНЕНО:** `node scripts/normalize-categories.mjs --live` — 6515 продуктов обновлено, 7008 active
+**ОСТАЛОСЬ:** Применить CHECK constraint + index (Шаги 3-4 миграции 022b) через SQL Editor
 
 ## HANDOFF NOTES
 
