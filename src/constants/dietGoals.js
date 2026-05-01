@@ -8,6 +8,7 @@ export const DIET_GOALS = [
   { id: 'vegan', label: { ru: 'Веган', kz: 'Веган' }, icon: 'vegan' },
   { id: 'vegetarian', label: { ru: 'Вегетариан', kz: 'Вегетариан' }, icon: 'veggie' },
   { id: 'keto', label: { ru: 'Кето', kz: 'Кето' }, icon: 'keto' },
+  { id: 'low_fat', label: { ru: 'Низкожирная', kz: 'Аз майлы' }, icon: 'lowfat' },
   { id: 'kid_friendly', label: { ru: 'Для детей', kz: 'Балаларға' }, icon: 'kids' },
 ]
 
@@ -42,6 +43,7 @@ export const ONBOARDING_PREFERENCES = [
   { id: 'vegan', icon: 'vegan', label: { ru: 'Веган', kz: 'Веган' } },
   { id: 'vegetarian', icon: 'veggie', label: { ru: 'Вегетариан', kz: 'Вегетариан' } },
   { id: 'keto', icon: 'keto', label: { ru: 'Кето', kz: 'Кето' } },
+  { id: 'low_fat', icon: 'lowfat', label: { ru: 'Низкожирная', kz: 'Аз майлы' } },
   { id: 'kid_friendly', icon: 'kids', label: { ru: 'Для детей', kz: 'Балаларға' } },
 ]
 
@@ -49,5 +51,5 @@ export const ONBOARDING_PREFERENCES = [
 export const PREFERENCE_ROWS = [
   ['halal', 'sugar_free', 'dairy_free'],
   ['gluten_free', 'vegan', 'vegetarian'],
-  ['keto', 'kid_friendly'],
+  ['keto', 'low_fat', 'kid_friendly'],
 ]
