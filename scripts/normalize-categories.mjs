@@ -122,16 +122,32 @@ async function main() {
     }
 
     stats.changes.push(change)
+  }
 
-    if (!dryRun) {
-      const { error } = await sb
-        .from('global_products')
-        .update({ category: newCat, subcategory: newSub })
-        .eq('id', p.id)
-      if (error) {
-        console.error(`  ERROR ${p.ean}: ${error.message}`)
-      }
+  if (!dryRun && stats.changes.length > 0) {
+    console.log(`Applying ${stats.changes.length} category updates...`)
+    const groups = new Map()
+    for (const c of stats.changes) {
+      const key = `${c.newCategory}||${c.newSubcategory || ''}`
+      if (!groups.has(key)) groups.set(key, { category: c.newCategory, subcategory: c.newSubcategory || null, ids: [] })
+      groups.get(key).ids.push(c.id)
     }
+    console.log(`  ${groups.size} unique (category, subcategory) groups`)
+    let done = 0
+    for (const [, group] of groups) {
+      const IDS_BATCH = 500
+      for (let i = 0; i < group.ids.length; i += IDS_BATCH) {
+        const ids = group.ids.slice(i, i + IDS_BATCH)
+        const { error } = await sb
+          .from('global_products')
+          .update({ category: group.category, subcategory: group.subcategory })
+          .in('id', ids)
+        if (error) console.error(`  ERROR group ${group.category}/${group.subcategory}: ${error.message}`)
+        done += ids.length
+      }
+      process.stdout.write(`  ${done}/${stats.changes.length} updated\r`)
+    }
+    console.log(`  ${done}/${stats.changes.length} updated    `)
   }
 
   console.log('\n--- RESULTS ---')
