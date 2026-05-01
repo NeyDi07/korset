@@ -167,7 +167,20 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - **Health check** — `/api/health` проверяет Supabase latency, OpenAI, RAG, Push (VAPID), Sentry DSN.
 - **Runbook** — `docs/vault/operations/monitoring-runbook.md` (playbook для 5 common issues).
 
-**Общая оценка проекта:** ~75/100 (было ~50/100).
+**Общая оценка проекта:** ~80/100 (было ~50/100).
+
+### Что достигнуто за сессию 2026-05-01 (4 часа)
+- **Sentry** — production error tracking (frontend + backend), DSN настроен, работает
+- **API hardening** — rate limiting + input validation на /off, /usda, /ai
+- **API error tracking** — captureApiError во всех catch-блоках через _monitoring.js
+- **Health check** — /api/health проверяет Supabase latency, OpenAI, RAG, Push, Sentry
+- **Runbook** — ops playbook для 5 типовых инцидентов
+- **Migration verification** — все миграции 017-023 применены и проверены:
+  - ✅ idx_users_auth_id (RLS perf)
+  - ✅ category_raw/subcategory_raw + CHECK constraint + index
+  - ✅ security_invoker=on на 4 analytics views
+  - ✅ RLS enabled на всех critical tables
+- **Category normalization** — 6515 продуктов обновлено, 7008 active
 
 ---
 
