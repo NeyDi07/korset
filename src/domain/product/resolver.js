@@ -29,6 +29,9 @@ import { isUuid, parseRouteProductRef } from './model.js'
 const _eanCache = new Map()
 const EAN_CACHE_TTL_MS = 5 * 60 * 1000
 
+// ─── In-flight deduplication (один запрос на EAN, даже если два вызова одновременно) ─
+const _inflightMap = new Map()
+
 // ─── Catalog freshness (выставляется StoreContext после warm-up) ──────────────
 let _catalogCachedAt = 0
 let _catalogWarmedStoreId = null
@@ -513,9 +516,16 @@ async function _resolveProductByEanImpl(normalizedEan, storeId, options) {
 
   const offProductRaw = await fetchFromOFFViaProxy(normalizedEan)
   if (offProductRaw) {
-    let product = normalizeOFFProduct(normalizedEan, offProductRaw)
-    product = await enrichProduct(product)
-    await saveToCache(product, offProductRaw)
+    const product = normalizeOFFProduct(normalizedEan, offProductRaw)
+    // Enrich + cache in background — не блокируем возврат продукта
+    enrichProduct(product)
+      .then((enriched) => {
+        saveToCache(enriched, offProductRaw).catch(() => {})
+        // Обновляем session cache обогащённой версией
+        const cacheKey = `${normalizedEan}:${storeId || ''}`
+        _eanCache.set(cacheKey, { product: enriched, ts: Date.now() })
+      })
+      .catch(() => saveToCache(product, offProductRaw).catch(() => {}))
     return finalizeResolvedProduct(product, {
       ean: normalizedEan,
       foundStatus: 'found_off',
@@ -541,7 +551,7 @@ async function _resolveProductByEanImpl(normalizedEan, storeId, options) {
   return null
 }
 
-// ─── Публичный резолвер: session EAN cache → _resolveProductByEanImpl ─────────
+// ─── Публичный резолвер: session EAN cache → in-flight dedup → _resolveProductByEanImpl ─
 export async function resolveProductByEan(ean, storeId = null, options = {}) {
   const normalizedEan = String(ean || '').trim()
   if (!normalizedEan) return null
@@ -565,9 +575,24 @@ export async function resolveProductByEan(ean, storeId = null, options = {}) {
     return hit.product
   }
 
-  const product = await _resolveProductByEanImpl(normalizedEan, storeId, options)
-  if (product) _eanCache.set(cacheKey, { product, ts: Date.now() })
-  return product
+  // Дедупликация in-flight: если уже идёт запрос на этот EAN — ждём его, не запускаем новый
+  if (_inflightMap.has(cacheKey)) {
+    return _inflightMap.get(cacheKey)
+  }
+
+  const promise = _resolveProductByEanImpl(normalizedEan, storeId, options)
+    .then((product) => {
+      _inflightMap.delete(cacheKey)
+      if (product) _eanCache.set(cacheKey, { product, ts: Date.now() })
+      return product
+    })
+    .catch((err) => {
+      _inflightMap.delete(cacheKey)
+      throw err
+    })
+
+  _inflightMap.set(cacheKey, promise)
+  return promise
 }
 
 export async function resolveProductByRef(ref = {}, storeId = null) {
