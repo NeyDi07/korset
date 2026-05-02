@@ -76,9 +76,23 @@ function IconGallery({ size = 22 }) {
 
 function IconSwitchCamera({ size = 22 }) {
   return (
-    <span className="material-symbols-outlined" style={{ fontSize: size }}>
-      cameraswitch
-    </span>
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M7 18.5H18.75C19.72 18.5 20.5 17.72 20.5 16.75V8.25" />
+      <path d="M17 5.5H5.25C4.28 5.5 3.5 6.28 3.5 7.25V15.75" />
+      <path d="M4 18L7 18.5L6.5 15.5" />
+      <path d="M20 6L17 5.5L17.5 8.5" />
+      <circle cx="12" cy="12" r="4" />
+    </svg>
   )
 }
 
