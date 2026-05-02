@@ -173,7 +173,14 @@ export function normalizeOFFProduct(ean, product, enrichment = null) {
   const base = createEmptyProduct({
     source: 'off',
     ean,
-    name: (product.product_name || '').trim() || `Товар ${ean}`,
+    name:
+      (
+        product.product_name_ru ||
+        product.product_name ||
+        product.product_name_en ||
+        product.product_name_kk ||
+        ''
+      ).trim() || `Товар ${ean}`,
     brand: (product.brands || '').trim() || null,
     quantity: product.quantity || null,
     images: product.image_front_url ? [product.image_front_url] : [],

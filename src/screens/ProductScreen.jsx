@@ -1008,7 +1008,7 @@ export default function ProductScreen() {
       <div className="screen" style={{ padding: '0 20px 120px', overflowY: 'auto' }}>
         <style>{`
           @keyframes _shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
-          ._skel{background:linear-gradient(90deg,var(--glass-bg) 25%,var(--glass-subtle) 50%,var(--glass-bg) 75%);background-size:200% 100%;animation:_shimmer 1.4s ease-in-out infinite;border-radius:8px;}
+          ._skel{background:linear-gradient(90deg,var(--skel-base) 25%,var(--skel-hi) 50%,var(--skel-base) 75%);background-size:200% 100%;animation:_shimmer 1.4s ease-in-out infinite;border-radius:8px;}
         `}</style>
 
         {/* Back button skeleton */}

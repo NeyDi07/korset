@@ -38,6 +38,8 @@
   --glass-muted: rgba(255, 255, 255, 0.04);
   --glass-soft-border: rgba(255, 255, 255, 0.06);
   --glass-strong-border: rgba(255, 255, 255, 0.15);
+  --skel-base: rgba(255, 255, 255, 0.08);
+  --skel-hi: rgba(255, 255, 255, 0.16);
   --overlay-bg: rgba(0, 0, 0, 0.72);
   --header-bg: rgba(12, 12, 24, 0.92);
   --nav-bg: rgba(8, 8, 20, 0.97);
@@ -129,6 +131,8 @@
   --glass-muted: rgba(255, 255, 255, 0.58);
   --glass-soft-border: rgba(88, 107, 139, 0.14);
   --glass-strong-border: rgba(255, 255, 255, 0.9);
+  --skel-base: rgba(78, 99, 132, 0.1);
+  --skel-hi: rgba(255, 255, 255, 0.88);
   --overlay-bg: rgba(26, 36, 58, 0.34);
   --header-bg: rgba(250, 253, 255, 0.78);
   --nav-bg: rgba(247, 251, 255, 0.78);

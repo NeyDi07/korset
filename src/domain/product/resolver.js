@@ -503,7 +503,12 @@ async function _resolveProductByEanImpl(normalizedEan, storeId, options) {
     return null
   }
 
-  const cachedProduct = await findCacheProduct(normalizedEan)
+  // Параллельный запуск: cache + OFF одновременно — экономим ~250ms
+  const [cachedProduct, offProductRaw] = await Promise.all([
+    findCacheProduct(normalizedEan),
+    fetchFromOFFViaProxy(normalizedEan),
+  ])
+
   if (cachedProduct) {
     return finalizeResolvedProduct(cachedProduct, {
       ean: normalizedEan,
@@ -514,7 +519,6 @@ async function _resolveProductByEanImpl(normalizedEan, storeId, options) {
     })
   }
 
-  const offProductRaw = await fetchFromOFFViaProxy(normalizedEan)
   if (offProductRaw) {
     const product = normalizeOFFProduct(normalizedEan, offProductRaw)
     // Enrich + cache in background — не блокируем возврат продукта

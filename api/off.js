@@ -40,7 +40,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const url = `https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(ean)}?fields=product_name,brands,ingredients_text_ru,ingredients_text,allergens_tags,allergens_hierarchy,nutriments,image_front_url,labels_tags,nutriscore_grade,quantity`
+    const url = `https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(ean)}?fields=product_name,product_name_ru,product_name_kk,product_name_en,brands,ingredients_text_ru,ingredients_text,allergens_tags,allergens_hierarchy,nutriments,image_front_url,image_ingredients_url,image_nutrition_url,labels_tags,nutriscore_grade,nova_group,quantity,additives_tags,categories_tags`
     const response = await fetchWithTimeout(url, {
       headers: {
         'User-Agent': 'Korset/1.0 (https://korset.app)',
