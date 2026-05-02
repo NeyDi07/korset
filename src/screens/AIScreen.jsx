@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useI18n } from '../utils/i18n.js'
+import { useLocalName } from '../utils/localName.js'
 import { useOffline } from '../contexts/OfflineContext.jsx'
 import KorsetAvatar from '../components/KorsetAvatar.jsx'
 import { askProductAI } from '../services/ai.js'
@@ -30,6 +31,7 @@ export default function AIScreen() {
   const { state: navState } = location
   const { profile } = useProfile()
   const { lang, t } = useI18n()
+  const localName = useLocalName(product)
   const { currentStore } = useStore()
   const { isOnline } = useOffline()
   const activeStoreSlug = storeSlug || currentStore?.slug || null
@@ -249,7 +251,7 @@ export default function AIScreen() {
               textOverflow: 'ellipsis',
             }}
           >
-            {product.name}
+            {localName}
           </div>
         </div>
       </div>
@@ -303,7 +305,7 @@ export default function AIScreen() {
                 color: 'var(--text)',
               }}
             >
-              {t.ai.welcomeProduct} <strong style={{ color: 'var(--text)' }}>{product.name}</strong>{' '}
+              {t.ai.welcomeProduct} <strong style={{ color: 'var(--text)' }}>{localName}</strong>{' '}
               {t.ai.welcomeProductEnd}
             </div>
           </div>

@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { useI18n } from '../utils/i18n.js'
+import { useLocalName } from '../utils/localName.js'
 import { buildProductPath } from '../utils/routes.js'
 import { getDisplayQuantity } from '../utils/parseQuantity.js'
 
@@ -12,6 +13,7 @@ export default function ProductMiniCard({ product }) {
   const navigate = useNavigate()
   const { currentStore } = useStore()
   const { lang } = useI18n()
+  const localName = useLocalName(product)
 
   if (!product?.ean && !product?.id) return null
 
@@ -72,8 +74,8 @@ export default function ProductMiniCard({ product }) {
         )}
       </div>
       <div className="product-mini-card__body">
-        <div className="product-mini-card__name" title={product.name}>
-          {product.name}
+        <div className="product-mini-card__name" title={localName}>
+          {localName}
         </div>
         {meta && <div className="product-mini-card__meta">{meta}</div>}
       </div>

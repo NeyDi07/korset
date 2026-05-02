@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import QRCode from 'react-qr-code'
 import { useI18n } from '../utils/i18n.js'
+import { useLocalName, getLocalName } from '../utils/localName.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { getStoreCatalogProducts } from '../utils/storeCatalog.js'
 import { buildProductPath } from '../utils/routes.js'
@@ -118,7 +119,7 @@ export default function QRPrintScreen() {
                       WebkitBoxOrient: 'vertical',
                     }}
                   >
-                    {product.name}
+                    {getLocalName(product)}
                   </div>
                   <div
                     style={{

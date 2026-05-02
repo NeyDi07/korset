@@ -39,7 +39,8 @@ async function translateBatch(items) {
 - Keep brand names unchanged (Nutella, Coca-Cola, Lays, Ritter Sport, etc.)
 - Translate descriptive parts naturally in Kazakh
 - Keep weight/volume as-is (500 г, 1 л, 350 мл, etc.)
-- Use standard Kazakh food terminology
+- Use standard Kazakh food terminology with proper Kazakh-specific letters: ә, ө, ұ, ү, і, ғ, қ, ң, һ
+- For example: молоко → сүт, мясо → ет, сыр → ірімшік, хлеб → нан, кефир → қымыздық, шоколад → шоколад, сок → шырын, вода → су, масло → май, конфеты → кәмпит, мороженое → мұздық, чай → шәй, кофе → кофе
 - Keep it concise, like a store shelf label
 - Use Sentence case for descriptive parts (first word capitalized, rest lowercase)
 - Do NOT use ALL CAPS
@@ -76,6 +77,7 @@ ${lines}`
 
 async function main() {
   const live = process.argv.includes('--live')
+  const fixBad = process.argv.includes('--fix-bad')
   const limitArg = process.argv.find(a => a.startsWith('--limit='))
   const limit = limitArg ? parseInt(limitArg.split('=')[1], 10) : 0
 
@@ -86,7 +88,7 @@ async function main() {
     auth: { autoRefreshToken: false, persistSession: false },
   })
 
-  console.log(`\n${live ? '[LIVE]' : '[DRY RUN]'} Translate product names → Kazakh\n`)
+  console.log(`\n${live ? '[LIVE]' : '[DRY RUN]'} Translate product names → Kazakh${fixBad ? ' (fix bad translations)' : ''}\n`)
 
   const allProducts = []
   let page = 0
@@ -104,12 +106,31 @@ async function main() {
     page++
   }
 
-  const missingKz = allProducts.filter(p => !p.name_kz || p.name_kz.trim() === '')
-  const toProcess = limit > 0 ? missingKz.slice(0, limit) : missingKz
+  let toProcess
+  if (fixBad) {
+    const kzRe = /[әөұүіғқңһ]/
+    const ruCatWords = ['сырок','напиток','сметана','кефир','молоко','мороженое','конфеты','шоколад','сок','чай','кофе','макароны','соус','пирожное','вареники','паста','масло','хлопья','сироп','лечо','горчица','маринад','шпроты','скумбрия','драже','сухарики','пломбир','коктейль','клетчатка','вафли','чиабатта','нектар','вода','чипсы','пряник','баранки','сушки','зефир','мармелад','халва','мёд','варенье','джем','повидло','желе','мюсли','каша','крупа','мука','майонез','уксус','кетчуп','томат','огурцы','помидоры','грибы','кукуруза','горошек','фасоль','оливки','капуста','морковь','свёкла','картофель','лук','чеснок','перец','баклажаны','кабачки','тыква','рис','гречка','овсянка','пшено','перловка','ячка','булгур','кускус','чечевица','горох','нут','семечки','орехи','изюм','курага','чернослив','финики','инжир','цукаты']
+
+    const bad = allProducts.filter(p => {
+      if (!p.name_kz || p.name_kz.trim() === '') return true
+      if (p.name === p.name_kz) return true
+      if (!kzRe.test(p.name_kz)) {
+        const kzLower = p.name_kz.toLowerCase()
+        if (ruCatWords.some(w => kzLower.includes(w))) return true
+      }
+      return false
+    })
+
+    console.log(`Bad translations to fix: ${bad.length}`)
+    toProcess = limit > 0 ? bad.slice(0, limit) : bad
+  } else {
+    const missingKz = allProducts.filter(p => !p.name_kz || p.name_kz.trim() === '')
+    toProcess = limit > 0 ? missingKz.slice(0, limit) : missingKz
+    console.log(`Missing name_kz: ${missingKz.length}`)
+  }
 
   console.log(`Total active products: ${allProducts.length}`)
-  console.log(`Already have name_kz: ${allProducts.length - missingKz.length}`)
-  console.log(`Missing name_kz: ${missingKz.length}`)
+  console.log(`Already have name_kz: ${allProducts.length - (fixBad ? 0 : allProducts.filter(p => !p.name_kz || p.name_kz.trim() === '').length)}`)
   console.log(`Will process: ${toProcess.length}\n`)
 
   if (toProcess.length === 0) {

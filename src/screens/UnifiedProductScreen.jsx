@@ -6,6 +6,7 @@ import { useUserData } from '../contexts/UserDataContext.jsx'
 import { useStoreId } from '../contexts/StoreContext.jsx'
 import { buildAuthNavigateState } from '../utils/authFlow.js'
 import { useI18n } from '../utils/i18n.js'
+import { useLocalName } from '../utils/localName.js'
 import { getDisplayQuantity } from '../utils/parseQuantity.js'
 import { checkProductFit, formatPrice, getCategoryLabel } from '../utils/fitCheck.js'
 import { resolveProductByRef, getDemoProductForEntity } from '../domain/product/resolver.js'
@@ -125,6 +126,7 @@ export default function UnifiedProductScreen({ mode = 'canonical' }) {
   const { profile } = useProfile()
   const { user } = useAuth()
   const { lang, t } = useI18n()
+  const localName = useLocalName(product)
   const storeId = useStoreId()
   const { checkIsFavorite, toggleFavorite } = useUserData()
 
@@ -278,7 +280,7 @@ export default function UnifiedProductScreen({ mode = 'canonical' }) {
                 textOverflow: 'ellipsis',
               }}
             >
-              {product.name}
+              {localName}
             </div>
             <div style={{ color: 'var(--text-dim)', fontSize: 12 }}>
               {product.brand || getCategoryLabel(product.category, 'ru') || t.product.foodCategory}
@@ -346,7 +348,7 @@ export default function UnifiedProductScreen({ mode = 'canonical' }) {
               <div
                 style={{ color: 'var(--text)', fontWeight: 900, fontSize: 22, lineHeight: 1.15 }}
               >
-                {product.name}
+                {localName}
               </div>
               <div style={{ color: 'var(--text-dim)', fontSize: 13, marginTop: 4 }}>
                 {[product.brand, getDisplayQuantity(product, lang)].filter(Boolean).join(' · ') ||

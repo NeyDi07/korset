@@ -4,6 +4,7 @@ import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { buildProductAIPath, buildScanPath } from '../utils/routes.js'
 import { useI18n } from '../utils/i18n.js'
+import { useLocalName } from '../utils/localName.js'
 import { getDisplayQuantity } from '../utils/parseQuantity.js'
 import { ALLERGEN_NAMES, OFF_ALLERGEN_MAP } from '../constants/allergens.js'
 import { coerceProductEntity } from '../domain/product/normalizers.js'
@@ -206,6 +207,7 @@ export default function ExternalProductScreen() {
   const { currentStore } = useStore()
   const activeStoreSlug = storeSlug || currentStore?.slug || null
   const { lang, t } = useI18n()
+  const localName = useLocalName(product)
 
   const [status, setStatus] = useState('loading')
   const [product, setProduct] = useState(null)
@@ -400,7 +402,7 @@ export default function ExternalProductScreen() {
               color: 'var(--text)',
             }}
           >
-            {product.name}
+            {localName}
           </h2>
           {(product.brand || getDisplayQuantity(product, lang)) && (
             <div style={{ fontSize: 14, color: 'var(--text-sub)', marginBottom: 10 }}>

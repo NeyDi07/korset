@@ -15,22 +15,27 @@ function playSuccessBeep() {
       globalAudioCtx = new (window.AudioContext || window.webkitAudioContext)()
     }
     const ctx = globalAudioCtx
-    if (ctx.state === 'suspended') {
-      ctx.resume().catch(() => {})
+    if (ctx.state === 'suspended') ctx.resume().catch(() => {})
+
+    const now = ctx.currentTime
+
+    function playNote(freq, startTime, peakGain, duration) {
+      const osc = ctx.createOscillator()
+      const gain = ctx.createGain()
+      osc.connect(gain)
+      gain.connect(ctx.destination)
+      osc.type = 'sine'
+      osc.frequency.setValueAtTime(freq, startTime)
+      gain.gain.setValueAtTime(0, startTime)
+      gain.gain.linearRampToValueAtTime(peakGain, startTime + 0.012)
+      gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration)
+      osc.start(startTime)
+      osc.stop(startTime + duration + 0.01)
     }
 
-    const osc = ctx.createOscillator()
-    const gain = ctx.createGain()
-    osc.connect(gain)
-    gain.connect(ctx.destination)
-    osc.type = 'sine'
-    osc.frequency.setValueAtTime(880, ctx.currentTime)
-    osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.12)
-    gain.gain.setValueAtTime(0.0, ctx.currentTime)
-    gain.gain.linearRampToValueAtTime(0.28, ctx.currentTime + 0.02)
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35)
-    osc.start(ctx.currentTime)
-    osc.stop(ctx.currentTime + 0.36)
+    // Körset signature chime: мягкий восходящий чайм C5 → E5 (большая терция)
+    playNote(523.25, now, 0.18, 0.22) // C5 — тёплая основа
+    playNote(659.25, now + 0.085, 0.13, 0.2) // E5 — яркий акцент
   } catch {
     /* noop */
   }

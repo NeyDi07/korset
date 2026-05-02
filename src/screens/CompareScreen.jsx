@@ -5,6 +5,7 @@ import { getDisplayQuantity } from '../utils/parseQuantity.js'
 import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { useI18n } from '../utils/i18n.js'
+import { useLocalName } from '../utils/localName.js'
 import { getAnyKnownProductByRef } from '../utils/storeCatalog.js'
 import { buildProductAIPath } from '../utils/routes.js'
 
@@ -229,6 +230,8 @@ export default function CompareScreen() {
   const { profile } = useProfile()
   const { currentStore } = useStore()
   const { t, lang } = useI18n()
+  const localNameA = useLocalName(productA)
+  const localNameB = useLocalName(productB)
 
   const [aiText, setAiText] = useState(null)
   const [aiLoading, setAiLoading] = useState(false)
@@ -444,7 +447,7 @@ export default function CompareScreen() {
                   fontFamily: 'var(--font-display)',
                 }}
               >
-                {product.name}
+                {side === 'A' ? localNameA : localNameB}
               </div>
               <div
                 style={{

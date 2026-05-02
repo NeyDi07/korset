@@ -5,6 +5,7 @@ import { getDisplayQuantity, computePricePerUnit } from '../utils/parseQuantity.
 import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import { useI18n } from '../utils/i18n.js'
+import { useLocalName } from '../utils/localName.js'
 import { useUserData } from '../contexts/UserDataContext.jsx'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { useOffline } from '../contexts/OfflineContext.jsx'
@@ -494,6 +495,7 @@ function DietBadges({ product, lang }) {
 // NUTRITION UNIFIED — большой Ккал слева + 3 макроса справа + sugar/salt
 // ═══════════════════════════════════════════════════════════════════════════
 function NutritionUnified({ nutrition }) {
+  const { t } = useI18n()
   if (!nutrition) return null
   const kcal = nutrition.kcal ?? nutrition.energy_kcal_100g
   const protein = nutrition.protein ?? nutrition.proteins_100g
@@ -527,7 +529,7 @@ function NutritionUnified({ nutrition }) {
           marginBottom: 12,
         }}
       >
-        Пищевая ценность · на 100 г
+        {t.product.nutrition} · {t.product.nutritionPer100}
       </div>
 
       {/* Hero row: большой Ккал слева + 3 макроса справа */}
@@ -804,11 +806,12 @@ function IngredientsBlock({ text, userAllergens = [] }) {
 // SPECS GRID — динамический, без повторов сверху
 // ═══════════════════════════════════════════════════════════════════════════
 function SpecsGrid({ product }) {
+  const { lang, t } = useI18n()
   const specs = []
   const s = product.specs || {}
 
-  if (s.storage) specs.push({ label: 'Хранение', value: s.storage })
-  if (s.bestBefore) specs.push({ label: 'Срок годности', value: s.bestBefore })
+  if (s.storage) specs.push({ label: t.product.storage, value: s.storage })
+  if (s.bestBefore) specs.push({ label: t.product.expiry, value: s.bestBefore })
 
   // Цена за 100 г/мл
   const perUnit = computePricePerUnit(
@@ -818,23 +821,23 @@ function SpecsGrid({ product }) {
   if (perUnit) {
     if (perUnit.per100 != null) {
       specs.push({
-        label: `Цена за ${perUnit.suffix}`,
+        label: lang === 'kz' ? `${perUnit.suffix} үшін баға` : `Цена за ${perUnit.suffix}`,
         value: formatPrice(perUnit.per100),
       })
     }
     if (perUnit.perUnit != null) {
       specs.push({
-        label: `Цена за ${perUnit.unitSuffix}`,
+        label: lang === 'kz' ? `${perUnit.unitSuffix} үшін баға` : `Цена за ${perUnit.unitSuffix}`,
         value: formatPrice(perUnit.perUnit),
       })
     }
   }
 
   // Динамические поля: вкус, категория (подкатегория), alcohol, etc.
-  if (product.flavor) specs.push({ label: 'Вкус', value: product.flavor })
-  if (s.flavor && !product.flavor) specs.push({ label: 'Вкус', value: s.flavor })
+  if (product.flavor) specs.push({ label: t.product.flavor, value: product.flavor })
+  if (s.flavor && !product.flavor) specs.push({ label: t.product.flavor, value: s.flavor })
   if (product.subcategory) {
-    specs.push({ label: 'Подкатегория', value: product.subcategory })
+    specs.push({ label: lang === 'kz' ? 'Ішкі санат' : 'Подкатегория', value: product.subcategory })
   }
   if (specs.length === 0) return null
 
@@ -980,6 +983,7 @@ export default function ProductScreen() {
   }, [needsFullFetch, storeId, ean])
 
   const product = fullProduct || baseProduct
+  const localName = useLocalName(product)
 
   const isFavorite = checkIsFavorite(product?.ean)
 
@@ -1160,8 +1164,8 @@ export default function ProductScreen() {
             textOverflow: 'ellipsis',
           }}
         >
-          {getCategoryLabel(product.category, 'ru') ||
-            getCategoryLabel(product.subcategory, 'ru') ||
+          {getCategoryLabel(product.category, lang) ||
+            getCategoryLabel(product.subcategory, lang) ||
             ''}
         </div>
         <button
@@ -1214,7 +1218,7 @@ export default function ProductScreen() {
               wordBreak: 'break-word',
             }}
           >
-            {product.name}
+            {localName}
           </h1>
           {product.priceKzt != null && (
             <div
@@ -1290,7 +1294,7 @@ export default function ProductScreen() {
         {/* 7. Ingredients */}
         {product.ingredients && (
           <div>
-            <SectionLabel>Состав</SectionLabel>
+            <SectionLabel>{t.product.ingredients}</SectionLabel>
             <IngredientsBlock
               text={product.ingredients}
               userAllergens={profile?.allergens || product.allergens || []}
@@ -1301,7 +1305,7 @@ export default function ProductScreen() {
         {/* 8. Description */}
         {product.description && (
           <div>
-            <SectionLabel>Описание</SectionLabel>
+            <SectionLabel>{t.product.description}</SectionLabel>
             <div
               style={{
                 background: 'var(--glass-subtle)',
@@ -1320,7 +1324,7 @@ export default function ProductScreen() {
 
         {/* 9. Characteristics */}
         <div>
-          <SectionLabel>Характеристики</SectionLabel>
+          <SectionLabel>{t.product.characteristics}</SectionLabel>
           <SpecsGrid product={product} />
         </div>
 
@@ -1357,7 +1361,7 @@ export default function ProductScreen() {
               >
                 <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
               </svg>
-              Альтернативы
+              {t.common.alternatives}
             </button>
             <button
               onClick={() => navigate(buildProductAIPath(activeStoreSlug, product.ean))}
@@ -1383,7 +1387,7 @@ export default function ProductScreen() {
               <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff">
                 <path d="M12 1.99996C12.9057 1.99996 13.7829 2.12194 14.6172 2.34762C14.2223 3.14741 14 4.04768 14 4.99997C14 8.31368 16.6863 11 20 11C20.6685 11 21.3106 10.8882 21.9111 10.6865C21.9676 11.1165 22 11.5546 22 12C22 17.5228 17.5228 22 12 22C10.2975 22 8.69425 21.5746 7.29102 20.8242L2 22L3.17578 16.709C2.42542 15.3057 2 13.7025 2 12C2.00002 6.47714 6.47717 1.99996 12 1.99996ZM19.5293 1.3193C19.7058 0.893513 20.2942 0.8935 20.4707 1.3193L20.7236 1.93063C21.1555 2.97343 21.9615 3.80614 22.9746 4.2568L23.6914 4.57614C24.1022 4.75882 24.1022 5.35635 23.6914 5.53903L22.9326 5.87692C21.945 6.3162 21.1534 7.11943 20.7139 8.1279L20.4668 8.69333C20.2863 9.10747 19.7136 9.10747 19.5332 8.69333L19.2861 8.1279C18.8466 7.11942 18.0551 6.3162 17.0674 5.87692L16.3076 5.53903C15.8974 5.35618 15.8974 4.75895 16.3076 4.57614L17.0254 4.2568C18.0384 3.80614 18.8445 2.97343 19.2764 1.93063L19.5293 1.3193Z" />
               </svg>
-              Спросить AI
+              {t.common.askAI}
             </button>
           </div>
           <button

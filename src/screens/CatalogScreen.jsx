@@ -14,6 +14,7 @@ import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { useOffline } from '../contexts/OfflineContext.jsx'
 import { useI18n } from '../utils/i18n.js'
+import { getLocalName } from '../utils/localName.js'
 import { getGlobalDemoProducts, getStoreCatalogProducts } from '../utils/storeCatalog.js'
 import { getCatalogFromIndexedDB } from '../utils/offlineDB.js'
 import { buildProductPath, buildComparePath } from '../utils/routes.js'
@@ -242,7 +243,11 @@ export default function CatalogScreen() {
                 halalStatus: gp.halal_status || 'unknown',
                 packagingType: gp.packaging_type || null,
                 fatPercent: gp.fat_percent ?? null,
-                dietTags: gp.diet_tags_json ? (typeof gp.diet_tags_json === 'string' ? JSON.parse(gp.diet_tags_json) : gp.diet_tags_json) : [],
+                dietTags: gp.diet_tags_json
+                  ? typeof gp.diet_tags_json === 'string'
+                    ? JSON.parse(gp.diet_tags_json)
+                    : gp.diet_tags_json
+                  : [],
                 nutriscore: gp.nutriscore || null,
                 allergens: [],
                 source: 'server_search',
@@ -392,7 +397,7 @@ export default function CatalogScreen() {
               flex: 1,
             }}
           >
-            {lang === 'kz' && product.nameKz ? product.nameKz : product.name}
+            {getLocalName(product)}
           </div>
           {product.brand && (
             <div
@@ -526,7 +531,7 @@ export default function CatalogScreen() {
                   lineHeight: 1.35,
                 }}
               >
-                {lang === 'kz' && product.nameKz ? product.nameKz : product.name}
+                {getLocalName(product)}
               </div>
               <div
                 style={{

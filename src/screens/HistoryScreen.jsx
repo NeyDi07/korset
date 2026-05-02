@@ -4,6 +4,8 @@ import { supabase } from '../utils/supabase.js'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import { useUserData } from '../contexts/UserDataContext.jsx'
 import { useI18n } from '../utils/i18n.js'
+import { getLocalName } from '../utils/localName.js'
+import { useLocalName } from '../utils/localName.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { buildProductPath } from '../utils/routes.js'
 import { HeartIcon } from '../components/icons/HeartIcon.jsx'
@@ -623,7 +625,7 @@ export default function HistoryScreen() {
                       marginBottom: 3,
                     }}
                   >
-                    {product.name}
+                    {getLocalName(product)}
                   </div>
                   {product.brand && (
                     <div
