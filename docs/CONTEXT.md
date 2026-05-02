@@ -83,7 +83,8 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - **Состав: ~81%** (5767)
 - **R2 CDN: 99.96%** продуктов с картинками на cdn.korset.app
 - **Названия нормализованы: 5352/7008** — sentence case, packaging suffixes removed, weight/% formatted
-- **name_kz: 7008/7008** (100%) — все переведены через OpenAI с Sentence case
+- **name_kz: 7008/7008** (100%) — 90% качество перевода (65% со специфичными KZ буквами + 25% чистый KZ)
+- **useLocalName** — все экраны показывают nameKz при lang=kz (был только CatalogScreen)
 - **Attribute extraction applied:** 195 packaging (can 50, pouch 68, bottle_glass 38, bottle_plastic 35, tub 4, tetrapak 0), 680 fat_percent (min 0.5%, max 82.5%), diet tags: sugar_free 54, organic 35, gluten_free 17, lactose_free 14, fitness 7
 
 ---
@@ -157,6 +158,7 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - ✅ Security: RBAC, RLS, CVE-фиксы, fitCheck 35+ тестов, Sentry, Telegram alerts
 - ✅ DB: 024 миграции, 18 категорий, packaging_type+fat_percent extraction, idx_users_auth_id
 - ✅ Заморожено: визуал/Landing/Stories/биллинг — до первых продаж
+- ✅ KZ перевод: 90% качество (было 72%), все экраны показывают nameKz при lang=kz
 - 🔴 i18n ProductScreen/EanRecovery — Этап 5 (хардкод русский текст)
 
 ---
@@ -220,10 +222,22 @@ Pipeline: arbuz-import, arbuz-catalog-parser, korzinavdom-parser — все ис
 
 **Итого сэкономлено:** ~800ms cold start + ~500ms per scan (нормальный режим)
 
+### KZ перевод имён — ЭТАП 4+ ЗАВЕРШЁН ✅
+
+**Проблема:** 28% продуктов имели плохой KZ перевод (9% идентичных RU + 19% частичный перевод).
+**Решение:**
+1. `src/utils/localName.js` — `useLocalName(product)` + `getLocalName(product)` для kz-языка
+2. Все экраны обновлены — показывают `nameKz` при lang=kz (был только CatalogScreen)
+3. `translate-names-kz.mjs --fix-bad` — флаг для переименования плохих переводов
+4. Промпт улучшен — примеры казахских эквивалентов (молоко→сүт, сыр→ірімшік, etc.)
+5. 4 прохода переименования: 1959→1553→907→634 плохих исправлено
+6. **Результат:** 90% качество (было 72%), 65% со специфичными казахскими буквами, 25% чистый казахский без спец. букв
+
+**Экраны с useLocalName/getLocalName:** CatalogScreen, ProductScreen, UnifiedProductScreen, ExternalProductScreen, AIScreen, CompareScreen, AlternativesScreen, QRPrintScreen, HistoryScreen, ProductMiniCard
+
 ### Незакрытые приоритеты:
 - **RetailImportScreen** — P0 блокер для B2B продаж
 - **ProductScreen рефакторинг** — 1315-строчный монолит
-- **Этап 4 — Перевод имён на KZ** — `scripts/translate-names-kz.mjs`
 
 ---
 
