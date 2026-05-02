@@ -474,20 +474,20 @@ async function _resolveProductByEanImpl(normalizedEan, storeId, options) {
     }
   }
 
-  const demoProduct = coerceProductEntity(
-    getGlobalProductByEan(normalizedEan) || getDemoProductByEan(normalizedEan)
-  )
-  if (demoProduct) {
-    return finalizeResolvedProduct(demoProduct, {
-      ean: normalizedEan,
-      foundStatus: 'found_global',
-      storeId,
-      fitResult: options.fitResult,
-      logScan: options.logScan,
-    })
-  }
-
   if (isOffline) {
+    // Fallback в offline: demo product если есть в локальных данных
+    const demoProduct = coerceProductEntity(
+      getGlobalProductByEan(normalizedEan) || getDemoProductByEan(normalizedEan)
+    )
+    if (demoProduct) {
+      return finalizeResolvedProduct(demoProduct, {
+        ean: normalizedEan,
+        foundStatus: 'found_global',
+        storeId,
+        fitResult: options.fitResult,
+        logScan: options.logScan,
+      })
+    }
     if (options.logScan) {
       await Promise.allSettled([
         logScan({
@@ -533,6 +533,20 @@ async function _resolveProductByEanImpl(normalizedEan, storeId, options) {
     return finalizeResolvedProduct(product, {
       ean: normalizedEan,
       foundStatus: 'found_off',
+      storeId,
+      fitResult: options.fitResult,
+      logScan: options.logScan,
+    })
+  }
+
+  // Fallback: demo product (если нет в OFF, но есть в локальных данных)
+  const demoProduct = coerceProductEntity(
+    getGlobalProductByEan(normalizedEan) || getDemoProductByEan(normalizedEan)
+  )
+  if (demoProduct) {
+    return finalizeResolvedProduct(demoProduct, {
+      ean: normalizedEan,
+      foundStatus: 'found_global',
       storeId,
       fitResult: options.fitResult,
       logScan: options.logScan,
