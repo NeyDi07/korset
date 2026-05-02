@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useI18n } from '../utils/i18n.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { getImageUrl } from '../utils/imageUrl.js'
+import { formatPrice } from '../utils/formatPrice.js'
 import {
   getScansCount,
   getUniqueCustomers,
@@ -590,7 +591,7 @@ export default function RetailDashboardScreen() {
                 lineHeight: 1.2,
               }}
             >
-              {lostQ.isError ? '—' : `~${(lostQ.data ?? 0).toLocaleString('ru-KZ')} ₸`}
+              {lostQ.isError ? '—' : `~${formatPrice(lostQ.data ?? 0)}`}
             </div>
           )}
           <div style={{ fontSize: 11, color: 'var(--text-dim)' }}>

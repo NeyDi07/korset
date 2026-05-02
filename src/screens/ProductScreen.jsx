@@ -11,6 +11,7 @@ import { useOffline } from '../contexts/OfflineContext.jsx'
 import { fetchFullProduct } from '../contexts/StoreContext.jsx'
 import { getAnyKnownProductByRef } from '../utils/storeCatalog.js'
 import { coerceProductEntity } from '../domain/product/normalizers.js'
+import { resolveProductByEan } from '../domain/product/resolver.js'
 import {
   buildCatalogPath,
   buildProductAIPath,
@@ -818,13 +819,13 @@ function SpecsGrid({ product }) {
     if (perUnit.per100 != null) {
       specs.push({
         label: `Цена за ${perUnit.suffix}`,
-        value: `${perUnit.per100.toLocaleString('ru-RU')} ₸`,
+        value: formatPrice(perUnit.per100),
       })
     }
     if (perUnit.perUnit != null) {
       specs.push({
         label: `Цена за ${perUnit.unitSuffix}`,
-        value: `${perUnit.perUnit.toLocaleString('ru-RU')} ₸`,
+        value: formatPrice(perUnit.perUnit),
       })
     }
   }
@@ -918,6 +919,7 @@ export default function ProductScreen() {
 
   const activeStoreSlug = storeSlug || currentStore?.slug || null
   const { storeId } = useStore()
+  const fromScan = location.state?.fromScan === true
   const baseProduct = useMemo(() => {
     const known = getAnyKnownProductByRef(ean, activeStoreSlug)
     const stateProduct = coerceProductEntity(location.state?.product)
@@ -929,7 +931,11 @@ export default function ProductScreen() {
   const [fullProduct, setFullProduct] = useState(null)
   const [fetchingFull, setFetchingFull] = useState(false)
 
+  // Optimistic scan path: arrived from ScanScreen without pre-loaded product
+  const needsResolve = fromScan && !location.state?.product && !baseProduct
+
   const needsFullFetch =
+    !needsResolve &&
     navigator.onLine &&
     storeId &&
     ean &&
@@ -937,6 +943,25 @@ export default function ProductScreen() {
       !baseProduct.ingredients ||
       !baseProduct.description ||
       Object.keys(baseProduct.nutritionPer100 || {}).length === 0)
+
+  useEffect(() => {
+    if (!needsResolve || !ean) return
+    let aborted = false
+    setFetchingFull(true)
+    resolveProductByEan(ean, storeId, { logScan: false })
+      .then((p) => {
+        if (!aborted) {
+          setFetchingFull(false)
+          if (p) setFullProduct(p)
+        }
+      })
+      .catch(() => {
+        if (!aborted) setFetchingFull(false)
+      })
+    return () => {
+      aborted = true
+    }
+  }, [needsResolve, ean, storeId])
 
   useEffect(() => {
     if (!needsFullFetch) return
@@ -976,24 +1001,51 @@ export default function ProductScreen() {
 
   if (!product && fetchingFull) {
     return (
-      <div
-        className="screen"
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          minHeight: '80vh',
-        }}
-      >
-        <div style={{ textAlign: 'center', color: 'var(--text-dim)' }}>
-          <span
-            className="material-symbols-outlined"
-            style={{ fontSize: 36, opacity: 0.5, display: 'block', marginBottom: 10 }}
-          >
-            hourglass_top
-          </span>
-          <p style={{ fontSize: 14 }}>{t.common.loading ?? 'Загрузка...'}</p>
+      <div className="screen" style={{ padding: '0 20px 120px', overflowY: 'auto' }}>
+        <style>{`
+          @keyframes _shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+          ._skel{background:linear-gradient(90deg,var(--glass-bg) 25%,var(--glass-subtle) 50%,var(--glass-bg) 75%);background-size:200% 100%;animation:_shimmer 1.4s ease-in-out infinite;border-radius:8px;}
+        `}</style>
+
+        {/* Back button skeleton */}
+        <div
+          style={{ height: 52, display: 'flex', alignItems: 'center', gap: 12, marginBottom: 4 }}
+        >
+          <div className="_skel" style={{ width: 36, height: 36, borderRadius: 10 }} />
+          <div className="_skel" style={{ width: 110, height: 14 }} />
         </div>
+
+        {/* Product image */}
+        <div
+          className="_skel"
+          style={{ width: '100%', height: 260, borderRadius: 20, marginBottom: 20 }}
+        />
+
+        {/* Name + subtitle */}
+        <div className="_skel" style={{ width: '72%', height: 22, marginBottom: 10 }} />
+        <div className="_skel" style={{ width: '48%', height: 13, marginBottom: 24 }} />
+
+        {/* FitCheck badge */}
+        <div
+          className="_skel"
+          style={{ width: '100%', height: 64, borderRadius: 16, marginBottom: 20 }}
+        />
+
+        {/* Nutrition row */}
+        <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} className="_skel" style={{ flex: 1, height: 70, borderRadius: 12 }} />
+          ))}
+        </div>
+
+        {/* Ingredients lines */}
+        {[100, 88, 72].map((w, i) => (
+          <div
+            key={i}
+            className="_skel"
+            style={{ width: `${w}%`, height: 13, borderRadius: 6, marginBottom: 8 }}
+          />
+        ))}
       </div>
     )
   }
@@ -1108,7 +1160,9 @@ export default function ProductScreen() {
             textOverflow: 'ellipsis',
           }}
         >
-          {getCategoryLabel(product.category, 'ru') || getCategoryLabel(product.subcategory, 'ru') || ''}
+          {getCategoryLabel(product.category, 'ru') ||
+            getCategoryLabel(product.subcategory, 'ru') ||
+            ''}
         </div>
         <button
           onClick={handleToggleFavorite}
@@ -1196,7 +1250,7 @@ export default function ProductScreen() {
                     letterSpacing: '0.02em',
                   }}
                 >
-                  {perUnit.per100.toLocaleString('ru-RU')} ₸ / {perUnit.suffix}
+                  {formatPrice(perUnit.per100)} / {perUnit.suffix}
                 </div>
               )}
             </div>

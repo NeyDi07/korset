@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useI18n } from '../utils/i18n.js'
 import { useStore } from '../contexts/StoreContext.jsx'
@@ -11,6 +12,10 @@ export default function HomeScreen() {
   const { t, lang } = useI18n()
   const { currentStore, isStoreApp, routes } = useStore()
   const { user } = useAuth()
+
+  useEffect(() => {
+    import('html5-qrcode').catch(() => {})
+  }, [])
 
   if (isStoreApp && currentStore && routes) {
     return (

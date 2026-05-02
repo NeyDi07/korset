@@ -2,6 +2,7 @@
 // URL: /_mock/product
 
 import { useNavigate } from 'react-router-dom'
+import { formatPrice } from '../../utils/formatPrice.js'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // ДАММИ-ПРОДУКТ
@@ -768,7 +769,7 @@ export default function ProductMockScreen() {
               paddingTop: 2,
             }}
           >
-            {p.priceKzt.toLocaleString('ru-RU')} ₸
+            {formatPrice(p.priceKzt)}
           </div>
         </div>
 

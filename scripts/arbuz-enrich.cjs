@@ -195,6 +195,9 @@ async function main() {
   const opts = parseArgs()
 
   if (!SUPABASE_URL || !SUPABASE_KEY) { console.error('Supabase keys not set'); process.exit(1) }
+
+  const { normalizeName } = await import('../src/domain/product/nameNormalizer.js')
+  globalThis._normalizeName = normalizeName
   if (!fs.existsSync(OUT_DIR)) fs.mkdirSync(OUT_DIR, { recursive: true })
 
   console.log('Authenticating with Arbuz API v1...')
@@ -341,7 +344,7 @@ async function main() {
 
       if (!opts.dryRun) {
         const updates = {}
-        if (d?.name) updates.name = d.name
+        if (d?.name) updates.name = globalThis._normalizeName(d.name, { brand: p.brand })
         if (d?.nameKz) updates.name_kz = d.nameKz
         if (composition) updates.ingredients_raw = composition
         updates.halal_status = halal ? 'yes' : (p.halal_status || 'unknown')

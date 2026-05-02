@@ -127,11 +127,12 @@ function mapToGlobalProduct(item, detail) {
   const rawCategory = catPath.map(c => c.title).filter(Boolean).join(' / ') || null
   const rawSubcategory = catPath.length > 0 ? catPath[catPath.length - 1].title : null
 
-  const norm = globalThis._normalizeCategory(rawCategory, rawSubcategory, detail.productName || item.productName, detail.brand)
+  const rawName = detail.productName || item.productName
+  const norm = globalThis._normalizeCategory(rawCategory, rawSubcategory, rawName, detail.brand)
 
   return {
     ean,
-    name: detail.productName || item.productName,
+    name: globalThis._normalizeName(rawName, { brand: detail.brand }),
     name_kz: null,
     brand: detail.brand || null,
     category: norm.category,
@@ -254,8 +255,10 @@ async function batchUpsert(sb, products) {
 async function main() {
   const { normalizeCategory } = await import('../src/domain/product/categoryMap.js')
   const { extractAllAttributes } = await import('../src/domain/product/attributeExtractor.js')
+  const { normalizeName } = await import('../src/domain/product/nameNormalizer.js')
   globalThis._normalizeCategory = normalizeCategory
   globalThis._extractAttributes = extractAllAttributes
+  globalThis._normalizeName = normalizeName
 
   const opts = parseArgs()
   if (!SUPABASE_URL || !SUPABASE_KEY) { console.error('Supabase keys not set'); process.exit(1) }

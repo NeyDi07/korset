@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import { normalizeName } from '../src/domain/product/nameNormalizer.js'
 
 const CORS_ORIGINS = [
   'https://korset.app',
@@ -111,7 +112,7 @@ export default async function handler(req, res) {
 
     if (action === 'update-name') {
       if (!name) return res.status(400).set(cors).json({ error: 'Missing name' })
-      const { error: gpError } = await admin.from('global_products').update({ name }).eq('id', id)
+      const { error: gpError } = await admin.from('global_products').update({ name: normalizeName(name) }).eq('id', id)
       if (gpError) {
         console.error('[ean-recovery] update-name error', gpError)
         return res.status(500).set(cors).json({ error: 'Update failed' })

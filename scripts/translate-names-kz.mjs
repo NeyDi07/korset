@@ -38,9 +38,11 @@ async function translateBatch(items) {
   const prompt = `Translate these food/drink product names from Russian to Kazakh. Rules:
 - Keep brand names unchanged (Nutella, Coca-Cola, Lays, Ritter Sport, etc.)
 - Translate descriptive parts naturally in Kazakh
-- Keep weight/volume as-is (500г, 1л, 350мл, etc.)
+- Keep weight/volume as-is (500 г, 1 л, 350 мл, etc.)
 - Use standard Kazakh food terminology
 - Keep it concise, like a store shelf label
+- Use Sentence case for descriptive parts (first word capitalized, rest lowercase)
+- Do NOT use ALL CAPS
 - Reply ONLY with translated lines in same [number] format, no other text
 
 ${lines}`

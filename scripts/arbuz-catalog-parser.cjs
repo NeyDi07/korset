@@ -183,8 +183,10 @@ function parseArgs() {
 async function main() {
   const { normalizeCategory } = await import('../src/domain/product/categoryMap.js')
   const { extractAllAttributes } = await import('../src/domain/product/attributeExtractor.js')
+  const { normalizeName } = await import('../src/domain/product/nameNormalizer.js')
   globalThis._normalizeCategory = normalizeCategory
   globalThis._extractAttributes = extractAllAttributes
+  globalThis._normalizeName = normalizeName
 
   const opts = parseArgs()
   if (!SUPABASE_URL || !SUPABASE_KEY) { console.error('Supabase keys not set'); process.exit(1) }
@@ -395,6 +397,8 @@ async function main() {
       if (attrs.halal_status !== merge.halal_status && attrs.halal_status !== 'unknown') merge.halal_status = attrs.halal_status
       if (attrs.diet_tags_json) merge.diet_tags_json = attrs.diet_tags_json
 
+      merge.name = globalThis._normalizeName(merge.name, { brand: merge.brand })
+
       merge.data_quality_score = calcQualityScore({ ...existing, ...merge })
 
       toUpsert.push(merge)
@@ -425,6 +429,9 @@ async function main() {
       if (attrs.fat_percent != null) newProduct.fat_percent = attrs.fat_percent
       if (attrs.halal_status !== newProduct.halal_status && attrs.halal_status !== 'unknown') newProduct.halal_status = attrs.halal_status
       if (attrs.diet_tags_json) newProduct.diet_tags_json = attrs.diet_tags_json
+
+      newProduct.name = globalThis._normalizeName(newProduct.name, { brand: newProduct.brand })
+
       newProduct.data_quality_score = calcQualityScore(newProduct)
 
       toUpsert.push(newProduct)

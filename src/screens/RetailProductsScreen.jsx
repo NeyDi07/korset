@@ -5,6 +5,7 @@ import { Virtuoso } from 'react-virtuoso'
 import { useI18n } from '../utils/i18n.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { getImageUrl } from '../utils/imageUrl.js'
+import { formatPrice } from '../utils/formatPrice.js'
 import {
   getStoreCatalogProducts,
   updateProductPrice,
@@ -622,7 +623,7 @@ const ProductCard = memo(
               }}
             >
               {product.price_kzt != null ? (
-                `${product.price_kzt.toLocaleString()} ₸`
+                formatPrice(product.price_kzt)
               ) : (
                 <span style={{ fontSize: 11, color: 'var(--text-dim)' }}>{tr.noPrice}</span>
               )}
@@ -818,7 +819,7 @@ function GridCard({ product, tr, onEdit }) {
             }}
           >
             {product.price_kzt != null ? (
-              `${product.price_kzt.toLocaleString()} ₸`
+              formatPrice(product.price_kzt)
             ) : (
               <span style={{ fontSize: 10, color: 'var(--text-dim)' }}>{tr.noPrice}</span>
             )}

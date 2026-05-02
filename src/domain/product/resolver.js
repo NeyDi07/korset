@@ -1,6 +1,7 @@
 import localProducts from '../../data/products.json'
 import { supabase } from '../../utils/supabase.js'
 import { enrichProductAI } from '../../services/ai.js'
+import { normalizeName } from './nameNormalizer.js'
 import { getGlobalProductByEan, getStoreCatalogProductByEan } from '../../utils/storeCatalog.js'
 import {
   buildLocalScanHistoryEntry,
@@ -23,6 +24,20 @@ import {
   coerceProductEntity,
 } from './normalizers.js'
 import { isUuid, parseRouteProductRef } from './model.js'
+
+// ─── Session EAN cache (в памяти, сбрасывается при обновлении страницы) ──────
+const _eanCache = new Map()
+const EAN_CACHE_TTL_MS = 5 * 60 * 1000
+
+// ─── Catalog freshness (выставляется StoreContext после warm-up) ──────────────
+let _catalogCachedAt = 0
+let _catalogWarmedStoreId = null
+const CATALOG_ONLINE_TTL_MS = 60 * 60 * 1000
+
+export function notifyCatalogWarmed(storeId) {
+  _catalogCachedAt = Date.now()
+  _catalogWarmedStoreId = storeId || null
+}
 
 const demoProducts = localProducts.map(normalizeDemoProduct)
 const demoById = new Map(demoProducts.map((product) => [product.demoId, product]))
@@ -237,7 +252,7 @@ async function saveToCache(product, rawPayload = {}) {
     await supabase.rpc('upsert_external_cache', {
       p_ean: product.ean,
       p_source: product.sourceMeta?.externalSource || 'openfoodfacts',
-      p_normalized_name: product.name || null,
+      p_normalized_name: normalizeName(product.name, { brand: product.brand }) || null,
       p_normalized_brand: product.brand || null,
       p_normalized_description: product.description || null,
       p_normalized_category: product.category || null,
@@ -340,18 +355,40 @@ async function finalizeResolvedProduct(
 ) {
   if (!shouldLog) return product
 
-  await Promise.allSettled([
+  // Fire-and-forget: не блокируем навигацию на аналитике
+  Promise.allSettled([
     persistLocalHistory(product, foundStatus, storeId),
     logScan({ ean, foundStatus, product, storeId, fitResult }),
-  ])
+  ]).catch(() => {})
 
   return product
 }
 
-export async function resolveProductByEan(ean, storeId = null, options = {}) {
-  const normalizedEan = String(ean || '').trim()
-  if (!normalizedEan) return null
+// ─── Один RPC-вызов вместо 2-4 последовательных Supabase-запросов ────────────
+async function findProductViaRPC(ean, storeId) {
+  try {
+    const { data, error } = await supabase.rpc('fn_resolve_product_by_ean', {
+      p_ean: ean,
+      p_store_id: storeId || null,
+    })
+    if (error) return { _rpcUnavailable: true } // migration 026 не применена → fallback
+    if (!data) return null
+    const storeOverlay = data._sp_id
+      ? {
+          storeProductId: data._sp_id,
+          priceKzt: data._sp_price_kzt || null,
+          shelf: [data._sp_shelf_zone, data._sp_shelf_position].filter(Boolean).join(' / ') || null,
+          stockStatus: data._sp_stock_status || null,
+        }
+      : null
+    return normalizeGlobalProduct(data, storeOverlay)
+  } catch {
+    return { _rpcUnavailable: true }
+  }
+}
 
+// ─── Внутренняя реализация резолвера (без session-кэша — он в обёртке ниже) ──
+async function _resolveProductByEanImpl(normalizedEan, storeId, options) {
   const isOffline = typeof navigator !== 'undefined' && !navigator.onLine
 
   try {
@@ -365,7 +402,9 @@ export async function resolveProductByEan(ean, storeId = null, options = {}) {
           fromCache: true,
         },
       })
-      if (isOffline) {
+      const catalogFresh =
+        _catalogWarmedStoreId === storeId && Date.now() - _catalogCachedAt < CATALOG_ONLINE_TTL_MS
+      if (isOffline || catalogFresh) {
         return finalizeResolvedProduct(coerced, {
           ean: normalizedEan,
           foundStatus: cachedProduct.storeProductId ? 'found_store' : 'found_global',
@@ -392,28 +431,44 @@ export async function resolveProductByEan(ean, storeId = null, options = {}) {
         logScan: options.logScan,
       })
     }
+  }
 
-    const storeProduct = await findStoreProduct(normalizedEan, storeId)
-    if (storeProduct) {
-      return finalizeResolvedProduct(storeProduct, {
+  // Primary: единый RPC (migration 026) — заменяет findStoreProduct + findGlobalProductByEan
+  const rpcResult = await findProductViaRPC(normalizedEan, storeId)
+  if (rpcResult && !rpcResult._rpcUnavailable) {
+    return finalizeResolvedProduct(rpcResult, {
+      ean: normalizedEan,
+      foundStatus: rpcResult.source === 'store' ? 'found_store' : 'found_global',
+      storeId,
+      fitResult: options.fitResult,
+      logScan: options.logScan,
+    })
+  }
+
+  // Fallback: прямые запросы (если migration 026 ещё не применена)
+  if (rpcResult?._rpcUnavailable) {
+    if (storeId) {
+      const storeProduct = await findStoreProduct(normalizedEan, storeId)
+      if (storeProduct) {
+        return finalizeResolvedProduct(storeProduct, {
+          ean: normalizedEan,
+          foundStatus: 'found_store',
+          storeId,
+          fitResult: options.fitResult,
+          logScan: options.logScan,
+        })
+      }
+    }
+    const globalProduct = await findGlobalProductByEan(normalizedEan)
+    if (globalProduct) {
+      return finalizeResolvedProduct(globalProduct, {
         ean: normalizedEan,
-        foundStatus: 'found_store',
+        foundStatus: 'found_global',
         storeId,
         fitResult: options.fitResult,
         logScan: options.logScan,
       })
     }
-  }
-
-  const globalProduct = await findGlobalProductByEan(normalizedEan)
-  if (globalProduct) {
-    return finalizeResolvedProduct(globalProduct, {
-      ean: normalizedEan,
-      foundStatus: 'found_global',
-      storeId,
-      fitResult: options.fitResult,
-      logScan: options.logScan,
-    })
   }
 
   const demoProduct = coerceProductEntity(
@@ -484,6 +539,35 @@ export async function resolveProductByEan(ean, storeId = null, options = {}) {
   }
 
   return null
+}
+
+// ─── Публичный резолвер: session EAN cache → _resolveProductByEanImpl ─────────
+export async function resolveProductByEan(ean, storeId = null, options = {}) {
+  const normalizedEan = String(ean || '').trim()
+  if (!normalizedEan) return null
+
+  const cacheKey = `${normalizedEan}:${storeId || ''}`
+  const hit = _eanCache.get(cacheKey)
+  if (hit && Date.now() - hit.ts < EAN_CACHE_TTL_MS) {
+    if (options.logScan) {
+      const fs = hit.product?.source === 'store' ? 'found_store' : 'found_global'
+      Promise.allSettled([
+        persistLocalHistory(hit.product, fs, storeId),
+        logScan({
+          ean: normalizedEan,
+          foundStatus: fs,
+          product: hit.product,
+          storeId,
+          fitResult: options.fitResult,
+        }),
+      ]).catch(() => {})
+    }
+    return hit.product
+  }
+
+  const product = await _resolveProductByEanImpl(normalizedEan, storeId, options)
+  if (product) _eanCache.set(cacheKey, { product, ts: Date.now() })
+  return product
 }
 
 export async function resolveProductByRef(ref = {}, storeId = null) {

@@ -98,6 +98,7 @@ export default function ScanScreen() {
   const [torchOn, setTorchOn] = useState(false)
   const [torchErr, setTorchErr] = useState(false)
   const [searching, setSearching] = useState(false)
+  const [scanFlash, setScanFlash] = useState(false)
   const [notFoundEan, setNotFoundEan] = useState(null)
   const [cameras, setCameras] = useState([])
   const [camIdx, setCamIdx] = useState(0)
@@ -198,7 +199,7 @@ export default function ScanScreen() {
 
         await scanner.start(
           cameraConfig,
-          { fps: 20, qrbox: { width: 300, height: 180 }, aspectRatio: 1.777, disableFlip: false },
+          { fps: 25, qrbox: { width: 300, height: 180 }, aspectRatio: 1.777, disableFlip: false },
           async (ean) => {
             if (busyRef.current || !mountedRef.current) return
             busyRef.current = true
@@ -208,15 +209,17 @@ export default function ScanScreen() {
             } catch {
               /* noop */
             }
-            setSearching(true)
-            await stopScanner()
-            const result = await lookupProduct(ean, storeRef.current?.id || slugRef.current)
-            if (!mountedRef.current) return
+            if (compareModeRef.current) {
+              // Compare mode: wait for product before deciding flow
+              setSearching(true)
+              const [result] = await Promise.all([
+                lookupProduct(ean, storeRef.current?.id || slugRef.current),
+                stopScanner(),
+              ])
+              if (!mountedRef.current) return
 
-            if (result.type === 'local' || result.type === 'external') {
-              const scannedProduct = result.product
-
-              if (compareModeRef.current) {
+              if (result.type === 'local' || result.type === 'external') {
+                const scannedProduct = result.product
                 const pinned = pinnedProductRef.current
                 if (!pinned) {
                   // First scan in compare mode — pin product A
@@ -234,25 +237,28 @@ export default function ScanScreen() {
                   })
                 }
               } else {
-                saveRecentScan(scannedProduct)
-                navigate(buildProductPath(slugRef.current, scannedProduct?.ean || ean), {
-                  state: { product: scannedProduct },
-                })
+                setNotFoundEan(ean)
+                setSearching(false)
+                busyRef.current = false
+                clearTimeout(nfTimer.current)
+                nfTimer.current = setTimeout(() => setNotFoundEan(null), 5000)
+                startScannerRef.current?.(cameraList, idx)
               }
-            } else if (compareModeRef.current) {
-              setNotFoundEan(ean)
-              setSearching(false)
-              busyRef.current = false
-              clearTimeout(nfTimer.current)
-              nfTimer.current = setTimeout(() => setNotFoundEan(null), 5000)
-              startScannerRef.current?.(cameraList, idx)
             } else {
-              setNotFoundEan(ean)
-              setSearching(false)
-              busyRef.current = false
-              clearTimeout(nfTimer.current)
-              nfTimer.current = setTimeout(() => setNotFoundEan(null), 4000)
-              startScannerRef.current?.(cameraList, idx)
+              // Normal mode: OPTIMISTIC — navigate immediately, lookup in background
+              setScanFlash(true)
+              setTimeout(() => {
+                if (mountedRef.current) setScanFlash(false)
+              }, 350)
+              stopScanner()
+              lookupProduct(ean, storeRef.current?.id || slugRef.current)
+                .then((r) => {
+                  if (r?.product) saveRecentScan(r.product)
+                })
+                .catch(() => {})
+              navigate(buildProductPath(slugRef.current, ean), {
+                state: { ean, fromScan: true },
+              })
             }
           },
           () => {}
@@ -732,6 +738,20 @@ export default function ScanScreen() {
             />
             <p style={{ color: 'var(--text-disabled)', fontSize: 14 }}>{t.scan.startCamera}</p>
           </div>
+        )}
+
+        {/* Зелёный flash при успешном сканировании */}
+        {scanFlash && (
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'rgba(52,211,153,0.45)',
+              pointerEvents: 'none',
+              zIndex: 25,
+              animation: 'scanFlash 0.35s ease-out forwards',
+            }}
+          />
         )}
 
         {/* Поиск товара */}
@@ -1227,6 +1247,7 @@ export default function ScanScreen() {
         }
         #${ID} img,#${ID} canvas{display:none!important;}
         #${ID}>div{background:transparent!important;border:none!important;}
+        @keyframes scanFlash{0%{opacity:1}100%{opacity:0}}
         @keyframes scanLine{
           0%{top:6px;opacity:0.5}10%{opacity:1}90%{opacity:1}100%{top:calc(100% - 8px);opacity:0.5}
         }

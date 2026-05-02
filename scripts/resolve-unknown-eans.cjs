@@ -151,7 +151,7 @@ function extractIngredientsFromArbuz(item) {
 }
 
 function buildGlobalProductFromNpc(item, ean) {
-  const name = extractNameFromNpc(item)
+  const name = globalThis._normalizeName(extractNameFromNpc(item), { brand: item.brand })
   const attrs = item.attributes || []
   const brandAttr = attrs.find(a => a.code === 'brand' && a.value)
   const brand = brandAttr?.valueRu || brandAttr?.value || null
@@ -232,6 +232,8 @@ async function markStagingEnriching(sb, stagingId) {
 }
 
 async function main() {
+  const { normalizeName } = await import('../src/domain/product/nameNormalizer.js')
+  globalThis._normalizeName = normalizeName
   const opts = parseArgs()
 
   if (!SUPABASE_URL || !SUPABASE_KEY) {
@@ -322,7 +324,7 @@ async function main() {
           const item = arbuzItems[0]
           const ingredients = extractIngredientsFromArbuz(item)
           productData = {
-            ean: s.ean, name: s.local_name || item.name || `Товар ${s.ean}`,
+            ean: s.ean, name: globalThis._normalizeName(s.local_name || item.name || `Товар ${s.ean}`, { brand: item.brand }),
             brand: item.brand || null, ingredients_raw: ingredients,
             calories_100g: item.nutrition?.calories || null,
             proteins_100g: item.nutrition?.proteins || null,
@@ -344,7 +346,7 @@ async function main() {
         const usdaFood = await usdaSearch(s.local_name.substring(0, 80))
         if (usdaFood) {
           productData = {
-            ean: s.ean, name: s.local_name || usdaFood.description || `Товар ${s.ean}`,
+            ean: s.ean, name: globalThis._normalizeName(s.local_name || usdaFood.description || `Товар ${s.ean}`),
             source_primary: 'usda', is_active: true,
           }
           const nutrients = usdaFood.foodNutrients || []
@@ -367,7 +369,7 @@ async function main() {
         const offProduct = await offSearch(s.ean)
         if (offProduct?.product_name) {
           productData = {
-            ean: s.ean, name: offProduct.product_name,
+            ean: s.ean, name: globalThis._normalizeName(offProduct.product_name, { brand: offProduct.brands }),
             brand: offProduct.brands || null,
             ingredients_raw: offProduct.ingredients_text || null,
             image_url: offProduct.image_url || null,

@@ -5,13 +5,17 @@ import { useI18n } from '../utils/i18n.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { getStoreCatalogProducts } from '../utils/storeCatalog.js'
 import { buildProductPath } from '../utils/routes.js'
+import { formatPrice } from '../utils/formatPrice.js'
 
 export default function QRPrintScreen() {
   const navigate = useNavigate()
   const { t } = useI18n()
   const { currentStore } = useStore()
 
-  const products = useMemo(() => getStoreCatalogProducts(currentStore?.slug || 'store-one'), [currentStore])
+  const products = useMemo(
+    () => getStoreCatalogProducts(currentStore?.slug || 'store-one'),
+    [currentStore]
+  )
   const storeSlug = currentStore?.slug || 'store-one'
 
   return (
@@ -19,7 +23,19 @@ export default function QRPrintScreen() {
       <div className="header">
         <button
           onClick={() => navigate(-1)}
-          style={{ background: 'none', border: 'none', color: 'var(--text-dim)', fontSize: 14, cursor: 'pointer', fontFamily: 'var(--font-body)', display: 'flex', alignItems: 'center', gap: 6, padding: 0, marginBottom: 14 }}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: 'var(--text-dim)',
+            fontSize: 14,
+            cursor: 'pointer',
+            fontFamily: 'var(--font-body)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
+            padding: 0,
+            marginBottom: 14,
+          }}
         >
           {t.qr.back}
         </button>
@@ -35,15 +51,29 @@ export default function QRPrintScreen() {
             lineHeight: 1.7,
           }}
         >
-          <div style={{ fontFamily: 'var(--font-display)', fontSize: 13, fontWeight: 700, color: 'var(--primary-bright)', marginBottom: 8 }}>
+          <div
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 13,
+              fontWeight: 700,
+              color: 'var(--primary-bright)',
+              marginBottom: 8,
+            }}
+          >
             {currentStore?.name || 'Магазин 1'}
           </div>
           {t.qr.howSteps.map((step, i) => (
-            <div key={i} style={{ fontSize: 13, color: 'var(--text-sub)' }}>{step}</div>
+            <div key={i} style={{ fontSize: 13, color: 'var(--text-sub)' }}>
+              {step}
+            </div>
           ))}
         </div>
 
-        <button onClick={() => window.print()} className="btn btn-primary btn-full" style={{ marginTop: 14 }}>
+        <button
+          onClick={() => window.print()}
+          className="btn btn-primary btn-full"
+          style={{ marginTop: 14 }}
+        >
           🖨️ {t.qr.printAll} {products.length} {t.qr.qrCodes}
         </button>
       </div>
@@ -51,7 +81,10 @@ export default function QRPrintScreen() {
       <div style={{ padding: '8px 16px 48px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
           {products.map((product) => {
-            const url = typeof window !== 'undefined' ? `${window.location.origin}${buildProductPath(storeSlug, product.ean)}` : buildProductPath(storeSlug, product.ean)
+            const url =
+              typeof window !== 'undefined'
+                ? `${window.location.origin}${buildProductPath(storeSlug, product.ean)}`
+                : buildProductPath(storeSlug, product.ean)
             return (
               <div
                 key={product.ean}
@@ -87,10 +120,22 @@ export default function QRPrintScreen() {
                   >
                     {product.name}
                   </div>
-                  <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--primary-bright)', marginTop: 5, fontFamily: 'var(--font-display)' }}>
-                    {product.priceKzt?.toLocaleString('ru-RU')} ₸
+                  <div
+                    style={{
+                      fontSize: 14,
+                      fontWeight: 800,
+                      color: 'var(--primary-bright)',
+                      marginTop: 5,
+                      fontFamily: 'var(--font-display)',
+                    }}
+                  >
+                    {formatPrice(product.priceKzt)}
                   </div>
-                  <div style={{ fontSize: 10, color: 'var(--text-dim)', marginTop: 3, opacity: 0.5 }}>{product.shelf || 'Полка уточняется'}</div>
+                  <div
+                    style={{ fontSize: 10, color: 'var(--text-dim)', marginTop: 3, opacity: 0.5 }}
+                  >
+                    {product.shelf || 'Полка уточняется'}
+                  </div>
                 </div>
               </div>
             )

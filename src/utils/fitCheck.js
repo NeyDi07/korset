@@ -1,6 +1,7 @@
 // NOTE: getGlobalDemoProducts импортируется лениво в getAlternatives — чтобы unit-тесты checkProductFit
 // не тянули products.json (Node статик-импорт JSON требует with { type: 'json' }, чего Vite раньше не делал).
 import { ALLERGEN_NAMES, getAllergenName } from '../constants/allergens.js'
+import { formatPrice } from './formatPrice.js'
 import {
   ALLERGEN_SYNONYMS,
   ASPARTAME_SYNONYMS,
@@ -611,15 +612,12 @@ function buildWhyFits(alt, original, profile) {
     return 'Без молочки ✓'
   }
   if ((alt.priceKzt ?? Infinity) < (original.priceKzt ?? Infinity)) {
-    return `Дешевле на ${((original.priceKzt || 0) - (alt.priceKzt || 0)).toLocaleString('ru-RU')} ₸`
+    return `Дешевле на ${formatPrice((original.priceKzt || 0) - (alt.priceKzt || 0))}`
   }
   return 'Похожий товар'
 }
 
-export function formatPrice(kzt) {
-  if (!kzt && kzt !== 0) return '—'
-  return kzt.toLocaleString('ru-RU') + ' ₸'
-}
+export { formatPrice } from './formatPrice.js'
 
 export {
   getCategoryLabel as getCategoryLabel,

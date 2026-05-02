@@ -5,6 +5,7 @@ import { parseJson } from '../domain/product/model.js'
 import { loadPrivacySettings, PRIVACY_EVENT } from '../utils/privacySettings.js'
 import { getStoreBySlug } from '../data/stores.js'
 import { saveCatalogToIndexedDB } from '../utils/offlineDB.js'
+import { notifyCatalogWarmed } from '../domain/product/resolver.js'
 import { getImageUrl } from '../utils/imageUrl.js'
 import { enrichQuantity } from '../utils/parseQuantity.js'
 import {
@@ -274,7 +275,9 @@ export function StoreProvider({ children }) {
       const products = allRows.map(mapRowToProduct)
       setFullCatalog(products)
       if (products.length > 0) {
-        saveCatalogToIndexedDB(products, storeId).catch(() => {})
+        saveCatalogToIndexedDB(products, storeId)
+          .then(() => notifyCatalogWarmed(storeId))
+          .catch(() => {})
       }
     }
 
