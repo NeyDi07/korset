@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useI18n } from '../i18n/index.js'
+import SupportBottomSheet from '../components/SupportBottomSheet.jsx'
 
 // ─── FAQ data — buyers only ───────────────────────────────────────────────────
 // FAQ data lives in locales/faq.json
@@ -242,8 +243,7 @@ export default function FaqScreen() {
                   color: 'var(--text-sub)',
                 }}
               >
-                Собрали самые частые вопросы о работе Körset. Нажмите на вопрос, чтобы раскрыть
-                ответ.
+                {t('faq.heroDesc')}
               </div>
             </div>
           </div>
@@ -307,8 +307,7 @@ export default function FaqScreen() {
                 marginBottom: 16,
               }}
             >
-              Наша команда поддержки готова помочь. Напишите нам — мы отвечаем в течение нескольких
-              часов.
+              {t('faq.supportDesc')}
             </div>
             <button
               type="button"
@@ -320,7 +319,7 @@ export default function FaqScreen() {
                 padding: '12px 18px',
                 borderRadius: 14,
                 border: 'none',
-                background: 'linear-gradient(135deg, #7C3AED, #EC4899)',
+                background: '#2AABEE',
                 color: '#fff',
                 fontFamily: 'var(--font-body)',
                 fontSize: 14,
@@ -341,156 +340,7 @@ export default function FaqScreen() {
       </div>
 
       {/* ── Support Bottom Sheet ── */}
-      {supportOpen && <SupportSheet onClose={() => setSupportOpen(false)} />}
-    </>
-  )
-}
-
-// ─── Support Bottom Sheet (inline, used from FAQ CTA) ────────────────────────
-function SupportSheet({ onClose, t }) {
-  const handleTelegram = () => {
-    window.open('https://t.me/korset_support', '_blank', 'noopener,noreferrer')
-  }
-
-  return (
-    <>
-      {/* Backdrop */}
-      <div
-        onClick={onClose}
-        style={{
-          position: 'fixed',
-          inset: 0,
-          zIndex: 300,
-          background: 'rgba(4,6,14,0.7)',
-          backdropFilter: 'blur(4px)',
-          animation: 'fadeIn 0.2s ease',
-        }}
-      />
-
-      {/* Sheet */}
-      <div
-        style={{
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          zIndex: 301,
-          background: 'var(--bg-card)',
-          borderTop: '1px solid var(--glass-border)',
-          borderRadius: '22px 22px 0 0',
-          padding: '8px 24px calc(32px + env(safe-area-inset-bottom))',
-          animation: 'slideUp 0.3s cubic-bezier(0.4,0,0.2,1)',
-        }}
-      >
-        {/* Drag handle */}
-        <div
-          style={{
-            width: 36,
-            height: 4,
-            borderRadius: 999,
-            background: 'var(--glass-soft-border)',
-            margin: '12px auto 24px',
-          }}
-        />
-
-        {/* Telegram icon */}
-        <div
-          style={{
-            width: 56,
-            height: 56,
-            borderRadius: 18,
-            background: 'linear-gradient(135deg, #2AABEE, #229ED9)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            margin: '0 auto 18px',
-            boxShadow: '0 8px 24px rgba(42,171,238,0.3)',
-          }}
-        >
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="#fff">
-            <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
-          </svg>
-        </div>
-
-        <div
-          style={{
-            textAlign: 'center',
-            marginBottom: 8,
-            fontFamily: 'var(--font-display)',
-            fontSize: 20,
-            color: 'var(--text)',
-          }}
-        >
-          Поддержка Körset
-        </div>
-        <div
-          style={{
-            textAlign: 'center',
-            fontFamily: 'var(--font-body)',
-            fontSize: 13,
-            lineHeight: 1.6,
-            color: 'var(--text-sub)',
-            marginBottom: 28,
-            padding: '0 8px',
-          }}
-        >
-          {t('faq.supportSheetDesc')}
-        </div>
-
-        {/* Telegram button */}
-        <button
-          type="button"
-          onClick={handleTelegram}
-          style={{
-            width: '100%',
-            padding: '15px',
-            borderRadius: 16,
-            border: 'none',
-            background: 'linear-gradient(135deg, #2AABEE, #229ED9)',
-            color: '#fff',
-            fontFamily: 'var(--font-body)',
-            fontSize: 15,
-            fontWeight: 700,
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 10,
-            boxShadow: '0 4px 20px rgba(42,171,238,0.25)',
-            marginBottom: 12,
-          }}
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
-          </svg>
-          {t('faq.supportSheetBtn')}
-        </button>
-
-        {/* Cancel */}
-        <button
-          type="button"
-          onClick={onClose}
-          style={{
-            width: '100%',
-            padding: '14px',
-            borderRadius: 16,
-            border: '1px solid var(--glass-soft-border)',
-            background: 'transparent',
-            color: 'var(--text-sub)',
-            fontFamily: 'var(--font-body)',
-            fontSize: 14,
-            fontWeight: 600,
-            cursor: 'pointer',
-          }}
-        >
-          {t('faq.supportSheetClose')}
-        </button>
-      </div>
-
-      <style>{`
-        @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
-        @keyframes slideUp { from { transform: translateY(100%) } to { transform: translateY(0) } }
-      `}</style>
+      <SupportBottomSheet open={supportOpen} onClose={() => setSupportOpen(false)} />
     </>
   )
 }

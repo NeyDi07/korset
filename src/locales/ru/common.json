@@ -37,5 +37,7 @@
   "common.close": "Закрыть",
   "common.feedback": "Обратная связь",
   "common.langRu": "Русский",
-  "common.langKzAria": "Қазақша"
+  "common.langKzAria": "Қазақша",
+  "common.on": "Вкл",
+  "common.off": "Выкл"
 }

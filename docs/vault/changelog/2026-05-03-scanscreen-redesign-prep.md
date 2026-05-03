@@ -25,6 +25,15 @@ User provided a light-theme ScanScreen visual reference and custom SVG icons. Th
 - `npm run build` — passed.
 - `npm run lint` — passed with warnings only.
 
+## Minimal scan-line polish
+
+- Reduced the strong blur/glow around the moving scanner line after user feedback.
+- Kept the line white and premium, but made the tail much smaller and CSS-only for weaker phones.
+- Verification after this polish:
+  - `npm run build` — passed.
+  - `node scripts/check-i18n.mjs` — passed.
+  - `npm run lint` — passed with warnings only.
+
 ---
 
 # 2026-05-03 — ScanScreen V1 redesign implemented

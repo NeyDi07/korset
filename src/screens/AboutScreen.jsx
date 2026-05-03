@@ -5,7 +5,7 @@ const APP_VERSION = '1.0.0'
 const APP_YEAR = new Date().getFullYear()
 
 // ─── Feature list ─────────────────────────────────────────────────────────────
-const FEATURES = [
+const getFeatures = (t) => [
   {
     icon: (
       <svg
@@ -23,8 +23,8 @@ const FEATURES = [
         <path d="M3 17h4v4H3z" />
       </svg>
     ),
-    title: 'Умный сканер',
-    desc: 'Мгновенное считывание штрихкодов — наводите камеру и получайте результат без нажатий',
+    title: t('about.feat1Title'),
+    desc: t('about.feat1Desc'),
   },
   {
     icon: (
@@ -41,8 +41,8 @@ const FEATURES = [
         <polyline points="22 4 12 14.01 9 11.01" />
       </svg>
     ),
-    title: 'Персональный Fit-Check',
-    desc: 'Аллергены, Халал-статус и диетические цели — всё сразу на одном экране',
+    title: t('about.feat2Title'),
+    desc: t('about.feat2Desc'),
   },
   {
     icon: (
@@ -58,8 +58,8 @@ const FEATURES = [
         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
       </svg>
     ),
-    title: 'Избранное',
-    desc: 'Сохраняйте любимые товары и возвращайтесь к ним в любое время',
+    title: t('about.feat3Title'),
+    desc: t('about.feat3Desc'),
   },
   {
     icon: (
@@ -76,8 +76,8 @@ const FEATURES = [
         <path d="M8 2v16M16 6v16" />
       </svg>
     ),
-    title: 'База товаров КЗ',
-    desc: 'Тысячи товаров казахстанских магазинов с актуальными данными о составе',
+    title: t('about.feat4Title'),
+    desc: t('about.feat4Desc'),
   },
   {
     icon: (
@@ -93,8 +93,8 @@ const FEATURES = [
         <path d="M18 20V10M12 20V4M6 20v-6" />
       </svg>
     ),
-    title: 'История сканирований',
-    desc: 'Все отсканированные товары сохраняются для быстрого доступа',
+    title: t('about.feat5Title'),
+    desc: t('about.feat5Desc'),
   },
   {
     icon: (
@@ -110,8 +110,8 @@ const FEATURES = [
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
       </svg>
     ),
-    title: 'Приватность',
-    desc: 'Данные о ваших аллергенах хранятся локально и не передаются третьим лицам',
+    title: t('about.feat6Title'),
+    desc: t('about.feat6Desc'),
   },
 ]
 
@@ -119,6 +119,7 @@ const FEATURES = [
 export default function AboutScreen() {
   const navigate = useNavigate()
   const { t } = useI18n()
+  const features = getFeatures(t)
 
   return (
     <div
@@ -241,7 +242,7 @@ export default function AboutScreen() {
               marginBottom: 20,
             }}
           >
-            Умный помощник в магазине
+            {t('about.subtitle')}
           </div>
 
           {/* Version badge */}
@@ -274,7 +275,7 @@ export default function AboutScreen() {
                 color: 'var(--text)',
               }}
             >
-              Версия {APP_VERSION}
+              {t('about.version', { version: APP_VERSION })}
             </span>
           </div>
         </div>
@@ -293,7 +294,7 @@ export default function AboutScreen() {
             marginBottom: 10,
           }}
         >
-          Наша миссия
+          {t('about.missionTitle')}
         </div>
         <div className="glass-card" style={{ padding: '20px 22px' }}>
           <p
@@ -305,10 +306,7 @@ export default function AboutScreen() {
               margin: 0,
             }}
           >
-            Körset создан, чтобы каждый покупатель в Казахстане мог уверенно выбирать продукты —
-            зная их реальный состав, безопасность для здоровья и соответствие личным диетическим
-            предпочтениям. Мы верим, что осознанный выбор еды начинается с доступной и честной
-            информации.
+            {t('about.missionText')}
           </p>
         </div>
       </div>
@@ -326,10 +324,10 @@ export default function AboutScreen() {
             marginBottom: 10,
           }}
         >
-          Возможности
+          {t('about.featuresTitle')}
         </div>
         <div className="glass-card" style={{ padding: 0, overflow: 'hidden' }}>
-          {FEATURES.map((f, i) => (
+          {features.map((f, i) => (
             <div
               key={i}
               style={{
@@ -338,7 +336,7 @@ export default function AboutScreen() {
                 gap: 14,
                 padding: '16px 20px',
                 borderBottom:
-                  i < FEATURES.length - 1 ? '1px solid var(--glass-soft-border)' : 'none',
+                  i < features.length - 1 ? '1px solid var(--glass-soft-border)' : 'none',
               }}
             >
               <div
@@ -372,7 +370,7 @@ export default function AboutScreen() {
                 <div
                   style={{
                     fontFamily: 'var(--font-body)',
-                    fontSize: 12,
+                    fontSize: 13,
                     lineHeight: 1.55,
                     color: 'var(--text-sub)',
                   }}
@@ -395,9 +393,9 @@ export default function AboutScreen() {
             lineHeight: 1.6,
           }}
         >
-          © {APP_YEAR} Körset. Все права защищены.
+          {t('about.copyright', { year: APP_YEAR })}
           <br />
-          Разработано в Казахстане 🇰🇿
+          {t('about.madeIn')}
         </div>
       </div>
     </div>

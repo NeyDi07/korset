@@ -179,8 +179,8 @@
   top: 0;
   height: 2px;
   border-radius: 999px;
-  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.72) 15%, #fff 50%, rgba(255, 255, 255, 0.72) 85%, transparent 100%);
-  box-shadow: 0 0 14px rgba(255, 255, 255, 0.7), 0 0 30px rgba(255, 255, 255, 0.22);
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.66) 18%, #fff 50%, rgba(255, 255, 255, 0.66) 82%, transparent 100%);
+  box-shadow: 0 1px 4px rgba(255, 255, 255, 0.24);
   animation: scanLineTravel 2.35s cubic-bezier(0.45, 0, 0.2, 1) infinite alternate;
   will-change: transform;
 }
@@ -188,15 +188,13 @@
 .scan-line::after {
   content: '';
   position: absolute;
-  left: 7%;
-  right: 7%;
-  top: -20px;
-  height: 44px;
+  left: 12%;
+  right: 12%;
+  top: -5px;
+  height: 12px;
   border-radius: 999px;
-  background:
-    linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.2), transparent),
-    radial-gradient(ellipse at center, rgba(255, 255, 255, 0.24), transparent 64%);
-  opacity: 0.75;
+  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.14), transparent);
+  opacity: 0.55;
   transform: translateZ(0);
 }
 
