@@ -425,7 +425,7 @@ export default function ProfileScreen() {
         const hydrated = await hydrateProductsFromFavoriteRows(data || [])
         if (!cancelled) setTopFavorites(hydrated)
       } catch (err) {
-        console.warn('[ProfileScreen] favorites load failed', err)
+        // favorites fetch failed silently
         if (!cancelled) setTopFavorites([])
       } finally {
         if (!cancelled) setLoadingTab((cur) => (cur === 'favorites' ? null : cur))
@@ -475,7 +475,7 @@ export default function ProfileScreen() {
           .map(({ _time, ...rest }) => rest)
         if (!cancelled) setTopHistory(merged)
       } catch (err) {
-        console.warn('[ProfileScreen] history load failed', err)
+        // history fetch failed silently
         if (!cancelled) setTopHistory([])
       } finally {
         if (!cancelled) setLoadingTab((cur) => (cur === 'history' ? null : cur))

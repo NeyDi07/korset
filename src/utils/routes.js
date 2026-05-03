@@ -14,10 +14,6 @@ export function buildRetailBasePath() {
   return '/retail'
 }
 
-export function buildRetailLoginPath() {
-  return `${buildRetailBasePath()}/login`
-}
-
 export function buildRetailDashboardPath(storeSlug = null) {
   return storeSlug ? `${buildRetailBasePath()}/${storeSlug}/dashboard` : buildRetailBasePath()
 }
@@ -51,19 +47,16 @@ export function buildAIHomePath(storeSlug = null) {
   return storeSlug ? `${buildStoreAppBase(storeSlug)}/ai` : '/ai'
 }
 
-export function buildProductPath(storeSlug = null, ean, external = false) {
-  if (external) {
-    return storeSlug ? `${buildStoreAppBase(storeSlug)}/product/ext/${ean}` : `/product/ext/${ean}`
-  }
+export function buildProductPath(storeSlug = null, ean) {
   return storeSlug ? `${buildStoreAppBase(storeSlug)}/product/${ean}` : `/product/${ean}`
 }
 
-export function buildProductAIPath(storeSlug = null, ean, external = false) {
-  return `${buildProductPath(storeSlug, ean, external)}/ai`
+export function buildProductAIPath(storeSlug = null, ean) {
+  return `${buildProductPath(storeSlug, ean)}/ai`
 }
 
 export function buildProductAlternativesPath(storeSlug = null, ean) {
-  return `${buildProductPath(storeSlug, ean, false)}/alternatives`
+  return `${buildProductPath(storeSlug, ean)}/alternatives`
 }
 
 export function buildPrivacyPath(storeSlug = null) {
@@ -76,10 +69,6 @@ export function buildNotificationSettingsPath(storeSlug = null) {
 
 export function buildComparePath(storeSlug = null, ean1, ean2) {
   return `${buildProductPath(storeSlug, ean1)}/compare/${ean2}`
-}
-
-export function buildSoundSettingsPath(storeSlug = null) {
-  return storeSlug ? `${buildStoreAppBase(storeSlug)}/sound-settings` : '/sound-settings'
 }
 
 export function buildFaqPath(storeSlug = null) {

@@ -27,7 +27,9 @@ export default class ErrorBoundary extends Component {
         <div className="error-boundary-overlay">
           <div className="error-boundary-card">
             <span className="material-symbols-outlined error-boundary-icon">warning</span>
-            <h2 className="error-boundry-title">Что-то пошло не так</h2>
+            <h2 className="error-boundry-title">
+              {this.props.t?.('common.errorTitle') || 'Что-то пошло не так'}
+            </h2>
             <p className="error-boundary-desc">
               Произошла непредвиденная ошибка. Попробуйте перезагрузить или вернуться на главную.
             </p>
@@ -50,7 +52,9 @@ export default class ErrorBoundary extends Component {
                   className="error-boundary-details-toggle"
                   onClick={() => this.setState((prev) => ({ showDetails: !prev.showDetails }))}
                 >
-                  {this.state.showDetails ? 'Скрыть детали' : 'Показать детали'}
+                  {this.state.showDetails
+                    ? this.props.t?.('common.errorHide') || 'Скрыть детали'
+                    : this.props.t?.('common.errorShow') || 'Показать детали'}
                 </button>
                 {this.state.showDetails && (
                   <pre className="error-boundary-details-text">{String(this.state.error)}</pre>

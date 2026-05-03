@@ -213,5 +213,10 @@
   "home.storeFeature4": "Тауар бойынша AI сұрақтары",
   "home.storeOpen": "Körset-те дүкенді ашу",
   "home.storeScan": "Сканерлеуге өту",
-  "home.storePhone": "Телефон"
+  "home.storePhone": "Телефон",
+  "landing.retail.feat.analytics": "Талдау",
+  "landing.retail.feat.catalog": "Тауарлар каталогы",
+  "landing.retail.feat.qr": "QR-интеграция",
+  "landing.retail.cta.open": "Retail Cabinet ашу",
+  "landing.retail.cta.login": "Дүкен кабинетіне кіру"
 }

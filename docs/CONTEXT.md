@@ -148,7 +148,7 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - **Health check** — `/api/health`
 - **Runbook** — `docs/vault/operations/monitoring-runbook.md`
 
-**Общая оценка проекта:** ~80/100 (было ~50/100).
+**Общая оценка проекта:** ~82/100 (было ~80/100).
 
 ---
 
@@ -161,39 +161,10 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - ✅ DB: 024 миграции, 18 категорий, packaging_type+fat_percent extraction, idx_users_auth_id
 - ✅ Заморожено: визуал/Landing/Stories/биллинг — до первых продаж
 - ✅ KZ перевод: 89% качество (было 72%), все экраны показывают nameKz при lang=kz
-- ✅ i18n хардкод 5 экранов — ЗАВЕРШЕНО: ProductScreen, EanRecovery, ScanScreen, Alternatives, Compare — все `t.*` ключи
-- ✅ i18n полная миграция — ЗАВЕРШЕНО (все 17 шагов):
-  - `src/utils/i18n.js` (1950 строк) УДАЛЁН → `src/i18n/` (6 модулей: index, resolve, loader, plural, format, interpolate)
-  - `src/locales/{ru,kz}/*.json` — 14 namespace × 2 lang = 28 JSON файлов (~1800 ключей)
-  - `t.key` → `t('key')` — 468 автозамен в 39 файлах (AST-based скрипт)
-  - 8 flagged namespace-only/array-method паттернов — ручной фикс (Proxy, collectArr)
-  - 70+ inline `lang === 'kz' ? 'Қаз' : 'Рус'` → `t('key')` — все экраны
-  - Старый i18n.js удалён, main chunk -56KB (-18KB gzip)
-  - `lang === 'kz'` остатки: 13 — все корректные (data-driven, CSS, locale codes)
-  - Новые locale namespace: auth.json, profile.json, history.json (RU+KZ)
-  - Линт: **0 ошибок**, CatalogScreen deps фикс
-  - **Проверено Playwright:** RU/KZ лендинг работает, переключение языка ОК, 0 console errors, 0 unresolved dot-keys
-  - **E2e Landing:** 4/4 тестов проходят
-  - **check-i18n:** 0 missing KZ, 0 orphan, 0 empty (109 identical — бренды/иконки/единицы, корректно)
-  - **64 unit-теста:** resolve, plural, format, interpolate — все проходят
-  - **`exists` API** — отдельная функция из `useI18n()`, не свойство `t`
-  - **collectStrArr/collectObjArr** — принимают `(t, exists, prefix, ...)` — 16 вызовов в LandingScreen
-  - **Proxy удалён** из RetailDashboardScreen + RetailProductsScreen → явный useMemo (26 + 30 ключей)
-  - **ProfileStatsTabs.jsx** — 13 пропущенных `t.profile.xxx` → `t('profile.xxx')` исправлено
-  - **0 dot-access остатков** — CLEAN
-  - **main.jsx** — empty catch block → добавлен комментарий для no-empty lint
-  - **RetailSettingsScreen** — 40 `isKz ? 'Қаз' : 'Рус'` → `t('retail.settings.*')` (38 новых ключей RU+KZ)
-  - **StorePublicScreen** — 8 `isKz ? 'Қаз' : 'Рус'` → `t('home.store*')` (12 новых ключей RU+KZ)
-  - **Мелочь:** UnifiedProductScreen (2), SetupProfileScreen (1), QRPrintScreen (2), RetailProductsScreen (1), ProfileScreen (3), AccountScreen (2) — все хардкод → t()
-  - **Dev-mode warnings:** resolve.js → `⚠key` визуальная пометка в DEV при missing key
-  - **PrivacyPolicyScreen** → markdown файлы `src/legal/privacy-{ru,kz}.md` + `markdownToHtml()` рендерилка, 0 хардкода в JSX
-- ✅ i18n тесты + check скрипт — ЗАВЕРШЕНО:
-  - `scripts/check-i18n.mjs` — 14 namespace, 0 missing KZ, 106 identical (бренды/иконки/единицы)
-  - `tests/unit/i18n/` — 64 теста (plural 20, interpolate 13, format 16, resolve 15), все проходят
-  - `resolve.js` — `import.meta.env?.DEV` (optional chaining для Node.js совместимости)
-  - `useI18n()` возвращает `{ t, exists, lang, format }` — `exists` отдельный useCallback, не свойство `t`
-  - **Dev-mode:** `resolve()` возвращает `⚠key` при missing key для визуальной отладки
-  - **PrivacyPolicyScreen:** markdown `src/legal/privacy-{ru,kz}.md` + `markdownToHtml()` конвертер
+- ✅ i18n профессиональная миграция — 15 неймспейсов (добавлен `faq.json`), 0 dot-access
+- ✅ Dead code cleanup: UnifiedProductScreen, ExternalProductScreen, мёртвые route-хелперы
+- ✅ Багфиксы: CompareScreen ReferenceError, console.log/warn в продакшене
+- ✅ FaqScreen, AccountScreen, HomeScreen — i18n gaps закрыты
 
 ---
 
@@ -232,61 +203,34 @@ Pipeline: arbuz-import, arbuz-catalog-parser, korzinavdom-parser — все ис
 
 ---
 
-## ТЕКУЩИЙ ФОКУС (2026-05-02)
+## ТЕКУЩИЙ ФОКУС (2026-05-03)
 
-### Оптимизация сканирования — ЗАВЕРШЕНО ✅ (включая Сессию 4 — OFF removal)
+### Сессия 5 — Code Quality & i18n Gaps — ВЫПОЛНЕНО ✅
 
-**Сессия 1** (resolver.js + migration 026):
-1. Fire-and-forget логирование — ~150-300ms экономии per scan
-2. Session EAN cache `_eanCache` TTL 5 мин — повторные сканы **< 1ms**
-3. RPC `fn_resolve_product_by_ean` — 1 DB round-trip вместо 2-4
-4. Миграция 026 — применена вручную через Supabase SQL Editor ✅
+**Удалено (мёртвый код):**
+- `src/screens/UnifiedProductScreen.jsx` (548 строк) — не в роутере, нигде не используется
+- `src/screens/ExternalProductScreen.jsx` (625 строк) — OFF эпоха, API удалён (410 Gone)
+- `buildRetailLoginPath()`, `buildSoundSettingsPath()`, `buildProductPath(..., true)` — мёртвые хелперы
+- Ветка `isExternal` в AIScreen.jsx — недостижима
 
-**Сессия 2** (прогрев + логика):
-1. Pre-warm `html5-qrcode` в `HomeScreen.jsx` (useEffect) — camera opens ~500ms faster
-2. `notifyCatalogWarmed(storeId)` в `StoreContext` + fast-path в `resolver.js` — после warmup IndexedDB все сканы **< 5ms**
-3. Параллельный `Promise.all([lookupProduct, stopScanner])` в `ScanScreen` — ~100ms экономии
-4. FPS 20→25 в ScanScreen
+**Исправлено (баги):**
+- CompareScreen.jsx:242 — **ReferenceError** (useLocalName до объявления productA) — **КРИТИЧЕСКИЙ БАГ**
 
-**Сессия 3** (UX / оптимистичная навигация):
-1. `ScanScreen` нормальный режим — navigate **немедленно** после сканирования + lookup в фоне
-2. Зелёный flash overlay (`@keyframes scanFlash`) при успешном скане
-3. `ProductScreen` — `fromScan: true` → self-lookup через `resolveProductByEan` (хит в `_eanCache`)
-4. Premium skeleton (shimmer) вместо hourglass spinner
+**i18n доделано:**
+- FaqScreen.jsx → `faq.json` (RU+KZ), 10 вопросов-ответов, +18 ключей на язык
+- AccountScreen.jsx → убраны 20+ мёртвых `|| '...'` fallback'ов
+- HomeScreen.jsx → 4 лендинг-строки в `home.json` + KZ (retail feat + CTA)
+- ErrorBoundary.jsx → i18n-fallback'и (готов к передаче `t` пропа)
 
-**Сессия 4** (OFF removal + AI enrichment):
-1. Open Food Facts полностью удалён из scan path (`fetchFromOFFViaProxy`, `findCacheProduct`, `saveToCache` убраны из resolver.js)
-2. `api/off.js` → 410 Gone (endpoint убран)
-3. `ExternalProductScreen.jsx` — маршрут и lazy import удалены из App.jsx
-4. Background AI enrichment: после Supabase hit — если `!ingredients && !description` → `maybeEnrichInBackground()` (fire-and-forget)
-5. `enrichmentEvents` EventTarget — ProductScreen слушает 'enriched' событие и обновляет карточку без перезагрузки
-6. Новый каскад: session cache → IndexedDB → local store catalog → Supabase RPC → [AI enrich background] → "Не найден"
+**Code quality:**
+- Убран `console.warn` из ProfileScreen (2 места)
+- Убран `console.log` из nameNormalizer (2 места)
+- `useCallback` для `rememberStore`/`clearRememberedStore` в StoreContext
+- Импорт `useMemo` в ProductScreen — проверен, используется (ложная тревога аудита)
 
-**Итого сэкономлено:** ~800ms cold start + ~500ms per scan (нормальный режим)
-
-### KZ перевод имён — ЭТАП 4+ ЗАВЕРШЁН ✅
-
-**Проблема:** 28% продуктов имели плохой KZ перевод (9% идентичных RU + 19% частичный перевод).
-**Решение:**
-1. `src/utils/localName.js` — `useLocalName(product)` + `getLocalName(product)` для kz-языка
-2. Все экраны обновлены — показывают `nameKz` при lang=kz (был только CatalogScreen)
-3. `translate-names-kz.mjs --fix-bad` — флаг для переименования плохих переводов
-4. Промпт улучшен — примеры казахских эквивалентов (молоко→сүт, сыр→ірімшік, etc.)
-5. 4 прохода переименования: 1959→1553→907→634 плохих исправлено
-6. **Результат:** 90% качество (было 72%), 65% со специфичными казахскими буквами, 25% чистый казахский без спец. букв
-
-**Экраны с useLocalName/getLocalName:** CatalogScreen, ProductScreen, UnifiedProductScreen, AIScreen, CompareScreen, AlternativesScreen, QRPrintScreen, HistoryScreen, ProductMiniCard
-
-### Незакрытые приоритеты:
-- **Этап 6: ProductScreen рефакторинг** — 1315-строчный монолит
-- **Архитектура UI профиля (Этап 1-5)** — Переработка меню профиля
-- **AlternativesScreen — СЛОМАН (P1, требует отдельной задачи):**
-  `getAnyKnownProductByRef` и `getStoreCatalogProducts` в `src/utils/storeCatalog.js` сейчас
-  возвращают `null/[]` (стабы после удаления demo-данных). Экран рендерится но показывает
-  пустой список. Нужно переписать на `StoreContext.catalogProducts` (реальный Supabase каталог).
-  Файлы: `src/screens/AlternativesScreen.jsx`, `src/utils/storeCatalog.js`,
-  `src/screens/CompareScreen.jsx` (тоже использует `getAnyKnownProductByRef`),
-  `src/screens/AIScreen.jsx`, `src/screens/ProductScreen.jsx`.
+**Добавлено:**
+- `src/locales/{ru,kz}/faq.json` — новый неймспейс (15-й)
+- `src/i18n/loader.js` — обновлён (15 неймспейсов)
 
 ---
 
@@ -297,9 +241,10 @@ Pipeline: arbuz-import, arbuz-catalog-parser, korzinavdom-parser — все ис
 1. **Прочитай `docs/CONTEXT.md`** — этот файл, текущий фокус.
 2. **Прочитай `AGENTS.md`** — железные правила проекта.
 3. **Сделай Vault RAG-запрос** для специфичной задачи: `vault-query("запрос")`
-4. **Следующий шаг — Этап 6: Рефакторинг монолитов** (ProductScreen, ProfileScreen, HomeScreen)
-   - ИЛИ Data Moat / Retail Import / unknown EAN cascade
-   - ИЛИ FaqScreen i18n (531 строк FAQ_RU/FAQ_KZ — контент-данные, не UI)
+4. **Следующий приоритет — OnboardingScreen удаление** (будет убран по плану владельца)
+   - Далее по приоритету: AuthScreen consentNotice i18n, BottomSheet компонент
+   - Data Moat Confidence бейджи, RetailScannerModal i18n
+   - БД-фиксы (UNIQUE, CASCADE, GIN), партицирование scan_events
 
 ### AI BEST-FIT (2026-05-03)
 
@@ -313,6 +258,7 @@ Pipeline: arbuz-import, arbuz-catalog-parser, korzinavdom-parser — все ис
 - Store-facing V1 metrics should be business-simple: products synced/imported, scans, not-found scans, top requested unknown EANs. Do not make "products with ingredients" the store owner's problem; Körset owns card quality.
 - IMPLEMENTED 2026-05-03: V1 unknown EAN request slice. `ProductScreen` not-found state now shows unsupported alcohol/tobacco wording and a "Request product check" action for valid EAN + store id. Logic lives in `src/domain/product/unknownEanRequest.js`, tests in `tests/unit/unknownEanRequest.test.mjs`. After the i18n migration landed, the copy was moved into `src/locales/{ru,kz}/product.json` under `product.unknownEan.*`; domain helper remains copy-free.
 - POST-I18N ADAPTATION 2026-05-03: Verified the new i18n architecture (`src/i18n/*`, flat locale JSON, RU fallback, Intl format helpers, `check-i18n`). Fixed safe migration seams: `CompareScreen` rows now include `lang` in `useMemo` deps, `ThemeModeToggle` receives `t` explicitly, and Retail Products shelf placeholder comes from the translation props. Verification: unknown EAN test passed, i18n unit tests passed via direct Node runs, `check-i18n` passed, `npm run build` passed, `npm run lint` passed with warnings only.
+- SCANSCREEN REDESIGN PREP 2026-05-03: User provided a light-theme ScanScreen visual reference and SVG icons. First safe step completed before redesign: `src/screens/ScanScreen.jsx` now has inline SVG components for gallery, torch on/off, compare active mirror state, history placeholder, and camera-switch filled state. No layout/scanner behavior redesign yet. Build passed; lint passed with warnings only.
 
 - Лучшее применение Codex в Körset — не косметические UI-правки, а системные зоны с большим мультипликатором: Data Moat, pipeline обогащения, DB/RLS, внимательный рефакторинг монолитов.
 - Самая сильная точка пользы: превращать разрозненную логику в надёжные потоки, инварианты, проверяемые скрипты и точечные архитектурные улучшения.

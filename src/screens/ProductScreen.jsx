@@ -602,7 +602,11 @@ export default function ProductScreen() {
               {t('common.alternatives')}
             </button>
             <button
-              onClick={() => navigate(buildProductAIPath(activeStoreSlug, product.ean))}
+              onClick={() =>
+                navigate(buildProductAIPath(activeStoreSlug, product.ean), {
+                  state: { product },
+                })
+              }
               style={{
                 flex: 1,
                 padding: '14px 10px',

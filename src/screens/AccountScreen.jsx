@@ -135,8 +135,6 @@ export default function AccountScreen() {
   const { user, logout } = useAuth()
   const { currentStore } = useStore()
   const { lang, t } = useI18n()
-  const tr = (val) => (typeof val === 'object' ? val[lang] || val.ru : val)
-
   const [resetSent, setResetSent] = useState(false)
   const [resetError, setResetError] = useState('')
   const [resetLoading, setResetLoading] = useState(false)
@@ -150,9 +148,9 @@ export default function AccountScreen() {
     return null
   }
 
-  const email = user.email || ''
-  const createdAt = user.created_at || user.createdAt || ''
-  const userId = user.id || ''
+  const email = user.email
+  const createdAt = user.created_at || user.createdAt
+  const userId = user.id
   const isStoreOwner = currentStore?.owner_id === user.id
 
   const handleResetPassword = async () => {
@@ -166,7 +164,7 @@ export default function AccountScreen() {
       if (error) throw error
       setResetSent(true)
     } catch (err) {
-      setResetError(err?.message || tr(t('account.resetError')) || t('common.error'))
+      setResetError(err?.message || t('account.resetError') || t('common.error'))
     } finally {
       setResetLoading(false)
     }
@@ -195,14 +193,14 @@ export default function AccountScreen() {
         },
       })
       const result = await res.json()
-      if (!res.ok) throw new Error(result.details || result.error || 'delete_failed')
+      if (!res.ok) throw new Error(result.details || result.error)
 
       // Clear local state and redirect
       await logout()
       navigate('/', { replace: true })
       window.location.reload()
     } catch (err) {
-      setDeleteError(err?.message || tr(t('account.deleteError')) || t('common.error'))
+      setDeleteError(err?.message || t('account.deleteError') || t('common.error'))
     } finally {
       setDeleteLoading(false)
     }
@@ -278,7 +276,7 @@ export default function AccountScreen() {
             textOverflow: 'ellipsis',
           }}
         >
-          {tr(t('account.title')) || 'Личные данные'}
+          {t('account.title')}
         </div>
         <div style={{ width: 38 }} />
       </div>
@@ -307,14 +305,11 @@ export default function AccountScreen() {
               paddingLeft: 4,
             }}
           >
-            {tr(t('account.sectionAccount')) || 'Аккаунт'}
+            {t('account.sectionAccount')}
           </div>
 
-          <FieldRow label={tr(t('account.emailLabel')) || 'Email'} value={email || '—'} />
-          <FieldRow
-            label={tr(t('account.joinedLabel')) || 'Дата регистрации'}
-            value={formatDate(createdAt, lang)}
-          />
+          <FieldRow label={t('account.emailLabel')} value={email} />
+          <FieldRow label={t('account.joinedLabel')} value={formatDate(createdAt, lang)} />
         </div>
 
         {/* Store Status */}
@@ -343,7 +338,7 @@ export default function AccountScreen() {
             </svg>
             <div>
               <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--success-bright)' }}>
-                {tr(t('account.storeOwnerTitle')) || 'Владелец магазина'}
+                {t('account.storeOwnerTitle')}
               </div>
               <div
                 style={{ fontSize: 12, color: 'var(--success-bright)', opacity: 0.8, marginTop: 2 }}
@@ -377,7 +372,7 @@ export default function AccountScreen() {
               paddingLeft: 4,
             }}
           >
-            {tr(t('account.sectionSecurity')) || 'Безопасность'}
+            {t('account.sectionSecurity')}
           </div>
 
           <ActionRow
@@ -395,16 +390,12 @@ export default function AccountScreen() {
                 <path d="M7 11V7a5 5 0 0110 0v4" />
               </svg>
             }
-            label={tr(t('account.changePassword')) || 'Сменить пароль'}
+            label={t('account.changePassword')}
             onClick={handleResetPassword}
             disabled={resetLoading || resetSent || !email}
           />
 
-          {resetSent && (
-            <InfoBox tone="success">
-              {tr(t('account.resetSent')) || 'Ссылка для сброса отправлена на ваш email'}
-            </InfoBox>
-          )}
+          {resetSent && <InfoBox tone="success">{t('account.resetSent')}</InfoBox>}
           {resetError && <InfoBox tone="warning">{resetError}</InfoBox>}
 
           <div
@@ -419,7 +410,7 @@ export default function AccountScreen() {
               paddingLeft: 4,
             }}
           >
-            {tr(t('account.sectionDanger')) || 'Опасная зона'}
+            {t('account.sectionDanger')}
           </div>
 
           <ActionRow
@@ -438,7 +429,7 @@ export default function AccountScreen() {
                 <line x1="21" y1="12" x2="9" y2="12" />
               </svg>
             }
-            label={tr(t('account.logout')) || 'Выйти из аккаунта'}
+            label={t('account.logout')}
             danger
             onClick={() => setShowLogoutConfirm(true)}
           />
@@ -461,7 +452,7 @@ export default function AccountScreen() {
                 <line x1="14" y1="11" x2="14" y2="17" />
               </svg>
             }
-            label={tr(t('account.deleteAccount')) || 'Удалить аккаунт'}
+            label={t('account.deleteAccount')}
             danger
             onClick={() => {
               setDeleteError('')
@@ -509,7 +500,7 @@ export default function AccountScreen() {
                 marginBottom: 8,
               }}
             >
-              {tr(t('account.logoutConfirmTitle')) || 'Выйти из аккаунта?'}
+              {t('account.logoutConfirmTitle')}
             </div>
             <div
               style={{
@@ -519,7 +510,7 @@ export default function AccountScreen() {
                 marginBottom: 20,
               }}
             >
-              {tr(t('account.logoutConfirmBody')) || 'Вы сможете войти снова в любой момент.'}
+              {t('account.logoutConfirmBody')}
             </div>
             <div style={{ display: 'flex', gap: 10 }}>
               <button
@@ -537,7 +528,7 @@ export default function AccountScreen() {
                   cursor: 'pointer',
                 }}
               >
-                {tr(t('account.logoutCancel')) || 'Отмена'}
+                {t('account.logoutCancel')}
               </button>
               <button
                 onClick={handleLogout}
@@ -554,7 +545,7 @@ export default function AccountScreen() {
                   cursor: 'pointer',
                 }}
               >
-                {tr(t('account.logoutConfirmBtn')) || 'Выйти'}
+                {t('account.logoutConfirmBtn')}
               </button>
             </div>
           </div>
@@ -628,7 +619,7 @@ export default function AccountScreen() {
                 marginBottom: 8,
               }}
             >
-              {tr(t('account.deleteConfirmTitle')) || 'Удалить аккаунт?'}
+              {t('account.deleteConfirmTitle')}
             </div>
 
             <div
@@ -639,8 +630,7 @@ export default function AccountScreen() {
                 marginBottom: 20,
               }}
             >
-              {tr(t('account.deleteConfirmBody')) ||
-                'Ваш аккаунт и все данные профиля будут удалены безвозвратно. Это действие нельзя отменить.'}
+              {t('account.deleteConfirmBody')}
             </div>
 
             <div
@@ -655,8 +645,7 @@ export default function AccountScreen() {
                 border: '1px solid var(--glass-border)',
               }}
             >
-              {tr(t('account.deleteConfirmDetail')) ||
-                'Ваши избранные товары, история сканирований и настройки профиля исчезнут навсегда. Данные магазина, если вы владелец, сохраняются.'}
+              {t('account.deleteConfirmDetail')}
             </div>
 
             {deleteError && (
@@ -691,7 +680,7 @@ export default function AccountScreen() {
                   cursor: 'pointer',
                 }}
               >
-                {tr(t('account.deleteCancel')) || 'Отмена'}
+                {t('account.deleteCancel')}
               </button>
               <button
                 onClick={handleDeleteAccount}
@@ -710,9 +699,7 @@ export default function AccountScreen() {
                   opacity: deleteLoading ? 0.6 : 1,
                 }}
               >
-                {deleteLoading
-                  ? tr(t('account.deleteDeleting')) || 'Удаление...'
-                  : tr(t('account.deleteConfirmBtn')) || 'Удалить навсегда'}
+                {deleteLoading ? t('account.deleteDeleting') : t('account.deleteConfirmBtn')}
               </button>
             </div>
           </div>

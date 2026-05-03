@@ -6,6 +6,7 @@ import { useOffline } from '../contexts/OfflineContext.jsx'
 import { buildProductPath, buildComparePath } from '../utils/routes.js'
 import { useI18n } from '../i18n/index.js'
 import { loadSoundSettings } from '../utils/soundSettings.js'
+import './ScanScreen.css'
 
 // ─── Звук успешного сканирования (Web Audio API, без файлов) ──────────────────
 let globalAudioCtx = null
@@ -62,21 +63,52 @@ function saveRecentScan(product) {
       ...recent.filter((r) => r.ean !== product.ean),
     ].slice(0, 5)
     localStorage.setItem('korset_recent_scans', JSON.stringify(updated))
+    return updated
   } catch {
     /* noop */
   }
+  return null
 }
 
 // ─── Иконки ────────────────────────────────────────────────────────────────────
 function IconGallery({ size = 22 }) {
   return (
-    <span className="material-symbols-outlined" style={{ fontSize: size }}>
-      image
-    </span>
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="16" cy="8" r="2" stroke="currentColor" strokeWidth="0.9" />
+      <path
+        d="M2 10.15l.98-.14c6.98-1 12.94 5.02 11.88 11.99"
+        stroke="currentColor"
+        strokeWidth="0.9"
+        strokeLinecap="round"
+      />
+      <path
+        d="M22 13.39l-.97-.14c-2.85-.39-5.42 1.02-6.75 3.25"
+        stroke="currentColor"
+        strokeWidth="0.9"
+        strokeLinecap="round"
+      />
+      <path
+        d="M22 12c0 4.71 0 7.07-1.46 8.54C19.07 22 16.71 22 12 22s-7.07 0-8.54-1.46C2 19.07 2 16.71 2 12s0-7.07 1.46-8.54C4.93 2 7.29 2 12 2s7.07 0 8.54 1.46c.97.98 1.3 2.35 1.4 4.54"
+        stroke="currentColor"
+        strokeWidth="0.9"
+        strokeLinecap="round"
+      />
+    </svg>
   )
 }
 
-function IconSwitchCamera({ size = 22 }) {
+function IconSwitchCamera({ filled = false, size = 22 }) {
+  if (filled) {
+    return (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path
+          d="M21 7c.51 0 .94.39.99.88L22 8v8.5c0 1.87-1.46 3.4-3.31 3.49L18.5 20H6.41l.3.29a1 1 0 0 1-1.32 1.5l-.1-.08-2-2-.02-.02a1 1 0 0 1-.08-1.28l.1-.12 2-2a1 1 0 0 1 1.5 1.32l-.08.1-.3.29H18.5c.78 0 1.42-.59 1.49-1.36L20 16.5V8a1 1 0 0 1 1-1ZM18.61 2.21l.1.08 2 2c.03.03.06.06.08.09l.02.02a1 1 0 0 1-.1 1.31l-2 2a1 1 0 0 1-1.5-1.32l.08-.1.3-.29H5.5c-.78 0-1.42.59-1.49 1.36L4 7.5V16a1 1 0 0 1-2 0V7.5c0-1.87 1.46-3.4 3.31-3.5h12.28l-.3-.29a1 1 0 0 1 1.32-1.5ZM12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"
+          fill="currentColor"
+        />
+      </svg>
+    )
+  }
+
   return (
     <svg
       width={size}
@@ -102,10 +134,211 @@ function IconSwitchCamera({ size = 22 }) {
 }
 
 function IconTorch({ on, size = 22 }) {
+  if (on) {
+    return (
+      <svg width={size} height={size} viewBox="0 0 51 51" fill="none" aria-hidden="true">
+        <path
+          d="M5.08 22.88a2.54 2.54 0 0 1 0 5.08H2.54a2.54 2.54 0 0 1 0-5.08h2.54ZM25.41 0a2.54 2.54 0 0 1 2.54 2.54v2.54a2.54 2.54 0 0 1-5.08 0V2.54A2.54 2.54 0 0 1 25.41 0ZM48.29 22.88a2.54 2.54 0 0 1 0 5.08h-2.54a2.54 2.54 0 0 1 0-5.08h2.54ZM7.35 7.35a2.54 2.54 0 0 1 3.59 0l1.78 1.78a2.54 2.54 0 1 1-3.59 3.59l-1.78-1.77a2.54 2.54 0 0 1 0-3.6ZM39.88 7.35a2.54 2.54 0 0 1 3.6 3.6l-1.78 1.78a2.54 2.54 0 0 1-3.6-3.6l1.78-1.78ZM30.5 40.67a2.54 2.54 0 0 1 2.54 2.54 7.63 7.63 0 1 1-15.25 0 2.54 2.54 0 0 1 2.54-2.54H30.5ZM25.41 10.17a15.25 15.25 0 0 1 9.15 27.45 2.54 2.54 0 0 1-1.52.5H17.79c-.55 0-1.09-.18-1.53-.5a15.25 15.25 0 0 1 9.15-27.45Z"
+          fill="currentColor"
+        />
+      </svg>
+    )
+  }
+
   return (
-    <span className="material-symbols-outlined" style={{ fontSize: size }}>
-      {on ? 'flashlight_on' : 'flashlight_off'}
-    </span>
+    <svg width={size} height={size} viewBox="0 0 40 40" fill="none" aria-hidden="true">
+      <path
+        d="M1 20h2.11M20 1v2.11M36.89 20H39M6.49 6.49l1.48 1.48M33.51 6.49l-1.48 1.48"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M13.67 28.44a10.56 10.56 0 1 1 12.66 0 9.22 9.22 0 0 0-2.11 6.34 4.22 4.22 0 1 1-8.44 0 9.22 9.22 0 0 0-2.11-6.34Z"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M15.14 30.56h9.72"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function IconCompare({ active = false, size = 22 }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+      style={{ transform: active ? 'scaleX(-1)' : 'none', transition: 'transform 0.22s ease' }}
+    >
+      <path d="M2 4h9v1H3v15h8v1H2zm10 19h1V2h-1zM8.28 10.28l-.56-.56L4.93 12.5l2.79 2.78.56-.56L6.57 13H11v-1H6.57zM14 12h4.08l-1.54-1.54.92-.92 2.96 2.96-2.96 2.96-.92-.92L18.08 13H14v8h9V4h-9z" />
+    </svg>
+  )
+}
+
+function IconHistory({ size = 22 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M12 8v4l2.5 2.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M5.6 5.6 4.34 6.87l2.54.01M4.32 4.33l.02 2.54M3 12a9 9 0 0 0 13.5 7.79M19.8 16.5A9 9 0 0 0 5.67 5.6"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function ScanActionButton({
+  active = false,
+  disabled = false,
+  label,
+  tone = 'default',
+  icon,
+  onClick,
+}) {
+  return (
+    <button
+      type="button"
+      className={`scan-action ${active ? 'is-active' : ''} tone-${tone}`}
+      onClick={onClick}
+      disabled={disabled}
+    >
+      <span className="scan-action__icon">{icon}</span>
+      <span className="scan-action__label">{label}</span>
+    </button>
+  )
+}
+
+function ProductScanChip({ product, index, t }) {
+  if (!product) return null
+  return (
+    <div className="scan-product-chip">
+      <div className="scan-product-chip__index">{index}</div>
+      <div className="scan-product-chip__media">
+        {product.image_url ? (
+          <img src={product.image_url} alt="" />
+        ) : (
+          <span className="material-symbols-outlined">barcode</span>
+        )}
+      </div>
+      <div className="scan-product-chip__copy">
+        <span>{index === 1 ? t('scan.compareFirstReady') : t('scan.compareSecondReady')}</span>
+        <strong>{product.name || product.ean}</strong>
+      </div>
+    </div>
+  )
+}
+
+function CompareTray({ active, firstProduct, secondProduct, onCompare, onCancel, t }) {
+  if (!active) return null
+  return (
+    <div className="scan-compare-tray">
+      <div className="scan-compare-tray__header">
+        <span className="material-symbols-outlined">compare_arrows</span>
+        <div>
+          <strong>{t('scan.compareTrayTitle')}</strong>
+          <p>
+            {firstProduct
+              ? secondProduct
+                ? t('scan.compareReady')
+                : t('scan.compareNeedSecond')
+              : t('scan.compareNeedFirst')}
+          </p>
+        </div>
+      </div>
+      <div className="scan-compare-tray__products">
+        <ProductScanChip product={firstProduct} index={1} t={t} />
+        <ProductScanChip product={secondProduct} index={2} t={t} />
+      </div>
+      <div className="scan-compare-tray__actions">
+        <button type="button" className="scan-small-btn ghost" onClick={onCancel}>
+          {t('compare.cancel')}
+        </button>
+        {firstProduct && secondProduct && (
+          <button type="button" className="scan-small-btn primary" onClick={onCompare}>
+            {t('scan.compareStart')}
+          </button>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function ScanHintSheet({ open, onClose, t }) {
+  if (!open) return null
+  return (
+    <div className="scan-sheet-backdrop" onClick={onClose}>
+      <div className="scan-sheet" onClick={(e) => e.stopPropagation()}>
+        <div className="scan-sheet__handle" />
+        <div className="scan-sheet__hero">
+          <IconCompare active size={28} />
+        </div>
+        <h2>{t('scan.compareHintTitle')}</h2>
+        <p>{t('scan.compareHintBody')}</p>
+        <ol>
+          <li>{t('scan.compareHintStep1')}</li>
+          <li>{t('scan.compareHintStep2')}</li>
+          <li>{t('scan.compareHintStep3')}</li>
+        </ol>
+        <button type="button" className="scan-sheet__button" onClick={onClose}>
+          {t('common.ok')}
+        </button>
+      </div>
+    </div>
+  )
+}
+
+function RecentScansSheet({ open, scans, onClose, onSelect, t }) {
+  if (!open) return null
+  return (
+    <div className="scan-sheet-backdrop" onClick={onClose}>
+      <div className="scan-sheet scan-sheet--recent" onClick={(e) => e.stopPropagation()}>
+        <div className="scan-sheet__handle" />
+        <h2>{t('scan.recentScans')}</h2>
+        {scans.length === 0 ? (
+          <p>{t('scan.recentEmpty')}</p>
+        ) : (
+          <div className="scan-recent-list">
+            {scans.map((scan) => (
+              <button
+                key={scan.ean}
+                type="button"
+                className="scan-recent-item"
+                onClick={() => onSelect(scan)}
+              >
+                <span className="scan-recent-item__media">
+                  {scan.image_url ? <img src={scan.image_url} alt="" /> : <IconHistory size={22} />}
+                </span>
+                <span>
+                  <strong>{scan.name || scan.ean}</strong>
+                  <small>{scan.ean}</small>
+                </span>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
   )
 }
 
@@ -129,22 +362,28 @@ export default function ScanScreen() {
   const [focusPt, setFocusPt] = useState(null)
   const [galleryState, setGalleryState] = useState('idle')
   const [galleryError, setGalleryError] = useState(null)
-  const [recentScans] = useState(() => {
+  const [recentScans, setRecentScans] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem('korset_recent_scans') || '[]')
     } catch {
       return []
     }
   })
+  const [historyOpen, setHistoryOpen] = useState(false)
   const [manualInput, setManualInput] = useState('')
   const [manualError, setManualError] = useState(null)
+  const [manualFocused, setManualFocused] = useState(false)
+  const [keyboardOffset, setKeyboardOffset] = useState(0)
 
   const initCompare = Boolean(location.state?.compareMode)
   const initProductA = location.state?.productA || null
   const [compareModeActive, setCompareModeActive] = useState(initCompare)
   const [pinnedProduct, setPinnedProduct] = useState(initProductA)
+  const [secondCompareProduct, setSecondCompareProduct] = useState(null)
+  const [compareHintOpen, setCompareHintOpen] = useState(false)
   const compareModeRef = useRef(initCompare)
   const pinnedProductRef = useRef(initProductA)
+  const secondCompareProductRef = useRef(null)
   const storeRef = useRef(currentStore)
   const slugRef = useRef(storeSlug)
 
@@ -157,12 +396,37 @@ export default function ScanScreen() {
   }, [pinnedProduct])
 
   useEffect(() => {
+    secondCompareProductRef.current = secondCompareProduct
+  }, [secondCompareProduct])
+
+  useEffect(() => {
     storeRef.current = currentStore
   }, [currentStore])
 
   useEffect(() => {
     slugRef.current = storeSlug
   }, [storeSlug])
+
+  useEffect(() => {
+    const viewport = window.visualViewport
+    if (!viewport) return undefined
+    const updateKeyboardOffset = () => {
+      const hidden = Math.max(0, window.innerHeight - viewport.height - viewport.offsetTop)
+      setKeyboardOffset(hidden)
+    }
+    updateKeyboardOffset()
+    viewport.addEventListener('resize', updateKeyboardOffset)
+    viewport.addEventListener('scroll', updateKeyboardOffset)
+    return () => {
+      viewport.removeEventListener('resize', updateKeyboardOffset)
+      viewport.removeEventListener('scroll', updateKeyboardOffset)
+    }
+  }, [])
+
+  const rememberScan = useCallback((product) => {
+    const updated = saveRecentScan(product)
+    if (updated) setRecentScans(updated)
+  }, [])
 
   const fileInputRef = useRef(null)
   const scannerRef = useRef(null)
@@ -249,18 +513,19 @@ export default function ScanScreen() {
                 const pinned = pinnedProductRef.current
                 if (!pinned) {
                   // First scan in compare mode — pin product A
-                  saveRecentScan(scannedProduct)
+                  rememberScan(scannedProduct)
                   pinnedProductRef.current = scannedProduct
                   setPinnedProduct(scannedProduct)
                   setSearching(false)
                   busyRef.current = false
                   startScannerRef.current?.(cameraList, idx)
                 } else {
-                  // Second scan — navigate to CompareScreen
-                  saveRecentScan(scannedProduct)
-                  navigate(buildComparePath(slugRef.current, pinned.ean, scannedProduct.ean), {
-                    state: { productA: pinned, productB: scannedProduct },
-                  })
+                  // Second scan — keep both products visible before explicit compare action.
+                  rememberScan(scannedProduct)
+                  secondCompareProductRef.current = scannedProduct
+                  setSecondCompareProduct(scannedProduct)
+                  setSearching(false)
+                  busyRef.current = false
                 }
               } else {
                 setNotFoundEan(ean)
@@ -279,7 +544,7 @@ export default function ScanScreen() {
               stopScanner()
               lookupProduct(ean, storeRef.current?.id || slugRef.current)
                 .then((r) => {
-                  if (r?.product) saveRecentScan(r.product)
+                  if (r?.product) rememberScan(r.product)
                 })
                 .catch(() => {})
               navigate(buildProductPath(slugRef.current, ean), {
@@ -313,7 +578,7 @@ export default function ScanScreen() {
         setStatus(/permission|not allowed|denied/i.test(msg) ? 'error_permission' : 'error')
       }
     },
-    [navigate, stopScanner]
+    [navigate, rememberScan, stopScanner]
   )
   useEffect(() => {
     startScannerRef.current = startScanner
@@ -454,19 +719,19 @@ export default function ScanScreen() {
           if (compareModeRef.current) {
             const pinned = pinnedProductRef.current
             if (!pinned) {
-              saveRecentScan(scannedProduct)
+              rememberScan(scannedProduct)
               pinnedProductRef.current = scannedProduct
               setPinnedProduct(scannedProduct)
               setSearching(false)
               startScanner(cameras, camIdx)
             } else {
-              saveRecentScan(scannedProduct)
-              navigate(buildComparePath(slugRef.current, pinned.ean, scannedProduct.ean), {
-                state: { productA: pinned, productB: scannedProduct },
-              })
+              rememberScan(scannedProduct)
+              secondCompareProductRef.current = scannedProduct
+              setSecondCompareProduct(scannedProduct)
+              setSearching(false)
             }
           } else {
-            saveRecentScan(scannedProduct)
+            rememberScan(scannedProduct)
             navigate(buildProductPath(slugRef.current, scannedProduct?.ean || ean), {
               state: { product: scannedProduct },
             })
@@ -497,18 +762,50 @@ export default function ScanScreen() {
         }, 3200)
       }
     },
-    [cameras, camIdx, navigate, stopScanner, startScanner]
+    [cameras, camIdx, navigate, rememberScan, stopScanner, startScanner]
   )
 
   const toggleCompareMode = useCallback(() => {
     const next = !compareModeActive
     setCompareModeActive(next)
     compareModeRef.current = next
+    if (next) {
+      const seen = localStorage.getItem('korset_compare_scan_hint_seen') === '1'
+      if (!seen) setCompareHintOpen(true)
+    }
     if (!next) {
       setPinnedProduct(null)
+      setSecondCompareProduct(null)
       pinnedProductRef.current = null
+      secondCompareProductRef.current = null
     }
   }, [compareModeActive])
+
+  const closeCompareHint = useCallback(() => {
+    localStorage.setItem('korset_compare_scan_hint_seen', '1')
+    setCompareHintOpen(false)
+  }, [])
+
+  const cancelCompareMode = useCallback(() => {
+    setCompareModeActive(false)
+    compareModeRef.current = false
+    setPinnedProduct(null)
+    setSecondCompareProduct(null)
+    pinnedProductRef.current = null
+    secondCompareProductRef.current = null
+    setSearching(false)
+    busyRef.current = false
+    startScannerRef.current?.(cameras, camIdx)
+  }, [cameras, camIdx])
+
+  const openCompareResult = useCallback(() => {
+    const first = pinnedProductRef.current
+    const second = secondCompareProductRef.current
+    if (!first || !second) return
+    navigate(buildComparePath(slugRef.current, first.ean, second.ean), {
+      state: { productA: first, productB: second },
+    })
+  }, [navigate])
 
   const handleManualSubmit = useCallback(
     async (e) => {
@@ -526,8 +823,22 @@ export default function ScanScreen() {
       if (!mountedRef.current) return
       if (result.type === 'local' || result.type === 'external') {
         const p = result.product
-        saveRecentScan(p)
-        navigate(buildProductPath(slugRef.current, p?.ean || raw), { state: { product: p } })
+        rememberScan(p)
+        if (compareModeRef.current) {
+          const pinned = pinnedProductRef.current
+          if (!pinned) {
+            pinnedProductRef.current = p
+            setPinnedProduct(p)
+            setSearching(false)
+            startScannerRef.current?.(cameras, camIdx)
+          } else {
+            secondCompareProductRef.current = p
+            setSecondCompareProduct(p)
+            setSearching(false)
+          }
+        } else {
+          navigate(buildProductPath(slugRef.current, p?.ean || raw), { state: { product: p } })
+        }
       } else {
         setNotFoundEan(raw)
         setSearching(false)
@@ -536,7 +847,7 @@ export default function ScanScreen() {
         startScannerRef.current?.(cameras, camIdx)
       }
     },
-    [manualInput, stopScanner, navigate, cameras, camIdx, t]
+    [manualInput, stopScanner, navigate, cameras, camIdx, rememberScan, t]
   )
 
   return (
@@ -1083,9 +1394,7 @@ export default function ScanScreen() {
               boxShadow: compareModeActive ? 'var(--shadow-soft)' : 'none',
             }}
           >
-            <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
-              compare_arrows
-            </span>
+            <IconCompare active={compareModeActive} size={20} />
             <span style={{ fontSize: 10, fontWeight: 600, lineHeight: 1 }}>
               {t('scan.compare')}
             </span>

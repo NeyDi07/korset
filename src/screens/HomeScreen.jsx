@@ -1570,9 +1570,9 @@ export default function HomeScreen() {
               }}
             >
               {[
-                ['analytics', 'Аналитика'],
-                ['inventory_2', 'Каталог товаров'],
-                ['qr_code_2', 'QR-интеграция'],
+                ['analytics', t('home.landing.retail.feat.analytics')],
+                ['inventory_2', t('home.landing.retail.feat.catalog')],
+                ['qr_code_2', t('home.landing.retail.feat.qr')],
               ].map(([icon, label]) => (
                 <div
                   key={icon}
@@ -1639,7 +1639,7 @@ export default function HomeScreen() {
               <span className="material-symbols-outlined" style={{ fontSize: 24 }}>
                 login
               </span>
-              {user ? 'Открыть Retail Cabinet' : 'Войти в кабинет магазина'}
+              {user ? t('home.landing.retail.cta.open') : t('home.landing.retail.cta.login')}
             </button>
           </div>
         </section>

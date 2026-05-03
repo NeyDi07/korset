@@ -12,6 +12,7 @@ import ruQr from '../locales/ru/qr.json'
 import ruProfile from '../locales/ru/profile.json'
 import ruHistory from '../locales/ru/history.json'
 import ruAuth from '../locales/ru/auth.json'
+import ruFaq from '../locales/ru/faq.json'
 
 import kzCommon from '../locales/kz/common.json'
 import kzHome from '../locales/kz/home.json'
@@ -27,6 +28,7 @@ import kzQr from '../locales/kz/qr.json'
 import kzProfile from '../locales/kz/profile.json'
 import kzHistory from '../locales/kz/history.json'
 import kzAuth from '../locales/kz/auth.json'
+import kzFaq from '../locales/kz/faq.json'
 
 const dicts = {
   ru: Object.assign(
@@ -44,7 +46,8 @@ const dicts = {
     ruQr,
     ruProfile,
     ruHistory,
-    ruAuth
+    ruAuth,
+    ruFaq
   ),
   kz: Object.assign(
     {},
@@ -61,7 +64,8 @@ const dicts = {
     kzQr,
     kzProfile,
     kzHistory,
-    kzAuth
+    kzAuth,
+    kzFaq
   ),
 }
 

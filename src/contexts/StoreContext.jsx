@@ -313,6 +313,18 @@ export function StoreProvider({ children }) {
     [currentStore]
   )
 
+  const rememberStore = useCallback(
+    (slug) => {
+      setRememberedStoreSlug(slug)
+      if (rememberStoreEnabled) localStorage.setItem(STORE_KEY, slug)
+    },
+    [rememberStoreEnabled]
+  )
+  const clearRememberedStore = useCallback(() => {
+    setRememberedStoreSlug(null)
+    localStorage.removeItem(STORE_KEY)
+  }, [])
+
   const value = useMemo(
     () => ({
       storeSlug: currentStore?.slug || null,
@@ -325,14 +337,8 @@ export function StoreProvider({ children }) {
       isStorePublic,
       isPublicMarketing,
       updateStoreSettings,
-      rememberStore: (slug) => {
-        setRememberedStoreSlug(slug)
-        if (rememberStoreEnabled) localStorage.setItem(STORE_KEY, slug)
-      },
-      clearRememberedStore: () => {
-        setRememberedStoreSlug(null)
-        localStorage.removeItem(STORE_KEY)
-      },
+      rememberStore,
+      clearRememberedStore,
       appPath: (subPath = '') => {
         if (!currentStore) return subPath || '/'
         if (!subPath || subPath === '/') return `/s/${currentStore.slug}`

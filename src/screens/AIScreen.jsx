@@ -28,17 +28,13 @@ export default function AIScreen() {
   const { ean, storeSlug } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
-  const { state: navState } = location
   const { profile } = useProfile()
   const { lang, t } = useI18n()
-  const localName = useLocalName(product)
   const { currentStore } = useStore()
   const { isOnline } = useOffline()
   const activeStoreSlug = storeSlug || currentStore?.slug || null
-  const isExternal = location.pathname.includes('/product/ext/')
-  const product = isExternal
-    ? (navState?.product ?? null)
-    : getAnyKnownProductByRef(ean, activeStoreSlug)
+  const product = getAnyKnownProductByRef(ean, activeStoreSlug) || location.state?.product || null
+  const localName = useLocalName(product)
 
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
@@ -133,12 +129,7 @@ export default function AIScreen() {
         {/* Кнопка назад */}
         <button
           onClick={() =>
-            isExternal
-              ? navigate(buildProductPath(activeStoreSlug, ean, true), {
-                  replace: true,
-                  state: { product },
-                })
-              : navigate(buildProductPath(activeStoreSlug, product?.ean || ean), { replace: true })
+            navigate(buildProductPath(activeStoreSlug, product?.ean || ean), { replace: true })
           }
           style={{
             width: 38,

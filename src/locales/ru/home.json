@@ -213,5 +213,10 @@
   "home.storeFeature4": "AI-вопросы по товару",
   "home.storeOpen": "Открыть магазин в Körset",
   "home.storeScan": "Сразу перейти к сканированию",
-  "home.storePhone": "Телефон"
+  "home.storePhone": "Телефон",
+  "landing.retail.feat.analytics": "Аналитика",
+  "landing.retail.feat.catalog": "Каталог товаров",
+  "landing.retail.feat.qr": "QR-интеграция",
+  "landing.retail.cta.open": "Открыть Retail Cabinet",
+  "landing.retail.cta.login": "Войти в кабинет магазина"
 }

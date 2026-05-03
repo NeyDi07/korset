@@ -239,8 +239,6 @@ export default function CompareScreen() {
   const { profile } = useProfile()
   const { currentStore } = useStore()
   const { t, lang } = useI18n()
-  const localNameA = useLocalName(productA)
-  const localNameB = useLocalName(productB)
 
   const [aiText, setAiText] = useState(null)
   const [aiLoading, setAiLoading] = useState(false)
@@ -258,6 +256,9 @@ export default function CompareScreen() {
     if (stateB?.ean === ean2) return stateB
     return getAnyKnownProductByRef(ean2, activeSlug) || stateB || null
   }, [ean2, activeSlug, location.state])
+
+  const localNameA = useLocalName(productA)
+  const localNameB = useLocalName(productB)
 
   const fitA = useMemo(
     () => (productA ? checkProductFit(productA, profile) : null),
