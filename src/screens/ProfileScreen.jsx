@@ -26,6 +26,7 @@ import {
 import ProfileAvatar from '../components/ProfileAvatar.jsx'
 import AuthPromptModal from '../components/AuthPromptModal.jsx'
 import SegmentedToggle from '../components/SegmentedToggle.jsx'
+import Toggle from '../components/Toggle.jsx'
 import SupportBottomSheet from '../components/SupportBottomSheet.jsx'
 import { resetTermsAccepted } from '../components/TermsConsentSheet.jsx'
 import { ALLERGENS } from '../constants/allergens.js'
@@ -518,14 +519,6 @@ export default function ProfileScreen() {
         @keyframes floatOrb1 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(30px,-20px) scale(1.1)} }
         @keyframes floatOrb2 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-25px,15px) scale(0.9)} }
         @keyframes floatOrb3 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(15px,25px) scale(1.05)} }
-        .glass-card {
-          background: var(--glass-bg);
-          backdrop-filter: blur(28px);
-          -webkit-backdrop-filter: blur(28px);
-          border: 1px solid var(--glass-border);
-          border-radius: 24px;
-          position: relative;
-        }
         .pref-chip { transition: all 0.2s ease; cursor: pointer; }
         .pref-chip:active { transform: scale(0.95); }
         .settings-item { transition: background 0.15s; }
@@ -1344,19 +1337,13 @@ export default function ProfileScreen() {
                         <span style={{ fontSize: 13, color: 'var(--text-sub)' }}>
                           {t('profile.soundScanner')}
                         </span>
-                        <SegmentedToggle
-                          ariaLabel={t('profile.soundScanner')}
-                          activeKey={soundSettings.sound ? 'on' : 'off'}
-                          onChange={(k) => {
-                            const val = k === 'on'
+                        <Toggle
+                          checked={soundSettings.sound}
+                          onChange={(val) => {
                             const next = { ...soundSettings, sound: val }
                             setSoundSettings(next)
                             saveSoundSettings(next)
                           }}
-                          options={[
-                            { key: 'on', label: t('common.on') || 'Вкл' },
-                            { key: 'off', label: t('common.off') || 'Выкл' },
-                          ]}
                         />
                       </div>
                       <div
@@ -1369,19 +1356,13 @@ export default function ProfileScreen() {
                         <span style={{ fontSize: 13, color: 'var(--text-sub)' }}>
                           {t('profile.vibration')}
                         </span>
-                        <SegmentedToggle
-                          ariaLabel={t('profile.vibration')}
-                          activeKey={soundSettings.vibration ? 'on' : 'off'}
-                          onChange={(k) => {
-                            const val = k === 'on'
+                        <Toggle
+                          checked={soundSettings.vibration}
+                          onChange={(val) => {
                             const next = { ...soundSettings, vibration: val }
                             setSoundSettings(next)
                             saveSoundSettings(next)
                           }}
-                          options={[
-                            { key: 'on', label: t('common.on') || 'Вкл' },
-                            { key: 'off', label: t('common.off') || 'Выкл' },
-                          ]}
                         />
                       </div>
                     </div>
@@ -1513,6 +1494,27 @@ export default function ProfileScreen() {
                   ),
                   label: t('profile.policy'),
                   onClick: () => navigate('/privacy-policy'),
+                },
+                {
+                  icon: (
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#F87171"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    >
+                      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                      <path d="M3 3v5h5" />
+                    </svg>
+                  ),
+                  label: 'Сбросить согласие (Test)',
+                  onClick: () => {
+                    resetTermsAccepted()
+                    navigate('/') // To trigger scan screen
+                  },
                 },
               ],
             },

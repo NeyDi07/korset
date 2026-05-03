@@ -499,6 +499,15 @@ body {
     inset 0 0 20px rgba(124, 58, 237, 0.06);
 }
 
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  position: relative;
+}
+
 /* ─── Status Badge ────────────────────────────────── */
 .status-badge {
   display: flex;

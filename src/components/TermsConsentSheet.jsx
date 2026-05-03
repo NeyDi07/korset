@@ -30,7 +30,11 @@ function markTermsAccepted() {
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
+import { useState } from 'react'
+
 export default function TermsConsentSheet({ open, onAccept, onNavigateTerms, onNavigatePolicy }) {
+  const [checked, setChecked] = useState(false)
+
   if (!open) return null
 
   const handleAccept = () => {
@@ -81,140 +85,163 @@ export default function TermsConsentSheet({ open, onAccept, onNavigateTerms, onN
           }}
         />
 
-        {/* Icon */}
-        <div
-          style={{
-            width: 48,
-            height: 48,
-            borderRadius: 14,
-            border: '1px solid var(--glass-border)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginBottom: 18,
-            color: 'var(--text)',
-          }}
-        >
-          <svg
-            width="22"
-            height="22"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+        {/* Title & Icon Row */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 16 }}>
+          <div
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: 12,
+              background: 'var(--glass-bg)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'var(--text)',
+            }}
           >
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-            <polyline points="14 2 14 8 20 8" />
-            <line x1="16" y1="13" x2="8" y2="13" />
-            <line x1="16" y1="17" x2="8" y2="17" />
-          </svg>
-        </div>
-
-        {/* Title */}
-        <div
-          id="consent-title"
-          style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: 20,
-            color: 'var(--text)',
-            marginBottom: 10,
-          }}
-        >
-          Прежде чем начать
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+          </div>
+          <div
+            id="consent-title"
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 22,
+              fontWeight: 600,
+              color: 'var(--text)',
+            }}
+          >
+            Прежде чем начать
+          </div>
         </div>
 
         {/* Body */}
         <p
           style={{
             fontFamily: 'var(--font-body)',
-            fontSize: 13,
-            lineHeight: 1.65,
+            fontSize: 14,
+            lineHeight: 1.6,
             color: 'var(--text-sub)',
-            margin: '0 0 20px',
+            margin: '0 0 24px',
           }}
         >
           Körset предоставляет информацию о составе товаров в справочных целях.{' '}
-          <strong style={{ color: 'var(--text)' }}>
+          <strong style={{ color: 'var(--text)', fontWeight: 600 }}>
             Данные не заменяют проверку упаковки и не являются медицинской рекомендацией.
           </strong>{' '}
           Ответственность за конечный выбор продукта лежит на вас.
         </p>
 
-        {/* Legal links */}
-        <div
+        {/* Checkbox Row */}
+        <label
           style={{
             display: 'flex',
-            gap: 4,
-            flexWrap: 'wrap',
-            marginBottom: 24,
+            alignItems: 'flex-start',
+            gap: 12,
+            marginBottom: 28,
+            cursor: 'pointer',
+            WebkitTapHighlightColor: 'transparent',
           }}
         >
-          <span style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--text-dim)' }}>
-            Нажимая «Принять», вы соглашаетесь с
-          </span>
-          <button
-            type="button"
-            onClick={onNavigateTerms}
+          <div
             style={{
-              background: 'none',
-              border: 'none',
-              padding: 0,
-              fontFamily: 'var(--font-body)',
-              fontSize: 12,
-              color: 'var(--primary)',
-              cursor: 'pointer',
-              textDecoration: 'underline',
-              textDecorationStyle: 'dotted',
-              textUnderlineOffset: 2,
+              width: 22,
+              height: 22,
+              borderRadius: 6,
+              border: checked ? '1.5px solid var(--primary)' : '1.5px solid var(--text-disabled)',
+              background: checked ? 'var(--primary)' : 'transparent',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+              marginTop: 2,
+              transition: 'all 0.2s ease',
             }}
           >
-            условиями использования
-          </button>
-          <span style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--text-dim)' }}>
-            и
-          </span>
-          <button
-            type="button"
-            onClick={onNavigatePolicy}
+            {checked && (
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#fff"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            )}
+            <input
+              type="checkbox"
+              checked={checked}
+              onChange={(e) => setChecked(e.target.checked)}
+              style={{ position: 'absolute', opacity: 0, width: 0, height: 0 }}
+            />
+          </div>
+          <div
             style={{
-              background: 'none',
-              border: 'none',
-              padding: 0,
               fontFamily: 'var(--font-body)',
-              fontSize: 12,
-              color: 'var(--primary)',
-              cursor: 'pointer',
-              textDecoration: 'underline',
-              textDecorationStyle: 'dotted',
-              textUnderlineOffset: 2,
+              fontSize: 13,
+              color: 'var(--text-sub)',
+              lineHeight: 1.5,
             }}
           >
-            политикой конфиденциальности
-          </button>
-          <span style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--text-dim)' }}>
+            Я ознакомился(ась) и согласен(сна) с{' '}
+            <span
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                onNavigateTerms()
+              }}
+              style={{ color: 'var(--text)', textDecoration: 'underline', textUnderlineOffset: 3 }}
+            >
+              условиями использования
+            </span>{' '}
+            и{' '}
+            <span
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                onNavigatePolicy()
+              }}
+              style={{ color: 'var(--text)', textDecoration: 'underline', textUnderlineOffset: 3 }}
+            >
+              политикой конфиденциальности
+            </span>
             .
-          </span>
-        </div>
+          </div>
+        </label>
 
         {/* Accept button */}
         <button
           type="button"
           id="consent-accept-btn"
+          disabled={!checked}
           onClick={handleAccept}
           style={{
             width: '100%',
-            padding: '15px',
+            padding: '16px',
             borderRadius: 14,
             border: 'none',
-            background: 'var(--text)',
-            color: 'var(--bg-app)',
-            fontFamily: 'var(--font-body)',
-            fontSize: 15,
+            background: checked ? 'var(--text)' : 'var(--glass-soft-border)',
+            color: checked ? 'var(--bg-app)' : 'var(--text-disabled)',
+            fontFamily: 'var(--font-display)',
+            fontSize: 16,
             fontWeight: 700,
-            cursor: 'pointer',
-            letterSpacing: 0.2,
+            cursor: checked ? 'pointer' : 'not-allowed',
+            letterSpacing: 0.3,
+            transition: 'all 0.2s ease',
           }}
         >
           Принять и продолжить
