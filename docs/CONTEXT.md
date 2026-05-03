@@ -291,7 +291,8 @@ Pipeline: arbuz-import, arbuz-catalog-parser, korzinavdom-parser — все ис
 2. **Прочитай `AGENTS.md`** — железные правила проекта.
 3. **Сделай Vault RAG-запрос** для специфичной задачи: `vault-query("запрос")`
 4. **Следующий шаг — Этап 6: Рефакторинг монолитов** (ProductScreen, ProfileScreen, HomeScreen)
-   - ИЛИ завершить i18n шаги 11-14 (unit-тесты, check/extract скрипты, dev-mode warnings, PrivacyPolicy markdown)
+   - ИЛИ Data Moat / Retail Import / unknown EAN cascade
+   - ИЛИ FaqScreen i18n (531 строк FAQ_RU/FAQ_KZ — контент-данные, не UI)
 
 ### AI BEST-FIT (2026-05-03)
 

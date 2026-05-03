@@ -1,4 +1,4 @@
-import { useMemo, useState, useRef, useEffect } from 'react'
+﻿import { useMemo, useState, useEffect } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { checkProductFit, formatPrice, getCategoryLabel } from '../utils/fitCheck.js'
 import { getDisplayQuantity, computePricePerUnit } from '../utils/parseQuantity.js'
@@ -25,36 +25,14 @@ import {
   buildProductAlternativesPath,
 } from '../utils/routes.js'
 import { buildAuthNavigateState } from '../utils/authFlow.js'
-import { DietIcon } from './ProfileScreen.jsx'
 import { HeartIcon } from '../components/icons/HeartIcon.jsx'
-import { ONBOARDING_PREFERENCES } from '../constants/dietGoals.js'
-
-// ═══════════════════════════════════════════════════════════════════════════
-// УТИЛИТЫ
-// ═══════════════════════════════════════════════════════════════════════════
-function fmt(v) {
-  if (v == null) return '—'
-  const n = Number(v)
-  if (!Number.isFinite(n)) return '—'
-  return Number.isInteger(n) ? String(n) : n.toFixed(1)
-}
-
-const SEVERITY_STYLES = {
-  danger: { color: '#EF4444', bg: 'rgba(239,68,68,0.10)', border: 'rgba(239,68,68,0.30)' },
-  warning: { color: '#F97316', bg: 'rgba(249,115,22,0.10)', border: 'rgba(249,115,22,0.30)' },
-  caution: { color: '#FBBF24', bg: 'rgba(251,191,36,0.10)', border: 'rgba(251,191,36,0.30)' },
-  safe: { color: '#10B981', bg: 'rgba(16,185,129,0.10)', border: 'rgba(16,185,129,0.30)' },
-}
-
-function severityTitle(key, t) {
-  const map = {
-    danger: t('product.severityDanger'),
-    warning: t('product.severityWarning'),
-    caution: t('product.severityCaution'),
-    safe: t('product.severitySafe'),
-  }
-  return map[key] || key
-}
+import ImageCarousel from '../components/product/ImageCarousel.jsx'
+import CollapsibleFitCheck from '../components/product/CollapsibleFitCheck.jsx'
+import DietBadges from '../components/product/DietBadges.jsx'
+import NutritionUnified from '../components/product/NutritionUnified.jsx'
+import IngredientsBlock from '../components/product/IngredientsBlock.jsx'
+import SpecsGrid from '../components/product/SpecsGrid.jsx'
+import SectionLabel from '../components/product/SectionLabel.jsx'
 
 function resolveSeverityKey(reasons, fits) {
   if (reasons.some((r) => r.type === 'danger')) return 'danger'
@@ -69,10 +47,10 @@ function getManufacturerText(product) {
   if (product.manufacturer && typeof product.manufacturer === 'object') {
     const name = product.manufacturer.name || ''
     const country = product.manufacturer.country || ''
-    return [name, country].filter(Boolean).join(' · ')
+    return [name, country].filter(Boolean).join(' В· ')
   }
   if (typeof product.manufacturer === 'string') {
-    return product.manufacturer.replace(/\s*—\s*демо\s*$/i, '').trim()
+    return product.manufacturer.replace(/\s*вЂ”\s*РґРµРјРѕ\s*$/i, '').trim()
   }
   return product.brand || ''
 }
@@ -84,841 +62,9 @@ function getCountry(product) {
   return product.country || null
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// IMAGE CAROUSEL (оставлен как был — нативный scroll-snap swipe)
-// ═══════════════════════════════════════════════════════════════════════════
-function ImageCarousel({ images, fallbackEan, singleImage }) {
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const scrollRef = useRef(null)
-
-  const finalImages =
-    images && images.length > 0
-      ? images
-      : singleImage
-        ? [singleImage]
-        : fallbackEan
-          ? [`/products/${fallbackEan}.png`]
-          : []
-
-  if (finalImages.length === 0) {
-    return (
-      <div
-        style={{
-          height: 280,
-          borderRadius: 20,
-          background: 'var(--image-bg)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'var(--text-dim)',
-          fontSize: 14,
-        }}
-      >
-        {t('product.noPhoto')}
-      </div>
-    )
-  }
-
-  const handleScroll = () => {
-    if (!scrollRef.current) return
-    const scrollLeft = scrollRef.current.scrollLeft
-    const width = scrollRef.current.offsetWidth
-    const newIndex = Math.round(scrollLeft / width)
-    setCurrentIndex(newIndex)
-  }
-
-  return (
-    <div
-      style={{
-        position: 'relative',
-        width: '100%',
-        height: 280,
-        borderRadius: 20,
-        overflow: 'hidden',
-        background: 'var(--image-bg)',
-      }}
-    >
-      <div
-        ref={scrollRef}
-        onScroll={handleScroll}
-        style={{
-          display: 'flex',
-          overflowX: 'auto',
-          scrollSnapType: 'x mandatory',
-          scrollbarWidth: 'none',
-          msOverflowStyle: 'none',
-          width: '100%',
-          height: '100%',
-        }}
-      >
-        {finalImages.map((src, i) => (
-          <img
-            key={i}
-            src={src}
-            alt=""
-            loading="lazy"
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              scrollSnapAlign: 'start',
-              flexShrink: 0,
-            }}
-            onError={(e) => {
-              e.target.style.display = 'none'
-            }}
-          />
-        ))}
-      </div>
-      {finalImages.length > 1 && (
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 14,
-            left: 0,
-            right: 0,
-            display: 'flex',
-            justifyContent: 'center',
-            gap: 6,
-          }}
-        >
-          {finalImages.map((_, i) => (
-            <div
-              key={i}
-              style={{
-                width: currentIndex === i ? 20 : 6,
-                height: 6,
-                borderRadius: 3,
-                background: currentIndex === i ? 'var(--text)' : 'var(--text-faint)',
-                transition: 'all 0.3s ease',
-              }}
-            />
-          ))}
-        </div>
-      )}
-    </div>
-  )
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// COLLAPSIBLE FIT-CHECK (средний размер, раскрывается кликом)
-// ═══════════════════════════════════════════════════════════════════════════
-function CollapsibleFitCheck({ severityKey, reasons }) {
-  const [expanded, setExpanded] = useState(false)
-  const s = SEVERITY_STYLES[severityKey]
-  const canExpand = reasons.length > 0 && severityKey !== 'safe'
-
-  return (
-    <button
-      onClick={() => canExpand && setExpanded((x) => !x)}
-      disabled={!canExpand}
-      style={{
-        width: '100%',
-        background: s.bg,
-        border: `1px solid ${s.border}`,
-        borderRadius: 16,
-        padding: '14px 16px',
-        cursor: canExpand ? 'pointer' : 'default',
-        textAlign: 'left',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: expanded ? 12 : 0,
-        transition: 'gap 0.2s',
-      }}
-    >
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-        <div
-          style={{
-            width: 38,
-            height: 38,
-            borderRadius: 11,
-            background: s.color,
-            color: 'var(--text-inverse)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
-            boxShadow: `0 4px 12px ${s.color}50`,
-          }}
-        >
-          {severityKey === 'safe' && (
-            // Shield with check — безопасно
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-              <path d="M9 12l2 2 4-4" />
-            </svg>
-          )}
-          {severityKey === 'caution' && (
-            // Alert-circle — осторожно
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <circle cx="12" cy="12" r="10" />
-              <line x1="12" y1="8" x2="12" y2="12" />
-              <line x1="12" y1="16" x2="12.01" y2="16" />
-            </svg>
-          )}
-          {severityKey === 'warning' && (
-            // Alert-triangle — не рекомендуется
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-              <line x1="12" y1="9" x2="12" y2="13" />
-              <line x1="12" y1="17" x2="12.01" y2="17" />
-            </svg>
-          )}
-          {severityKey === 'danger' && (
-            // Shield-X — не подходит
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-              <line x1="9.5" y1="9.5" x2="14.5" y2="14.5" />
-              <line x1="14.5" y1="9.5" x2="9.5" y2="14.5" />
-            </svg>
-          )}
-        </div>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div
-            style={{
-              fontSize: 16,
-              fontWeight: 800,
-              color: s.color,
-              fontFamily: 'var(--font-display)',
-              lineHeight: 1.15,
-            }}
-          >
-            {severityTitle(severityKey, t)}
-          </div>
-          {canExpand && !expanded && (
-            <div
-              style={{
-                fontSize: 11,
-                color: 'var(--text-faint)',
-                marginTop: 2,
-                letterSpacing: '0.02em',
-              }}
-            >
-              {reasons.length}{' '}
-              {reasons.length === 1 ? t('product.reason') : t('product.reasonsFew')} —{' '}
-              {t('product.reasonsClick')}
-            </div>
-          )}
-        </div>
-        {canExpand && (
-          <div
-            style={{
-              color: s.color,
-              flexShrink: 0,
-              transition: 'transform 0.2s',
-              transform: expanded ? 'rotate(180deg)' : 'rotate(0)',
-            }}
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M6 9l6 6 6-6" />
-            </svg>
-          </div>
-        )}
-      </div>
-      {expanded && canExpand && (
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 8,
-            paddingLeft: 48,
-            borderTop: `1px solid ${s.border}`,
-            marginTop: 4,
-            paddingTop: 12,
-          }}
-        >
-          {reasons.map((r, i) => {
-            const rColor = SEVERITY_STYLES[r.type]?.color || 'var(--text-soft)'
-            return (
-              <div
-                key={i}
-                style={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: 10,
-                  fontSize: 13,
-                  color: 'var(--text-soft)',
-                  lineHeight: 1.4,
-                }}
-              >
-                <div
-                  style={{
-                    width: 6,
-                    height: 6,
-                    borderRadius: '50%',
-                    background: rColor,
-                    marginTop: 6,
-                    flexShrink: 0,
-                    boxShadow: `0 0 6px ${rColor}`,
-                  }}
-                />
-                <span>{r.text}</span>
-              </div>
-            )
-          })}
-        </div>
-      )}
-    </button>
-  )
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// DIET BADGES — иконки из профиля (ONBOARDING_PREFERENCES)
-// ═══════════════════════════════════════════════════════════════════════════
-// Цвета для каждого preference (совпадают с профилем — фиолетовый акцент)
-const DIET_BADGE_COLORS = {
-  halal: '#10B981',
-  sugar_free: '#8B5CF6',
-  dairy_free: '#06B6D4',
-  gluten_free: '#F59E0B',
-  vegan: '#10B981',
-  vegetarian: '#22C55E',
-  keto: '#EC4899',
-  kid_friendly: '#3B82F6',
-}
-
-// Фиксированный порядок для product-экрана (самые релевантные 5 из профиля)
-const BADGE_KEYS = ['halal', 'sugar_free', 'gluten_free', 'dairy_free', 'vegan']
-
-function matchBadge(key, product) {
-  const diet = product.dietTags || []
-  if (key === 'halal') return product.halalStatus === 'yes' || product.halal === 'yes'
-  return diet.includes(key)
-}
-
-function DietBadges({ product, lang }) {
-  const badges = BADGE_KEYS.map((id) => {
-    const pref = ONBOARDING_PREFERENCES.find((p) => p.id === id)
-    if (!pref) return null
-    return {
-      id,
-      iconName: pref.icon,
-      label: pref.label[lang] || pref.label.ru,
-      color: DIET_BADGE_COLORS[id] || '#8B5CF6',
-      matched: matchBadge(id, product),
-    }
-  }).filter(Boolean)
-
-  return (
-    <div
-      style={{
-        display: 'grid',
-        gridTemplateColumns: `repeat(${badges.length}, 1fr)`,
-        gap: 8,
-      }}
-    >
-      {badges.map((b) => (
-        <div
-          key={b.id}
-          style={{
-            aspectRatio: '1 / 1',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 6,
-            borderRadius: 14,
-            background: b.matched ? `${b.color}14` : 'var(--glass-subtle)',
-            border: `1px solid ${b.matched ? `${b.color}38` : 'var(--glass-soft-border)'}`,
-            color: b.matched ? b.color : 'var(--text-disabled)',
-            opacity: b.matched ? 1 : 0.5,
-            transition: 'all 0.2s',
-          }}
-        >
-          <DietIcon name={b.iconName} size={22} />
-          <span
-            style={{
-              fontSize: 9,
-              fontWeight: 700,
-              letterSpacing: '0.02em',
-              textAlign: 'center',
-              whiteSpace: 'nowrap',
-              lineHeight: 1,
-            }}
-          >
-            {b.label}
-          </span>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// NUTRITION UNIFIED — большой Ккал слева + 3 макроса справа + sugar/salt
-// ═══════════════════════════════════════════════════════════════════════════
-function NutritionUnified({ nutrition }) {
-  const { t } = useI18n()
-  if (!nutrition) return null
-  const kcal = nutrition.kcal ?? nutrition.energy_kcal_100g
-  const protein = nutrition.protein ?? nutrition.proteins_100g
-  const fat = nutrition.fat ?? nutrition.fat_100g
-  const carbs = nutrition.carbs ?? nutrition.carbohydrates_100g
-  const sugar = nutrition.sugar ?? nutrition.sugars_100g ?? nutrition.sugars
-  const salt = nutrition.salt ?? nutrition.salt_100g
-
-  const hasAny = [kcal, protein, fat, carbs, sugar, salt].some((v) => v != null)
-  if (!hasAny) return null
-
-  const hasSugarSalt = sugar != null || salt != null
-  const KCAL_COLOR = '#A78BFA'
-
-  return (
-    <div
-      style={{
-        background: 'linear-gradient(180deg, var(--glass-muted) 0%, var(--glass-subtle) 100%)',
-        border: '1px solid var(--glass-border)',
-        borderRadius: 18,
-        padding: 16,
-      }}
-    >
-      <div
-        style={{
-          fontSize: 10,
-          fontWeight: 700,
-          letterSpacing: '0.1em',
-          color: 'var(--text-dim)',
-          textTransform: 'uppercase',
-          marginBottom: 12,
-        }}
-      >
-        {t('product.nutrition')} · {t('product.nutritionPer100')}
-      </div>
-
-      {/* Hero row: большой Ккал слева + 3 макроса справа */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1.1fr 1fr',
-          gap: 10,
-          marginBottom: hasSugarSalt ? 14 : 0,
-        }}
-      >
-        {/* Ккал — большой блок слева */}
-        <div
-          style={{
-            background: `linear-gradient(145deg, ${KCAL_COLOR}22 0%, ${KCAL_COLOR}08 100%)`,
-            border: `1px solid ${KCAL_COLOR}44`,
-            borderRadius: 14,
-            padding: '16px 14px',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: `inset 0 0 22px ${KCAL_COLOR}15`,
-          }}
-        >
-          <div
-            style={{
-              fontSize: 11,
-              fontWeight: 700,
-              letterSpacing: '0.12em',
-              color: KCAL_COLOR,
-              textTransform: 'uppercase',
-              marginBottom: 6,
-            }}
-          >
-            {t('product.energy')}
-          </div>
-          <div
-            style={{
-              fontSize: 42,
-              fontWeight: 900,
-              color: 'var(--text)',
-              fontFamily: 'var(--font-display)',
-              lineHeight: 1,
-              letterSpacing: '-0.03em',
-              textShadow: `0 0 24px ${KCAL_COLOR}50`,
-            }}
-          >
-            {fmt(kcal)}
-          </div>
-          <div
-            style={{
-              fontSize: 11,
-              fontWeight: 600,
-              color: 'var(--text-faint)',
-              marginTop: 4,
-              letterSpacing: '0.04em',
-            }}
-          >
-            {t('product.kcal')}
-          </div>
-        </div>
-
-        {/* 3 ячейки справа столбиком */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateRows: '1fr 1fr 1fr',
-            gap: 6,
-          }}
-        >
-          <MacroRow label={t('product.protein')} value={protein} color="#3B82F6" />
-          <MacroRow label={t('product.fat')} value={fat} color="#F59E0B" />
-          <MacroRow label={t('product.carbs')} value={carbs} color="#10B981" />
-        </div>
-      </div>
-
-      {/* Sugar / Salt с одинаковыми индикаторами */}
-      {hasSugarSalt && (
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '64px 1fr 96px',
-            rowGap: 10,
-            columnGap: 10,
-            alignItems: 'center',
-            paddingTop: 14,
-            borderTop: '1px solid var(--line-soft)',
-          }}
-        >
-          {sugar != null && (
-            <ThreeStepRow
-              label={t('product.sugar')}
-              value={sugar}
-              unit={t('product.unitG')}
-              thresholds={[5, 22.5]}
-              t={t}
-            />
-          )}
-          {salt != null && (
-            <ThreeStepRow
-              label={t('product.salt')}
-              value={salt}
-              unit={t('product.unitG')}
-              thresholds={[0.3, 1.5]}
-              t={t}
-            />
-          )}
-        </div>
-      )}
-    </div>
-  )
-}
-
-function MacroRow({ label, value, color }) {
-  return (
-    <div
-      style={{
-        background: `${color}18`,
-        border: `1px solid ${color}40`,
-        borderRadius: 11,
-        padding: '8px 12px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: 8,
-      }}
-    >
-      <span
-        style={{
-          fontSize: 10,
-          fontWeight: 700,
-          letterSpacing: '0.06em',
-          color: color,
-          textTransform: 'uppercase',
-        }}
-      >
-        {label}
-      </span>
-      <span
-        style={{
-          fontSize: 15,
-          fontWeight: 900,
-          color: 'var(--text)',
-          fontFamily: 'var(--font-display)',
-          lineHeight: 1,
-          letterSpacing: '-0.01em',
-        }}
-      >
-        {fmt(value)}
-        <span style={{ fontSize: 10, color: 'var(--text-faint)', marginLeft: 2, fontWeight: 600 }}>
-          г
-        </span>
-      </span>
-    </div>
-  )
-}
-
-function ThreeStepRow({ label, value, unit, thresholds, t }) {
-  const [low, high] = thresholds
-  let activeIdx = 0
-  if (value > high) activeIdx = 2
-  else if (value > low) activeIdx = 1
-  const statusLabel = [t('product.low'), t('product.medium'), t('product.high')][activeIdx]
-  const colors = ['#10B981', '#F59E0B', '#EF4444']
-
-  return (
-    <>
-      <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-soft)' }}>{label}</div>
-      <div style={{ display: 'flex', gap: 4 }}>
-        {[0, 1, 2].map((i) => (
-          <div
-            key={i}
-            style={{
-              flex: 1,
-              height: 6,
-              borderRadius: 3,
-              background: i === activeIdx ? colors[i] : `${colors[i]}25`,
-              boxShadow: i === activeIdx ? `0 0 8px ${colors[i]}70` : 'none',
-              transition: 'all 0.2s',
-            }}
-          />
-        ))}
-      </div>
-      <div
-        style={{
-          fontSize: 11,
-          fontWeight: 800,
-          color: colors[activeIdx],
-          textAlign: 'right',
-          fontFamily: 'var(--font-display)',
-          whiteSpace: 'nowrap',
-        }}
-      >
-        {fmt(value)} {unit}
-        <span
-          style={{
-            fontSize: 9,
-            letterSpacing: '0.04em',
-            textTransform: 'uppercase',
-            display: 'block',
-            opacity: 0.85,
-            lineHeight: 1,
-          }}
-        >
-          {statusLabel}
-        </span>
-      </div>
-    </>
-  )
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// INGREDIENTS (тонкие подсветки)
-// ═══════════════════════════════════════════════════════════════════════════
-const CONFLICT_WORDS = {
-  молок: { type: 'allergen' },
-  лактоз: { type: 'allergen' },
-  орех: { type: 'allergen' },
-  фундук: { type: 'allergen' },
-  миндал: { type: 'allergen' },
-  арахис: { type: 'allergen' },
-  соев: { type: 'allergen' },
-  соя: { type: 'allergen' },
-  пшениц: { type: 'allergen' },
-  глютен: { type: 'allergen' },
-  яиц: { type: 'allergen' },
-  яйц: { type: 'allergen' },
-  эмульгатор: { type: 'additive' },
-  ароматизатор: { type: 'additive' },
-  консервант: { type: 'additive' },
-  краситель: { type: 'additive' },
-  лецитин: { type: 'additive' },
-  диоксид: { type: 'additive' },
-}
-
-function IngredientsBlock({ text, userAllergens = [] }) {
-  if (!text) return null
-
-  const extraLowered = userAllergens.map((a) => String(a).toLowerCase())
-  const conflicts = { ...CONFLICT_WORDS }
-  extraLowered.forEach((a) => {
-    if (a && a.length > 2) conflicts[a] = { type: 'allergen', user: true }
-  })
-
-  const tokens = text.split(/(\s+|[,;.()])/g)
-
-  return (
-    <div
-      style={{
-        background: 'var(--glass-subtle)',
-        border: '1px solid var(--glass-soft-border)',
-        borderRadius: 14,
-        padding: 14,
-        fontSize: 13,
-        lineHeight: 1.7,
-        color: 'var(--text-soft)',
-      }}
-    >
-      {tokens.map((tok, i) => {
-        const clean = tok.toLowerCase().trim()
-        if (!clean) return <span key={i}>{tok}</span>
-        const match = Object.keys(conflicts).find((k) => clean.includes(k))
-        if (!match) return <span key={i}>{tok}</span>
-        const isAllergen = conflicts[match].type === 'allergen'
-        const color = isAllergen ? '#EF4444' : '#F59E0B'
-        return (
-          <span
-            key={i}
-            style={{
-              color: color,
-              fontWeight: 700,
-              borderBottom: `1.5px dotted ${color}`,
-              paddingBottom: 1,
-            }}
-          >
-            {tok}
-          </span>
-        )
-      })}
-    </div>
-  )
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// SPECS GRID — динамический, без повторов сверху
-// ═══════════════════════════════════════════════════════════════════════════
-function SpecsGrid({ product }) {
-  const { lang, t } = useI18n()
-  const specs = []
-  const s = product.specs || {}
-
-  if (s.storage) specs.push({ label: t('product.storage'), value: s.storage })
-  if (s.bestBefore) specs.push({ label: t('product.expiry'), value: s.bestBefore })
-
-  // Цена за 100 г/мл
-  const perUnit = computePricePerUnit(
-    product.priceKzt,
-    product.quantityParsed || product.quantity || s.weight
-  )
-  if (perUnit) {
-    if (perUnit.per100 != null) {
-      specs.push({
-        label: `${t('product.pricePer')} ${perUnit.suffix}`,
-        value: formatPrice(perUnit.per100),
-      })
-    }
-    if (perUnit.perUnit != null) {
-      specs.push({
-        label: `${t('product.pricePer')} ${perUnit.unitSuffix}`,
-        value: formatPrice(perUnit.perUnit),
-      })
-    }
-  }
-
-  // Динамические поля: вкус, категория (подкатегория), alcohol, etc.
-  if (product.flavor) specs.push({ label: t('product.flavor'), value: product.flavor })
-  if (s.flavor && !product.flavor) specs.push({ label: t('product.flavor'), value: s.flavor })
-  if (product.subcategory) {
-    specs.push({ label: t('product.subcategory'), value: product.subcategory })
-  }
-  if (specs.length === 0) return null
-
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-      {specs.map((spec, i) => (
-        <div
-          key={i}
-          style={{
-            padding: '12px 14px',
-            borderRadius: 12,
-            background: 'var(--glass-subtle)',
-            border: '1px solid var(--line-soft)',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            gap: 12,
-          }}
-        >
-          <div
-            style={{
-              fontSize: 10,
-              fontWeight: 700,
-              letterSpacing: '0.08em',
-              color: 'var(--text-dim)',
-              textTransform: 'uppercase',
-              flexShrink: 0,
-            }}
-          >
-            {spec.label}
-          </div>
-          <div
-            style={{
-              fontSize: 13,
-              fontWeight: 600,
-              color: 'var(--text)',
-              textAlign: 'right',
-              lineHeight: 1.3,
-            }}
-          >
-            {spec.value}
-          </div>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// SECTION LABEL
-// ═══════════════════════════════════════════════════════════════════════════
-function SectionLabel({ children }) {
-  return (
-    <div
-      style={{
-        fontSize: 10,
-        fontWeight: 700,
-        letterSpacing: '0.1em',
-        color: 'var(--text-dim)',
-        textTransform: 'uppercase',
-        marginBottom: 8,
-      }}
-    >
-      {children}
-    </div>
-  )
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------------------
 // MAIN COMPONENT
-// ═══════════════════════════════════════════════════════════════════════════
+// ---------------------------------------------------------------------------
 export default function ProductScreen() {
   const { ean, storeSlug } = useParams()
   const navigate = useNavigate()
@@ -1187,8 +333,9 @@ export default function ProductScreen() {
     country && (typeof country === 'string' ? country : null),
     quantityDisplay,
   ].filter(Boolean)
-  // Fallback: если нет brand, используем manufacturer name
-  const subtitleText = subtitleParts.length > 0 ? subtitleParts.join(' · ') : manufacturerText || ''
+  // Fallback: РµСЃР»Рё РЅРµС‚ brand, РёСЃРїРѕР»СЊР·СѓРµРј manufacturer name
+  const subtitleText =
+    subtitleParts.length > 0 ? subtitleParts.join(' В· ') : manufacturerText || ''
 
   return (
     <div
@@ -1197,7 +344,7 @@ export default function ProductScreen() {
         paddingBottom: 'calc(100px + env(safe-area-inset-bottom, 0px))',
       }}
     >
-      {/* HEADER — без "Детали" */}
+      {/* HEADER вЂ” Р±РµР· "Р”РµС‚Р°Р»Рё" */}
       <div
         style={{
           position: 'sticky',
@@ -1281,14 +428,14 @@ export default function ProductScreen() {
 
       {/* CONTENT */}
       <div style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 16 }}>
-        {/* 1. Фото-карусель (оставляем как была — swipe animation) */}
+        {/* 1. Р¤РѕС‚Рѕ-РєР°СЂСѓСЃРµР»СЊ (РѕСЃС‚Р°РІР»СЏРµРј РєР°Рє Р±С‹Р»Р° вЂ” swipe animation) */}
         <ImageCarousel
           images={product.images}
           fallbackEan={product.ean}
           singleImage={product.image}
         />
 
-        {/* 2. Title + Price в одну строку */}
+        {/* 2. Title + Price РІ РѕРґРЅСѓ СЃС‚СЂРѕРєСѓ */}
         <div
           style={{
             display: 'flex',
@@ -1352,7 +499,7 @@ export default function ProductScreen() {
           )}
         </div>
 
-        {/* 3. Brand · Country · Quantity */}
+        {/* 3. Brand В· Country В· Quantity */}
         {subtitleText && (
           <div style={{ fontSize: 13, color: 'var(--text-dim)', marginTop: -8 }}>
             {subtitleText}
@@ -1379,7 +526,7 @@ export default function ProductScreen() {
         {/* 5. Diet Badges */}
         <DietBadges product={product} lang={lang} />
 
-        {/* 6. Nutrition (5 ячеек + sugar/salt bars) */}
+        {/* 6. Nutrition (5 СЏС‡РµРµРє + sugar/salt bars) */}
         <NutritionUnified nutrition={product.nutritionPer100} />
 
         {/* 7. Ingredients */}
@@ -1419,7 +566,7 @@ export default function ProductScreen() {
           <SpecsGrid product={product} />
         </div>
 
-        {/* 10. Bottom action buttons — В ПОТОКЕ (не fixed) */}
+        {/* 10. Bottom action buttons вЂ” Р’ РџРћРўРћРљР• (РЅРµ fixed) */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 8 }}>
           <div style={{ display: 'flex', gap: 10 }}>
             <button
@@ -1474,7 +621,7 @@ export default function ProductScreen() {
                 boxShadow: '0 6px 18px rgba(124,58,237,0.35)',
               }}
             >
-              {/* AI иконка — та же что в BottomNav */}
+              {/* AI РёРєРѕРЅРєР° вЂ” С‚Р° Р¶Рµ С‡С‚Рѕ РІ BottomNav */}
               <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff">
                 <path d="M12 1.99996C12.9057 1.99996 13.7829 2.12194 14.6172 2.34762C14.2223 3.14741 14 4.04768 14 4.99997C14 8.31368 16.6863 11 20 11C20.6685 11 21.3106 10.8882 21.9111 10.6865C21.9676 11.1165 22 11.5546 22 12C22 17.5228 17.5228 22 12 22C10.2975 22 8.69425 21.5746 7.29102 20.8242L2 22L3.17578 16.709C2.42542 15.3057 2 13.7025 2 12C2.00002 6.47714 6.47717 1.99996 12 1.99996ZM19.5293 1.3193C19.7058 0.893513 20.2942 0.8935 20.4707 1.3193L20.7236 1.93063C21.1555 2.97343 21.9615 3.80614 22.9746 4.2568L23.6914 4.57614C24.1022 4.75882 24.1022 5.35635 23.6914 5.53903L22.9326 5.87692C21.945 6.3162 21.1534 7.11943 20.7139 8.1279L20.4668 8.69333C20.2863 9.10747 19.7136 9.10747 19.5332 8.69333L19.2861 8.1279C18.8466 7.11942 18.0551 6.3162 17.0674 5.87692L16.3076 5.53903C15.8974 5.35618 15.8974 4.75895 16.3076 4.57614L17.0254 4.2568C18.0384 3.80614 18.8445 2.97343 19.2764 1.93063L19.5293 1.3193Z" />
               </svg>
