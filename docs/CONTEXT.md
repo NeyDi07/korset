@@ -280,6 +280,13 @@ Pipeline: arbuz-import, arbuz-catalog-parser, korzinavdom-parser — все ис
 ### Незакрытые приоритеты:
 - **Этап 6: ProductScreen рефакторинг** — 1315-строчный монолит
 - **Архитектура UI профиля (Этап 1-5)** — Переработка меню профиля
+- **AlternativesScreen — СЛОМАН (P1, требует отдельной задачи):**
+  `getAnyKnownProductByRef` и `getStoreCatalogProducts` в `src/utils/storeCatalog.js` сейчас
+  возвращают `null/[]` (стабы после удаления demo-данных). Экран рендерится но показывает
+  пустой список. Нужно переписать на `StoreContext.catalogProducts` (реальный Supabase каталог).
+  Файлы: `src/screens/AlternativesScreen.jsx`, `src/utils/storeCatalog.js`,
+  `src/screens/CompareScreen.jsx` (тоже использует `getAnyKnownProductByRef`),
+  `src/screens/AIScreen.jsx`, `src/screens/ProductScreen.jsx`.
 
 ---
 
@@ -304,7 +311,8 @@ Pipeline: arbuz-import, arbuz-catalog-parser, korzinavdom-parser — все ис
 - Unknown EAN V1 flow: if scan is unresolved, show a general not-found state. Mention that alcohol and tobacco are unsupported, but do not claim the item is alcohol unless category is known. If it is a normal grocery product, user can tap "Request product check".
 - Unknown EAN queue means unresolved scans are saved as data-improvement tasks: EAN, store, timestamp, optional user/context. This improves real pilot coverage without inventing AI answers for unknown products.
 - Store-facing V1 metrics should be business-simple: products synced/imported, scans, not-found scans, top requested unknown EANs. Do not make "products with ingredients" the store owner's problem; Körset owns card quality.
-- IMPLEMENTED 2026-05-03: V1 unknown EAN request slice. `ProductScreen` not-found state now shows unsupported alcohol/tobacco wording and a "Request product check" action for valid EAN + store id. Logic lives in `src/domain/product/unknownEanRequest.js`, tests in `tests/unit/unknownEanRequest.test.mjs`. Central i18n files were intentionally not touched because another AI session is migrating languages.
+- IMPLEMENTED 2026-05-03: V1 unknown EAN request slice. `ProductScreen` not-found state now shows unsupported alcohol/tobacco wording and a "Request product check" action for valid EAN + store id. Logic lives in `src/domain/product/unknownEanRequest.js`, tests in `tests/unit/unknownEanRequest.test.mjs`. After the i18n migration landed, the copy was moved into `src/locales/{ru,kz}/product.json` under `product.unknownEan.*`; domain helper remains copy-free.
+- POST-I18N ADAPTATION 2026-05-03: Verified the new i18n architecture (`src/i18n/*`, flat locale JSON, RU fallback, Intl format helpers, `check-i18n`). Fixed safe migration seams: `CompareScreen` rows now include `lang` in `useMemo` deps, `ThemeModeToggle` receives `t` explicitly, and Retail Products shelf placeholder comes from the translation props. Verification: unknown EAN test passed, i18n unit tests passed via direct Node runs, `check-i18n` passed, `npm run build` passed, `npm run lint` passed with warnings only.
 
 - Лучшее применение Codex в Körset — не косметические UI-правки, а системные зоны с большим мультипликатором: Data Moat, pipeline обогащения, DB/RLS, внимательный рефакторинг монолитов.
 - Самая сильная точка пользы: превращать разрозненную логику в надёжные потоки, инварианты, проверяемые скрипты и точечные архитектурные улучшения.

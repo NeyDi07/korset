@@ -1,6 +1,6 @@
 import { supabase } from '../../utils/supabase.js'
 import { enrichProductAI } from '../../services/ai.js'
-import { getGlobalProductByEan, getStoreCatalogProductByEan } from '../../utils/storeCatalog.js'
+import { getStoreCatalogProductByEan } from '../../utils/storeCatalog.js'
 import {
   buildLocalScanHistoryEntry,
   appendLocalScanHistory,

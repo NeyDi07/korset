@@ -11,19 +11,6 @@ import {
   withProductImage,
 } from './model.js'
 import { enrichQuantity } from '../../utils/parseQuantity.js'
-import { OFF_ALLERGEN_MAP as CANONICAL_OFF_MAP } from '../../constants/allergens.js'
-
-// Используем единственный источник истины (allergens.js) — раньше здесь был
-// УСТАРЕВШИЙ дубликат, который маппил OFF-теги в legacy ID:
-//   • 'en:nuts'        → 'nuts'      (а должно tree_nuts)        — пользователи с аллергией на орехи получали safe
-//   • 'en:crustaceans' → 'shellfish' (а должно crustaceans)      — пользователи с аллергией на ракообразные тоже
-//   • 6 ТР ТС аллергенов вообще не покрывались (mollusks/sesame/celery/mustard/lupin/sulfites)
-// В сумме >50% обязательных аллергенов терялось при импорте из OpenFoodFacts.
-// Дополнения локальные:
-const OFF_ALLERGEN_MAP = {
-  ...CANONICAL_OFF_MAP,
-  'en:soy': 'soy', // alias для en:soybeans (встречается в старых дампах OFF)
-}
 
 export function normalizeGlobalProduct(row, storeOverlay = null) {
   const product = enrichQuantity(
@@ -116,83 +103,6 @@ export function normalizeCacheProduct(row) {
     })
   )
   return withProductImage(product)
-}
-
-// @deprecated — OFF removed; kept for reference only
-function _normalizeOFFProduct_UNUSED(ean, product, enrichment = null) {
-  const allergens = [
-    ...new Set(
-      (product.allergens_tags || product.allergens_hierarchy || [])
-        .map((item) => OFF_ALLERGEN_MAP[item])
-        .filter(Boolean)
-    ),
-  ]
-  const traces = [
-    ...new Set((product.traces_tags || []).map((item) => OFF_ALLERGEN_MAP[item]).filter(Boolean)),
-  ]
-  const labels = product.labels_tags || []
-  const dietTags = []
-  if (labels.some((label) => /vegan/i.test(label))) dietTags.push('vegan')
-  if (labels.some((label) => /vegetarian/i.test(label))) dietTags.push('vegetarian')
-  if (labels.some((label) => /halal/i.test(label))) dietTags.push('halal')
-  if (labels.some((label) => /gluten.free/i.test(label))) dietTags.push('gluten_free')
-  const additivesTags = (product.additives_tags || []).map((t) => t.replace(/^en:/, ''))
-
-  const base = createEmptyProduct({
-    source: 'off',
-    ean,
-    name:
-      (
-        product.product_name_ru ||
-        product.product_name ||
-        product.product_name_en ||
-        product.product_name_kk ||
-        ''
-      ).trim() || `Товар ${ean}`,
-    brand: (product.brands || '').trim() || null,
-    quantity: product.quantity || null,
-    images: product.image_front_url ? [product.image_front_url] : [],
-    ingredients: product.ingredients_text_ru || product.ingredients_text || null,
-    allergens,
-    traces,
-    additivesTags,
-    categoriesTags: product.categories_tags || [],
-    dietTags,
-    halalStatus: labels.some((label) => /halal/i.test(label)) ? 'yes' : 'unknown',
-    nutritionPer100: normalizeNutrition(product.nutriments || {}),
-    novaGroup: product.nova_group ?? null,
-    imageIngredientsUrl: product.image_ingredients_url || null,
-    imageNutritionUrl: product.image_nutrition_url || null,
-    nutriscore: product.nutriscore_grade,
-    description: enrichment?.description || null,
-    sourceMeta: {
-      globalProductId: null,
-      storeProductId: null,
-      cacheId: null,
-      externalSource: 'openfoodfacts',
-      isVerified: false,
-      needsReview: true,
-      qualityScore: null,
-      aiEnriched: Boolean(enrichment),
-      lastUpdatedAt: null,
-    },
-  })
-
-  const enriched = createEmptyProduct({
-    ...base,
-    description: enrichment?.description || base.description,
-    ingredients: enrichment?.ingredients || base.ingredients,
-    allergens: enrichment?.allergens?.length ? enrichment.allergens : base.allergens,
-    dietTags: enrichment?.dietTags?.length
-      ? [...new Set([...base.dietTags, ...enrichment.dietTags])]
-      : base.dietTags,
-    sourceMeta: {
-      ...base.sourceMeta,
-      aiEnriched: Boolean(enrichment),
-    },
-  })
-
-  return withProductImage(enrichQuantity(enriched))
 }
 
 export function coerceProductEntity(productLike) {

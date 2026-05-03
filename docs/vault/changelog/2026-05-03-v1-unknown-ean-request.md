@@ -2,7 +2,7 @@
 
 ## Summary
 
-Implemented the first V1 slice of the unknown EAN flow without touching the central i18n migration files.
+Implemented the first V1 slice of the unknown EAN flow. After the central i18n migration landed, the UI copy was aligned with the new locale system.
 
 ## Decisions preserved
 
@@ -14,8 +14,9 @@ Implemented the first V1 slice of the unknown EAN flow without touching the cent
 
 ## Implementation
 
-- Added `src/domain/product/unknownEanRequest.js`.
+- Added `src/domain/product/unknownEanRequest.js` as a pure domain helper with no UI copy.
 - Added `tests/unit/unknownEanRequest.test.mjs`.
+- Added RU/KZ locale keys under `product.unknownEan.*`.
 - Updated ProductScreen not-found state:
   - shows a clear not-found message;
   - mentions alcohol/tobacco are unsupported;
@@ -26,11 +27,13 @@ Implemented the first V1 slice of the unknown EAN flow without touching the cent
 ## Notes
 
 - Existing resolver already logs missing scans through `missing_products`; the explicit request button adds an intentional user signal using the same RPC.
-- Central language files were not edited because a separate i18n migration is in progress.
-- For later cleanup, move the temporary local copy from `unknownEanRequest.js` into the new i18n structure after that migration lands.
+- Unknown EAN copy now lives in `src/locales/{ru,kz}/product.json`.
+- Post-i18n cleanup also fixed safe migration seams in `CompareScreen`, `ProfileScreen`, and `RetailProductsScreen` where translated helpers needed explicit `lang`/`t`/placeholder props.
 
 ## Verification
 
 - `node --test tests/unit/unknownEanRequest.test.mjs` — passed.
+- i18n unit tests (`resolve`, `plural`, `interpolate`, `format`) — passed when run directly through Node.
+- `node scripts/check-i18n.mjs` — passed: 0 missing KZ, 0 orphan, 0 empty.
 - `npm run build` — passed.
-- `npm run lint` — failed due existing/parallel i18n work outside this slice: `src/main.jsx`, `src/screens/CatalogScreen.jsx`, `src/screens/CompareScreen.jsx`, plus existing warnings.
+- `npm run lint` — passed with warnings only; no lint errors.

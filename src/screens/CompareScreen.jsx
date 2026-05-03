@@ -276,7 +276,7 @@ export default function CompareScreen() {
   const rows = useMemo(() => {
     if (!productA || !productB) return []
     return buildRows(productA, productB, t, lang)
-  }, [productA, productB, t])
+  }, [productA, productB, t, lang])
 
   // LLM call after initial render
   useEffect(() => {
