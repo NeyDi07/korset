@@ -26,7 +26,6 @@ import {
 import ProfileAvatar from '../components/ProfileAvatar.jsx'
 import AuthPromptModal from '../components/AuthPromptModal.jsx'
 import SegmentedToggle from '../components/SegmentedToggle.jsx'
-import Toggle from '../components/Toggle.jsx'
 import SupportBottomSheet from '../components/SupportBottomSheet.jsx'
 import { resetTermsAccepted } from '../components/TermsConsentSheet.jsx'
 import { ALLERGENS } from '../constants/allergens.js'
@@ -391,9 +390,9 @@ export default function ProfileScreen() {
   const [allergenInput, setAllergenInput] = useState('')
   // Active stats tab: 'favorites' | 'preferences' | 'history' | null
   const [activeTab, setActiveTab] = useState(null)
-  // Auth-required prompt modal (shown when a guest clicks elements that
   const [authPromptOpen, setAuthPromptOpen] = useState(false)
   const [supportOpen, setSupportOpen] = useState(false)
+  const [scannerSettingsExpanded, setScannerSettingsExpanded] = useState(false)
 
   // Lazy-loaded mini-grids for favorites/history tabs (top 6 each).
   // null = not loaded yet, [] = loaded but empty, [items] = loaded with content.
@@ -540,7 +539,7 @@ export default function ProfileScreen() {
           paddingBottom: 100,
           overflowX: 'hidden',
           minHeight: '100vh',
-          background: 'var(--bg-app)',
+          background: 'transparent',
           position: 'relative',
         }}
       >
@@ -1307,54 +1306,85 @@ export default function ProfileScreen() {
                       <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
                     </svg>
                   ),
-                  label: t('profile.soundScanner'),
-                  onClick: () => {
-                    const next = { ...soundSettings, sound: !soundSettings.sound }
-                    setSoundSettings(next)
-                    saveSoundSettings(next)
-                  },
+                  label: t('profile.scannerSettings') || 'Настройки сканера',
+                  onClick: () => setScannerSettingsExpanded(!scannerSettingsExpanded),
                   right: (
-                    <Toggle
-                      checked={soundSettings.sound}
-                      onChange={(val) => {
-                        const next = { ...soundSettings, sound: val }
-                        setSoundSettings(next)
-                        saveSoundSettings(next)
-                      }}
-                    />
-                  ),
-                },
-                {
-                  icon: (
                     <svg
-                      width="18"
-                      height="18"
+                      width="16"
+                      height="16"
                       viewBox="0 0 24 24"
                       fill="none"
-                      stroke="#A78BFA"
+                      stroke="var(--text-dim)"
                       strokeWidth="2"
                       strokeLinecap="round"
+                      style={{
+                        transform: scannerSettingsExpanded ? 'rotate(90deg)' : 'rotate(0deg)',
+                        transition: 'transform 0.2s',
+                      }}
                     >
-                      <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
-                      <line x1="12" y1="18" x2="12.01" y2="18"></line>
-                      <path d="M8 2h8M8 22h8"></path>
+                      <path d="M9 18l6-6-6-6" />
                     </svg>
                   ),
-                  label: t('profile.vibration'),
-                  onClick: () => {
-                    const next = { ...soundSettings, vibration: !soundSettings.vibration }
-                    setSoundSettings(next)
-                    saveSoundSettings(next)
-                  },
-                  right: (
-                    <Toggle
-                      checked={soundSettings.vibration}
-                      onChange={(val) => {
-                        const next = { ...soundSettings, vibration: val }
-                        setSoundSettings(next)
-                        saveSoundSettings(next)
+                  children: scannerSettingsExpanded && (
+                    <div
+                      style={{
+                        padding: '0 18px 14px 66px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 12,
                       }}
-                    />
+                    >
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <span style={{ fontSize: 13, color: 'var(--text-sub)' }}>
+                          {t('profile.soundScanner')}
+                        </span>
+                        <SegmentedToggle
+                          ariaLabel={t('profile.soundScanner')}
+                          activeKey={soundSettings.sound ? 'on' : 'off'}
+                          onChange={(k) => {
+                            const val = k === 'on'
+                            const next = { ...soundSettings, sound: val }
+                            setSoundSettings(next)
+                            saveSoundSettings(next)
+                          }}
+                          options={[
+                            { key: 'on', label: t('common.on') || 'Вкл' },
+                            { key: 'off', label: t('common.off') || 'Выкл' },
+                          ]}
+                        />
+                      </div>
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <span style={{ fontSize: 13, color: 'var(--text-sub)' }}>
+                          {t('profile.vibration')}
+                        </span>
+                        <SegmentedToggle
+                          ariaLabel={t('profile.vibration')}
+                          activeKey={soundSettings.vibration ? 'on' : 'off'}
+                          onChange={(k) => {
+                            const val = k === 'on'
+                            const next = { ...soundSettings, vibration: val }
+                            setSoundSettings(next)
+                            saveSoundSettings(next)
+                          }}
+                          options={[
+                            { key: 'on', label: t('common.on') || 'Вкл' },
+                            { key: 'off', label: t('common.off') || 'Выкл' },
+                          ]}
+                        />
+                      </div>
+                    </div>
                   ),
                 },
                 {
@@ -1596,6 +1626,7 @@ export default function ProfileScreen() {
                         }}
                       />
                     )}
+                    {item.children}
                   </div>
                 ))}
               </div>
@@ -1616,32 +1647,6 @@ export default function ProfileScreen() {
                 Körset v1.0.0 · kz
               </span>
             </div>
-          </div>
-
-          {/* ── DEV: preview consent sheet ── */}
-          <div style={{ textAlign: 'center', padding: '0 22px 20px' }}>
-            <button
-              type="button"
-              id="dev-reset-consent-btn"
-              onClick={() => {
-                resetTermsAccepted()
-                window.location.href = '/scan'
-              }}
-              style={{
-                padding: '8px 18px',
-                borderRadius: 10,
-                border: '1px dashed var(--glass-soft-border)',
-                background: 'transparent',
-                color: 'var(--text-dim)',
-                fontFamily: 'var(--font-body)',
-                fontSize: 11,
-                fontWeight: 600,
-                cursor: 'pointer',
-                letterSpacing: 0.3,
-              }}
-            >
-              🧪 Сбросить согласие (DEV)
-            </button>
           </div>
         </div>
       </div>

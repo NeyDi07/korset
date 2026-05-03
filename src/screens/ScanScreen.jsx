@@ -290,18 +290,17 @@ function ScanHintSheet({ open, onClose, t }) {
   if (!open) return null
   return (
     <div className="scan-sheet-backdrop" onClick={onClose}>
-      <div className="scan-sheet" onClick={(e) => e.stopPropagation()}>
+      <div className="scan-sheet scan-sheet--hint" onClick={(e) => e.stopPropagation()}>
         <div className="scan-sheet__handle" />
         <div className="scan-sheet__hero">
           <IconCompare active size={28} />
         </div>
         <h2>{t('scan.compareHintTitle')}</h2>
         <p>{t('scan.compareHintBody')}</p>
-        <ol>
-          <li>{t('scan.compareHintStep1')}</li>
-          <li>{t('scan.compareHintStep2')}</li>
-          <li>{t('scan.compareHintStep3')}</li>
-        </ol>
+        <div className="scan-hint-steps">
+          <span>{t('scan.compareHintStep1')}</span>
+          <span>{t('scan.compareHintStep2')}</span>
+        </div>
         <button type="button" className="scan-sheet__button" onClick={onClose}>
           {t('scan.gotIt')}
         </button>
@@ -365,6 +364,7 @@ export default function ScanScreen() {
   const [galleryState, setGalleryState] = useState('idle')
   const [galleryError, setGalleryError] = useState(null)
   const [consentOpen, setConsentOpen] = useState(() => !isTermsAccepted())
+  const [cameraSwitchPressed, setCameraSwitchPressed] = useState(false)
   const [recentScans, setRecentScans] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem('korset_recent_scans') || '[]')
@@ -438,6 +438,7 @@ export default function ScanScreen() {
   const torchTimer = useRef(null)
   const nfTimer = useRef(null)
   const focusTimer = useRef(null)
+  const cameraPressTimer = useRef(null)
   const mountedRef = useRef(true)
   const startScannerRef = useRef(null)
   const startSeqRef = useRef(0)
@@ -662,12 +663,16 @@ export default function ScanScreen() {
       clearTimeout(nfTimer.current)
       clearTimeout(torchTimer.current)
       clearTimeout(focusTimer.current)
+      clearTimeout(cameraPressTimer.current)
       cleanupAudioContext()
     }
   }, []) // eslint-disable-line
 
   const switchCamera = useCallback(async () => {
     if (cameras.length < 2) return
+    clearTimeout(cameraPressTimer.current)
+    setCameraSwitchPressed(true)
+    cameraPressTimer.current = setTimeout(() => setCameraSwitchPressed(false), 260)
     busyRef.current = false
     await stopScanner()
     const nextIdx = (camIdx + 1) % cameras.length
@@ -1053,7 +1058,7 @@ export default function ScanScreen() {
             disabled={!canSwitchCamera}
             label={t('scan.cameraSwitch')}
             tone="camera"
-            icon={<IconSwitchCamera filled={false} size={24} />}
+            icon={<IconSwitchCamera filled={cameraSwitchPressed} size={24} />}
             onClick={switchCamera}
           />
           <ScanActionButton

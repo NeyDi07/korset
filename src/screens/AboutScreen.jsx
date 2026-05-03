@@ -115,27 +115,6 @@ const FEATURES = [
   },
 ]
 
-// ─── Tech stack row ───────────────────────────────────────────────────────────
-function TechBadge({ label }) {
-  return (
-    <span
-      style={{
-        display: 'inline-block',
-        padding: '5px 12px',
-        borderRadius: 999,
-        border: '1px solid var(--glass-soft-border)',
-        background: 'var(--glass-muted)',
-        fontFamily: 'var(--font-body)',
-        fontSize: 12,
-        color: 'var(--text-sub)',
-        fontWeight: 600,
-      }}
-    >
-      {label}
-    </span>
-  )
-}
-
 // ─── Main screen ──────────────────────────────────────────────────────────────
 export default function AboutScreen() {
   const navigate = useNavigate()
@@ -208,47 +187,47 @@ export default function AboutScreen() {
         <div
           className="glass-card"
           style={{
-            padding: '32px 24px',
+            padding: '40px 24px 32px',
             textAlign: 'center',
-            background: 'linear-gradient(145deg, rgba(124,58,237,0.1), rgba(236,72,153,0.07))',
-            border: '1px solid rgba(124,58,237,0.2)',
+            background: 'var(--card)',
+            border: '1px solid var(--border)',
+            boxShadow: 'var(--shadow-card)',
           }}
         >
-          {/* Logo circle */}
+          {/* Logo container */}
           <div
             style={{
-              width: 76,
-              height: 76,
-              borderRadius: 22,
-              background: 'linear-gradient(135deg, #7C3AED, #EC4899)',
+              width: 84,
+              height: 84,
+              borderRadius: 24,
+              background: 'var(--bg-app)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              margin: '0 auto 16px',
-              boxShadow: '0 12px 40px rgba(124,58,237,0.35)',
+              margin: '0 auto 20px',
+              boxShadow: '0 12px 32px rgba(0,0,0,0.2)',
+              border: '1px solid var(--glass-soft-border)',
+              overflow: 'hidden',
+              padding: 10,
             }}
           >
-            {/* K lettermark */}
-            <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
-              <text
-                x="6"
-                y="29"
-                fontFamily="'Bebas Neue', sans-serif"
-                fontSize="30"
-                fill="#fff"
-                letterSpacing="1"
-              >
-                K
-              </text>
-            </svg>
+            <img
+              src="/icon_logo.svg"
+              alt="Korset Logo"
+              style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+            />
           </div>
 
           <div
             style={{
               fontFamily: 'var(--font-display)',
-              fontSize: 32,
-              letterSpacing: 2,
-              color: 'var(--text)',
+              fontSize: 34,
+              fontWeight: 800,
+              letterSpacing: 1.5,
+              background: 'linear-gradient(135deg, #a78bfa 0%, #7c3aed 60%, #c4b5fd 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
               marginBottom: 4,
             }}
           >
@@ -257,9 +236,9 @@ export default function AboutScreen() {
           <div
             style={{
               fontFamily: 'var(--font-body)',
-              fontSize: 13,
+              fontSize: 14,
               color: 'var(--text-sub)',
-              marginBottom: 16,
+              marginBottom: 20,
             }}
           >
             Умный помощник в магазине
@@ -273,8 +252,8 @@ export default function AboutScreen() {
               gap: 8,
               padding: '6px 16px',
               borderRadius: 999,
-              background: 'rgba(124,58,237,0.12)',
-              border: '1px solid rgba(124,58,237,0.25)',
+              background: 'var(--glass-bg)',
+              border: '1px solid var(--glass-soft-border)',
             }}
           >
             <span
@@ -403,30 +382,6 @@ export default function AboutScreen() {
               </div>
             </div>
           ))}
-        </div>
-      </div>
-
-      {/* ── Tech stack ── */}
-      <div style={{ padding: '24px 22px 8px' }}>
-        <div
-          style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: 11,
-            fontWeight: 700,
-            color: 'var(--text-disabled)',
-            textTransform: 'uppercase',
-            letterSpacing: 1.5,
-            marginBottom: 10,
-          }}
-        >
-          Технологии
-        </div>
-        <div className="glass-card" style={{ padding: '18px 20px' }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-            {['React 18', 'Supabase', 'Vercel', 'OpenAI', 'PWA', 'Vite'].map((t) => (
-              <TechBadge key={t} label={t} />
-            ))}
-          </div>
         </div>
       </div>
 

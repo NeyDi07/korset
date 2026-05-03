@@ -62,7 +62,7 @@ export default function SegmentedToggle({ options, activeKey, onChange, ariaLabe
         display: 'inline-flex',
         background: 'var(--glass-subtle)',
         borderRadius: 12,
-        padding: 4,
+        padding: 3,
         gap: 0,
         boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.04)',
       }}
@@ -108,7 +108,7 @@ export default function SegmentedToggle({ options, activeKey, onChange, ariaLabe
               background: 'transparent',
               border: 'none',
               color: isActive ? '#fff' : 'var(--text-sub)',
-              padding: '6px 16px',
+              padding: '5px 14px',
               minWidth: 50,
               borderRadius: 8,
               fontSize: 12,

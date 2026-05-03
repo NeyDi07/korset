@@ -1,11 +1,12 @@
 .scan-screen {
   position: fixed;
   inset: 0;
-  z-index: 1100;
+  z-index: 80;
   overflow: hidden;
   background: var(--bg-app);
   color: var(--text);
   touch-action: manipulation;
+  --scan-nav-space: calc(86px + env(safe-area-inset-bottom, 0px));
 }
 
 .scan-stage {
@@ -133,15 +134,6 @@
   transform: translate3d(-50%, -50%, 0);
 }
 
-.scan-frame::before {
-  content: '';
-  position: absolute;
-  inset: 18px 2px;
-  border-top: 3px solid var(--text);
-  border-top: 3px solid color-mix(in srgb, var(--text) 74%, transparent);
-  opacity: 0.86;
-}
-
 .corner {
   position: absolute;
   width: 40px;
@@ -184,14 +176,28 @@
   position: absolute;
   left: 4px;
   right: 4px;
-  top: 22%;
-  height: 3px;
+  top: 0;
+  height: 2px;
   border-radius: 999px;
-  background: linear-gradient(90deg, transparent, var(--primary), var(--text), var(--primary), transparent);
-  box-shadow: 0 0 18px rgba(255, 255, 255, 0.52), 0 0 28px rgba(167, 139, 250, 0.32);
-  box-shadow: 0 0 18px rgba(255, 255, 255, 0.52), 0 0 28px color-mix(in srgb, var(--primary) 50%, transparent);
-  animation: scanLineTravel 2.15s cubic-bezier(0.45, 0, 0.2, 1) infinite;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.72) 15%, #fff 50%, rgba(255, 255, 255, 0.72) 85%, transparent 100%);
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.7), 0 0 30px rgba(255, 255, 255, 0.22);
+  animation: scanLineTravel 2.35s cubic-bezier(0.45, 0, 0.2, 1) infinite alternate;
   will-change: transform;
+}
+
+.scan-line::after {
+  content: '';
+  position: absolute;
+  left: 7%;
+  right: 7%;
+  top: -20px;
+  height: 44px;
+  border-radius: 999px;
+  background:
+    linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.2), transparent),
+    radial-gradient(ellipse at center, rgba(255, 255, 255, 0.24), transparent 64%);
+  opacity: 0.75;
+  transform: translateZ(0);
 }
 
 .scan-frame-hint {
@@ -212,7 +218,7 @@
   position: absolute;
   left: 18px;
   right: 18px;
-  bottom: max(14px, env(safe-area-inset-bottom));
+  bottom: calc(var(--scan-nav-space) + 10px);
   z-index: 35;
   display: flex;
   flex-direction: column;
@@ -621,20 +627,25 @@
 .scan-sheet-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 1160;
+  z-index: 240;
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  padding: 18px;
-  background: rgba(0, 0, 0, 0.32);
+  padding: 18px 16px calc(var(--scan-nav-space) + 12px);
+  background: rgba(0, 0, 0, 0.68);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
   animation: fadeIn 0.18s ease both;
 }
 
 .scan-sheet {
   width: min(100%, 430px);
   border-radius: 26px;
-  padding: 12px 18px max(18px, env(safe-area-inset-bottom));
+  padding: 12px 18px 18px;
   animation: sheetIn 0.24s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  background: var(--bg-app);
+  border-color: var(--glass-border);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.34);
 }
 
 .scan-sheet__handle {
@@ -646,9 +657,9 @@
 }
 
 .scan-sheet__hero {
-  width: 54px;
-  height: 54px;
-  border-radius: 18px;
+  width: 46px;
+  height: 46px;
+  border-radius: 16px;
   display: grid;
   place-items: center;
   color: var(--primary);
@@ -656,28 +667,34 @@
 }
 
 .scan-sheet h2 {
-  margin: 14px 0 8px;
-  font-size: 21px;
+  margin: 12px 0 7px;
+  font-size: 20px;
 }
 
 .scan-sheet p {
-  margin: 0 0 12px;
-  line-height: 1.55;
-}
-
-.scan-sheet ol {
-  margin: 0;
-  padding-left: 20px;
-}
-
-.scan-sheet li {
-  margin: 8px 0;
+  margin: 0 0 10px;
   line-height: 1.45;
+}
+
+.scan-hint-steps {
+  display: grid;
+  gap: 7px;
+}
+
+.scan-hint-steps span {
+  padding: 9px 10px;
+  border-radius: 13px;
+  color: var(--text);
+  background: var(--glass-subtle);
+  border: 1px solid var(--glass-soft-border);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.35;
 }
 
 .scan-sheet__button {
   width: 100%;
-  margin-top: 16px;
+  margin-top: 14px;
   min-height: 46px;
 }
 
@@ -747,6 +764,10 @@
     min-height: 58px;
   }
 
+  .scan-dock {
+    gap: 9px;
+  }
+
   .scan-title-pill h1 {
     font-size: 27px;
   }
@@ -762,7 +783,7 @@
     opacity: 1;
   }
   100% {
-    transform: translate3d(0, calc(var(--scan-frame-h) - 46px), 0);
+    transform: translate3d(0, calc(var(--scan-frame-h) - 4px), 0);
     opacity: 0.5;
   }
 }

@@ -84,3 +84,42 @@ The ScanScreen redesign moved from icon preparation to a production V1 implement
   - `npm run lint` — passed with warnings only;
   - `node scripts/check-i18n.mjs` — passed;
   - Playwright fake-camera check confirmed one stream, no submit button in empty manual state, submit appears after EAN input, and compare hint opens.
+
+## Real-device feedback fixes
+
+User tested on a real phone and reported final V1 polish issues. Fixed in the same ScanScreen iteration:
+
+- Removed the unwanted horizontal line inside the scan frame by deleting the `.scan-frame::before` visual rule.
+- Reworked the scan line:
+  - white/glass visual instead of purple;
+  - lightweight glow/tail effect using CSS only;
+  - movement is constrained to frame height with `calc(var(--scan-frame-h) - 4px)`;
+  - no heavy canvas/JS animation.
+- Restored BottomNav visibility on ScanScreen:
+  - `.scan-screen` now sits below BottomNav;
+  - scanner controls are lifted above nav using `--scan-nav-space`.
+- Improved compare hint sheet:
+  - shorter two-step copy;
+  - solid/opaque sheet;
+  - positioned above nav, not over broken transparent layers.
+- Improved recent scans sheet:
+  - solid/opaque panel;
+  - above nav;
+  - verified with KZ locale and a mock recent scan.
+- Added transient filled center state to camera-switch icon after tapping the camera switch button.
+- Corrected KZ scan copy:
+  - `scan.recentScans`: "Жақында сканерленгендер";
+  - `scan.manualInputPlaceholder`: "Штрих-кодты қолмен теру".
+
+Verification:
+
+- `node scripts/check-i18n.mjs` — passed.
+- Playwright fake-camera checks:
+  - BottomNav visible;
+  - frame before-line removed;
+  - scan line is white;
+  - one video stream;
+  - compare hint short and solid;
+  - KZ recent/manual texts correct.
+- `npm run build` — passed.
+- `npm run lint` — passed with warnings only.
