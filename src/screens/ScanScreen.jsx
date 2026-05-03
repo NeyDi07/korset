@@ -4,12 +4,14 @@ import { lookupProduct } from '../utils/productLookup.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { useOffline } from '../contexts/OfflineContext.jsx'
 import { buildProductPath, buildComparePath } from '../utils/routes.js'
-import { useI18n } from '../utils/i18n.js'
+import { useI18n } from '../i18n/index.js'
+import { loadSoundSettings } from '../utils/soundSettings.js'
 
 // ─── Звук успешного сканирования (Web Audio API, без файлов) ──────────────────
 let globalAudioCtx = null
 
 function playSuccessBeep() {
+  if (!loadSoundSettings().sound) return
   try {
     if (!globalAudioCtx) {
       globalAudioCtx = new (window.AudioContext || window.webkitAudioContext)()
@@ -227,7 +229,9 @@ export default function ScanScreen() {
             busyRef.current = true
             playSuccessBeep()
             try {
-              navigator.vibrate?.(60)
+              if (loadSoundSettings().vibration) {
+                navigator.vibrate?.(60)
+              }
             } catch {
               /* noop */
             }
@@ -511,7 +515,7 @@ export default function ScanScreen() {
       e.preventDefault()
       const raw = manualInput.trim()
       if (raw.length !== 8 && raw.length !== 13) {
-        setManualError(t.scan.manualInvalid || 'Введите 8 или 13 цифр')
+        setManualError(t('scan.manualInvalid'))
         return
       }
       setManualError(null)
@@ -591,7 +595,7 @@ export default function ScanScreen() {
 
         <div style={{ textAlign: 'center', flex: 1 }}>
           <p style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)', lineHeight: 1.2 }}>
-            {t.scan.scanTitle || t.scan.title}
+            {t('scan.scanTitle') || t('scan.title')}
           </p>
           <p
             style={{
@@ -601,7 +605,7 @@ export default function ScanScreen() {
               marginTop: 2,
             }}
           >
-            {currentStore ? `📍 ${currentStore.name}` : t.scan.globalMode}
+            {currentStore ? `📍 ${currentStore.name}` : t('scan.globalMode')}
           </p>
         </div>
 
@@ -712,7 +716,7 @@ export default function ScanScreen() {
                 textShadow: '0 1px 4px rgba(0,0,0,0.9)',
               }}
             >
-              {t.scan.hint}
+              {t('scan.hint')}
             </div>
           </div>
         )}
@@ -758,7 +762,7 @@ export default function ScanScreen() {
                 animation: 'spin 0.75s linear infinite',
               }}
             />
-            <p style={{ color: 'var(--text-disabled)', fontSize: 14 }}>{t.scan.startCamera}</p>
+            <p style={{ color: 'var(--text-disabled)', fontSize: 14 }}>{t('scan.startCamera')}</p>
           </div>
         )}
 
@@ -801,7 +805,7 @@ export default function ScanScreen() {
               }}
             />
             <p style={{ color: 'var(--primary-bright)', fontSize: 15, fontWeight: 500 }}>
-              {t.scan.searching}
+              {t('scan.searching')}
             </p>
           </div>
         )}
@@ -825,10 +829,10 @@ export default function ScanScreen() {
             <div style={{ fontSize: 52 }}>📷</div>
             <div>
               <p style={{ color: 'var(--red)', fontSize: 16, fontWeight: 700, marginBottom: 8 }}>
-                {t.scan.cameraAccessDeniedTitle}
+                {t('scan.cameraAccessDeniedTitle')}
               </p>
               <p style={{ color: 'var(--text-sub)', fontSize: 13, lineHeight: 1.7 }}>
-                {t.scan.cameraPermission}
+                {t('scan.cameraPermission')}
               </p>
             </div>
             <button
@@ -844,7 +848,7 @@ export default function ScanScreen() {
                 cursor: 'pointer',
               }}
             >
-              {t.scan.galleryBtn}
+              {t('scan.galleryBtn')}
             </button>
           </div>
         )}
@@ -867,7 +871,7 @@ export default function ScanScreen() {
             }}
           >
             <p style={{ color: 'var(--red)', fontSize: 14, fontWeight: 700, marginBottom: 3 }}>
-              {!isOnline ? t.scan.offlineNotFound : t.scan.notFoundToast}
+              {!isOnline ? t('scan.offlineNotFound') : t('scan.notFoundToast')}
             </p>
             <p style={{ color: 'var(--text-disabled)', fontSize: 11, fontFamily: 'monospace' }}>
               {notFoundEan}
@@ -893,7 +897,7 @@ export default function ScanScreen() {
             }}
           >
             <p style={{ color: 'var(--red)', fontSize: 13, fontWeight: 600 }}>
-              {galleryError === 'noBarcode' ? t.scan.galleryNoBarcode : t.scan.galleryError}
+              {galleryError === 'noBarcode' ? t('scan.galleryNoBarcode') : t('scan.galleryError')}
             </p>
           </div>
         )}
@@ -918,7 +922,7 @@ export default function ScanScreen() {
               backdropFilter: 'blur(10px)',
             }}
           >
-            ⚠️ {t.scan.torchUnavailable}
+            ⚠️ {t('scan.torchUnavailable')}
           </div>
         )}
 
@@ -952,8 +956,8 @@ export default function ScanScreen() {
               style={{ fontSize: 12, fontWeight: 700, color: 'var(--primary)', lineHeight: 1.4 }}
             >
               {pinnedProduct
-                ? `${t.compare?.modeBannerPinned || 'Первый товар выбран'}: ${pinnedProduct.name}`
-                : t.compare?.modeBanner || 'Режим сравнения: выберите товар'}
+                ? `${t('compare.modeBannerPinned') || t('scan.comparePinned')}: ${pinnedProduct.name}`
+                : t('compare.modeBanner') || t('scan.compareSelect')}
             </span>
           </div>
         )}
@@ -993,7 +997,7 @@ export default function ScanScreen() {
             }}
           >
             <IconTorch on={torchOn} size={20} />
-            <span style={{ fontSize: 10, fontWeight: 600, lineHeight: 1 }}>{t.scan.torch}</span>
+            <span style={{ fontSize: 10, fontWeight: 600, lineHeight: 1 }}>{t('scan.torch')}</span>
           </button>
 
           <button
@@ -1030,7 +1034,7 @@ export default function ScanScreen() {
               <IconGallery size={20} />
             )}
             <span style={{ fontSize: 10, fontWeight: 600, lineHeight: 1 }}>
-              {t.scan.gallery || 'Галерея'}
+              {t('scan.gallery')}
             </span>
           </button>
 
@@ -1055,7 +1059,7 @@ export default function ScanScreen() {
             >
               <IconSwitchCamera size={20} />
               <span style={{ fontSize: 10, fontWeight: 600, lineHeight: 1 }}>
-                {t.scan.cameraSwitch || 'Камера'}
+                {t('scan.cameraSwitch')}
               </span>
             </button>
           )}
@@ -1083,7 +1087,7 @@ export default function ScanScreen() {
               compare_arrows
             </span>
             <span style={{ fontSize: 10, fontWeight: 600, lineHeight: 1 }}>
-              {t.scan.compare || 'Сравнить'}
+              {t('scan.compare')}
             </span>
           </button>
         </div>
@@ -1116,7 +1120,7 @@ export default function ScanScreen() {
               type="text"
               inputMode="numeric"
               pattern="[0-9]*"
-              placeholder={t.scan.manualInputPlaceholder || 'Штрихкод вручную'}
+              placeholder={t('scan.manualInputPlaceholder')}
               value={manualInput}
               onChange={(e) => {
                 setManualInput(e.target.value.replace(/\D/g, ''))
@@ -1174,7 +1178,7 @@ export default function ScanScreen() {
                 marginBottom: 8,
               }}
             >
-              {t.scan.recentScans || 'Недавние'}
+              {t('scan.recentScans')}
             </p>
             <div
               style={{

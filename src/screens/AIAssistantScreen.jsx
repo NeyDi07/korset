@@ -1,10 +1,16 @@
 import { useState, useRef, useEffect } from 'react'
-import { useI18n } from '../utils/i18n.js'
+import { useI18n } from '../i18n/index.js'
 import KorsetAvatar from '../components/KorsetAvatar.jsx'
 import { askGeneralAI } from '../services/ai.js'
 
 export default function AIAssistantScreen() {
-  const { lang, t } = useI18n()
+  const { lang, t, exists } = useI18n()
+  const generalChips = []
+  let gi = 0
+  while (exists(`ai.generalChips.${gi}`)) {
+    generalChips.push(t(`ai.generalChips.${gi}`))
+    gi++
+  }
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
@@ -25,7 +31,7 @@ export default function AIAssistantScreen() {
       const reply = await askGeneralAI(newMessages, lang)
       setMessages((prev) => [...prev, { role: 'assistant', content: reply }])
     } catch {
-      setMessages((prev) => [...prev, { role: 'assistant', content: t.ai.errorGeneric }])
+      setMessages((prev) => [...prev, { role: 'assistant', content: t('ai.errorGeneric') }])
     } finally {
       setLoading(false)
     }
@@ -63,7 +69,7 @@ export default function AIAssistantScreen() {
             Körset AI
           </div>
           <div style={{ fontSize: 12, color: '#34D399', fontWeight: 500, marginTop: 1 }}>
-            {t.ai.generalSubtitle}
+            {t('ai.generalSubtitle')}
           </div>
         </div>
       </div>
@@ -92,7 +98,7 @@ export default function AIAssistantScreen() {
                 color: 'var(--text)',
               }}
             >
-              {t.ai.welcomeGeneral}
+              {t('ai.welcomeGeneral')}
             </div>
           </div>
         )}
@@ -189,7 +195,7 @@ export default function AIAssistantScreen() {
               paddingBottom: 10,
             }}
           >
-            {t.ai.generalChips.map((chip) => (
+            {generalChips.map((chip) => (
               <button
                 key={chip}
                 onClick={() => sendMessage(chip)}
@@ -222,7 +228,7 @@ export default function AIAssistantScreen() {
                 sendMessage(input)
               }
             }}
-            placeholder={t.ai.inputGeneral}
+            placeholder={t('ai.inputGeneral')}
             disabled={loading}
             style={{
               flex: 1,

@@ -4,15 +4,21 @@ import { checkProductFit, formatPrice, getCategoryLabel } from '../utils/fitChec
 import { getDisplayQuantity, computePricePerUnit } from '../utils/parseQuantity.js'
 import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useAuth } from '../contexts/AuthContext.jsx'
-import { useI18n } from '../utils/i18n.js'
+import { useI18n } from '../i18n/index.js'
 import { useLocalName } from '../utils/localName.js'
 import { useUserData } from '../contexts/UserDataContext.jsx'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { useOffline } from '../contexts/OfflineContext.jsx'
+import { supabase } from '../utils/supabase.js'
 import { fetchFullProduct } from '../contexts/StoreContext.jsx'
 import { getAnyKnownProductByRef } from '../utils/storeCatalog.js'
 import { coerceProductEntity } from '../domain/product/normalizers.js'
-import { resolveProductByEan } from '../domain/product/resolver.js'
+import { resolveProductByEan, enrichmentEvents } from '../domain/product/resolver.js'
+import {
+  canRequestUnknownProduct,
+  getUnknownProductRequestCopy,
+  requestUnknownProductCheck,
+} from '../domain/product/unknownEanRequest.js'
 import {
   buildCatalogPath,
   buildProductAIPath,
@@ -33,31 +39,21 @@ function fmt(v) {
   return Number.isInteger(n) ? String(n) : n.toFixed(1)
 }
 
-const SEVERITY = {
-  danger: {
-    color: '#EF4444',
-    bg: 'rgba(239,68,68,0.10)',
-    border: 'rgba(239,68,68,0.30)',
-    title: 'Не подходит',
-  },
-  warning: {
-    color: '#F97316',
-    bg: 'rgba(249,115,22,0.10)',
-    border: 'rgba(249,115,22,0.30)',
-    title: 'Не рекомендуется',
-  },
-  caution: {
-    color: '#FBBF24',
-    bg: 'rgba(251,191,36,0.10)',
-    border: 'rgba(251,191,36,0.30)',
-    title: 'С осторожностью',
-  },
-  safe: {
-    color: '#10B981',
-    bg: 'rgba(16,185,129,0.10)',
-    border: 'rgba(16,185,129,0.30)',
-    title: 'Подходит',
-  },
+const SEVERITY_STYLES = {
+  danger: { color: '#EF4444', bg: 'rgba(239,68,68,0.10)', border: 'rgba(239,68,68,0.30)' },
+  warning: { color: '#F97316', bg: 'rgba(249,115,22,0.10)', border: 'rgba(249,115,22,0.30)' },
+  caution: { color: '#FBBF24', bg: 'rgba(251,191,36,0.10)', border: 'rgba(251,191,36,0.30)' },
+  safe: { color: '#10B981', bg: 'rgba(16,185,129,0.10)', border: 'rgba(16,185,129,0.30)' },
+}
+
+function severityTitle(key, t) {
+  const map = {
+    danger: t('product.severityDanger'),
+    warning: t('product.severityWarning'),
+    caution: t('product.severityCaution'),
+    safe: t('product.severitySafe'),
+  }
+  return map[key] || key
 }
 
 function resolveSeverityKey(reasons, fits) {
@@ -118,7 +114,7 @@ function ImageCarousel({ images, fallbackEan, singleImage }) {
           fontSize: 14,
         }}
       >
-        Нет фото
+        {t('product.noPhoto')}
       </div>
     )
   }
@@ -209,7 +205,7 @@ function ImageCarousel({ images, fallbackEan, singleImage }) {
 // ═══════════════════════════════════════════════════════════════════════════
 function CollapsibleFitCheck({ severityKey, reasons }) {
   const [expanded, setExpanded] = useState(false)
-  const s = SEVERITY[severityKey]
+  const s = SEVERITY_STYLES[severityKey]
   const canExpand = reasons.length > 0 && severityKey !== 'safe'
 
   return (
@@ -323,7 +319,7 @@ function CollapsibleFitCheck({ severityKey, reasons }) {
               lineHeight: 1.15,
             }}
           >
-            {s.title}
+            {severityTitle(severityKey, t)}
           </div>
           {canExpand && !expanded && (
             <div
@@ -334,7 +330,9 @@ function CollapsibleFitCheck({ severityKey, reasons }) {
                 letterSpacing: '0.02em',
               }}
             >
-              {reasons.length} {reasons.length === 1 ? 'причина' : 'причины'} — нажмите для деталей
+              {reasons.length}{' '}
+              {reasons.length === 1 ? t('product.reason') : t('product.reasonsFew')} —{' '}
+              {t('product.reasonsClick')}
             </div>
           )}
         </div>
@@ -375,7 +373,7 @@ function CollapsibleFitCheck({ severityKey, reasons }) {
           }}
         >
           {reasons.map((r, i) => {
-            const rColor = SEVERITY[r.type]?.color || 'var(--text-soft)'
+            const rColor = SEVERITY_STYLES[r.type]?.color || 'var(--text-soft)'
             return (
               <div
                 key={i}
@@ -529,7 +527,7 @@ function NutritionUnified({ nutrition }) {
           marginBottom: 12,
         }}
       >
-        {t.product.nutrition} · {t.product.nutritionPer100}
+        {t('product.nutrition')} · {t('product.nutritionPer100')}
       </div>
 
       {/* Hero row: большой Ккал слева + 3 макроса справа */}
@@ -565,7 +563,7 @@ function NutritionUnified({ nutrition }) {
               marginBottom: 6,
             }}
           >
-            Энергия
+            {t('product.energy')}
           </div>
           <div
             style={{
@@ -589,7 +587,7 @@ function NutritionUnified({ nutrition }) {
               letterSpacing: '0.04em',
             }}
           >
-            ккал
+            {t('product.kcal')}
           </div>
         </div>
 
@@ -601,9 +599,9 @@ function NutritionUnified({ nutrition }) {
             gap: 6,
           }}
         >
-          <MacroRow label="Белки" value={protein} color="#3B82F6" />
-          <MacroRow label="Жиры" value={fat} color="#F59E0B" />
-          <MacroRow label="Углеводы" value={carbs} color="#10B981" />
+          <MacroRow label={t('product.protein')} value={protein} color="#3B82F6" />
+          <MacroRow label={t('product.fat')} value={fat} color="#F59E0B" />
+          <MacroRow label={t('product.carbs')} value={carbs} color="#10B981" />
         </div>
       </div>
 
@@ -621,10 +619,22 @@ function NutritionUnified({ nutrition }) {
           }}
         >
           {sugar != null && (
-            <ThreeStepRow label="Сахар" value={sugar} unit="г" thresholds={[5, 22.5]} />
+            <ThreeStepRow
+              label={t('product.sugar')}
+              value={sugar}
+              unit={t('product.unitG')}
+              thresholds={[5, 22.5]}
+              t={t}
+            />
           )}
           {salt != null && (
-            <ThreeStepRow label="Соль" value={salt} unit="г" thresholds={[0.3, 1.5]} />
+            <ThreeStepRow
+              label={t('product.salt')}
+              value={salt}
+              unit={t('product.unitG')}
+              thresholds={[0.3, 1.5]}
+              t={t}
+            />
           )}
         </div>
       )}
@@ -676,12 +686,12 @@ function MacroRow({ label, value, color }) {
   )
 }
 
-function ThreeStepRow({ label, value, unit, thresholds }) {
+function ThreeStepRow({ label, value, unit, thresholds, t }) {
   const [low, high] = thresholds
   let activeIdx = 0
   if (value > high) activeIdx = 2
   else if (value > low) activeIdx = 1
-  const statusLabel = ['Низкое', 'Среднее', 'Высокое'][activeIdx]
+  const statusLabel = [t('product.low'), t('product.medium'), t('product.high')][activeIdx]
   const colors = ['#10B981', '#F59E0B', '#EF4444']
 
   return (
@@ -810,8 +820,8 @@ function SpecsGrid({ product }) {
   const specs = []
   const s = product.specs || {}
 
-  if (s.storage) specs.push({ label: t.product.storage, value: s.storage })
-  if (s.bestBefore) specs.push({ label: t.product.expiry, value: s.bestBefore })
+  if (s.storage) specs.push({ label: t('product.storage'), value: s.storage })
+  if (s.bestBefore) specs.push({ label: t('product.expiry'), value: s.bestBefore })
 
   // Цена за 100 г/мл
   const perUnit = computePricePerUnit(
@@ -821,23 +831,23 @@ function SpecsGrid({ product }) {
   if (perUnit) {
     if (perUnit.per100 != null) {
       specs.push({
-        label: lang === 'kz' ? `${perUnit.suffix} үшін баға` : `Цена за ${perUnit.suffix}`,
+        label: `${t('product.pricePer')} ${perUnit.suffix}`,
         value: formatPrice(perUnit.per100),
       })
     }
     if (perUnit.perUnit != null) {
       specs.push({
-        label: lang === 'kz' ? `${perUnit.unitSuffix} үшін баға` : `Цена за ${perUnit.unitSuffix}`,
+        label: `${t('product.pricePer')} ${perUnit.unitSuffix}`,
         value: formatPrice(perUnit.perUnit),
       })
     }
   }
 
   // Динамические поля: вкус, категория (подкатегория), alcohol, etc.
-  if (product.flavor) specs.push({ label: t.product.flavor, value: product.flavor })
-  if (s.flavor && !product.flavor) specs.push({ label: t.product.flavor, value: s.flavor })
+  if (product.flavor) specs.push({ label: t('product.flavor'), value: product.flavor })
+  if (s.flavor && !product.flavor) specs.push({ label: t('product.flavor'), value: s.flavor })
   if (product.subcategory) {
-    specs.push({ label: lang === 'kz' ? 'Ішкі санат' : 'Подкатегория', value: product.subcategory })
+    specs.push({ label: t('product.subcategory'), value: product.subcategory })
   }
   if (specs.length === 0) return null
 
@@ -933,6 +943,7 @@ export default function ProductScreen() {
 
   const [fullProduct, setFullProduct] = useState(null)
   const [fetchingFull, setFetchingFull] = useState(false)
+  const [unknownRequestStatus, setUnknownRequestStatus] = useState('idle')
 
   // Optimistic scan path: arrived from ScanScreen without pre-loaded product
   const needsResolve = fromScan && !location.state?.product && !baseProduct
@@ -982,20 +993,35 @@ export default function ProductScreen() {
     }
   }, [needsFullFetch, storeId, ean])
 
+  useEffect(() => {
+    if (!ean) return
+    const handler = (e) => {
+      if (e.detail?.ean === ean) setFullProduct(e.detail.product)
+    }
+    enrichmentEvents.addEventListener('enriched', handler)
+    return () => enrichmentEvents.removeEventListener('enriched', handler)
+  }, [ean])
+
   const product = fullProduct || baseProduct
   const localName = useLocalName(product)
+  const unknownCopy = getUnknownProductRequestCopy(lang)
+  const canRequestUnknown = canRequestUnknownProduct({ ean, storeId })
 
   const isFavorite = checkIsFavorite(product?.ean)
+
+  const handleUnknownProductRequest = async () => {
+    if (!canRequestUnknown || unknownRequestStatus === 'sending') return
+    setUnknownRequestStatus('sending')
+    const result = await requestUnknownProductCheck({ ean, storeId, client: supabase })
+    setUnknownRequestStatus(result.ok ? 'sent' : 'error')
+  }
 
   const handleToggleFavorite = async () => {
     if (!user) {
       navigate('/auth', {
         state: buildAuthNavigateState(location, {
           reason: 'favorites_requires_auth',
-          message:
-            lang === 'kz'
-              ? 'Таңдаулыларға қосу үшін аккаунтқа кіріңіз.'
-              : 'Войдите, чтобы добавлять товары в избранное.',
+          message: t('product.loginForFavorites'),
         }),
       })
       return
@@ -1063,17 +1089,82 @@ export default function ProductScreen() {
           alignItems: 'center',
           justifyContent: 'center',
           minHeight: '80vh',
+          padding: '28px 20px',
         }}
       >
-        <div style={{ textAlign: 'center', color: 'var(--text-dim)' }}>
-          <div style={{ fontSize: 48, marginBottom: 12 }}>🔍</div>
-          <p>{t.common.notFound}</p>
+        <div
+          style={{
+            width: '100%',
+            maxWidth: 420,
+            textAlign: 'center',
+            color: 'var(--text-dim)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 14,
+          }}
+        >
+          <div
+            style={{
+              width: 68,
+              height: 68,
+              borderRadius: 18,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: 'var(--glass-subtle)',
+              border: '1px solid var(--glass-soft-border)',
+              color: 'var(--text-sub)',
+            }}
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: 34 }}>
+              barcode
+            </span>
+          </div>
+          <div>
+            <p style={{ color: 'var(--text)', fontSize: 20, fontWeight: 800, marginBottom: 8 }}>
+              {unknownCopy.title}
+            </p>
+            <p style={{ color: 'var(--text-sub)', fontSize: 14, lineHeight: 1.65, margin: 0 }}>
+              {unknownCopy.body}
+            </p>
+          </div>
+          {ean && (
+            <div
+              style={{
+                fontFamily: 'monospace',
+                fontSize: 12,
+                color: 'var(--text-disabled)',
+                background: 'var(--glass-subtle)',
+                border: '1px solid var(--glass-soft-border)',
+                borderRadius: 10,
+                padding: '7px 10px',
+              }}
+            >
+              {ean}
+            </div>
+          )}
+          {canRequestUnknown && (
+            <button
+              className="btn btn-primary"
+              style={{ marginTop: 2, minWidth: 190 }}
+              onClick={handleUnknownProductRequest}
+              disabled={unknownRequestStatus === 'sending' || unknownRequestStatus === 'sent'}
+            >
+              {unknownRequestStatus === 'sent' ? unknownCopy.requested : unknownCopy.requestButton}
+            </button>
+          )}
+          {unknownRequestStatus === 'error' && (
+            <p style={{ color: 'var(--red)', fontSize: 12, margin: 0 }}>
+              {unknownCopy.requestFailed}
+            </p>
+          )}
           <button
             className="btn btn-secondary"
-            style={{ marginTop: 16 }}
+            style={{ marginTop: canRequestUnknown ? 0 : 8 }}
             onClick={() => navigate(buildCatalogPath(activeStoreSlug))}
           >
-            {t.product.backToList}
+            {canRequestUnknown ? unknownCopy.scanAnother : t('product.backToList')}
           </button>
         </div>
       </div>
@@ -1281,7 +1372,7 @@ export default function ProductScreen() {
               marginTop: -8,
             }}
           >
-            {t.scan.offlineCacheLabel} ({formatCacheAge()})
+            {t('scan.offlineCacheLabel')} ({formatCacheAge()})
           </div>
         )}
 
@@ -1294,7 +1385,7 @@ export default function ProductScreen() {
         {/* 7. Ingredients */}
         {product.ingredients && (
           <div>
-            <SectionLabel>{t.product.ingredients}</SectionLabel>
+            <SectionLabel>{t('product.ingredients')}</SectionLabel>
             <IngredientsBlock
               text={product.ingredients}
               userAllergens={profile?.allergens || product.allergens || []}
@@ -1305,7 +1396,7 @@ export default function ProductScreen() {
         {/* 8. Description */}
         {product.description && (
           <div>
-            <SectionLabel>{t.product.description}</SectionLabel>
+            <SectionLabel>{t('product.description')}</SectionLabel>
             <div
               style={{
                 background: 'var(--glass-subtle)',
@@ -1324,7 +1415,7 @@ export default function ProductScreen() {
 
         {/* 9. Characteristics */}
         <div>
-          <SectionLabel>{t.product.characteristics}</SectionLabel>
+          <SectionLabel>{t('product.characteristics')}</SectionLabel>
           <SpecsGrid product={product} />
         </div>
 
@@ -1361,7 +1452,7 @@ export default function ProductScreen() {
               >
                 <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
               </svg>
-              {t.common.alternatives}
+              {t('common.alternatives')}
             </button>
             <button
               onClick={() => navigate(buildProductAIPath(activeStoreSlug, product.ean))}
@@ -1387,7 +1478,7 @@ export default function ProductScreen() {
               <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff">
                 <path d="M12 1.99996C12.9057 1.99996 13.7829 2.12194 14.6172 2.34762C14.2223 3.14741 14 4.04768 14 4.99997C14 8.31368 16.6863 11 20 11C20.6685 11 21.3106 10.8882 21.9111 10.6865C21.9676 11.1165 22 11.5546 22 12C22 17.5228 17.5228 22 12 22C10.2975 22 8.69425 21.5746 7.29102 20.8242L2 22L3.17578 16.709C2.42542 15.3057 2 13.7025 2 12C2.00002 6.47714 6.47717 1.99996 12 1.99996ZM19.5293 1.3193C19.7058 0.893513 20.2942 0.8935 20.4707 1.3193L20.7236 1.93063C21.1555 2.97343 21.9615 3.80614 22.9746 4.2568L23.6914 4.57614C24.1022 4.75882 24.1022 5.35635 23.6914 5.53903L22.9326 5.87692C21.945 6.3162 21.1534 7.11943 20.7139 8.1279L20.4668 8.69333C20.2863 9.10747 19.7136 9.10747 19.5332 8.69333L19.2861 8.1279C18.8466 7.11942 18.0551 6.3162 17.0674 5.87692L16.3076 5.53903C15.8974 5.35618 15.8974 4.75895 16.3076 4.57614L17.0254 4.2568C18.0384 3.80614 18.8445 2.97343 19.2764 1.93063L19.5293 1.3193Z" />
               </svg>
-              {t.common.askAI}
+              {t('common.askAI')}
             </button>
           </div>
           <button
@@ -1427,7 +1518,7 @@ export default function ProductScreen() {
               <polyline points="7 23 3 19 7 15" />
               <path d="M21 13v2a4 4 0 0 1-4 4H3" />
             </svg>
-            {t.compare?.btnLabel || 'Добавить к сравнению'}
+            {t('compare.btnLabel') || t('product.addToCompare')}
           </button>
         </div>
       </div>

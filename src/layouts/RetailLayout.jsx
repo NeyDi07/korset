@@ -2,7 +2,7 @@ import { Outlet, Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import RetailBottomNav from '../components/RetailBottomNav.jsx'
 import { buildAuthNavigateState } from '../utils/authFlow.js'
-import { useI18n } from '../utils/i18n.js'
+import { useI18n } from '../i18n/index.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 
 const spinnerStyle = {
@@ -83,7 +83,7 @@ export default function RetailLayout() {
         to="/auth"
         state={buildAuthNavigateState(location, {
           reason: 'retail_required',
-          message: t.retail.authRequiredSub,
+          message: t('retail.authRequiredSub'),
         })}
         replace
       />

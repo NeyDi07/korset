@@ -17,7 +17,6 @@ const AccountScreen = lazy(() => import('./screens/AccountScreen.jsx'))
 const CatalogScreen = lazy(() => import('./screens/CatalogScreen.jsx'))
 const ScanScreen = lazy(() => import('./screens/ScanScreen.jsx'))
 const ProductScreen = lazy(() => import('./screens/ProductScreen.jsx'))
-const ExternalProductScreen = lazy(() => import('./screens/ExternalProductScreen.jsx'))
 const AlternativesScreen = lazy(() => import('./screens/AlternativesScreen.jsx'))
 const AIScreen = lazy(() => import('./screens/AIScreen.jsx'))
 const AIAssistantScreen = lazy(() => import('./screens/AIAssistantScreen.jsx'))
@@ -31,6 +30,10 @@ const HistoryScreen = lazy(() => import('./screens/HistoryScreen.jsx'))
 const NotificationSettingsScreen = lazy(() => import('./screens/NotificationSettingsScreen.jsx'))
 const PrivacySettingsScreen = lazy(() => import('./screens/PrivacySettingsScreen.jsx'))
 const PrivacyPolicyScreen = lazy(() => import('./screens/PrivacyPolicyScreen.jsx'))
+const SoundSettingsScreen = lazy(() => import('./screens/SoundSettingsScreen.jsx'))
+const FaqScreen = lazy(() => import('./screens/FaqScreen.jsx'))
+const AboutScreen = lazy(() => import('./screens/AboutScreen.jsx'))
+const TermsScreen = lazy(() => import('./screens/TermsScreen.jsx'))
 const RetailLayout = lazy(() => import('./layouts/RetailLayout.jsx'))
 const RetailDashboardScreen = lazy(() => import('./screens/RetailDashboardScreen.jsx'))
 const RetailEntryScreen = lazy(() => import('./screens/RetailEntryScreen.jsx'))
@@ -106,8 +109,10 @@ function AppInner() {
           <Route path="/s/:storeSlug/account" element={<AccountScreen />} />
           <Route path="/s/:storeSlug/notifications" element={<NotificationSettingsScreen />} />
           <Route path="/s/:storeSlug/privacy" element={<PrivacySettingsScreen />} />
-          <Route path="/s/:storeSlug/product/ext/:ean" element={<ExternalProductScreen />} />
-          <Route path="/s/:storeSlug/product/ext/:ean/ai" element={<AIScreen />} />
+          <Route path="/s/:storeSlug/sound-settings" element={<SoundSettingsScreen />} />
+          <Route path="/s/:storeSlug/faq" element={<FaqScreen />} />
+          <Route path="/s/:storeSlug/about" element={<AboutScreen />} />
+          <Route path="/s/:storeSlug/terms" element={<TermsScreen />} />
           <Route path="/s/:storeSlug/product/:ean" element={<ProductScreen />} />
           <Route path="/s/:storeSlug/product/:ean/alternatives" element={<AlternativesScreen />} />
           <Route path="/s/:storeSlug/product/:ean/ai" element={<AIScreen />} />

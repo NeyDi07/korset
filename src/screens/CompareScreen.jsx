@@ -4,7 +4,7 @@ import { checkProductFit, formatPrice } from '../utils/fitCheck.js'
 import { getDisplayQuantity } from '../utils/parseQuantity.js'
 import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useStore } from '../contexts/StoreContext.jsx'
-import { useI18n } from '../utils/i18n.js'
+import { useI18n } from '../i18n/index.js'
 import { useLocalName } from '../utils/localName.js'
 import { getAnyKnownProductByRef } from '../utils/storeCatalog.js'
 import { buildProductAIPath } from '../utils/routes.js'
@@ -107,51 +107,58 @@ function buildRows(productA, productB, t) {
   }
 
   // Universal
-  push(t.compare.mfr, getMfrText)
-  push(t.compare.halal, (p) => {
+  push(t('compare.mfr'), getMfrText)
+  push(t('compare.halal'), (p) => {
     const s = p.halalStatus
-    if (s === 'yes') return t.compare.halalYes
-    if (s === 'no') return t.compare.halalNo
-    return p.halalStatus ? t.compare.halalUnk : null
+    if (s === 'yes') return t('compare.halalYes')
+    if (s === 'no') return t('compare.halalNo')
+    return p.halalStatus ? t('compare.halalUnk') : null
   })
-  push(t.compare.price, (p) => (p.priceKzt != null ? formatPrice(p.priceKzt) : null), 'price')
+  push(t('compare.price'), (p) => (p.priceKzt != null ? formatPrice(p.priceKzt) : null), 'price')
 
   // Food rows
   if (cat === 'grocery') {
-    push(t.compare.flavor, extractFlavor)
-    push(t.compare.allergens, (p) =>
-      p.allergens?.length ? p.allergens.join(', ') : t.product?.allergens ? null : null
+    push(t('compare.flavor'), extractFlavor)
+    push(t('compare.allergens'), (p) =>
+      p.allergens?.length ? p.allergens.join(', ') : t('product.allergens') ? null : null
     )
     push(
-      t.compare.protein,
-      (p) => (p.nutritionPer100?.protein != null ? `${p.nutritionPer100.protein} г` : null),
+      t('compare.protein'),
+      (p) =>
+        p.nutritionPer100?.protein != null
+          ? `${p.nutritionPer100.protein} ${t('product.unitG')}`
+          : null,
       'higher'
     )
     push(
-      t.compare.fat,
-      (p) => (p.nutritionPer100?.fat != null ? `${p.nutritionPer100.fat} г` : null),
+      t('compare.fat'),
+      (p) =>
+        p.nutritionPer100?.fat != null ? `${p.nutritionPer100.fat} ${t('product.unitG')}` : null,
       'lower'
     )
-    push(t.compare.carbs, (p) =>
-      p.nutritionPer100?.carbs != null ? `${p.nutritionPer100.carbs} г` : null
+    push(t('compare.carbs'), (p) =>
+      p.nutritionPer100?.carbs != null ? `${p.nutritionPer100.carbs} ${t('product.unitG')}` : null
     )
     push(
-      t.compare.kcal,
-      (p) => (p.nutritionPer100?.kcal != null ? `${p.nutritionPer100.kcal} ккал` : null),
+      t('compare.kcal'),
+      (p) =>
+        p.nutritionPer100?.kcal != null
+          ? `${p.nutritionPer100.kcal} ${t('product.unitKcal')}`
+          : null,
       'lower'
     )
-    push(t.compare.weight, (p) => getDisplayQuantity(p, lang))
-    push(t.compare.ingredients, (p) =>
+    push(t('compare.weight'), (p) => getDisplayQuantity(p, lang))
+    push(t('compare.ingredients'), (p) =>
       p.ingredients ? p.ingredients.slice(0, 80) + (p.ingredients.length > 80 ? '...' : '') : null
     )
-    push(t.compare.expiry, (p) => p.specs?.bestBefore || p.expiry || null)
+    push(t('compare.expiry'), (p) => p.specs?.bestBefore || p.expiry || null)
   }
 
   // Electronics
   if (cat === 'electronics') {
-    push(t.compare.battery, (p) => p.specs?.battery || null)
-    push(t.compare.protection, (p) => p.specs?.waterproof || null)
-    push(t.compare.anc, (p) => (p.specs?.anc != null ? String(p.specs.anc) : null))
+    push(t('compare.battery'), (p) => p.specs?.battery || null)
+    push(t('compare.protection'), (p) => p.specs?.waterproof || null)
+    push(t('compare.anc'), (p) => (p.specs?.anc != null ? String(p.specs.anc) : null))
     const seenKeys = new Set(['battery', 'waterproof', 'anc'])
     for (const p of [productA, productB]) {
       for (const [k] of Object.entries(p.specs || {})) {
@@ -165,9 +172,11 @@ function buildRows(productA, productB, t) {
 
   // DIY
   if (cat === 'diy') {
-    push(t.compare.coverage, (p) => p.specs?.coverage || null)
-    push(t.compare.dryTime, (p) => p.specs?.dryTime || null)
-    push(t.compare.moisture, (p) => (p.specs?.moisture != null ? String(p.specs.moisture) : null))
+    push(t('compare.coverage'), (p) => p.specs?.coverage || null)
+    push(t('compare.dryTime'), (p) => p.specs?.dryTime || null)
+    push(t('compare.moisture'), (p) =>
+      p.specs?.moisture != null ? String(p.specs.moisture) : null
+    )
   }
 
   return rows
@@ -284,8 +293,8 @@ export default function CompareScreen() {
         productB,
         profile,
         winner,
-        lang: t.langShort === 'Қаз' ? 'kz' : 'ru',
-        messages: [{ role: 'user', content: 'Объясни результат сравнения.' }],
+        lang: lang === 'kz' ? 'kz' : 'ru',
+        messages: [{ role: 'user', content: t('compare.aiExplainPrompt') }],
       }),
       signal: ctrl.signal,
     })
@@ -322,9 +331,9 @@ export default function CompareScreen() {
           >
             compare_arrows
           </span>
-          <p style={{ marginBottom: 16 }}>{t.common.notFound}</p>
+          <p style={{ marginBottom: 16 }}>{t('common.notFound')}</p>
           <button className="btn btn-secondary" onClick={() => navigate(-1)}>
-            {t.common.back}
+            {t('common.back')}
           </button>
         </div>
       </div>
@@ -396,7 +405,7 @@ export default function CompareScreen() {
             <span className="material-symbols-outlined" style={{ fontSize: 18, color: '#A78BFA' }}>
               compare_arrows
             </span>
-            {t.compare.title}
+            {t('compare.title')}
           </div>
           <div style={{ width: 36 }} />
         </div>
@@ -466,7 +475,7 @@ export default function CompareScreen() {
                 <span className="material-symbols-outlined" style={{ fontSize: 12 }}>
                   {fit.fits ? 'check_circle' : 'cancel'}
                 </span>
-                {fit.fits ? t.compare.fitBadge : t.compare.notFitBadge}
+                {fit.fits ? t('compare.fitBadge') : t('compare.notFitBadge')}
               </div>
             </div>
           ))}
@@ -690,7 +699,9 @@ export default function CompareScreen() {
                     color: winner === 'draw' ? '#94A3B8' : '#E9D5FF',
                   }}
                 >
-                  {winner === 'draw' ? t.compare.draw : `${winnerProduct.name} ${t.compare.better}`}
+                  {winner === 'draw'
+                    ? t('compare.draw')
+                    : `${winnerProduct.name} ${t('compare.better')}`}
                 </div>
               </div>
             </div>
@@ -720,7 +731,7 @@ export default function CompareScreen() {
                       }}
                     />
                     <span style={{ fontSize: 12, color: 'rgba(180,160,240,0.6)' }}>
-                      {t.compare.aiLoading}
+                      {t('compare.aiLoading')}
                     </span>
                   </div>
                 ) : (
@@ -763,7 +774,7 @@ export default function CompareScreen() {
               <span className="material-symbols-outlined" style={{ fontSize: 16 }}>
                 auto_awesome
               </span>
-              {t.compare.askMore}
+              {t('compare.askMore')}
             </button>
           </div>
         </div>

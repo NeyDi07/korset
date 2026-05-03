@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom'
-import { useI18n } from '../utils/i18n.js'
+import { useI18n } from '../i18n/index.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 import {
   buildAIHomePath,
@@ -31,7 +31,7 @@ export default function BottomNav() {
   const TABS = [
     {
       id: 'home',
-      label: t.nav.home,
+      label: t('nav.home'),
       path: storeSlug ? `/s/${storeSlug}` : '/',
       icon: (on) =>
         on ? (
@@ -46,7 +46,7 @@ export default function BottomNav() {
     },
     {
       id: 'catalog',
-      label: t.nav.catalog,
+      label: t('nav.catalog'),
       path: buildCatalogPath(storeSlug),
       icon: (on) =>
         on ? (
@@ -78,7 +78,7 @@ export default function BottomNav() {
     },
     {
       id: 'scan',
-      label: t.nav.scan,
+      label: t('nav.scan'),
       path: buildScanPath(storeSlug),
       isScan: true,
       icon: () => (
@@ -102,7 +102,7 @@ export default function BottomNav() {
     },
     {
       id: 'ai',
-      label: t.nav.ai,
+      label: t('nav.ai'),
       path: buildAIHomePath(storeSlug),
       icon: (on) =>
         on ? (
@@ -117,7 +117,7 @@ export default function BottomNav() {
     },
     {
       id: 'profile',
-      label: t.nav.profile,
+      label: t('nav.profile'),
       path: buildProfilePath(storeSlug),
       icon: (on) =>
         on ? (

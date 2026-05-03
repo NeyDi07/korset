@@ -1,0 +1,12 @@
+{
+  "history.authRequiredTitle": "Тарихты көру үшін кіріңіз",
+  "history.authRequiredDesc": "Сканерленген тауарлар мен таңдаулыларды көру үшін аккаунтқа кіріңіз",
+  "history.authNavigateMsg": "Тарих пен таңдаулыларды көру үшін аккаунтқа кіріңіз.",
+  "history.loginBtn": "Аккаунтқа кіру",
+  "history.title": "Менің тауарларым",
+  "history.tabHistory": "Тарих",
+  "history.tabFavorites": "Таңдаулы",
+  "history.loading": "Жүктелуде...",
+  "history.emptyHistory": "Сіз әлі ештеңе сканерлемедіңіз",
+  "history.emptyFavorites": "Сізде таңдаулы тауарлар жоқ"
+}

@@ -3,7 +3,7 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../utils/supabase.js'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import { useUserData } from '../contexts/UserDataContext.jsx'
-import { useI18n } from '../utils/i18n.js'
+import { useI18n } from '../i18n/index.js'
 import { getLocalName } from '../utils/localName.js'
 import { useLocalName } from '../utils/localName.js'
 import { useStore } from '../contexts/StoreContext.jsx'
@@ -39,7 +39,7 @@ function formatDate(value, lang) {
   const date = toDate(value)
   if (!date) return ''
   try {
-    return date.toLocaleDateString(lang === 'kz' ? 'kk-KZ' : 'ru-RU')
+    return date.toLocaleDateString(lang === 'kz' ? 'kk' : 'ru')
   } catch {
     return date.toLocaleDateString()
   }
@@ -69,7 +69,7 @@ export default function HistoryScreen() {
   const location = useLocation()
   const [searchParams, setSearchParams] = useSearchParams()
   const { user, internalUserId } = useAuth()
-  const { lang } = useI18n()
+  const { t, lang } = useI18n()
   const { currentStore } = useStore()
   const { toggleFavorite, favoriteEans } = useUserData()
 
@@ -289,7 +289,7 @@ export default function HistoryScreen() {
             marginBottom: 8,
           }}
         >
-          {lang === 'kz' ? 'Тарихты көру үшін кіріңіз' : 'Войдите, чтобы видеть историю'}
+          {t('history.authRequiredTitle')}
         </h2>
         <p
           style={{
@@ -300,19 +300,14 @@ export default function HistoryScreen() {
             fontFamily: 'var(--font-display)',
           }}
         >
-          {lang === 'kz'
-            ? 'Сканерленген тауарлар мен таңдаулыларды көру үшін аккаунтқа кіріңіз'
-            : 'Войдите, чтобы видеть отсканированные товары и избранное'}
+          {t('history.authRequiredDesc')}
         </p>
         <button
           onClick={() =>
             navigate('/auth', {
               state: buildAuthNavigateState(location, {
                 reason: 'history_required',
-                message:
-                  lang === 'kz'
-                    ? 'Тарих пен таңдаулыларды көру үшін аккаунтқа кіріңіз.'
-                    : 'Войдите, чтобы видеть историю и избранное.',
+                message: t('history.authNavigateMsg'),
               }),
             })
           }
@@ -328,7 +323,7 @@ export default function HistoryScreen() {
             cursor: 'pointer',
           }}
         >
-          {lang === 'kz' ? 'Аккаунтқа кіру' : 'Войти'}
+          {t('history.loginBtn')}
         </button>
       </div>
     )
@@ -384,7 +379,7 @@ export default function HistoryScreen() {
               color: 'var(--text)',
             }}
           >
-            {lang === 'kz' ? 'Менің тауарларым' : 'Мои товары'}
+            {t('history.title')}
           </div>
         </div>
 
@@ -430,7 +425,7 @@ export default function HistoryScreen() {
               <circle cx="12" cy="12" r="10" />
               <polyline points="12 6 12 12 16 14" />
             </svg>
-            {lang === 'kz' ? 'Тарих' : 'История'}
+            {t('history.tabHistory')}
             {history.length > 0 && (
               <span
                 style={{
@@ -470,7 +465,7 @@ export default function HistoryScreen() {
               size={14}
               color={tab === 'favorites' ? 'currentColor' : 'currentColor'}
             />
-            {lang === 'kz' ? 'Таңдаулы' : 'Избранные'}
+            {t('history.tabFavorites')}
             {favorites.length > 0 && (
               <span
                 style={{
@@ -509,7 +504,7 @@ export default function HistoryScreen() {
                 margin: '0 auto 12px',
               }}
             />
-            {lang === 'kz' ? 'Жүктелуде...' : 'Загрузка...'}
+            {t('history.loading')}
             <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
           </div>
         ) : list.length === 0 ? (
@@ -550,13 +545,7 @@ export default function HistoryScreen() {
                 color: 'var(--text-disabled)',
               }}
             >
-              {tab === 'history'
-                ? lang === 'kz'
-                  ? 'Сіз әлі ештеңе сканерлемедіңіз'
-                  : 'Вы ещё ничего не сканировали'
-                : lang === 'kz'
-                  ? 'Сізде таңдаулы тауарлар жоқ'
-                  : 'У вас пока нет избранных'}
+              {tab === 'history' ? t('history.emptyHistory') : t('history.emptyFavorites')}
             </p>
           </div>
         ) : (

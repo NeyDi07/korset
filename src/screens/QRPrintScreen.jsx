@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import QRCode from 'react-qr-code'
-import { useI18n } from '../utils/i18n.js'
+import { useI18n } from '../i18n/index.js'
 import { useLocalName, getLocalName } from '../utils/localName.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { getStoreCatalogProducts } from '../utils/storeCatalog.js'
@@ -10,8 +10,14 @@ import { formatPrice } from '../utils/formatPrice.js'
 
 export default function QRPrintScreen() {
   const navigate = useNavigate()
-  const { t } = useI18n()
+  const { t, exists } = useI18n()
   const { currentStore } = useStore()
+  const howSteps = []
+  let hi = 0
+  while (exists(`qr.howSteps.${hi}`)) {
+    howSteps.push(t(`qr.howSteps.${hi}`))
+    hi++
+  }
 
   const products = useMemo(
     () => getStoreCatalogProducts(currentStore?.slug || 'store-one'),
@@ -38,9 +44,9 @@ export default function QRPrintScreen() {
             marginBottom: 14,
           }}
         >
-          {t.qr.back}
+          {t('qr.back')}
         </button>
-        <div className="screen-title">{t.qr.title}</div>
+        <div className="screen-title">{t('qr.title')}</div>
 
         <div
           style={{
@@ -61,9 +67,9 @@ export default function QRPrintScreen() {
               marginBottom: 8,
             }}
           >
-            {currentStore?.name || 'Магазин 1'}
+            {currentStore?.name || t('common.storeDefault')}
           </div>
-          {t.qr.howSteps.map((step, i) => (
+          {howSteps.map((step, i) => (
             <div key={i} style={{ fontSize: 13, color: 'var(--text-sub)' }}>
               {step}
             </div>
@@ -75,7 +81,7 @@ export default function QRPrintScreen() {
           className="btn btn-primary btn-full"
           style={{ marginTop: 14 }}
         >
-          🖨️ {t.qr.printAll} {products.length} {t.qr.qrCodes}
+          🖨️ {t('qr.printAll')} {products.length} {t('qr.qrCodes')}
         </button>
       </div>
 
@@ -135,7 +141,7 @@ export default function QRPrintScreen() {
                   <div
                     style={{ fontSize: 10, color: 'var(--text-dim)', marginTop: 3, opacity: 0.5 }}
                   >
-                    {product.shelf || 'Полка уточняется'}
+                    {product.shelf || t('common.shelfDefault')}
                   </div>
                 </div>
               </div>

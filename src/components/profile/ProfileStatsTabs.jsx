@@ -51,7 +51,7 @@ export default function ProfileStatsTabs({
       id: 'favorites',
       tone: 'favorites',
       value: favoritesCount,
-      label: t.profile.favorites,
+      label: t('profile.favorites'),
       iconBg: 'rgba(220,38,38,0.18)',
       iconBorder: 'rgba(248,113,113,0.55)',
       iconShadow: '0 4px 22px rgba(220,38,38,0.32)',
@@ -61,7 +61,7 @@ export default function ProfileStatsTabs({
       id: 'preferences',
       tone: 'preferences',
       value: preferencesCount,
-      label: t.profile.preferencesTitle,
+      label: t('profile.preferencesTitle'),
       iconBg: 'rgba(124,58,237,0.18)',
       iconBorder: 'rgba(167,139,250,0.55)',
       iconShadow: '0 4px 22px rgba(124,58,237,0.36)',
@@ -91,7 +91,7 @@ export default function ProfileStatsTabs({
       id: 'history',
       tone: 'history',
       value: scanCount,
-      label: t.profile.scans,
+      label: t('profile.scans'),
       iconBg: 'rgba(16,185,129,0.18)',
       iconBorder: 'rgba(52,211,153,0.55)',
       iconShadow: '0 4px 22px rgba(16,185,129,0.32)',
@@ -121,7 +121,7 @@ export default function ProfileStatsTabs({
 
     if (activeTab === 'favorites') {
       if (loadingTab === 'favorites' && topFavorites === null) {
-        return <TabSpinner text={t.profile.favoritesLoading || t.common.loading} />
+        return <TabSpinner text={t('profile.favoritesLoading') || t('common.loading')} />
       }
       if (topFavorites && topFavorites.length > 0) {
         return (
@@ -133,7 +133,7 @@ export default function ProfileStatsTabs({
             </div>
             {favoritesCount > topFavorites.length && (
               <button type="button" className="stats-tabs__view-all" onClick={onViewAllFavorites}>
-                {t.profile.viewAll}
+                {t('profile.viewAll')}
                 <ChevronRightIcon />
               </button>
             )}
@@ -143,8 +143,8 @@ export default function ProfileStatsTabs({
       return (
         <TabEmptyState
           tone="favorites"
-          title={isGuest ? t.profile.favoritesEmptyGuest : t.profile.favoritesEmpty}
-          hint={isGuest ? t.profile.favoritesEmptyGuestHint : t.profile.favoritesEmptyHint}
+          title={isGuest ? t('profile.favoritesEmptyGuest') : t('profile.favoritesEmpty')}
+          hint={isGuest ? t('profile.favoritesEmptyGuestHint') : t('profile.favoritesEmptyHint')}
           onClick={isGuest ? onAuthPrompt : undefined}
         />
       )
@@ -152,7 +152,7 @@ export default function ProfileStatsTabs({
 
     if (activeTab === 'history') {
       if (loadingTab === 'history' && topHistory === null) {
-        return <TabSpinner text={t.profile.historyLoading || t.common.loading} />
+        return <TabSpinner text={t('profile.historyLoading') || t('common.loading')} />
       }
       if (topHistory && topHistory.length > 0) {
         return (
@@ -164,7 +164,7 @@ export default function ProfileStatsTabs({
             </div>
             {scanCount > topHistory.length && (
               <button type="button" className="stats-tabs__view-all" onClick={onViewAllHistory}>
-                {t.profile.viewAll}
+                {t('profile.viewAll')}
                 <ChevronRightIcon />
               </button>
             )}
@@ -174,8 +174,8 @@ export default function ProfileStatsTabs({
       return (
         <TabEmptyState
           tone="history"
-          title={isGuest ? t.profile.historyEmptyGuest : t.profile.historyEmpty}
-          hint={isGuest ? t.profile.historyEmptyGuestHint : t.profile.historyEmptyHint}
+          title={isGuest ? t('profile.historyEmptyGuest') : t('profile.historyEmpty')}
+          hint={isGuest ? t('profile.historyEmptyGuestHint') : t('profile.historyEmptyHint')}
           onClick={isGuest ? onAuthPrompt : undefined}
         />
       )

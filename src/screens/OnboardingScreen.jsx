@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { loadProfile, saveProfile } from '../utils/profile.js'
 import { useStore } from '../contexts/StoreContext.jsx'
-import { setLang, useI18n } from '../utils/i18n.js'
+import { setLang, useI18n } from '../i18n/index.js'
 
 const FEATURE_ROWS = [
   ['scan', 'fit', 'halal'],
@@ -817,7 +817,19 @@ export default function OnboardingScreen({ onDone }) {
   const [customItems, setCustomItems] = useState(profile.customAllergens || [])
   const [customInput, setCustomInput] = useState('')
 
-  const featureLabels = t.onboarding.features || {}
+  const featureLabels = useMemo(
+    () => ({
+      scan: t('onboarding.features.scan'),
+      fit: t('onboarding.features.fit'),
+      halal: t('onboarding.features.halal'),
+      allergens: t('onboarding.features.allergens'),
+      ai: t('onboarding.features.ai'),
+      alternatives: t('onboarding.features.alternatives'),
+      facts: t('onboarding.features.facts'),
+      history: t('onboarding.features.history'),
+    }),
+    [t]
+  )
 
   function toggle(setter, value) {
     setter((prev) => {
@@ -872,11 +884,13 @@ export default function OnboardingScreen({ onDone }) {
     }, 260)
   }
 
-  const stepTitle = [t.onboarding.step1Title, t.onboarding.step2Title, t.onboarding.step3Title][
-    step
-  ]
+  const stepTitle = [
+    t('onboarding.step1Title'),
+    t('onboarding.step2Title'),
+    t('onboarding.step3Title'),
+  ][step]
 
-  const stepSub = ['', t.onboarding.step2Sub, t.onboarding.step3Sub][step]
+  const stepSub = ['', t('onboarding.step2Sub'), t('onboarding.step3Sub')][step]
 
   return (
     <div
@@ -930,7 +944,7 @@ export default function OnboardingScreen({ onDone }) {
                   lineHeight: 1,
                 }}
               >
-                {t.onboarding.langTitle}
+                {t('onboarding.langTitle')}
               </span>
               <button
                 onClick={() => setLang('ru')}
@@ -1040,7 +1054,7 @@ export default function OnboardingScreen({ onDone }) {
                   textAlign: 'center',
                 }}
               >
-                {t.onboarding.featuresTitle}
+                {t('onboarding.featuresTitle')}
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 10 }}>
                 {FEATURE_ROWS.flat().map((key, idx) =>
@@ -1105,14 +1119,14 @@ export default function OnboardingScreen({ onDone }) {
                 }}
               >
                 <div style={{ fontSize: 12, color: 'rgba(185,185,214,0.74)', marginBottom: 8 }}>
-                  {lang === 'kz' ? 'Өз шектеуіңізді қосыңыз' : 'Добавьте своё исключение'}
+                  {t('onboarding.customExclusion')}
                 </div>
                 <div style={{ display: 'flex', gap: 8 }}>
                   <input
                     value={customInput}
                     onChange={(e) => setCustomInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && addCustom()}
-                    placeholder={t.onboarding.customPlaceholder}
+                    placeholder={t('onboarding.customPlaceholder')}
                     style={{
                       flex: 1,
                       background: 'rgba(255,255,255,0.06)',
@@ -1136,7 +1150,7 @@ export default function OnboardingScreen({ onDone }) {
                       cursor: 'pointer',
                     }}
                   >
-                    {t.onboarding.add}
+                    {t('onboarding.add')}
                   </button>
                 </div>
                 {customItems.length > 0 && (
@@ -1184,7 +1198,7 @@ export default function OnboardingScreen({ onDone }) {
               fontWeight: 500,
             }}
           >
-            <span style={{ color: '#FCD34D' }}>⚠️</span> {t.onboarding.aiDisclaimer}
+            <span style={{ color: '#FCD34D' }}>⚠️</span> {t('onboarding.aiDisclaimer')}
           </div>
         )}
 
@@ -1205,7 +1219,7 @@ export default function OnboardingScreen({ onDone }) {
                 cursor: 'pointer',
               }}
             >
-              {t.onboarding.back}
+              {t('onboarding.back')}
             </button>
           )}
           <button
@@ -1224,7 +1238,7 @@ export default function OnboardingScreen({ onDone }) {
               cursor: 'pointer',
             }}
           >
-            {step === 2 ? t.onboarding.finish : t.onboarding.next}
+            {step === 2 ? t('onboarding.finish') : t('onboarding.next')}
           </button>
         </div>
       </div>

@@ -1,0 +1,20 @@
+{
+  "profileSetup.setupTitle": "Завершите профиль",
+  "profileSetup.setupSubtitle": "Укажите имя и выберите аватар",
+  "profileSetup.editTitle": "Редактировать профиль",
+  "profileSetup.nameLabel": "Имя или псевдоним",
+  "profileSetup.namePlaceholder": "Введите имя",
+  "profileSetup.avatarTitle": "Аватар",
+  "profileSetup.avatarSubtitle": "Загрузите фото или выберите готовый вариант",
+  "profileSetup.save": "Сохранить",
+  "profileSetup.continue": "Продолжить",
+  "profileSetup.finish": "Готово",
+  "profileSetup.gallery": "Галерея",
+  "profileSetup.invalid": "Только буквы, цифры и пробелы",
+  "profileSetup.minName": "Имя должно быть минимум из 3 букв",
+  "profileSetup.stepOf": "ШАГ {step} ИЗ {stepCount}",
+  "profileSetup.chooseAvatar": "Выберите аватар",
+  "profile.lightTheme": "Светлая тема",
+  "profile.darkTheme": "Тёмная тема",
+  "profile.retailManage": "Управление магазином (Beta)"
+}

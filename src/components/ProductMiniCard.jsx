@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../contexts/StoreContext.jsx'
-import { useI18n } from '../utils/i18n.js'
+import { useI18n } from '../i18n/index.js'
 import { useLocalName } from '../utils/localName.js'
 import { buildProductPath } from '../utils/routes.js'
 import { getDisplayQuantity } from '../utils/parseQuantity.js'

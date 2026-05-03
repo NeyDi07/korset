@@ -77,3 +77,19 @@ export function buildNotificationSettingsPath(storeSlug = null) {
 export function buildComparePath(storeSlug = null, ean1, ean2) {
   return `${buildProductPath(storeSlug, ean1)}/compare/${ean2}`
 }
+
+export function buildSoundSettingsPath(storeSlug = null) {
+  return storeSlug ? `${buildStoreAppBase(storeSlug)}/sound-settings` : '/sound-settings'
+}
+
+export function buildFaqPath(storeSlug = null) {
+  return storeSlug ? `${buildStoreAppBase(storeSlug)}/faq` : '/faq'
+}
+
+export function buildAboutPath(storeSlug = null) {
+  return storeSlug ? `${buildStoreAppBase(storeSlug)}/about` : '/about'
+}
+
+export function buildTermsPath(storeSlug = null) {
+  return storeSlug ? `${buildStoreAppBase(storeSlug)}/terms` : '/terms'
+}

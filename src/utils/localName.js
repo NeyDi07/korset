@@ -1,4 +1,4 @@
-import { useLang, getLang } from './i18n.js'
+import { useLang, getLang } from '../i18n/index.js'
 
 export function getLocalName(product) {
   if (!product) return ''

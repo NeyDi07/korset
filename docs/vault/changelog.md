@@ -294,3 +294,58 @@
 - Массовый glassmorphism снят с обычных информационных карточек: базовые блоки теперь solid/surface с 8px radius, а glass оставлен как намеренный визуальный слой для hero-мокапа, floating chips и retail dashboard.
 - Визуальный Stage 1 проверен на desktop dark, mobile dark, desktop light и первом scroll-блоке. Проверки: `npm test -- tests/e2e/landing.spec.js` 4 passed; `npm run build` passed; `npm run lint` 0 errors, 56 existing warnings.
 - Следующие дизайн-этапы: отдельно перепроектировать B2C sections (`у полки`, Fit-Check, возможности) и затем B2B/pricing/footer, не смешивая всё в один заход.
+
+# 2026-05-03 — i18n unit tests + check-i18n.mjs script
+
+- Создан `scripts/check-i18n.mjs` — аудит 14 namespace × 2 языка: missing KZ keys, orphan keys, empty values, identical RU=KZ (possibly untranslated). Exit code 1 если KZ ключи отсутствуют.
+- Результат первой проверки: 14 namespace, 0 missing KZ, 0 orphan, 0 empty, 106 identical RU=KZ (бренды, иконки, единицы измерения — нормально).
+- Созданы 4 unit-тест файла (`tests/unit/i18n/`): plural (20), interpolate (13), format (16), resolve (15) = 64 теста. Все проходят.
+- Поправлен `src/i18n/resolve.js` — `import.meta.env.DEV` → `import.meta.env?.DEV` (optional chaining для совместимости с Node.js без Vite). Не влияет на production (Vite всегда предоставляет `import.meta.env`).
+- KZ plural rules: `Intl.PluralRules('kk')` имеет только `one`/`other` (в отличие от ru: one/few/many/other). Тесты отражают это.
+
+# 2026-05-03 — i18n `exists` API fix + LandingScreen crash fix + lint 0 errors
+
+- **Критический баг:** `t.exists = useCallback(...)` — lint error `This value cannot be modified` (useCallback возвращает замороженную функцию, нельзя присвоить свойство)
+- **Решение:** `exists` вынесен как отдельный return из `useI18n()`: `return { t, exists, lang, format }`
+- **4 файла обновлены:** AIAssistantScreen, QRPrintScreen, LandingScreen (16 вызовов), HomeScreen
+- **LandingScreen crash:** `collectObjArr(t, \`...\`, ['label', 'href'])` — пропущен `exists` аргумент → fields[0] на undefined → TypeError. Исправлено на `collectObjArr(t, exists, \`...\`, ['label', 'href'])`
+- **main.jsx:31** — empty catch block → добавлен комментарий `/* invalid URL — ignore */` для no-empty lint
+- **Итог:** lint 0 errors (было 2), e2e landing 4/4 pass, unit 64/64 pass, build OK
+
+# 2026-05-03 — i18n финальная полировка: хардкод-остатки + markdownToHtml rewrite
+
+- **markdownToHtml** переписан: line-by-line парсер вместо regex — чистый HTML без мусорных `<br>` и `<p>` обёрток вокруг `<h3>/<ul>`
+- **aria-label хардкод → t():** SyncResolveModal, SupportBottomSheet (2), FaqScreen — все через `t('common.close')`, `t('common.back')`, `t('common.feedback')`
+- **UnifiedProductScreen** `'Да'` → `t('common.yes')`
+- **ProfileScreen** `ariaLabel: 'Русский'` → `t('common.langRu')`
+- Новые ключи RU+KZ: `common.yes`, `common.close`, `common.feedback`, `common.langRu`, `common.langKzAria`
+- Удалён устаревший `scripts/extract-locales.mjs` (ссылался на удалённый `src/utils/i18n.js`)
+- **0 aria-label хардкода**, **0 `isKz ? 'Қаз' : 'Рус'`**, lint 0 errors, e2e 4/4, unit 64/64
+
+# 2026-05-03 — i18n шаги 12-14: финальная полировка
+
+- **Шаг 12 (хардкод → t()):**
+  - RetailSettingsScreen: 40 `isKz ? 'Қаз' : 'Рус'` → `t('retail.settings.*')` (38 новых ключей RU+KZ)
+  - StorePublicScreen: 8 `isKz ? 'Қаз' : 'Рус'` → `t('home.store*')` (12 новых ключей RU+KZ)
+  - Мелочь: UnifiedProductScreen (2), SetupProfileScreen (1), QRPrintScreen (2), RetailProductsScreen (1), ProfileScreen (3), AccountScreen (2) → все через t()
+  - Итого: 0 `isKz ? 'Қаз' : 'Рус'` паттернов осталось в экранах (13 `lang === 'kz'` — корректные data-driven/CSS)
+  - check-i18n: 0 missing, 0 orphan, 0 empty, 109 identical (бренды/иконки/единицы)
+
+- **Шаг 13 (Dev-mode visual warnings):**
+  - `resolve.js`: при missing key в обоих языках → `⚠key` в DEV-режиме (визуальная пометка)
+  - Production: key path как и раньше (без ⚠)
+
+- **Шаг 14 (PrivacyPolicyScreen):**
+  - 200+ строк хардкода kzText/ruText → markdown файлы `src/legal/privacy-{ru,kz}.md`
+  - `markdownToHtml()` — минимальный markdown→HTML конвертер
+  - Vite `?raw` import для bundling markdown как строки
+  - `{date}` placeholder для динамической даты обновления
+  - 0 хардкод-текста в JSX
+
+- **Все 17 шагов i18n миграции ЗАВЕРШЕНЫ**
+
+# 2026-05-03 — AI best-fit analysis for Körset
+
+- Проведена короткая ревизия проектного контекста и актуальных приоритетов, чтобы зафиксировать лучший тип задач для Codex в проекте.
+- Вывод: максимальная ценность Codex — сложные системные улучшения с end-to-end мышлением: Data Moat, data pipelines, DB/RLS hardening, декомпозиция монолитов, особенно `ProductScreen`.
+- Если нужна быстрая бизнес-отдача от следующих сессий: давать Codex задачи, где нужно одновременно понять продукт, код, данные, побочные эффекты и проверку.

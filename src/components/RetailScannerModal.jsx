@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { loadSoundSettings } from '../utils/soundSettings.js'
 
 // ── Web Audio beep ─────────────────────────────────────────────────
 let _audioCtx = null
 function playBeep() {
+  if (!loadSoundSettings().sound) return
   try {
     if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)()
     const ctx = _audioCtx
@@ -92,7 +94,9 @@ export default function RetailScannerModal({ onScan, onClose }) {
             busyRef.current = true
             playBeep()
             try {
-              navigator.vibrate?.(60)
+              if (loadSoundSettings().vibration) {
+                navigator.vibrate?.(60)
+              }
             } catch {
               /* noop */
             }

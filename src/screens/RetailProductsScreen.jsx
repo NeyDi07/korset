@@ -2,7 +2,7 @@ import { useState, useMemo, useRef, useCallback, useEffect, memo } from 'react'
 import { createPortal } from 'react-dom'
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Virtuoso } from 'react-virtuoso'
-import { useI18n } from '../utils/i18n.js'
+import { useI18n } from '../i18n/index.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { getImageUrl } from '../utils/imageUrl.js'
 import { formatPrice } from '../utils/formatPrice.js'
@@ -369,7 +369,7 @@ function ShelfField({ productId, initialShelf, p, shelfMutation }) {
         value={draft}
         onChange={(e) => setDraft(e.target.value)}
         onBlur={handleBlur}
-        placeholder="Например: Стеллаж 4, Полка 2"
+        placeholder={t('common.shelfPlaceholder')}
         style={{
           width: '100%',
           fontSize: 15,
@@ -1154,7 +1154,41 @@ export default function RetailProductsScreen() {
   const { t } = useI18n()
   const { storeId, currentStore } = useStore()
   const queryClient = useQueryClient()
-  const p = t.retail.products
+  const p = useMemo(
+    () => ({
+      searchPlaceholder: t('retail.products.searchPlaceholder'),
+      viewList: t('retail.products.viewList'),
+      viewGrid: t('retail.products.viewGrid'),
+      countLabel: (n) => t('retail.products.countLabel', { count: n }),
+      scanFound: t('retail.products.scanFound'),
+      scanNotFound: t('retail.products.scanNotFound'),
+      allLoaded: (n) => t('retail.products.allLoaded', { count: n }),
+      notFound: t('retail.products.notFound'),
+      emptyCatalog: t('retail.products.emptyCatalog'),
+      notFoundSub: t('retail.products.notFoundSub'),
+      loadError: t('retail.products.loadError'),
+      retry: t('retail.products.retry'),
+      noPrice: t('retail.products.noPrice'),
+      stockLabel: t('retail.products.stockLabel'),
+      deleteProduct: t('retail.products.deleteProduct'),
+      saving: t('retail.products.saving'),
+      saved: t('retail.products.saved'),
+      saveError: t('retail.products.saveError'),
+      priceLabel: t('retail.products.priceLabel'),
+      shelfLabel: t('retail.products.shelfLabel'),
+      inStock: t('retail.products.inStock'),
+      lowStock: t('retail.products.lowStock'),
+      outOfStock: t('retail.products.outOfStock'),
+      brandLabel: t('retail.products.brandLabel'),
+      categoryLabel: t('retail.products.categoryLabel'),
+      quantityLabel: t('retail.products.quantityLabel'),
+      openCard: t('retail.products.openCard'),
+      deleteHint: t('retail.products.deleteHint'),
+      deleteCancel: t('retail.products.deleteCancel'),
+      deleteConfirm: t('retail.products.deleteConfirm'),
+    }),
+    [t]
+  )
   const navigate = useNavigate()
   const storeSlug = currentStore?.slug ?? null
 
@@ -1375,7 +1409,7 @@ export default function RetailProductsScreen() {
           <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
             upload_file
           </span>
-          {t.retail.nav.import}
+          {t('retail.nav.import')}
         </button>
       )}
     </div>

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useAuth } from '../contexts/AuthContext.jsx'
-import { useI18n } from '../utils/i18n.js'
+import { useI18n } from '../i18n/index.js'
 import {
   browserNotificationStatus,
   DEFAULT_NOTIFICATION_SETTINGS,
@@ -11,6 +11,7 @@ import {
   saveNotificationSettings,
   urlBase64ToUint8Array,
 } from '../utils/notificationSettings.js'
+import Toggle from '../components/Toggle.jsx'
 
 function Section({ title, children }) {
   return (
@@ -78,42 +79,6 @@ function Row({ label, description, right, danger = false, onClick }) {
   )
 }
 
-function Toggle({ checked, onChange, disabled = false }) {
-  return (
-    <button
-      type="button"
-      disabled={disabled}
-      onClick={(e) => {
-        e.stopPropagation()
-        if (!disabled) onChange(!checked)
-      }}
-      style={{
-        width: 50,
-        height: 30,
-        borderRadius: 999,
-        border: '1px solid var(--glass-soft-border)',
-        background: checked ? 'linear-gradient(135deg,#7C3AED,#EC4899)' : 'var(--glass-bg)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: checked ? 'flex-end' : 'flex-start',
-        padding: 3,
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        opacity: disabled ? 0.5 : 1,
-      }}
-    >
-      <span
-        style={{
-          width: 22,
-          height: 22,
-          borderRadius: '50%',
-          background: '#fff',
-          boxShadow: checked ? '0 0 20px rgba(168,85,247,0.35)' : 'none',
-        }}
-      />
-    </button>
-  )
-}
-
 export default function NotificationSettingsScreen() {
   const navigate = useNavigate()
   const { storeSlug } = useParams()
@@ -143,10 +108,10 @@ export default function NotificationSettingsScreen() {
   }, [profile])
 
   const permissionLabel = useMemo(() => {
-    if (settings.status === 'granted') return t.notification.permissionGranted
-    if (settings.status === 'denied') return t.notification.permissionDenied
-    if (settings.status === 'unsupported') return t.notification.permissionUnsupported
-    return t.notification.permissionNotRequested
+    if (settings.status === 'granted') return t('notification.permissionGranted')
+    if (settings.status === 'denied') return t('notification.permissionDenied')
+    if (settings.status === 'unsupported') return t('notification.permissionUnsupported')
+    return t('notification.permissionNotRequested')
   }, [settings.status, t])
 
   async function persist(next) {
@@ -162,7 +127,7 @@ export default function NotificationSettingsScreen() {
 
   async function requestPermission() {
     if (!settings.pushSupported) {
-      setStatusText(t.notification.pushUnsupported)
+      setStatusText(t('notification.pushUnsupported'))
       return
     }
     try {
@@ -176,13 +141,13 @@ export default function NotificationSettingsScreen() {
       }
       await persist(next)
       setStatusText(
-        result === 'granted' ? t.notification.accessGranted : t.notification.accessNotGranted
+        result === 'granted' ? t('notification.accessGranted') : t('notification.accessNotGranted')
       )
       if (result === 'granted') {
         await subscribeDevice(next)
       }
     } catch (err) {
-      setStatusText(t.notification.requestFailed)
+      setStatusText(t('notification.requestFailed'))
       console.error(err)
     } finally {
       setBusy(false)
@@ -194,7 +159,7 @@ export default function NotificationSettingsScreen() {
       setBusy(true)
       const vapidPublicKey = import.meta.env.VITE_VAPID_PUBLIC_KEY
       if (!vapidPublicKey) {
-        setStatusText(t.notification.vapidNotSet)
+        setStatusText(t('notification.vapidNotSet'))
         return
       }
 
@@ -235,10 +200,10 @@ export default function NotificationSettingsScreen() {
 
       const next = { ...baseSettings, enabled: true, status: 'granted', subscriptionActive: true }
       await persist(next)
-      setStatusText(t.notification.deviceSubscribed)
+      setStatusText(t('notification.deviceSubscribed'))
     } catch (err) {
       console.error(err)
-      setStatusText(t.notification.subscribeFailed)
+      setStatusText(t('notification.subscribeFailed'))
     } finally {
       setBusy(false)
     }
@@ -263,10 +228,10 @@ export default function NotificationSettingsScreen() {
       }
       const next = { ...settings, enabled: false, subscriptionActive: false }
       await persist(next)
-      setStatusText(t.notification.unsubscribed)
+      setStatusText(t('notification.unsubscribed'))
     } catch (err) {
       console.error(err)
-      setStatusText(t.notification.unsubscribeFailed)
+      setStatusText(t('notification.unsubscribeFailed'))
     } finally {
       setBusy(false)
     }
@@ -282,10 +247,10 @@ export default function NotificationSettingsScreen() {
       })
       const data = await res.json().catch(() => ({}))
       if (!res.ok) throw new Error(data.error || 'send_test_failed')
-      setStatusText(t.notification.testSent)
+      setStatusText(t('notification.testSent'))
     } catch (err) {
       console.error(err)
-      setStatusText(t.notification.testFailed)
+      setStatusText(t('notification.testFailed'))
     } finally {
       setBusy(false)
     }
@@ -310,7 +275,7 @@ export default function NotificationSettingsScreen() {
       >
         <button
           onClick={() => navigate(-1)}
-          aria-label={t.common.back}
+          aria-label={t('common.back')}
           style={{
             width: 44,
             height: 44,
@@ -345,7 +310,7 @@ export default function NotificationSettingsScreen() {
             color: 'var(--text)',
           }}
         >
-          {t.notification.title}
+          {t('notification.title')}
         </div>
         <div style={{ width: 44 }} />
       </div>
@@ -360,15 +325,15 @@ export default function NotificationSettingsScreen() {
               color: 'var(--text-soft)',
             }}
           >
-            {t.notification.intro}
+            {t('notification.intro')}
           </div>
         </div>
       </div>
 
-      <Section title={t.notification.sectionStatus}>
+      <Section title={t('notification.sectionStatus')}>
         <Row
-          label={t.notification.pushNotifications}
-          description={`${t.notification.accessLabel} ${permissionLabel}`}
+          label={t('notification.pushNotifications')}
+          description={`${t('notification.accessLabel')} ${permissionLabel}`}
           right={
             <Toggle
               checked={settings.enabled}
@@ -379,11 +344,11 @@ export default function NotificationSettingsScreen() {
         />
         <div style={{ height: 1, background: 'var(--line-soft)', margin: '0 18px' }} />
         <Row
-          label={t.notification.deviceSubscription}
+          label={t('notification.deviceSubscription')}
           description={
             settings.subscriptionActive
-              ? t.notification.subscribedReady
-              : t.notification.subscriptionNotCreated
+              ? t('notification.subscribedReady')
+              : t('notification.subscriptionNotCreated')
           }
           right={
             <span
@@ -393,7 +358,7 @@ export default function NotificationSettingsScreen() {
                 color: settings.subscriptionActive ? '#059669' : 'var(--text-faint)',
               }}
             >
-              {settings.subscriptionActive ? t.notification.active : t.notification.no}
+              {settings.subscriptionActive ? t('notification.active') : t('notification.no')}
             </span>
           }
         />
@@ -414,10 +379,10 @@ export default function NotificationSettingsScreen() {
         ) : null}
       </Section>
 
-      <Section title={t.notification.sectionTypes}>
+      <Section title={t('notification.sectionTypes')}>
         <Row
-          label={t.notification.system}
-          description={t.notification.systemDesc}
+          label={t('notification.system')}
+          description={t('notification.systemDesc')}
           right={
             <Toggle
               checked={settings.system}
@@ -427,8 +392,8 @@ export default function NotificationSettingsScreen() {
         />
         <div style={{ height: 1, background: 'var(--line-soft)', margin: '0 18px' }} />
         <Row
-          label={t.notification.favorites}
-          description={t.notification.favoritesDesc}
+          label={t('notification.favorites')}
+          description={t('notification.favoritesDesc')}
           right={
             <Toggle
               checked={settings.favorites}
@@ -438,8 +403,8 @@ export default function NotificationSettingsScreen() {
         />
         <div style={{ height: 1, background: 'var(--line-soft)', margin: '0 18px' }} />
         <Row
-          label={t.notification.restock}
-          description={t.notification.restockDesc}
+          label={t('notification.restock')}
+          description={t('notification.restockDesc')}
           right={
             <Toggle
               checked={settings.restock}
@@ -449,8 +414,8 @@ export default function NotificationSettingsScreen() {
         />
         <div style={{ height: 1, background: 'var(--line-soft)', margin: '0 18px' }} />
         <Row
-          label={t.notification.promo}
-          description={t.notification.promoDesc}
+          label={t('notification.promo')}
+          description={t('notification.promoDesc')}
           right={
             <Toggle
               checked={settings.promo}
@@ -460,8 +425,8 @@ export default function NotificationSettingsScreen() {
         />
         <div style={{ height: 1, background: 'var(--line-soft)', margin: '0 18px' }} />
         <Row
-          label={t.notification.weekly}
-          description={t.notification.weeklyDesc}
+          label={t('notification.weekly')}
+          description={t('notification.weeklyDesc')}
           right={
             <Toggle
               checked={settings.weekly}
@@ -471,10 +436,10 @@ export default function NotificationSettingsScreen() {
         />
       </Section>
 
-      <Section title={t.notification.sectionQuiet}>
+      <Section title={t('notification.sectionQuiet')}>
         <Row
-          label={t.notification.enableQuiet}
-          description={t.notification.quietDesc}
+          label={t('notification.enableQuiet')}
+          description={t('notification.quietDesc')}
           right={
             <Toggle
               checked={settings.quietHoursEnabled}
@@ -495,7 +460,7 @@ export default function NotificationSettingsScreen() {
               color: 'var(--text-faint)',
             }}
           >
-            {t.notification.from}
+            {t('notification.from')}
             <input
               type="time"
               value={settings.quietFrom}
@@ -521,7 +486,7 @@ export default function NotificationSettingsScreen() {
               color: 'var(--text-faint)',
             }}
           >
-            {t.notification.to}
+            {t('notification.to')}
             <input
               type="time"
               value={settings.quietTo}
@@ -539,10 +504,10 @@ export default function NotificationSettingsScreen() {
         </div>
       </Section>
 
-      <Section title={t.notification.sectionDebug}>
+      <Section title={t('notification.sectionDebug')}>
         <Row
-          label={t.notification.sendTest}
-          description={t.notification.sendTestDesc}
+          label={t('notification.sendTest')}
+          description={t('notification.sendTestDesc')}
           right={
             <button
               onClick={sendTestPush}
@@ -559,7 +524,7 @@ export default function NotificationSettingsScreen() {
                 opacity: busy || !settings.subscriptionActive ? 0.55 : 1,
               }}
             >
-              {t.notification.testBtn}
+              {t('notification.testBtn')}
             </button>
           }
         />

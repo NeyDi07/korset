@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { setLang, useI18n } from '../utils/i18n.js'
+import { setLang, useI18n } from '../i18n/index.js'
 import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import { useStore } from '../contexts/StoreContext.jsx'
@@ -11,6 +11,7 @@ import {
 } from '../domain/product/resolver.js'
 import { buildHistoryOwnerKey, readLocalScanHistory } from '../utils/localHistory.js'
 import { loadPrivacySettings } from '../utils/privacySettings.js'
+import { loadSoundSettings, saveSoundSettings } from '../utils/soundSettings.js'
 import ProfileStatsTabs from '../components/profile/ProfileStatsTabs.jsx'
 import {
   buildAccountPath,
@@ -19,10 +20,15 @@ import {
   buildPrivacyPath,
   buildProfileEditPath,
   buildProfilePath,
+  buildFaqPath,
+  buildAboutPath,
+  buildTermsPath,
 } from '../utils/routes.js'
 import ProfileAvatar from '../components/ProfileAvatar.jsx'
 import AuthPromptModal from '../components/AuthPromptModal.jsx'
 import SegmentedToggle from '../components/SegmentedToggle.jsx'
+import Toggle from '../components/Toggle.jsx'
+import SupportBottomSheet from '../components/SupportBottomSheet.jsx'
 import { ALLERGENS } from '../constants/allergens.js'
 import { DIET_GOALS } from '../constants/dietGoals.js'
 import { buildAuthNavigateState } from '../utils/authFlow.js'
@@ -358,12 +364,12 @@ function ThemeModeToggle({ theme, onToggle, label }) {
       options={[
         {
           key: 'light',
-          ariaLabel: 'Светлая тема',
+          ariaLabel: t('profile.lightTheme'),
           render: (active) => <SunGlyph filled={active} />,
         },
         {
           key: 'dark',
-          ariaLabel: 'Тёмная тема',
+          ariaLabel: t('profile.darkTheme'),
           render: (active) => <MoonGlyph filled={active} />,
         },
       ]}
@@ -386,12 +392,14 @@ export default function ProfileScreen() {
   // Active stats tab: 'favorites' | 'preferences' | 'history' | null
   const [activeTab, setActiveTab] = useState(null)
   // Auth-required prompt modal (shown when a guest clicks elements that
-  // need an account — banner, avatar slot, etc.).
   const [authPromptOpen, setAuthPromptOpen] = useState(false)
+  const [supportOpen, setSupportOpen] = useState(false)
 
   // Lazy-loaded mini-grids for favorites/history tabs (top 6 each).
   // null = not loaded yet, [] = loaded but empty, [items] = loaded with content.
   const [topFavorites, setTopFavorites] = useState(null)
+  const [bannerBusy, setBannerBusy] = useState(false)
+  const [soundSettings, setSoundSettings] = useState(() => loadSoundSettings())
   const [topHistory, setTopHistory] = useState(null)
   const [loadingTab, setLoadingTab] = useState(null)
 
@@ -626,12 +634,12 @@ export default function ProfileScreen() {
                 letterSpacing: 0.2,
               }}
             >
-              {t.profile.title}
+              {t('profile.title')}
             </h1>
             {user && (
               <button
                 onClick={() => navigate(buildProfileEditPath(currentStore?.slug || null))}
-                aria-label={t.profile.editBtn}
+                aria-label={t('profile.editBtn')}
                 style={{
                   width: 36,
                   height: 36,
@@ -728,7 +736,7 @@ export default function ProfileScreen() {
                 <button
                   type="button"
                   onClick={() => setAuthPromptOpen(true)}
-                  aria-label={t.profile.authPromptTitle}
+                  aria-label={t('profile.authPromptTitle')}
                   style={{
                     position: 'absolute',
                     inset: 0,
@@ -778,7 +786,7 @@ export default function ProfileScreen() {
                     e.stopPropagation()
                     setAuthPromptOpen(true)
                   }}
-                  aria-label={t.profile.authPromptTitle}
+                  aria-label={t('profile.authPromptTitle')}
                   style={{
                     position: 'absolute',
                     left: '50%',
@@ -864,7 +872,7 @@ export default function ProfileScreen() {
                       navigate('/auth', {
                         state: buildAuthNavigateState(location, {
                           reason: 'profile_required',
-                          message: t.profile.authRequiredMsg,
+                          message: t('profile.authRequiredMsg'),
                         }),
                       })
                     }}
@@ -883,7 +891,7 @@ export default function ProfileScreen() {
                       boxShadow: '0 6px 18px rgba(124,58,237,0.32)',
                     }}
                   >
-                    {t.profile.loginBtn}
+                    {t('profile.loginBtn')}
                   </button>
                 )}
               </div>
@@ -939,7 +947,7 @@ export default function ProfileScreen() {
                           letterSpacing: 1,
                         }}
                       >
-                        {t.profile.diet}
+                        {t('profile.diet')}
                       </span>
                     </div>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
@@ -978,7 +986,7 @@ export default function ProfileScreen() {
                             transition: 'color 0.2s ease',
                           }}
                         >
-                          {t.profile.halalLabel}
+                          {t('profile.halalLabel')}
                         </span>
                       </div>
                       {DIET_GOALS.map((d) => {
@@ -1046,7 +1054,7 @@ export default function ProfileScreen() {
                           letterSpacing: 1,
                         }}
                       >
-                        {t.profile.allergens}
+                        {t('profile.allergens')}
                       </span>
                     </div>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 14 }}>
@@ -1088,7 +1096,7 @@ export default function ProfileScreen() {
                         value={allergenInput}
                         onChange={(e) => setAllergenInput(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && addCustom()}
-                        placeholder={t.profile.customPlaceholder}
+                        placeholder={t('profile.customPlaceholder')}
                         style={{
                           flex: 1,
                           background: 'var(--glass-bg)',
@@ -1115,7 +1123,7 @@ export default function ProfileScreen() {
                           cursor: 'pointer',
                         }}
                       >
-                        {t.profile.add}
+                        {t('profile.add')}
                       </button>
                     </div>
                     {profile.customAllergens.length > 0 && (
@@ -1161,7 +1169,7 @@ export default function ProfileScreen() {
           {/* ── SETTINGS ── */}
           {[
             {
-              title: t.profile.sectionMain,
+              title: t('profile.sectionAccount'),
               items: [
                 {
                   icon: (
@@ -1178,35 +1186,16 @@ export default function ProfileScreen() {
                       <circle cx="12" cy="7" r="4" />
                     </svg>
                   ),
-                  label: t.profile.sectionPersonal,
+                  label: t('profile.sectionPersonal'),
                   onClick: () =>
                     user
                       ? navigate(buildAccountPath(currentStore?.slug || null))
                       : navigate('/auth', {
                           state: buildAuthNavigateState(location, {
                             reason: 'profile_required',
-                            message: t.profile.authRequiredPDataMsg,
+                            message: t('profile.authRequiredPDataMsg'),
                           }),
                         }),
-                },
-                {
-                  icon: (
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#A78BFA"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    >
-                      <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" />
-                      <path d="M13.73 21a2 2 0 01-3.46 0" />
-                    </svg>
-                  ),
-                  label: t.profile.sectionNotifications,
-                  onClick: () =>
-                    navigate(buildNotificationSettingsPath(currentStore?.slug || null)),
                 },
                 {
                   icon: (
@@ -1223,14 +1212,33 @@ export default function ProfileScreen() {
                       <path d="M7 11V7a5 5 0 0110 0v4" />
                     </svg>
                   ),
-                  label: t.profile.sectionPrivacy,
+                  label: t('profile.sectionPrivacy'),
                   onClick: () => navigate(buildPrivacyPath(currentStore?.slug || null)),
                 },
               ],
             },
             {
-              title: t.profile.sectionSettings,
+              title: t('profile.sectionSettings'),
               items: [
+                {
+                  icon: (
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#A78BFA"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    >
+                      <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                      <path d="M13.73 21a2 2 0 01-3.46 0" />
+                    </svg>
+                  ),
+                  label: t('profile.sectionNotifications'),
+                  onClick: () =>
+                    navigate(buildNotificationSettingsPath(currentStore?.slug || null)),
+                },
                 {
                   icon: (
                     <svg
@@ -1247,14 +1255,14 @@ export default function ProfileScreen() {
                       <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" />
                     </svg>
                   ),
-                  label: t.profile.languageHeader,
+                  label: t('profile.languageHeader'),
                   right: (
                     <SegmentedToggle
-                      ariaLabel={t.profile.languageHeader}
+                      ariaLabel={t('profile.languageHeader')}
                       activeKey={lang}
                       onChange={(k) => setLang(k)}
                       options={[
-                        { key: 'ru', label: 'RU', ariaLabel: 'Русский' },
+                        { key: 'ru', label: 'RU', ariaLabel: t('common.langRu') },
                         { key: 'kz', label: 'KZ', ariaLabel: 'Қазақ' },
                       ]}
                     />
@@ -1274,20 +1282,106 @@ export default function ProfileScreen() {
                       <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
                     </svg>
                   ),
-                  label: t.profile.theme,
+                  label: t('profile.theme'),
                   onClick: toggleTheme,
                   right: (
                     <ThemeModeToggle
                       theme={theme}
                       onToggle={toggleTheme}
-                      label={`${t.profile.theme}: ${theme === 'light' ? 'Light' : 'Dark'}`}
+                      label={`${t('profile.theme')}: ${theme === 'light' ? 'Light' : 'Dark'}`}
                     />
                   ),
+                },
+                {
+                  icon: (
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#A78BFA"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    >
+                      <path d="M11 5L6 9H2v6h4l5 4V5z"></path>
+                      <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                    </svg>
+                  ),
+                  label: t('profile.soundScanner'),
+                  onClick: () => {
+                    const next = { ...soundSettings, sound: !soundSettings.sound }
+                    setSoundSettings(next)
+                    saveSoundSettings(next)
+                  },
+                  right: (
+                    <Toggle
+                      checked={soundSettings.sound}
+                      onChange={(val) => {
+                        const next = { ...soundSettings, sound: val }
+                        setSoundSettings(next)
+                        saveSoundSettings(next)
+                      }}
+                    />
+                  ),
+                },
+                {
+                  icon: (
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#A78BFA"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    >
+                      <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                      <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                      <path d="M8 2h8M8 22h8"></path>
+                    </svg>
+                  ),
+                  label: t('profile.vibration'),
+                  onClick: () => {
+                    const next = { ...soundSettings, vibration: !soundSettings.vibration }
+                    setSoundSettings(next)
+                    saveSoundSettings(next)
+                  },
+                  right: (
+                    <Toggle
+                      checked={soundSettings.vibration}
+                      onChange={(val) => {
+                        const next = { ...soundSettings, vibration: val }
+                        setSoundSettings(next)
+                        saveSoundSettings(next)
+                      }}
+                    />
+                  ),
+                },
+                {
+                  icon: (
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#A78BFA"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    >
+                      <polyline points="23 4 23 10 17 10" />
+                      <path d="M20.49 15a9 9 0 11-2.12-9.36L23 10" />
+                    </svg>
+                  ),
+                  label: t('profile.restartOnboarding'),
+                  onClick: () => {
+                    localStorage.removeItem('korset_onboarding_done')
+                    window.location.reload()
+                  },
                 },
               ],
             },
             {
-              title: t.profile.sectionSupport,
+              title: t('profile.sectionSupport'),
               items: [
                 {
                   icon: (
@@ -1307,8 +1401,8 @@ export default function ProfileScreen() {
                       <line x1="12" y1="8" x2="12.01" y2="8" />
                     </svg>
                   ),
-                  label: t.profile.helpAbout,
-                  ariaLabel: t.profile.helpAboutAria,
+                  label: t('profile.faq'),
+                  onClick: () => navigate(buildFaqPath(currentStore?.slug || null)),
                 },
                 {
                   icon: (
@@ -1321,11 +1415,35 @@ export default function ProfileScreen() {
                       strokeWidth="2"
                       strokeLinecap="round"
                     >
-                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                      <polyline points="22,6 12,13 2,6" />
+                      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
                     </svg>
                   ),
-                  label: t.profile.feedback,
+                  label: t('profile.feedback'),
+                  onClick: () => setSupportOpen(true),
+                },
+              ],
+            },
+            {
+              title: t('profile.about'),
+              items: [
+                {
+                  icon: (
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#A78BFA"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    >
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="12" y1="16" x2="12" y2="12"></line>
+                      <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                  ),
+                  label: t('profile.about'),
+                  onClick: () => navigate(buildAboutPath(currentStore?.slug || null)),
                 },
                 {
                   icon: (
@@ -1345,11 +1463,60 @@ export default function ProfileScreen() {
                       <polyline points="10 9 9 9 8 9"></polyline>
                     </svg>
                   ),
-                  label: t.profile.policy,
+                  label: t('profile.terms'),
+                  onClick: () => navigate(buildTermsPath(currentStore?.slug || null)),
+                },
+                {
+                  icon: (
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#A78BFA"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    >
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                  ),
+                  label: t('profile.policy'),
                   onClick: () => navigate('/privacy-policy'),
                 },
               ],
             },
+            ...(user && currentStore?.owner_id === user?.id
+              ? [
+                  {
+                    title: t('account.storeOwnerTitle'),
+                    items: [
+                      {
+                        icon: (
+                          <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="#38BDF8"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                          >
+                            <rect x="3" y="3" width="7" height="9" rx="1" />
+                            <rect x="14" y="3" width="7" height="5" rx="1" />
+                            <rect x="14" y="12" width="7" height="9" rx="1" />
+                            <rect x="3" y="16" width="7" height="5" rx="1" />
+                          </svg>
+                        ),
+                        label: t('profile.retailManage'),
+                        labelStyle: { color: '#38BDF8', fontWeight: 600 },
+                        iconStyle: { background: 'rgba(56,189,248,0.1)' },
+                        onClick: () => navigate(`/retail/${currentStore?.slug || 'store-one'}`),
+                      },
+                    ],
+                  },
+                ]
+              : []),
           ].map((group, gi) => (
             <div key={gi} style={{ padding: '0 22px 14px' }}>
               <div
@@ -1386,7 +1553,7 @@ export default function ProfileScreen() {
                             width: 34,
                             height: 34,
                             borderRadius: 10,
-                            background: 'var(--primary-dim)',
+                            background: item.iconStyle?.background || 'var(--primary-dim)',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -1398,8 +1565,8 @@ export default function ProfileScreen() {
                           style={{
                             fontFamily: 'var(--font-display)',
                             fontSize: 14,
-                            fontWeight: 500,
-                            color: 'var(--text)',
+                            fontWeight: item.labelStyle?.fontWeight || 500,
+                            color: item.labelStyle?.color || 'var(--text)',
                           }}
                         >
                           {item.label}
@@ -1435,118 +1602,6 @@ export default function ProfileScreen() {
             </div>
           ))}
 
-          {/* ── ACTIONS ── */}
-          <div style={{ padding: '0 22px 14px' }}>
-            <div className="glass-card" style={{ padding: 0 }}>
-              {/* Retail Cabinet — только для владельца магазина */}
-              {user && currentStore?.owner_id === user?.id && (
-                <>
-                  <div
-                    className="settings-item"
-                    onClick={() => navigate(`/retail/${currentStore?.slug || 'store-one'}`)}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 14,
-                      padding: '14px 18px',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: 34,
-                        height: 34,
-                        borderRadius: 10,
-                        background: 'rgba(56,189,248,0.1)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                    >
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="#38BDF8"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                      >
-                        <rect x="3" y="3" width="7" height="9" rx="1" />
-                        <rect x="14" y="3" width="7" height="5" rx="1" />
-                        <rect x="14" y="12" width="7" height="9" rx="1" />
-                        <rect x="3" y="16" width="7" height="5" rx="1" />
-                      </svg>
-                    </div>
-                    <span
-                      style={{
-                        fontFamily: 'var(--font-display)',
-                        fontSize: 14,
-                        fontWeight: 600,
-                        color: '#38BDF8',
-                      }}
-                    >
-                      Управление магазином (Beta)
-                    </span>
-                  </div>
-                  <div
-                    style={{ height: 1, background: 'var(--glass-soft-border)', margin: '0 18px' }}
-                  />
-                </>
-              )}
-
-              <div
-                className="settings-item"
-                onClick={() => {
-                  localStorage.removeItem('korset_onboarding_done')
-                  window.location.reload()
-                }}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 14,
-                  padding: '14px 18px',
-                  cursor: 'pointer',
-                }}
-              >
-                <div
-                  style={{
-                    width: 34,
-                    height: 34,
-                    borderRadius: 10,
-                    background: 'rgba(124,58,237,0.1)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#A78BFA"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  >
-                    <polyline points="23 4 23 10 17 10" />
-                    <path d="M20.49 15a9 9 0 11-2.12-9.36L23 10" />
-                  </svg>
-                </div>
-                <span
-                  style={{
-                    fontFamily: 'var(--font-display)',
-                    fontSize: 14,
-                    fontWeight: 500,
-                    color: 'var(--text)',
-                  }}
-                >
-                  {t.profile.restartOnboarding}
-                </span>
-              </div>
-            </div>
-          </div>
-
           {/* ── FOOTER ── */}
           <div style={{ textAlign: 'center', padding: '16px 22px 30px' }}>
             <div
@@ -1564,6 +1619,7 @@ export default function ProfileScreen() {
           </div>
         </div>
       </div>
+      <SupportBottomSheet open={supportOpen} onClose={() => setSupportOpen(false)} />
     </>
   )
 }

@@ -1,15 +1,15 @@
 import { useOffline } from '../contexts/OfflineContext.jsx'
-import { useI18n } from '../utils/i18n.js'
+import { useI18n } from '../i18n/index.js'
 
 export default function OfflineBanner() {
   const { isOnline, cacheStale, formatCacheAge } = useOffline()
-  const { lang, t } = useI18n()
+  const { t } = useI18n()
 
   if (isOnline && !cacheStale) return null
 
   const label = isOnline
-    ? `${t.scan.offlineBannerStale} ${formatCacheAge() || (lang === 'kz' ? 'баяғы' : 'давно')}.`
-    : `${t.scan.offlineBanner}${formatCacheAge() ? ` (${formatCacheAge()})` : ''}.`
+    ? `${t('scan.offlineBannerStale')} ${formatCacheAge() || t('scan.longAgo')}.`
+    : `${t('scan.offlineBanner')}${formatCacheAge() ? ` (${formatCacheAge()})` : ''}.`
 
   return (
     <div

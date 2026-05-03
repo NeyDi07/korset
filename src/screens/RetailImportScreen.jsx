@@ -5,7 +5,7 @@ import {
   downloadUnknownEansReport,
   parseRetailImportFile,
 } from '../utils/retailImport.js'
-import { useI18n } from '../utils/i18n.js'
+import { useI18n } from '../i18n/index.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024

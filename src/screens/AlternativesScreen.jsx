@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useProfile } from '../contexts/ProfileContext.jsx'
-import { useI18n } from '../utils/i18n.js'
-import { useLocalName } from '../utils/localName.js'
+import { useI18n } from '../i18n/index.js'
+import { useLocalName, getLocalName } from '../utils/localName.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { checkProductFit, formatPrice } from '../utils/fitCheck.js'
 import {
@@ -53,7 +53,7 @@ export default function AlternativesScreen() {
         className="screen"
         style={{ display: 'grid', placeItems: 'center', color: 'var(--text-dim)' }}
       >
-        {t.common.notFound}
+        {t('common.notFound')}
       </div>
     )
   }
@@ -75,7 +75,7 @@ export default function AlternativesScreen() {
           ←
         </button>
         <div className="screen-title" style={{ margin: 0 }}>
-          {t.common.alternatives}
+          {t('common.alternatives')}
         </div>
       </div>
 
@@ -87,9 +87,9 @@ export default function AlternativesScreen() {
           lineHeight: 1.6,
         }}
       >
-        Подбираем похожие товары для{' '}
+        {t('alternatives.subtitle')}{' '}
         <span style={{ color: '#fff', fontWeight: 700 }}>{localName}</span>
-        {activeStoreSlug ? ' в рамках текущего магазина.' : '.'}
+        {activeStoreSlug ? ` ${t('alternatives.inStore')}` : '.'}
       </div>
 
       <div style={{ padding: '0 20px 100px', display: 'grid', gap: 10 }}>
@@ -115,13 +115,14 @@ export default function AlternativesScreen() {
               <AltThumb product={alt} />
               <div style={{ minWidth: 0 }}>
                 <div style={{ fontSize: 14, fontWeight: 700, color: '#fff', marginBottom: 4 }}>
-                  {alt.name}
+                  {getLocalName(alt)}
                 </div>
                 <div style={{ fontSize: 11, color: 'rgba(180,180,210,0.65)', marginBottom: 6 }}>
-                  {alt.brand || 'Без бренда'} · {alt.shelf || 'Полка уточняется'}
+                  {alt.brand || t('alternatives.noBrand')} ·{' '}
+                  {alt.shelf || t('alternatives.shelfPending')}
                 </div>
                 <div style={{ fontSize: 11, color: fit.fits ? '#34D399' : '#F59E0B' }}>
-                  {fit.fits ? 'Подходит профилю' : 'Проверьте состав'}
+                  {fit.fits ? t('alternatives.fitsProfile') : t('alternatives.checkIngredients')}
                 </div>
               </div>
               <div
@@ -143,7 +144,7 @@ export default function AlternativesScreen() {
           className="btn btn-secondary btn-full"
           onClick={() => navigate(buildProductAIPath(activeStoreSlug, product.ean))}
         >
-          {t.alternatives.askAI}
+          {t('alternatives.askAI')}
         </button>
       </div>
     </div>

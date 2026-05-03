@@ -1,43 +1,33 @@
 import { useEffect, useState, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { supabase } from '../utils/supabase.js'
-import { useI18n } from '../utils/i18n.js'
+import { useI18n } from '../i18n/index.js'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import { getReturnTo, normalizeReturnTo } from '../utils/authFlow.js'
 
 /* ─── Error i18n mapping ─── */
-const errMap = {
-  'Invalid login credentials': {
-    ru: 'Неверный email или пароль',
-    kz: 'Қате email немесе құпиясөз',
-  },
-  'Email not confirmed': {
-    ru: 'Email не подтверждён. Проверьте почту',
-    kz: 'Email расталмаған. Поштаңызды тексеріңіз',
-  },
-  'User already registered': { ru: 'Этот email уже зарегистрирован', kz: 'Бұл email тіркелген' },
-  'Password should be at least 6 characters': {
-    ru: 'Пароль должен быть минимум 6 символов',
-    kz: 'Құпиясөз кемінде 6 таңба болуы керек',
-  },
-  signup_disabled: { ru: 'Регистрация временно отключена', kz: 'Тіркелу уақытша өшірілген' },
+const errKeys = {
+  'Invalid login credentials': 'auth.errInvalidCredentials',
+  'Email not confirmed': 'auth.errEmailNotConfirmed',
+  'User already registered': 'auth.errAlreadyRegistered',
+  'Password should be at least 6 characters': 'auth.errPwTooShort',
+  signup_disabled: 'auth.errSignupDisabled',
 }
 
-function localizeError(msg, lang) {
+function localizeError(msg, t) {
   if (!msg) return ''
-  for (const [key, val] of Object.entries(errMap)) {
-    if (msg.toLowerCase().includes(key.toLowerCase())) return val[lang] || val.ru
+  for (const [key, i18nKey] of Object.entries(errKeys)) {
+    if (msg.toLowerCase().includes(key.toLowerCase())) return t(i18nKey)
   }
-  // Generic fallback
-  return lang === 'kz' ? 'Қате орын алды. Қайта көріңіз.' : 'Произошла ошибка. Попробуйте снова.'
+  return t('auth.errorGeneral')
 }
 
 /* ─── Password validation ─── */
-function validatePassword(pw, lang) {
+function validatePassword(pw, t) {
   const errors = []
-  if (pw.length < 8) errors.push(lang === 'kz' ? 'Кемінде 8 таңба' : 'Минимум 8 символов')
-  if (!/[0-9]/.test(pw)) errors.push(lang === 'kz' ? 'Кемінде 1 сан' : 'Минимум 1 цифра')
-  if (!/[A-Za-z]/.test(pw)) errors.push(lang === 'kz' ? 'Кемінде 1 әріп' : 'Минимум 1 буква')
+  if (pw.length < 8) errors.push(t('auth.pwMinLength'))
+  if (!/[0-9]/.test(pw)) errors.push(t('auth.pwMinDigit'))
+  if (!/[A-Za-z]/.test(pw)) errors.push(t('auth.pwMinLetter'))
   return errors
 }
 
@@ -120,7 +110,7 @@ export default function AuthScreen() {
     }
   }, [user, returnTo, navigate])
 
-  const pwErrors = mode === 'register' ? validatePassword(password, lang) : []
+  const pwErrors = mode === 'register' ? validatePassword(password, t) : []
   const pwMismatch = mode === 'register' && confirmPassword && password !== confirmPassword
 
   const canSubmit = () => {
@@ -148,18 +138,14 @@ export default function AuthScreen() {
           redirectTo: window.location.origin,
         })
         if (error) throw error
-        setSuccess(
-          lang === 'kz'
-            ? 'Қалпына келтіру сілтемесі жіберілді'
-            : 'Ссылка для сброса отправлена на почту'
-        )
+        setSuccess(t('auth.forgotSuccess'))
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password })
         if (error) throw error
         navigate(returnTo, { replace: true })
       }
     } catch (err) {
-      setError(localizeError(err.message, lang))
+      setError(localizeError(err.message, t))
     } finally {
       setLoading(false)
     }
@@ -176,7 +162,7 @@ export default function AuthScreen() {
       const { error } = await supabase.auth.verifyOtp({ email, token, type: 'signup' })
       if (error) throw error
     } catch (err) {
-      setError(lang === 'kz' ? 'Қате код. Қайта көріңіз.' : 'Неверный код. Попробуйте снова.')
+      setError(t('auth.otpError'))
     } finally {
       setLoading(false)
     }
@@ -191,7 +177,7 @@ export default function AuthScreen() {
       })
       if (error) throw error
     } catch (err) {
-      setError(localizeError(err.message, lang))
+      setError(localizeError(err.message, t))
     }
   }
 
@@ -237,23 +223,20 @@ export default function AuthScreen() {
   /* ─── Title/subtitle per mode ─── */
   const titles = {
     login: {
-      title: lang === 'kz' ? 'Қош келдіңіз' : 'С возвращением',
-      sub: lang === 'kz' ? 'Аккаунтқа кіріңіз' : 'Войдите в аккаунт Körset',
+      title: t('auth.loginTitle'),
+      sub: t('auth.loginSub'),
     },
     register: {
-      title: lang === 'kz' ? 'Тіркелу' : 'Создать аккаунт',
-      sub: lang === 'kz' ? 'Körset-ке қосылыңыз' : 'Присоединяйтесь к Körset',
+      title: t('auth.registerTitle'),
+      sub: t('auth.registerSub'),
     },
     verify: {
-      title: lang === 'kz' ? 'Кодты растау' : 'Подтверждение',
-      sub:
-        lang === 'kz'
-          ? 'Поштаңызға жіберілген 6-таңбалы кодты енгізіңіз'
-          : `Код отправлен на ${email}`,
+      title: t('auth.verifyTitle'),
+      sub: t('auth.verifySub', { email }),
     },
     forgot: {
-      title: lang === 'kz' ? 'Құпиясөзді қалпына келтіру' : 'Сброс пароля',
-      sub: lang === 'kz' ? 'Email-ді енгізіңіз' : 'Введите email для восстановления',
+      title: t('auth.forgotTitle'),
+      sub: t('auth.forgotSub'),
     },
   }
   const { title, sub } = titles[mode]
@@ -578,7 +561,7 @@ export default function AuthScreen() {
                     transition: 'opacity 0.2s',
                   }}
                 >
-                  {loading ? '...' : lang === 'kz' ? 'Растау' : 'Подтвердить'}
+                  {loading ? '...' : t('auth.verifyBtn')}
                 </button>
               </form>
             ) : /* ── FORGOT MODE ── */
@@ -617,7 +600,7 @@ export default function AuthScreen() {
                     marginTop: 4,
                   }}
                 >
-                  {loading ? '...' : lang === 'kz' ? 'Сілтеме жіберу' : 'Отправить ссылку'}
+                  {loading ? '...' : t('auth.forgotSendBtn')}
                 </button>
                 <button
                   type="button"
@@ -632,7 +615,7 @@ export default function AuthScreen() {
                     marginTop: 4,
                   }}
                 >
-                  {lang === 'kz' ? '← Кіру бетіне оралу' : '← Вернуться ко входу'}
+                  {t('auth.forgotBackToLogin')}
                 </button>
               </form>
             ) : (
@@ -661,7 +644,7 @@ export default function AuthScreen() {
                   <input
                     type={showPassword ? 'text' : 'password'}
                     className="auth-input"
-                    placeholder={lang === 'kz' ? 'Құпиясөз' : 'Пароль'}
+                    placeholder={t('auth.pwPlaceholder')}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
@@ -680,15 +663,15 @@ export default function AuthScreen() {
                     {[
                       {
                         ok: password.length >= 8,
-                        text: lang === 'kz' ? 'Кемінде 8 таңба' : 'Минимум 8 символов',
+                        text: t('auth.pwMinLength'),
                       },
                       {
                         ok: /[0-9]/.test(password),
-                        text: lang === 'kz' ? 'Кемінде 1 сан' : 'Минимум 1 цифра',
+                        text: t('auth.pwMinDigit'),
                       },
                       {
                         ok: /[A-Za-z]/.test(password),
-                        text: lang === 'kz' ? 'Кемінде 1 әріп' : 'Минимум 1 буква',
+                        text: t('auth.pwMinLetter'),
                       },
                     ].map((rule, i) => (
                       <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -746,7 +729,7 @@ export default function AuthScreen() {
                     <input
                       type={showConfirmPassword ? 'text' : 'password'}
                       className="auth-input"
-                      placeholder={lang === 'kz' ? 'Құпиясөзді қайталаңыз' : 'Повторите пароль'}
+                      placeholder={t('auth.pwConfirmPlaceholder')}
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       required
@@ -775,7 +758,7 @@ export default function AuthScreen() {
                           paddingLeft: 2,
                         }}
                       >
-                        {lang === 'kz' ? 'Құпиясөздер сәйкес емес' : 'Пароли не совпадают'}
+                        {t('auth.pwMismatch')}
                       </div>
                     )}
                   </div>
@@ -796,7 +779,7 @@ export default function AuthScreen() {
                         cursor: 'pointer',
                       }}
                     >
-                      {lang === 'kz' ? 'Құпиясөзді ұмыттыңыз ба?' : 'Забыли пароль?'}
+                      {t('auth.forgotPwLink')}
                     </button>
                   </div>
                 )}
@@ -820,15 +803,7 @@ export default function AuthScreen() {
                     transition: 'opacity 0.2s',
                   }}
                 >
-                  {loading
-                    ? '...'
-                    : mode === 'login'
-                      ? lang === 'kz'
-                        ? 'Кіру'
-                        : 'Войти'
-                      : lang === 'kz'
-                        ? 'Тіркелу'
-                        : 'Зарегистрироваться'}
+                  {loading ? '...' : mode === 'login' ? t('auth.loginBtn') : t('auth.registerBtn')}
                 </button>
               </form>
             )}
@@ -847,7 +822,7 @@ export default function AuthScreen() {
                       letterSpacing: 1,
                     }}
                   >
-                    {lang === 'kz' ? 'немесе' : 'или'}
+                    {t('auth.or')}
                   </span>
                   <div style={{ flex: 1, height: 1, background: 'var(--line-soft)' }} />
                 </div>
@@ -890,13 +865,7 @@ export default function AuthScreen() {
                       d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                     />
                   </svg>
-                  {mode === 'login'
-                    ? lang === 'kz'
-                      ? 'Google арқылы кіру'
-                      : 'Войти через Google'
-                    : lang === 'kz'
-                      ? 'Google арқылы тіркелу'
-                      : 'Регистрация через Google'}
+                  {mode === 'login' ? t('auth.googleLogin') : t('auth.googleRegister')}
                 </button>
               </>
             )}
@@ -913,13 +882,7 @@ export default function AuthScreen() {
                   margin: 0,
                 }}
               >
-                {mode === 'login'
-                  ? lang === 'kz'
-                    ? 'Аккаунтыңыз жоқ па?'
-                    : 'Ещё нет аккаунта?'
-                  : lang === 'kz'
-                    ? 'Аккаунтыңыз бар ма?'
-                    : 'Уже есть аккаунт?'}
+                {mode === 'login' ? t('auth.noAccountYet') : t('auth.haveAccount')}
               </p>
               <button
                 onClick={() => switchMode(mode === 'login' ? 'register' : 'login')}
@@ -934,13 +897,7 @@ export default function AuthScreen() {
                   marginTop: 6,
                 }}
               >
-                {mode === 'login'
-                  ? lang === 'kz'
-                    ? 'Тіркелу'
-                    : 'Зарегистрироваться'
-                  : lang === 'kz'
-                    ? 'Кіру'
-                    : 'Войти в аккаунт'}
+                {mode === 'login' ? t('auth.switchToRegister') : t('auth.switchToLogin')}
               </button>
             </div>
           )}

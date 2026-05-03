@@ -1,0 +1,13 @@
+{
+  "alternatives.title": "Баламалар",
+  "alternatives.subtitle": "Профиліңізге сай келеді",
+  "alternatives.empty": "Сай келетін баламалар табылмады",
+  "alternatives.emptyHint": "Профильді өзгертіп көріңіз",
+  "alternatives.askAI": "AI-дан таңдау туралы сұрау",
+  "alternatives.findingFor": "Ұқсас тауарлар іздеп жатырмыз",
+  "alternatives.inStore": "ағымдағы дүкен аясында.",
+  "alternatives.noBrand": "Брендсіз",
+  "alternatives.shelfPending": "Сөре нақтылануда",
+  "alternatives.fitsProfile": "Профильге сай",
+  "alternatives.checkIngredients": "Құрамды тексеріңіз"
+}

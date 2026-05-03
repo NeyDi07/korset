@@ -13,7 +13,7 @@ import {
 import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { useOffline } from '../contexts/OfflineContext.jsx'
-import { useI18n } from '../utils/i18n.js'
+import { useI18n } from '../i18n/index.js'
 import { getLocalName } from '../utils/localName.js'
 import { getGlobalDemoProducts, getStoreCatalogProducts } from '../utils/storeCatalog.js'
 import { getCatalogFromIndexedDB } from '../utils/offlineDB.js'
@@ -326,13 +326,9 @@ export default function CatalogScreen() {
     setSelectedSubcategory(null)
   }, [])
 
-  const storeTitle = currentStore
-    ? currentStore.name
-    : lang === 'kz'
-      ? 'Körset каталогі'
-      : 'Каталог Körset'
+  const storeTitle = currentStore ? currentStore.name : t('catalog.globalTitle')
 
-  const searchHint = !isCatalogReady && q.trim() ? t.catalog.loadingSearch : null
+  const searchHint = !isCatalogReady && q.trim() ? t('catalog.loadingSearch') : null
 
   const showCategories = !isSearching && !selectedCategory
   const showSubcategories = !isSearching && selectedCategory
@@ -367,7 +363,7 @@ export default function CatalogScreen() {
                 border: `1px solid ${fit.fits ? 'rgba(52,211,153,0.3)' : 'rgba(248,113,113,0.3)'}`,
               }}
             >
-              {fit.fits ? t.catalog.fits : t.catalog.check}
+              {fit.fits ? t('catalog.fits') : t('catalog.check')}
             </div>
           </div>
           <div
@@ -480,7 +476,7 @@ export default function CatalogScreen() {
         </div>
       )
     },
-    [profile, comparePin, handleCompare, handleNavigate, lang, t.catalog.fits, t.catalog.check]
+    [profile, comparePin, handleCompare, handleNavigate, lang]
   )
 
   const renderListItem = useCallback(
@@ -543,11 +539,11 @@ export default function CatalogScreen() {
                   flexShrink: 0,
                 }}
               >
-                {fit.fits ? t.catalog.fits : t.catalog.check}
+                {fit.fits ? t('catalog.fits') : t('catalog.check')}
               </div>
             </div>
             <div style={{ fontSize: 12, color: 'var(--text-soft)', marginBottom: 10 }}>
-              {[product.brand || t.catalog.noBrand, getDisplayQuantity(product, lang)]
+              {[product.brand || t('catalog.noBrand'), getDisplayQuantity(product, lang)]
                 .filter(Boolean)
                 .join(' · ')}
             </div>
@@ -571,7 +567,7 @@ export default function CatalogScreen() {
                   {formatPrice(product.priceKzt)}
                 </div>
                 <div style={{ fontSize: 11, color: 'var(--text-dim)' }}>
-                  {product.shelf || t.catalog.shelfTbd}
+                  {product.shelf || t('catalog.shelfTbd')}
                 </div>
               </div>
               <div
@@ -616,10 +612,10 @@ export default function CatalogScreen() {
                         : 'compare_arrows'}
                   </span>
                   {comparePin?.ean === product.ean
-                    ? t.compare.cancel
+                    ? t('compare.cancel')
                     : comparePin
-                      ? t.compare.btnLabel
-                      : t.compare.compareMode}
+                      ? t('compare.btnLabel')
+                      : t('compare.compareMode')}
                 </button>
               </div>
             </div>
@@ -667,7 +663,7 @@ export default function CatalogScreen() {
                   lineHeight: 1,
                 }}
               >
-                {showSubcategories ? getCategoryLabel(selectedCategory, lang) : t.catalog.title}
+                {showSubcategories ? getCategoryLabel(selectedCategory, lang) : t('catalog.title')}
               </div>
               <div
                 style={{
@@ -681,7 +677,7 @@ export default function CatalogScreen() {
                 {!isSearching && showSubcategories && (
                   <>
                     {' '}
-                    · {categoryCountMap[selectedCategory] || 0} {t.catalog.productsIn}
+                    · {categoryCountMap[selectedCategory] || 0} {t('catalog.productsIn')}
                   </>
                 )}
                 {!isSearching && showCategories && (
@@ -689,8 +685,8 @@ export default function CatalogScreen() {
                     {' '}
                     ·{' '}
                     {!isCatalogReady && catalogProducts.length === 0
-                      ? t.catalog.loading
-                      : `${baseProducts.length} ${t.catalog.productsCount}${!isCatalogReady ? ' · ' + t.catalog.loadingMore : ''}`}
+                      ? t('catalog.loading')
+                      : `${baseProducts.length} ${t('catalog.productsCount')}${!isCatalogReady ? ' · ' + t('catalog.loadingMore') : ''}`}
                   </>
                 )}
                 {isSearching && (
@@ -698,8 +694,8 @@ export default function CatalogScreen() {
                     {' '}
                     ·{' '}
                     {isSearchingServer
-                      ? t.catalog.searchingServer
-                      : `${displayList.length} ${t.catalog.productsCount}`}
+                      ? t('catalog.searchingServer')
+                      : `${displayList.length} ${t('catalog.productsCount')}`}
                   </>
                 )}
               </div>
@@ -720,7 +716,7 @@ export default function CatalogScreen() {
               <input
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
-                placeholder={t.catalog.searchPlaceholder}
+                placeholder={t('catalog.searchPlaceholder')}
                 style={{
                   width: '100%',
                   background: 'transparent',
@@ -798,7 +794,7 @@ export default function CatalogScreen() {
                 fontWeight: 600,
               }}
             >
-              {t.catalog.allSubcategories}
+              {t('catalog.allSubcategories')}
             </button>
             {activeSubcategoryKeys.map((subKey) => (
               <button
@@ -827,9 +823,9 @@ export default function CatalogScreen() {
         {showSubcategories && (
           <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
             {[
-              { id: 'fit', label: t.catalog.sort.fit },
-              { id: 'cheap', label: t.catalog.sort.cheap },
-              { id: 'pricey', label: t.catalog.sort.pricey },
+              { id: 'fit', label: t('catalog.sort.fit') },
+              { id: 'cheap', label: t('catalog.sort.cheap') },
+              { id: 'pricey', label: t('catalog.sort.pricey') },
             ].map((option) => (
               <button
                 key={option.id}
@@ -885,7 +881,7 @@ export default function CatalogScreen() {
                 marginBottom: 2,
               }}
             >
-              {t.compare.modeBanner}
+              {t('compare.modeBanner')}
             </div>
             <div
               style={{
@@ -901,7 +897,7 @@ export default function CatalogScreen() {
               {comparePin.nameKz && lang === 'kz' ? comparePin.nameKz : comparePin.name}
             </div>
             <div style={{ fontSize: 11, color: 'var(--text-soft)', marginTop: 1 }}>
-              {t.compare.selectSecond}
+              {t('compare.selectSecond')}
             </div>
           </div>
           <button
@@ -995,7 +991,7 @@ export default function CatalogScreen() {
                       {label}
                     </div>
                     <div style={{ fontSize: 11, color: 'var(--text-dim)' }}>
-                      {count} {t.catalog.productsIn}
+                      {count} {t('catalog.productsIn')}
                     </div>
                   </div>
                 </div>

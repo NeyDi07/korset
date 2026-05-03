@@ -13,7 +13,10 @@ if (import.meta.env.VITE_SENTRY_DSN && import.meta.env.PROD) {
   Sentry.init({
     dsn: import.meta.env.VITE_SENTRY_DSN,
     environment: import.meta.env.VITE_SENTRY_ENV || 'production',
-    release: import.meta.env.VITE_SENTRY_RELEASE || import.meta.env.VITE_VERCEL_GIT_COMMIT_SHA || 'unknown',
+    release:
+      import.meta.env.VITE_SENTRY_RELEASE ||
+      import.meta.env.VITE_VERCEL_GIT_COMMIT_SHA ||
+      'unknown',
     integrations: [
       Sentry.browserTracingIntegration(),
       Sentry.replayIntegration({ maskAllText: false, maskAllInputs: false }),
@@ -28,7 +31,9 @@ if (import.meta.env.VITE_SENTRY_DSN && import.meta.env.PROD) {
           const u = new URL(event.request.url)
           if (u.searchParams.has('code')) u.searchParams.delete('code')
           event.request.url = u.toString()
-        } catch {}
+        } catch {
+          /* invalid URL — ignore */
+        }
       }
       return event
     },

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { useProfile } from '../contexts/ProfileContext.jsx'
-import { useI18n } from '../utils/i18n.js'
+import { useI18n } from '../i18n/index.js'
 import { useLocalName } from '../utils/localName.js'
 import { useOffline } from '../contexts/OfflineContext.jsx'
 import KorsetAvatar from '../components/KorsetAvatar.jsx'
@@ -12,16 +12,16 @@ import { buildProductPath } from '../utils/routes.js'
 
 function getChips(t) {
   return [
-    { id: 'why', label: t.ai.chips.why },
-    { id: 'cook', label: t.ai.chips.cook },
-    { id: 'compare', label: t.ai.chips.compare },
-    { id: 'store', label: t.ai.chips.store },
+    { id: 'why', label: t('ai.chips.why') },
+    { id: 'cook', label: t('ai.chips.cook') },
+    { id: 'compare', label: t('ai.chips.compare') },
+    { id: 'store', label: t('ai.chips.store') },
   ]
 }
 
 function buildChipQuestion(chipId, product, t) {
-  const fn = t.ai.chipQuestions[chipId]
-  return fn ? fn(product.name) : chipId
+  const val = t(`ai.chipQuestions.${chipId}`, { name: product.name })
+  return val === `ai.chipQuestions.${chipId}` ? chipId : val
 }
 
 export default function AIScreen() {
@@ -62,7 +62,7 @@ export default function AIScreen() {
       const reply = await askProductAI(newMessages, product, profile, lang)
       setMessages((prev) => [...prev, { role: 'assistant', content: reply }])
     } catch (e) {
-      setError(`${t.ai.errorPrefix} ${e.message}`)
+      setError(`${t('ai.errorPrefix')} ${e.message}`)
       setMessages((prev) => prev.slice(0, -1))
     } finally {
       setLoading(false)
@@ -75,7 +75,7 @@ export default function AIScreen() {
         className="screen"
         style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
       >
-        <p style={{ color: 'var(--text-dim)' }}>{t.common.notFound}</p>
+        <p style={{ color: 'var(--text-dim)' }}>{t('common.notFound')}</p>
       </div>
     )
   }
@@ -100,9 +100,7 @@ export default function AIScreen() {
           cloud_off
         </span>
         <p style={{ color: 'var(--text-faint)', textAlign: 'center', fontSize: 14 }}>
-          {lang === 'kz'
-            ? 'Желі қосылуынсыз ИИ көмекші қол жеткізбейді'
-            : 'ИИ-ассистент недоступен без интернета'}
+          {t('scan.aiOffline')}
         </p>
       </div>
     )
@@ -185,7 +183,7 @@ export default function AIScreen() {
             Körset AI
           </div>
           <div style={{ fontSize: 12, color: '#34D399', fontWeight: 500, marginTop: 1 }}>
-            {t.common.online}
+            {t('common.online')}
           </div>
         </div>
       </div>
@@ -239,7 +237,7 @@ export default function AIScreen() {
               marginBottom: 2,
             }}
           >
-            {t.ai.productContext}
+            {t('ai.productContext')}
           </div>
           <div
             style={{
@@ -281,9 +279,7 @@ export default function AIScreen() {
         >
           <span style={{ fontSize: 16 }}>⚠️</span>
           <div style={{ fontSize: 11, color: 'var(--text-sub)', lineHeight: 1.4, opacity: 0.9 }}>
-            {lang === 'kz'
-              ? 'Ескерту: Жасанды интеллект қателесуі мүмкін. Құрамды әрқашан қаптамадан тексеріңіз. Бұл тек ұсыныс ретінде берілген ақпарат.'
-              : 'Внимание: ИИ может ошибаться. Всегда проверяйте состав на упаковке (особенно при строгих правилах Халяль и сильных аллергиях).'}
+            {t('ai.disclaimer')}
           </div>
         </div>
 
@@ -305,8 +301,8 @@ export default function AIScreen() {
                 color: 'var(--text)',
               }}
             >
-              {t.ai.welcomeProduct} <strong style={{ color: 'var(--text)' }}>{localName}</strong>{' '}
-              {t.ai.welcomeProductEnd}
+              {t('ai.welcomeProduct')} <strong style={{ color: 'var(--text)' }}>{localName}</strong>{' '}
+              {t('ai.welcomeProductEnd')}
             </div>
           </div>
         )}
@@ -459,7 +455,7 @@ export default function AIScreen() {
                 sendMessage(input)
               }
             }}
-            placeholder={t.ai.inputProduct}
+            placeholder={t('ai.inputProduct')}
             disabled={loading}
             style={{
               flex: 1,

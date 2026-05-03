@@ -1,6 +1,29 @@
+import { useMemo } from 'react'
 import './LandingScreen.css'
-import { dictionaries, useI18n } from '../utils/i18n.js'
+import { useI18n } from '../i18n/index.js'
 import { useTheme } from '../utils/theme.js'
+
+function collectStrArr(t, exists, prefix) {
+  const arr = []
+  let i = 0
+  while (exists(`${prefix}.${i}`)) {
+    arr.push(t(`${prefix}.${i}`))
+    i++
+  }
+  return arr
+}
+
+function collectObjArr(t, exists, prefix, fields) {
+  const arr = []
+  let i = 0
+  while (exists(`${prefix}.${i}.${fields[0]}`)) {
+    const obj = {}
+    for (const f of fields) obj[f] = t(`${prefix}.${i}.${f}`)
+    arr.push(obj)
+    i++
+  }
+  return arr
+}
 
 function Icon({ name }) {
   return (
@@ -84,9 +107,127 @@ function RetailDashboardPreview({ dashboard }) {
 }
 
 export default function LandingScreen() {
-  const { t } = useI18n()
+  const { t, exists } = useI18n()
   const { theme, toggleTheme } = useTheme()
-  const d = t.landing || dictionaries.ru.landing
+  const d = useMemo(
+    () => ({
+      nav: { retail: t('landing.nav.retail'), themeToggle: t('landing.nav.themeToggle') },
+      hero: {
+        chipsLabel: t('landing.hero.chipsLabel'),
+        chips: collectStrArr(t, exists, 'landing.hero.chips'),
+        title: t('landing.hero.title'),
+        text: t('landing.hero.text'),
+        primary: t('landing.hero.primary'),
+        secondary: t('landing.hero.secondary'),
+      },
+      demo: {
+        aria: t('landing.demo.aria'),
+        phoneTitle: t('landing.demo.phoneTitle'),
+        productBrand: t('landing.demo.productBrand'),
+        productName: t('landing.demo.productName'),
+        productMeta: t('landing.demo.productMeta'),
+        status: t('landing.demo.status'),
+        result: t('landing.demo.result'),
+        chips: collectStrArr(t, exists, 'landing.demo.chips'),
+        orbitTop: t('landing.demo.orbitTop'),
+        orbitBottom: t('landing.demo.orbitBottom'),
+      },
+      how: {
+        eyebrow: t('landing.how.eyebrow'),
+        title: t('landing.how.title'),
+        text: t('landing.how.text'),
+        steps: collectObjArr(t, exists, 'landing.how.steps', ['icon', 'title', 'text']),
+      },
+      fit: {
+        eyebrow: t('landing.fit.eyebrow'),
+        title: t('landing.fit.title'),
+        text: t('landing.fit.text'),
+        cards: collectObjArr(t, exists, 'landing.fit.cards', ['tone', 'icon', 'title', 'text']),
+        disclaimer: t('landing.fit.disclaimer'),
+      },
+      audience: {
+        eyebrow: t('landing.audience.eyebrow'),
+        title: t('landing.audience.title'),
+        text: t('landing.audience.text'),
+        cards: collectObjArr(t, exists, 'landing.audience.cards', ['icon', 'title', 'text']),
+      },
+      compare: {
+        beforeLabel: t('landing.compare.beforeLabel'),
+        beforeTitle: t('landing.compare.beforeTitle'),
+        beforeText: t('landing.compare.beforeText'),
+        afterLabel: t('landing.compare.afterLabel'),
+        afterTitle: t('landing.compare.afterTitle'),
+        afterText: t('landing.compare.afterText'),
+      },
+      features: {
+        eyebrow: t('landing.features.eyebrow'),
+        title: t('landing.features.title'),
+        text: t('landing.features.text'),
+        cards: collectObjArr(t, exists, 'landing.features.cards', ['icon', 'title', 'text']),
+      },
+      stats: collectObjArr(t, exists, 'landing.stats', ['value', 'label']),
+      retail: {
+        eyebrow: t('landing.retail.eyebrow'),
+        title: t('landing.retail.title'),
+        text: t('landing.retail.text'),
+        cta: t('landing.retail.cta'),
+        dashboard: {
+          aria: t('landing.retail.dashboard.aria'),
+          kicker: t('landing.retail.dashboard.kicker'),
+          title: t('landing.retail.dashboard.title'),
+          status: t('landing.retail.dashboard.status'),
+          chartTitle: t('landing.retail.dashboard.chartTitle'),
+          chartValue: t('landing.retail.dashboard.chartValue'),
+          qr: t('landing.retail.dashboard.qr'),
+          metrics: collectObjArr(t, exists, 'landing.retail.dashboard.metrics', ['value', 'label']),
+          bars: [38, 54, 46, 72, 63, 88, 78],
+          feed: collectObjArr(t, exists, 'landing.retail.dashboard.feed', [
+            'icon',
+            'title',
+            'value',
+          ]),
+        },
+        scenario: collectObjArr(t, exists, 'landing.retail.scenario', ['icon', 'title', 'text']),
+      },
+      pricing: {
+        eyebrow: t('landing.pricing.eyebrow'),
+        title: t('landing.pricing.title'),
+        text: t('landing.pricing.text'),
+        early: {
+          badge: t('landing.pricing.early.badge'),
+          title: t('landing.pricing.early.title'),
+          price: t('landing.pricing.early.price'),
+          text: t('landing.pricing.early.text'),
+        },
+        soon: collectObjArr(t, exists, 'landing.pricing.soon', ['badge', 'title', 'text']),
+      },
+      connect: {
+        eyebrow: t('landing.connect.eyebrow'),
+        title: t('landing.connect.title'),
+        text: t('landing.connect.text'),
+        steps: collectStrArr(t, exists, 'landing.connect.steps'),
+      },
+      faq: {
+        eyebrow: t('landing.faq.eyebrow'),
+        title: t('landing.faq.title'),
+        items: collectObjArr(t, exists, 'landing.faq.items', ['q', 'a']),
+      },
+      footer: {
+        title: t('landing.footer.title'),
+        text: t('landing.footer.text'),
+        made: t('landing.footer.made'),
+        copyright: t('landing.footer.copyright'),
+        groups: (() => {
+          const groups = collectObjArr(t, exists, 'landing.footer.groups', ['title'])
+          return groups.map((g, i) => ({
+            ...g,
+            links: collectObjArr(t, exists, `landing.footer.groups.${i}.links`, ['label', 'href']),
+          }))
+        })(),
+      },
+    }),
+    [t, exists]
+  )
 
   return (
     <main className="landing-page-v2">

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import { useStore } from '../contexts/StoreContext.jsx'
-import { useI18n } from '../utils/i18n.js'
+import { useI18n } from '../i18n/index.js'
 import { supabase } from '../utils/supabase.js'
 import { buildProfilePath } from '../utils/routes.js'
 import {
@@ -116,7 +116,7 @@ export default function ProfileEditScreen() {
     const value = e.target.value
     setName(value)
     if (value.trim().length > NAME_MAX) {
-      setNameError(t.profile.edit.nameTooLong)
+      setNameError(t('profile.edit.nameTooLong'))
     } else {
       setNameError('')
     }
@@ -126,15 +126,15 @@ export default function ProfileEditScreen() {
     setError('')
     if (!file) return
     if (!ALLOWED_TYPES.includes(file.type)) {
-      setError(t.profile.edit.uploadInvalid)
+      setError(t('profile.edit.uploadInvalid'))
       return
     }
     if (file.size > MAX_FILE_BYTES) {
-      setError(t.profile.edit.uploadTooLarge)
+      setError(t('profile.edit.uploadTooLarge'))
       return
     }
     if (!navigator.onLine) {
-      setError(t.profile.edit.offline)
+      setError(t('profile.edit.offline'))
       return
     }
     setUploading(true)
@@ -153,7 +153,7 @@ export default function ProfileEditScreen() {
       setBannerSelection({ type: 'url', url: cacheBusted })
     } catch (err) {
       console.warn('[ProfileEdit] banner upload failed', err)
-      setError(t.profile.edit.uploadFailed)
+      setError(t('profile.edit.uploadFailed'))
     } finally {
       setUploading(false)
     }
@@ -223,7 +223,7 @@ export default function ProfileEditScreen() {
       navigate(backTarget, { replace: true })
     } catch (err) {
       console.error('[ProfileEdit] save failed', err)
-      setError(err?.message || t.profile.edit.uploadFailed)
+      setError(err?.message || t('profile.edit.uploadFailed'))
     } finally {
       setSaving(false)
     }
@@ -262,7 +262,7 @@ export default function ProfileEditScreen() {
       >
         <button
           onClick={() => navigate(backTarget)}
-          aria-label={t.common.back}
+          aria-label={t('common.back')}
           style={{
             width: 38,
             height: 38,
@@ -302,7 +302,7 @@ export default function ProfileEditScreen() {
             textOverflow: 'ellipsis',
           }}
         >
-          {t.profile.edit.title}
+          {t('profile.edit.title')}
         </div>
         <button
           onClick={handleSave}
@@ -324,7 +324,7 @@ export default function ProfileEditScreen() {
             boxShadow: canSave ? '0 6px 18px rgba(124,58,237,0.35)' : 'none',
           }}
         >
-          {saving ? t.profile.edit.saving : t.profile.edit.save}
+          {saving ? t('profile.edit.saving') : t('profile.edit.save')}
         </button>
       </div>
 
@@ -425,12 +425,12 @@ export default function ProfileEditScreen() {
         </div>
 
         {/* Name */}
-        <Section label={t.profile.edit.nameLabel}>
+        <Section label={t('profile.edit.nameLabel')}>
           <input
             type="text"
             value={name}
             onChange={handleNameChange}
-            placeholder={t.profile.edit.namePlaceholder}
+            placeholder={t('profile.edit.namePlaceholder')}
             maxLength={NAME_MAX + 5}
             style={{
               width: '100%',
@@ -453,7 +453,7 @@ export default function ProfileEditScreen() {
         </Section>
 
         {/* Avatar */}
-        <Section label={t.profile.edit.avatarLabel}>
+        <Section label={t('profile.edit.avatarLabel')}>
           <div
             style={{
               display: 'grid',
@@ -499,7 +499,7 @@ export default function ProfileEditScreen() {
         </Section>
 
         {/* Banner */}
-        <Section label={t.profile.edit.bannerLabel}>
+        <Section label={t('profile.edit.bannerLabel')}>
           <div
             style={{
               display: 'grid',
@@ -607,7 +607,7 @@ export default function ProfileEditScreen() {
                       <path d="M12 4v16M4 12h16" />
                     </svg>
                     <span style={{ textAlign: 'center', padding: '0 6px' }}>
-                      {uploading ? t.profile.edit.saving : t.profile.edit.uploadOwn}
+                      {uploading ? t('profile.edit.saving') : t('profile.edit.uploadOwn')}
                     </span>
                   </>
                 )}

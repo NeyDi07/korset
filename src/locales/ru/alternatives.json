@@ -1,0 +1,13 @@
+{
+  "alternatives.title": "Альтернативы",
+  "alternatives.subtitle": "Подходят под ваш профиль",
+  "alternatives.empty": "Подходящих альтернатив не найдено",
+  "alternatives.emptyHint": "Попробуйте изменить профиль",
+  "alternatives.askAI": "Спросить AI о выборе",
+  "alternatives.findingFor": "Подбираем похожие товары для",
+  "alternatives.inStore": "в рамках текущего магазина.",
+  "alternatives.noBrand": "Без бренда",
+  "alternatives.shelfPending": "Полка уточняется",
+  "alternatives.fitsProfile": "Подходит профилю",
+  "alternatives.checkIngredients": "Проверьте состав"
+}

@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { useStore } from '../contexts/StoreContext.jsx'
-import { useI18n } from '../utils/i18n.js'
+import { useI18n } from '../i18n/index.js'
+
+const CONTACT_LABELS = { phone: 'home.storePhone' }
 
 const CONTACTS = [
   {
@@ -30,10 +32,9 @@ const CONTACTS = [
 
 export default function StorePublicScreen() {
   const navigate = useNavigate()
-  const { lang } = useI18n()
+  const { t } = useI18n()
   const { currentStore: store, isStoreLoading, rememberStore } = useStore()
   const [showFullDesc, setShowFullDesc] = useState(false)
-  const isKz = lang === 'kz'
 
   if (isStoreLoading) {
     return (
@@ -133,7 +134,7 @@ export default function StorePublicScreen() {
                 marginBottom: 4,
               }}
             >
-              {isKz ? 'Дүкен беті' : 'Страница магазина'}
+              {t('home.storePage')}
             </div>
             <h1
               style={{
@@ -209,9 +210,7 @@ export default function StorePublicScreen() {
                 >
                   description
                 </span>
-                <span style={{ fontSize: 14, fontWeight: 600 }}>
-                  {isKz ? 'Магазин туралы' : 'О магазине'}
-                </span>
+                <span style={{ fontSize: 14, fontWeight: 600 }}>{t('home.storeAbout')}</span>
               </div>
               <span
                 className="material-symbols-outlined"
@@ -262,7 +261,7 @@ export default function StorePublicScreen() {
                 borderBottom: '1px solid var(--line-soft)',
               }}
             >
-              {isKz ? 'Байланыс' : 'Контакты'}
+              {t('home.storeContacts')}
             </div>
             {CONTACTS.filter((c) => store[c.key]).map((c, i, arr) => (
               <div key={c.key}>
@@ -300,7 +299,7 @@ export default function StorePublicScreen() {
                   </div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 11, color: 'var(--text-dim)', marginBottom: 2 }}>
-                      {c.label}
+                      {CONTACT_LABELS[c.key] ? t(CONTACT_LABELS[c.key]) : c.label}
                     </div>
                     <div
                       style={{
@@ -340,7 +339,7 @@ export default function StorePublicScreen() {
           }}
         >
           <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text)', marginBottom: 8 }}>
-            {isKz ? 'Körset осы дүкенде не істей алады' : 'Что умеет Körset в этом магазине'}
+            {t('home.storeFeatures')}
           </div>
           <ul
             style={{
@@ -351,16 +350,10 @@ export default function StorePublicScreen() {
               lineHeight: 1.7,
             }}
           >
-            <li>{isKz ? 'Штрихкодтарды сканерлеу' : 'Сканирование штрихкодов товаров'}</li>
-            <li>
-              {isKz
-                ? 'Құрам, аллергендер, КБЖУ және fit-check'
-                : 'Состав, аллергены, КБЖУ и fit-check'}
-            </li>
-            <li>
-              {isKz ? 'Дүкен контекстіндегі баға мен сөрелер' : 'Цены и полки в контексте магазина'}
-            </li>
-            <li>{isKz ? 'Тауар бойынша AI сұрақтары' : 'AI-вопросы по товару'}</li>
+            <li>{t('home.storeFeature1')}</li>
+            <li>{t('home.storeFeature2')}</li>
+            <li>{t('home.storeFeature3')}</li>
+            <li>{t('home.storeFeature4')}</li>
           </ul>
         </div>
 
@@ -382,7 +375,7 @@ export default function StorePublicScreen() {
             fontWeight: 700,
           }}
         >
-          {isKz ? 'Körset-те дүкенді ашу' : 'Открыть магазин в Körset'}
+          {t('home.storeOpen')}
         </button>
 
         <button
@@ -402,7 +395,7 @@ export default function StorePublicScreen() {
             fontWeight: 600,
           }}
         >
-          {isKz ? 'Сканерлеуге өту' : 'Сразу перейти к сканированию'}
+          {t('home.storeScan')}
         </button>
       </div>
     </div>

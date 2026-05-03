@@ -1,4 +1,4 @@
-import { useI18n } from '../utils/i18n.js'
+import { useI18n } from '../i18n/index.js'
 
 // ─── Display name maps (inline to keep component self-contained) ─────────────
 
@@ -59,8 +59,9 @@ function formatList(ids, nameMap, lang) {
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
-function DiffRow({ label, localValue, cloudValue, lang }) {
-  const emptyText = lang === 'kz' ? 'Таңдалмаған' : 'Не выбрано'
+function DiffRow({ label, localValue, cloudValue }) {
+  const { t } = useI18n()
+  const emptyText = t('settings.syncResolve.emptyText')
   return (
     <div style={{ marginBottom: 12 }}>
       <div
@@ -76,7 +77,6 @@ function DiffRow({ label, localValue, cloudValue, lang }) {
         {label}
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 7 }}>
-        {/* Local */}
         <div
           style={{
             background: 'var(--glass-subtle)',
@@ -86,7 +86,7 @@ function DiffRow({ label, localValue, cloudValue, lang }) {
           }}
         >
           <div style={{ fontSize: 10, color: 'var(--text-disabled)', marginBottom: 5 }}>
-            📱 {lang === 'kz' ? 'Құрылғыда' : 'На устройстве'}
+            📱 {t('settings.syncResolve.onDevice')}
           </div>
           <div
             style={{
@@ -99,7 +99,6 @@ function DiffRow({ label, localValue, cloudValue, lang }) {
             {localValue || emptyText}
           </div>
         </div>
-        {/* Cloud */}
         <div
           style={{
             background: 'rgba(124,58,237,0.07)',
@@ -109,7 +108,7 @@ function DiffRow({ label, localValue, cloudValue, lang }) {
           }}
         >
           <div style={{ fontSize: 10, color: 'var(--primary)', opacity: 0.6, marginBottom: 5 }}>
-            ☁️ {lang === 'kz' ? 'Аккаунтта' : 'В аккаунте'}
+            ☁️ {t('settings.syncResolve.inAccount')}
           </div>
           <div
             style={{
@@ -130,7 +129,7 @@ function DiffRow({ label, localValue, cloudValue, lang }) {
 // ─── Main component ──────────────────────────────────────────────────────────
 
 export default function SyncResolveModal({ conflict, loading, onResolve, onDismiss }) {
-  const { lang } = useI18n()
+  const { t, lang } = useI18n()
   const { local, cloud } = conflict
 
   // Compute which fields actually differ
@@ -240,10 +239,10 @@ export default function SyncResolveModal({ conflict, loading, onResolve, onDismi
                 <div
                   style={{ fontSize: 17, fontWeight: 800, color: 'var(--text)', lineHeight: 1.2 }}
                 >
-                  {lang === 'kz' ? 'Баптаулар сәйкеспейді' : 'Разные настройки'}
+                  {t('settings.syncResolve.title')}
                 </div>
                 <div style={{ fontSize: 12, color: 'var(--text-dim)', marginTop: 2 }}>
-                  {lang === 'kz' ? 'Деректерді қалай біріктіру керек?' : 'Как объединить данные?'}
+                  {t('settings.syncResolve.subtitle')}
                 </div>
               </div>
             </div>
@@ -263,7 +262,7 @@ export default function SyncResolveModal({ conflict, loading, onResolve, onDismi
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
-              aria-label="Закрыть"
+              aria-label={t('common.close')}
             >
               <svg
                 width="13"
@@ -292,43 +291,37 @@ export default function SyncResolveModal({ conflict, loading, onResolve, onDismi
               border: '1px solid var(--glass-border)',
             }}
           >
-            {lang === 'kz'
-              ? 'Бұл құрылғыда және Körset аккаунтыңызда аллерген мен тамақтану баптаулары әртүрлі. Мәліметтерді қалай сақтағыңыз келеді?'
-              : 'На этом устройстве и в вашем Körset аккаунте сохранены разные аллергены или предпочтения. Выберите, как их объединить.'}
+            {t('settings.syncResolve.description')}
           </p>
 
           {/* Diff rows — only show fields that actually differ */}
           <div style={{ marginBottom: 20 }}>
             {allergensDiffer && (
               <DiffRow
-                label={lang === 'kz' ? 'Аллергендер' : 'Аллергены'}
+                label={t('settings.syncResolve.allergens')}
                 localValue={allergensLocal}
                 cloudValue={allergensCloud}
-                lang={lang}
               />
             )}
             {dietDiffer && (
               <DiffRow
-                label={lang === 'kz' ? 'Тамақ талғамы' : 'Предпочтения'}
+                label={t('settings.syncResolve.preferences')}
                 localValue={dietLocal}
                 cloudValue={dietCloud}
-                lang={lang}
               />
             )}
             {customDiffer && (
               <DiffRow
-                label={lang === 'kz' ? 'Жеке шектеулер' : 'Мои исключения'}
+                label={t('settings.syncResolve.customExclusions')}
                 localValue={customLocal}
                 cloudValue={customCloud}
-                lang={lang}
               />
             )}
             {halalDiffer && (
               <DiffRow
-                label={lang === 'kz' ? 'Тек Халал' : 'Только Халал'}
-                localValue={local.halal ? (lang === 'kz' ? 'Иә ✓' : 'Да ✓') : null}
-                cloudValue={cloud.halal ? (lang === 'kz' ? 'Иә ✓' : 'Да ✓') : null}
-                lang={lang}
+                label={t('settings.syncResolve.halalOnly')}
+                localValue={local.halal ? t('settings.syncResolve.halalYes') : null}
+                cloudValue={cloud.halal ? t('settings.syncResolve.halalYes') : null}
               />
             )}
           </div>
@@ -363,12 +356,11 @@ export default function SyncResolveModal({ conflict, loading, onResolve, onDismi
                   <span style={{ animation: 'spin 0.8s linear infinite', display: 'inline-block' }}>
                     ⏳
                   </span>{' '}
-                  {lang === 'kz' ? 'Сақталуда...' : 'Сохранение...'}
+                  {t('settings.syncResolve.saving')}
                 </>
               ) : (
                 <>
-                  <span>🔀</span>{' '}
-                  {lang === 'kz' ? 'Біріктіру (ұсынылады)' : 'Объединить (рекомендуется)'}
+                  <span>🔀</span> {t('settings.syncResolve.merge')}
                 </>
               )}
             </button>
@@ -390,7 +382,7 @@ export default function SyncResolveModal({ conflict, loading, onResolve, onDismi
                   fontWeight: 700,
                 }}
               >
-                ☁️ {lang === 'kz' ? 'Аккаунттан' : 'Из аккаунта'}
+                ☁️ {t('settings.syncResolve.fromAccount')}
               </button>
               <button
                 className="sr-btn-secondary"
@@ -407,7 +399,7 @@ export default function SyncResolveModal({ conflict, loading, onResolve, onDismi
                   fontWeight: 700,
                 }}
               >
-                📱 {lang === 'kz' ? 'Құрылғыдан' : 'С устройства'}
+                📱 {t('settings.syncResolve.fromDevice')}
               </button>
             </div>
 
@@ -426,7 +418,7 @@ export default function SyncResolveModal({ conflict, loading, onResolve, onDismi
                 width: '100%',
               }}
             >
-              {lang === 'kz' ? 'Кейінірек шешемін' : 'Решу позже'}
+              {t('settings.syncResolve.later')}
             </button>
           </div>
           <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>

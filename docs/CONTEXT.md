@@ -72,20 +72,21 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 
 ## АКТУАЛЬНЫЕ СТАТИСТИКИ БД (2026-05-02)
 
-- **7008 active** global_products (38 деактивировано: 4 не-еда + 33 pet_food + 1 вино)
+- **7008 active** global_products, **1203 inactive**
 - **18 категорий** (было 227 хаотичных значений), 0 некорректных категорий
 - **category_raw/subcategory_raw** — оригинальные значения сохранены для аудита
-- **name_raw** — оригинальные имена сохранены перед нормализацией (миграция 025)
+- **name_raw** — оригинальные имена сохранены перед нормализацией (миграция 025 ✅)
+- **Колонка `ingredients`** — удалена, теперь `ingredients_raw` + `ingredients_kz`
 - **Реальные EAN: 6980** (99.1%), **Fake EAN: 66** (0.9% — реальные продукты без штрихкода)
-- **store_products active: 6859** (1 магазин MARS, 187 gp ещё не завезены)
+- **store_products active: 6867** (1 магазин MARS, 141 gp ещё не завезены)
 - **EAN совпадение: 100%** (0 mismatches, 0 сирот)
-- **208 garbage quantity** → null (weight-by-weight товары)
-- **Состав: ~81%** (5767)
+- **Состав: ~88%** (6139 из 7008 имеют ingredients_raw)
 - **R2 CDN: 99.96%** продуктов с картинками на cdn.korset.app
 - **Названия нормализованы: 5352/7008** — sentence case, packaging suffixes removed, weight/% formatted
-- **name_kz: 7008/7008** (100%) — 90% качество перевода (65% со специфичными KZ буквами + 25% чистый KZ)
+- **name_kz: 7008/7008** (100%) — 89% качество (65% со специфичными KZ буквами + 24% чистый KZ)
 - **useLocalName** — все экраны показывают nameKz при lang=kz (был только CatalogScreen)
-- **Attribute extraction applied:** 195 packaging (can 50, pouch 68, bottle_glass 38, bottle_plastic 35, tub 4, tetrapak 0), 680 fat_percent (min 0.5%, max 82.5%), diet tags: sugar_free 54, organic 35, gluten_free 17, lactose_free 14, fitness 7
+- **packaging_type: 195** (can 50, pouch 68, bottle_glass 38, bottle_plastic 35, tub 4, tetrapak 0)
+- **fat_percent: 680** (min 0.5%, max 82.5%)
 
 ---
 
@@ -98,7 +99,7 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 | 022 | idx_users_auth_id (RLS perf) + category normalization | ✅ применена |
 | 023 | Fix SECURITY DEFINER на analytics views | ✅ применена |
 | 024 | packaging_type + fat_percent + quality score (backfill: 964 updates) | ✅ применена |
-| 025 | name_raw + price cleanup + batch_update_product_names RPC | ⏳ применить через SQL Editor |
+| 025 | name_raw + price cleanup + batch_update_product_names RPC | ✅ применена |
 
 ---
 
@@ -126,9 +127,9 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 
 ---
 
-## 🚨 АКТУАЛЬНЫЙ ПРИОРИТЕТ (2026-05-01)
+## 🚨 АКТУАЛЬНЫЙ ПРИОРИТЕТ (2026-05-03)
 
-**Аудит выполнен** (92 находки). **Этапы 1–2 ЗАКРЫТЫ ✅** (безопасность + DB + Sentry + Telegram alerts).
+**Аудит выполнен** (92 находки). **Этапы 1–4 ЗАКРЫТЫ ✅** (безопасность + DB + нормализация + KZ перевод).
 
 ### Статус этапов:
 
@@ -136,13 +137,14 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - ✅ **Этап 2** — DB фундамент — ЗАКРЫТО  
 - ✅ **Этап 3** — Нормализация названий (5352/7008) — ЗАКРЫТО
 - ✅ **Этап 4** — KZ перевод имён (90% качество) — ЗАКРЫТО
-- 🟣 **Этап 5** — Рефакторинг монолитов (ProductScreen 1315 строк, ProfileScreen, HomeScreen)
+- ✅ **Этап 5** — i18n профессиональная миграция — ЗАВЕРШЕНО (0 lint errors, 4/4 e2e, 64 unit tests)
+- 🟣 **Этап 6** — Рефакторинг монолитов (ProductScreen 1315 строк, ProfileScreen, HomeScreen)
 
 ### Monitoring (Production-ready)
 
 - **Sentry** — фронтенд + бэкенд (`VITE_SENTRY_DSN` + `SENTRY_DSN` в Vercel)
 - **Telegram alerts** — `api/sentry-webhook.js` + Sentry Internal Integration → мгновенные алерты
-- **Rate limiting** — `/api/ai.js`, `/api/off.js`, `/api/usda.js`
+- **Rate limiting** — `/api/ai.js`, `/api/usda.js` (OFF removed)
 - **Health check** — `/api/health`
 - **Runbook** — `docs/vault/operations/monitoring-runbook.md`
 
@@ -158,8 +160,40 @@ Store-context AI assistant (mobile-first PWA) для офлайн-магазин
 - ✅ Security: RBAC, RLS, CVE-фиксы, fitCheck 35+ тестов, Sentry, Telegram alerts
 - ✅ DB: 024 миграции, 18 категорий, packaging_type+fat_percent extraction, idx_users_auth_id
 - ✅ Заморожено: визуал/Landing/Stories/биллинг — до первых продаж
-- ✅ KZ перевод: 90% качество (было 72%), все экраны показывают nameKz при lang=kz
-- 🔴 i18n ProductScreen/EanRecovery — Этап 5 (хардкод русский текст)
+- ✅ KZ перевод: 89% качество (было 72%), все экраны показывают nameKz при lang=kz
+- ✅ i18n хардкод 5 экранов — ЗАВЕРШЕНО: ProductScreen, EanRecovery, ScanScreen, Alternatives, Compare — все `t.*` ключи
+- ✅ i18n полная миграция — ЗАВЕРШЕНО (все 17 шагов):
+  - `src/utils/i18n.js` (1950 строк) УДАЛЁН → `src/i18n/` (6 модулей: index, resolve, loader, plural, format, interpolate)
+  - `src/locales/{ru,kz}/*.json` — 14 namespace × 2 lang = 28 JSON файлов (~1800 ключей)
+  - `t.key` → `t('key')` — 468 автозамен в 39 файлах (AST-based скрипт)
+  - 8 flagged namespace-only/array-method паттернов — ручной фикс (Proxy, collectArr)
+  - 70+ inline `lang === 'kz' ? 'Қаз' : 'Рус'` → `t('key')` — все экраны
+  - Старый i18n.js удалён, main chunk -56KB (-18KB gzip)
+  - `lang === 'kz'` остатки: 13 — все корректные (data-driven, CSS, locale codes)
+  - Новые locale namespace: auth.json, profile.json, history.json (RU+KZ)
+  - Линт: **0 ошибок**, CatalogScreen deps фикс
+  - **Проверено Playwright:** RU/KZ лендинг работает, переключение языка ОК, 0 console errors, 0 unresolved dot-keys
+  - **E2e Landing:** 4/4 тестов проходят
+  - **check-i18n:** 0 missing KZ, 0 orphan, 0 empty (109 identical — бренды/иконки/единицы, корректно)
+  - **64 unit-теста:** resolve, plural, format, interpolate — все проходят
+  - **`exists` API** — отдельная функция из `useI18n()`, не свойство `t`
+  - **collectStrArr/collectObjArr** — принимают `(t, exists, prefix, ...)` — 16 вызовов в LandingScreen
+  - **Proxy удалён** из RetailDashboardScreen + RetailProductsScreen → явный useMemo (26 + 30 ключей)
+  - **ProfileStatsTabs.jsx** — 13 пропущенных `t.profile.xxx` → `t('profile.xxx')` исправлено
+  - **0 dot-access остатков** — CLEAN
+  - **main.jsx** — empty catch block → добавлен комментарий для no-empty lint
+  - **RetailSettingsScreen** — 40 `isKz ? 'Қаз' : 'Рус'` → `t('retail.settings.*')` (38 новых ключей RU+KZ)
+  - **StorePublicScreen** — 8 `isKz ? 'Қаз' : 'Рус'` → `t('home.store*')` (12 новых ключей RU+KZ)
+  - **Мелочь:** UnifiedProductScreen (2), SetupProfileScreen (1), QRPrintScreen (2), RetailProductsScreen (1), ProfileScreen (3), AccountScreen (2) — все хардкод → t()
+  - **Dev-mode warnings:** resolve.js → `⚠key` визуальная пометка в DEV при missing key
+  - **PrivacyPolicyScreen** → markdown файлы `src/legal/privacy-{ru,kz}.md` + `markdownToHtml()` рендерилка, 0 хардкода в JSX
+- ✅ i18n тесты + check скрипт — ЗАВЕРШЕНО:
+  - `scripts/check-i18n.mjs` — 14 namespace, 0 missing KZ, 106 identical (бренды/иконки/единицы)
+  - `tests/unit/i18n/` — 64 теста (plural 20, interpolate 13, format 16, resolve 15), все проходят
+  - `resolve.js` — `import.meta.env?.DEV` (optional chaining для Node.js совместимости)
+  - `useI18n()` возвращает `{ t, exists, lang, format }` — `exists` отдельный useCallback, не свойство `t`
+  - **Dev-mode:** `resolve()` возвращает `⚠key` при missing key для визуальной отладки
+  - **PrivacyPolicyScreen:** markdown `src/legal/privacy-{ru,kz}.md` + `markdownToHtml()` конвертер
 
 ---
 
@@ -200,7 +234,7 @@ Pipeline: arbuz-import, arbuz-catalog-parser, korzinavdom-parser — все ис
 
 ## ТЕКУЩИЙ ФОКУС (2026-05-02)
 
-### Оптимизация сканирования — ВСЕ 3 СЕССИИ ЗАВЕРШЕНЫ ✅
+### Оптимизация сканирования — ЗАВЕРШЕНО ✅ (включая Сессию 4 — OFF removal)
 
 **Сессия 1** (resolver.js + migration 026):
 1. Fire-and-forget логирование — ~150-300ms экономии per scan
@@ -220,6 +254,14 @@ Pipeline: arbuz-import, arbuz-catalog-parser, korzinavdom-parser — все ис
 3. `ProductScreen` — `fromScan: true` → self-lookup через `resolveProductByEan` (хит в `_eanCache`)
 4. Premium skeleton (shimmer) вместо hourglass spinner
 
+**Сессия 4** (OFF removal + AI enrichment):
+1. Open Food Facts полностью удалён из scan path (`fetchFromOFFViaProxy`, `findCacheProduct`, `saveToCache` убраны из resolver.js)
+2. `api/off.js` → 410 Gone (endpoint убран)
+3. `ExternalProductScreen.jsx` — маршрут и lazy import удалены из App.jsx
+4. Background AI enrichment: после Supabase hit — если `!ingredients && !description` → `maybeEnrichInBackground()` (fire-and-forget)
+5. `enrichmentEvents` EventTarget — ProductScreen слушает 'enriched' событие и обновляет карточку без перезагрузки
+6. Новый каскад: session cache → IndexedDB → local store catalog → Supabase RPC → [AI enrich background] → "Не найден"
+
 **Итого сэкономлено:** ~800ms cold start + ~500ms per scan (нормальный режим)
 
 ### KZ перевод имён — ЭТАП 4+ ЗАВЕРШЁН ✅
@@ -233,11 +275,11 @@ Pipeline: arbuz-import, arbuz-catalog-parser, korzinavdom-parser — все ис
 5. 4 прохода переименования: 1959→1553→907→634 плохих исправлено
 6. **Результат:** 90% качество (было 72%), 65% со специфичными казахскими буквами, 25% чистый казахский без спец. букв
 
-**Экраны с useLocalName/getLocalName:** CatalogScreen, ProductScreen, UnifiedProductScreen, ExternalProductScreen, AIScreen, CompareScreen, AlternativesScreen, QRPrintScreen, HistoryScreen, ProductMiniCard
+**Экраны с useLocalName/getLocalName:** CatalogScreen, ProductScreen, UnifiedProductScreen, AIScreen, CompareScreen, AlternativesScreen, QRPrintScreen, HistoryScreen, ProductMiniCard
 
 ### Незакрытые приоритеты:
-- **RetailImportScreen** — P0 блокер для B2B продаж
-- **ProductScreen рефакторинг** — 1315-строчный монолит
+- **Этап 6: ProductScreen рефакторинг** — 1315-строчный монолит
+- **Архитектура UI профиля (Этап 1-5)** — Переработка меню профиля
 
 ---
 
@@ -248,4 +290,21 @@ Pipeline: arbuz-import, arbuz-catalog-parser, korzinavdom-parser — все ис
 1. **Прочитай `docs/CONTEXT.md`** — этот файл, текущий фокус.
 2. **Прочитай `AGENTS.md`** — железные правила проекта.
 3. **Сделай Vault RAG-запрос** для специфичной задачи: `vault-query("запрос")`
-4. **Следующий шаг — RetailImportScreen** (P0 блокер) ИЛИ ProductScreen рефакторинг
+4. **Следующий шаг — Этап 6: Рефакторинг монолитов** (ProductScreen, ProfileScreen, HomeScreen)
+   - ИЛИ завершить i18n шаги 11-14 (unit-тесты, check/extract скрипты, dev-mode warnings, PrivacyPolicy markdown)
+
+### AI BEST-FIT (2026-05-03)
+
+### V1 PILOT SCOPE DECISION (2026-05-03)
+
+- V1 must stay narrow and shippable for a near pilot. Do not add 100-point product quality scoring, public 5-star ratings, or general feedback signals before launch.
+- ProductScreen should stay clean: Fit-Check, product facts, alternatives, scan outcome. Do not clutter it with source badges, trust scores, or social rating blocks.
+- CompareScreen exists at `/s/:storeSlug/product/:ean/compare/:ean2` (`src/screens/CompareScreen.jsx`). Keep existing relative comparison only; do not expand it into a product-quality score for V1.
+- Unknown EAN V1 flow: if scan is unresolved, show a general not-found state. Mention that alcohol and tobacco are unsupported, but do not claim the item is alcohol unless category is known. If it is a normal grocery product, user can tap "Request product check".
+- Unknown EAN queue means unresolved scans are saved as data-improvement tasks: EAN, store, timestamp, optional user/context. This improves real pilot coverage without inventing AI answers for unknown products.
+- Store-facing V1 metrics should be business-simple: products synced/imported, scans, not-found scans, top requested unknown EANs. Do not make "products with ingredients" the store owner's problem; Körset owns card quality.
+- IMPLEMENTED 2026-05-03: V1 unknown EAN request slice. `ProductScreen` not-found state now shows unsupported alcohol/tobacco wording and a "Request product check" action for valid EAN + store id. Logic lives in `src/domain/product/unknownEanRequest.js`, tests in `tests/unit/unknownEanRequest.test.mjs`. Central i18n files were intentionally not touched because another AI session is migrating languages.
+
+- Лучшее применение Codex в Körset — не косметические UI-правки, а системные зоны с большим мультипликатором: Data Moat, pipeline обогащения, DB/RLS, внимательный рефакторинг монолитов.
+- Самая сильная точка пользы: превращать разрозненную логику в надёжные потоки, инварианты, проверяемые скрипты и точечные архитектурные улучшения.
+- Если нужен максимум ROI от следующей сессии с Codex: 1) Data Moat / retail import / unknown EAN cascade, 2) ProductScreen refactoring, 3) DB integrity/perf hardening после аудита.

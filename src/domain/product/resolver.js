@@ -1,7 +1,6 @@
 import localProducts from '../../data/products.json'
 import { supabase } from '../../utils/supabase.js'
 import { enrichProductAI } from '../../services/ai.js'
-import { normalizeName } from './nameNormalizer.js'
 import { getGlobalProductByEan, getStoreCatalogProductByEan } from '../../utils/storeCatalog.js'
 import {
   buildLocalScanHistoryEntry,
@@ -20,7 +19,6 @@ import {
   normalizeDemoProduct,
   normalizeGlobalProduct,
   normalizeCacheProduct,
-  normalizeOFFProduct,
   coerceProductEntity,
 } from './normalizers.js'
 import { isUuid, parseRouteProductRef } from './model.js'
@@ -188,44 +186,6 @@ async function findGlobalProductById(id) {
   }
 }
 
-async function findCacheProduct(ean) {
-  try {
-    const now = new Date().toISOString()
-    const { data, error } = await supabase
-      .from('external_product_cache')
-      .select('*')
-      .eq('ean', ean)
-      .or(`ttl_expires_at.is.null,ttl_expires_at.gt.${now}`)
-      .maybeSingle()
-
-    if (error || !data) return null
-
-    // Atomic increment via RPC (migration 018) — нет race read-modify-write.
-    supabase
-      .rpc('increment_cache_scan_count', { p_ean: ean })
-      .then(() => {})
-      .catch(() => {})
-
-    return normalizeCacheProduct(data)
-  } catch {
-    return null
-  }
-}
-
-async function fetchFromOFFViaProxy(ean) {
-  try {
-    const response = await fetch(`/api/off?ean=${encodeURIComponent(ean)}`, {
-      signal: AbortSignal.timeout(10000),
-    })
-    if (!response.ok) return null
-    const json = await response.json()
-    if (!json?.product) return null
-    return json.product
-  } catch {
-    return null
-  }
-}
-
 async function enrichProduct(product) {
   try {
     const enrichment = await enrichProductAI({ name: product.name, brand: product.brand })
@@ -248,32 +208,21 @@ async function enrichProduct(product) {
   }
 }
 
-async function saveToCache(product, rawPayload = {}) {
-  try {
-    // Through SECURITY DEFINER RPC (migration 018) — обходит RLS-deny для anon.
-    // Раньше прямой upsert от anon всегда падал на RLS → кэш не работал.
-    await supabase.rpc('upsert_external_cache', {
-      p_ean: product.ean,
-      p_source: product.sourceMeta?.externalSource || 'openfoodfacts',
-      p_normalized_name: normalizeName(product.name, { brand: product.brand }) || null,
-      p_normalized_brand: product.brand || null,
-      p_normalized_description: product.description || null,
-      p_normalized_category: product.category || null,
-      p_normalized_quantity: product.quantity || null,
-      p_normalized_ingredients: product.ingredients || null,
-      p_normalized_allergens: product.allergens || [],
-      p_normalized_diet_tags: product.dietTags || [],
-      p_normalized_additives_tags: product.additivesTags || [],
-      p_normalized_traces: product.traces || [],
-      p_normalized_nutriments: product.nutritionPer100 || {},
-      p_image_url: product.image || null,
-      p_nutriscore: product.nutriscore || null,
-      p_nova_group: product.novaGroup || null,
-      p_raw_payload: rawPayload || {},
+// ─── Enrichment event bus — ProductScreen подписывается и обновляет карточку ─
+export const enrichmentEvents = new EventTarget()
+
+function maybeEnrichInBackground(product, cacheKey) {
+  if (!product) return
+  if (product.sourceMeta?.aiEnriched) return
+  if (product.ingredients && product.description) return
+  enrichProduct(product)
+    .then((enriched) => {
+      _eanCache.set(cacheKey, { product: enriched, ts: Date.now() })
+      enrichmentEvents.dispatchEvent(
+        new CustomEvent('enriched', { detail: { ean: product.ean, product: enriched } })
+      )
     })
-  } catch {
-    // silent: кэш — оптимизация, не блокер
-  }
+    .catch(() => {})
 }
 
 async function logMissingProduct(ean, storeId) {
@@ -393,6 +342,7 @@ async function findProductViaRPC(ean, storeId) {
 // ─── Внутренняя реализация резолвера (без session-кэша — он в обёртке ниже) ──
 async function _resolveProductByEanImpl(normalizedEan, storeId, options) {
   const isOffline = typeof navigator !== 'undefined' && !navigator.onLine
+  const cacheKey = `${normalizedEan}:${storeId || ''}`
 
   try {
     const cachedProduct = await getProductFromIndexedDB(normalizedEan)
@@ -439,6 +389,7 @@ async function _resolveProductByEanImpl(normalizedEan, storeId, options) {
   // Primary: единый RPC (migration 026) — заменяет findStoreProduct + findGlobalProductByEan
   const rpcResult = await findProductViaRPC(normalizedEan, storeId)
   if (rpcResult && !rpcResult._rpcUnavailable) {
+    maybeEnrichInBackground(rpcResult, cacheKey)
     return finalizeResolvedProduct(rpcResult, {
       ean: normalizedEan,
       foundStatus: rpcResult.source === 'store' ? 'found_store' : 'found_global',
@@ -453,6 +404,7 @@ async function _resolveProductByEanImpl(normalizedEan, storeId, options) {
     if (storeId) {
       const storeProduct = await findStoreProduct(normalizedEan, storeId)
       if (storeProduct) {
+        maybeEnrichInBackground(storeProduct, cacheKey)
         return finalizeResolvedProduct(storeProduct, {
           ean: normalizedEan,
           foundStatus: 'found_store',
@@ -464,6 +416,7 @@ async function _resolveProductByEanImpl(normalizedEan, storeId, options) {
     }
     const globalProduct = await findGlobalProductByEan(normalizedEan)
     if (globalProduct) {
+      maybeEnrichInBackground(globalProduct, cacheKey)
       return finalizeResolvedProduct(globalProduct, {
         ean: normalizedEan,
         foundStatus: 'found_global',
@@ -501,56 +454,6 @@ async function _resolveProductByEanImpl(normalizedEan, storeId, options) {
       ])
     }
     return null
-  }
-
-  // Параллельный запуск: cache + OFF одновременно — экономим ~250ms
-  const [cachedProduct, offProductRaw] = await Promise.all([
-    findCacheProduct(normalizedEan),
-    fetchFromOFFViaProxy(normalizedEan),
-  ])
-
-  if (cachedProduct) {
-    return finalizeResolvedProduct(cachedProduct, {
-      ean: normalizedEan,
-      foundStatus: 'found_cache',
-      storeId,
-      fitResult: options.fitResult,
-      logScan: options.logScan,
-    })
-  }
-
-  if (offProductRaw) {
-    const product = normalizeOFFProduct(normalizedEan, offProductRaw)
-    // Enrich + cache in background — не блокируем возврат продукта
-    enrichProduct(product)
-      .then((enriched) => {
-        saveToCache(enriched, offProductRaw).catch(() => {})
-        // Обновляем session cache обогащённой версией
-        const cacheKey = `${normalizedEan}:${storeId || ''}`
-        _eanCache.set(cacheKey, { product: enriched, ts: Date.now() })
-      })
-      .catch(() => saveToCache(product, offProductRaw).catch(() => {}))
-    return finalizeResolvedProduct(product, {
-      ean: normalizedEan,
-      foundStatus: 'found_off',
-      storeId,
-      fitResult: options.fitResult,
-      logScan: options.logScan,
-    })
-  }
-
-  // Fallback: demo product (если нет в OFF, но есть в локальных данных)
-  const demoProduct = coerceProductEntity(
-    getGlobalProductByEan(normalizedEan) || getDemoProductByEan(normalizedEan)
-  )
-  if (demoProduct) {
-    return finalizeResolvedProduct(demoProduct, {
-      ean: normalizedEan,
-      foundStatus: 'found_global',
-      storeId,
-      fitResult: options.fitResult,
-      logScan: options.logScan,
-    })
   }
 
   if (options.logScan) {

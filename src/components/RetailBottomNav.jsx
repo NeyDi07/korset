@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom'
-import { useI18n } from '../utils/i18n.js'
+import { useI18n } from '../i18n/index.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 
 export default function RetailBottomNav() {
@@ -21,26 +21,26 @@ export default function RetailBottomNav() {
   const TABS = [
     {
       id: 'dashboard',
-      label: t.retail.nav.dashboard,
+      label: t('retail.nav.dashboard'),
       path: `/retail/${storeSlug}/dashboard`,
       icon: 'dashboard',
     },
     {
       id: 'products',
-      label: t.retail.nav.products,
+      label: t('retail.nav.products'),
       path: `/retail/${storeSlug}/products`,
       icon: 'shopping_bag',
     },
     {
       id: 'eanRecovery',
-      label: t.retail.nav.eanRecovery,
+      label: t('retail.nav.eanRecovery'),
       path: `/retail/${storeSlug}/ean-recovery`,
       icon: 'qr_code_scanner',
       accent: true,
     },
     {
       id: 'settings',
-      label: t.retail.nav.settings,
+      label: t('retail.nav.settings'),
       path: `/retail/${storeSlug}/settings`,
       icon: 'settings',
     },

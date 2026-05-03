@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { useI18n } from '../utils/i18n.js'
+import { useI18n } from '../i18n/index.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import { buildAuthNavigateState } from '../utils/authFlow.js'
@@ -9,7 +9,7 @@ import LandingScreen from './LandingScreen.jsx'
 export default function HomeScreen() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { t, lang } = useI18n()
+  const { t } = useI18n()
   const { currentStore, isStoreApp, routes } = useStore()
   const { user } = useAuth()
 
@@ -248,7 +248,7 @@ export default function HomeScreen() {
                   <span className="material-symbols-outlined" style={{ fontSize: 12 }}>
                     info
                   </span>
-                  {lang === 'kz' ? 'Толығырақ' : 'Подробнее'}
+                  {t('home.moreInfo')}
                 </button>
               )}
             </div>
@@ -366,10 +366,10 @@ export default function HomeScreen() {
                   letterSpacing: '-0.01em',
                 }}
               >
-                {t.home.scanBtn}
+                {t('home.scanBtn')}
               </div>
               <div style={{ fontSize: 13, color: 'var(--text-soft)', fontWeight: 500 }}>
-                {t.home.scanSub}
+                {t('home.scanSub')}
               </div>
             </div>
             <span
@@ -436,10 +436,10 @@ export default function HomeScreen() {
                     marginBottom: 2,
                   }}
                 >
-                  {t.home.catalog}
+                  {t('home.catalog')}
                 </div>
                 <div style={{ fontSize: 12, color: 'var(--text-faint)', lineHeight: 1.3 }}>
-                  {t.home.catalogSub}
+                  {t('home.catalogSub')}
                 </div>
               </div>
             </div>
@@ -493,10 +493,10 @@ export default function HomeScreen() {
                     marginBottom: 2,
                   }}
                 >
-                  {t.home.ai}
+                  {t('home.ai')}
                 </div>
                 <div style={{ fontSize: 12, color: 'var(--text-faint)', lineHeight: 1.3 }}>
-                  {t.home.aiSub}
+                  {t('home.aiSub')}
                 </div>
               </div>
             </div>
@@ -547,10 +547,10 @@ export default function HomeScreen() {
                   letterSpacing: '0.01em',
                 }}
               >
-                {lang === 'kz' ? 'Менің тарихым' : 'Моя история'}
+                {t('home.myHistory')}
               </div>
               <div style={{ fontSize: 12, color: 'var(--text-faint)', marginTop: 2 }}>
-                {lang === 'kz' ? 'Сканерленген тауарлар' : 'Отсканированные товары'}
+                {t('home.scannedProducts')}
               </div>
             </div>
             <span
@@ -1652,38 +1652,38 @@ export default function HomeScreen() {
             {/* Brand Column */}
             <div>
               <img src="/korset_logo.svg" alt="Körset" className="landing-footer__logo" />
-              <p className="landing-footer__desc">{t.footer.description}</p>
+              <p className="landing-footer__desc">{t('footer.description')}</p>
               <div className="landing-footer__status">
                 <div className="landing-footer__status-dot" />
-                <span>{t.footer.systemOk}</span>
+                <span>{t('footer.systemOk')}</span>
               </div>
             </div>
 
             {/* Nav Columns */}
             <div className="landing-footer__nav">
               <div className="landing-footer__nav-group">
-                <h4 className="landing-footer__nav-title">{t.footer.company}</h4>
+                <h4 className="landing-footer__nav-title">{t('footer.company')}</h4>
                 <button className="landing-footer__link" onClick={() => navigate('/stores')}>
-                  {t.footer.about}
+                  {t('footer.about')}
                 </button>
                 <button className="landing-footer__link" onClick={() => navigate('/stores')}>
-                  {t.footer.contacts}
+                  {t('footer.contacts')}
                 </button>
                 <button className="landing-footer__link" onClick={() => navigate('/retail')}>
-                  {lang === 'kz' ? 'Бизнеске' : 'Для бизнеса'}
+                  {t('home.forBusiness')}
                 </button>
               </div>
 
               <div className="landing-footer__nav-group">
-                <h4 className="landing-footer__nav-title">{t.footer.legal}</h4>
+                <h4 className="landing-footer__nav-title">{t('footer.legal')}</h4>
                 <button
                   className="landing-footer__link"
                   onClick={() => navigate('/privacy-policy')}
                 >
-                  {t.footer.policy}
+                  {t('footer.policy')}
                 </button>
                 <button className="landing-footer__link" onClick={() => navigate('/stores')}>
-                  {lang === 'kz' ? 'Қосымша туралы' : 'О приложении'}
+                  {t('home.aboutApp')}
                 </button>
               </div>
             </div>
@@ -1691,10 +1691,10 @@ export default function HomeScreen() {
 
           {/* Bottom Bar */}
           <div className="landing-footer__bottom">
-            <span className="landing-footer__copyright">{t.footer.copyright}</span>
+            <span className="landing-footer__copyright">{t('footer.copyright')}</span>
             <div className="landing-footer__kz-badge">
               <span style={{ fontSize: 14 }}>🇰🇿</span>
-              {t.footer.madeInKz}
+              {t('footer.madeInKz')}
             </div>
           </div>
         </footer>

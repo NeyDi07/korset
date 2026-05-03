@@ -5,7 +5,7 @@ import { useAuth } from '../contexts/AuthContext.jsx'
 import { useUserData } from '../contexts/UserDataContext.jsx'
 import { useStoreId } from '../contexts/StoreContext.jsx'
 import { buildAuthNavigateState } from '../utils/authFlow.js'
-import { useI18n } from '../utils/i18n.js'
+import { useI18n } from '../i18n/index.js'
 import { useLocalName } from '../utils/localName.js'
 import { getDisplayQuantity } from '../utils/parseQuantity.js'
 import { checkProductFit, formatPrice, getCategoryLabel } from '../utils/fitCheck.js'
@@ -22,8 +22,8 @@ function getPrimaryImage(product) {
 }
 
 function StatusCard({ fits, reasons, t }) {
-  const title = fits ? t.product.fits : t.product.notFits
-  const subtitle = fits ? t.product.fitsDesc : t.product.notFitsDesc
+  const title = fits ? t('product.fits') : t('product.notFits')
+  const subtitle = fits ? t('product.fitsDesc') : t('product.notFitsDesc')
   return (
     <div
       style={{
@@ -81,10 +81,10 @@ function StatusCard({ fits, reasons, t }) {
 
 function NutritionGrid({ nutrition, t }) {
   const items = [
-    [t.product.kcal, nutrition?.kcal, 'ккал'],
-    [t.product.protein, nutrition?.protein, 'г'],
-    [t.product.fat, nutrition?.fat, 'г'],
-    [t.product.carbs, nutrition?.carbs, 'г'],
+    [t('product.kcal'), nutrition?.kcal, 'ккал'],
+    [t('product.protein'), nutrition?.protein, 'г'],
+    [t('product.fat'), nutrition?.fat, 'г'],
+    [t('product.carbs'), nutrition?.carbs, 'г'],
   ]
   if (!items.some(([, value]) => value != null)) return null
 
@@ -196,10 +196,7 @@ export default function UnifiedProductScreen({ mode = 'canonical' }) {
       navigate('/auth', {
         state: buildAuthNavigateState(location, {
           reason: 'favorites_requires_auth',
-          message:
-            lang === 'kz'
-              ? 'Таңдаулыларға қосу үшін аккаунтқа кіріңіз.'
-              : 'Войдите, чтобы добавлять товары в избранное.',
+          message: t('product.loginForFavorites'),
         }),
       })
       return
@@ -223,7 +220,7 @@ export default function UnifiedProductScreen({ mode = 'canonical' }) {
               animation: 'spin 0.8s linear infinite',
             }}
           />
-          <div>{t.common.loading}</div>
+          <div>{t('common.loading')}</div>
           <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
         </div>
       </div>
@@ -236,15 +233,15 @@ export default function UnifiedProductScreen({ mode = 'canonical' }) {
         <div style={{ textAlign: 'center', color: 'var(--text-dim)' }}>
           <div style={{ fontSize: 48, marginBottom: 12 }}>🔍</div>
           <div style={{ color: 'var(--text)', fontWeight: 700, marginBottom: 8 }}>
-            {t.common.notFound}
+            {t('common.notFound')}
           </div>
-          <div style={{ fontSize: 13 }}>{error || t.product.notFoundInDb}</div>
+          <div style={{ fontSize: 13 }}>{error || t('product.notFoundInDb')}</div>
           <button
             className="btn btn-secondary"
             style={{ marginTop: 16 }}
             onClick={() => navigate('/scan')}
           >
-            {t.common.scanAgain}
+            {t('common.scanAgain')}
           </button>
         </div>
       </div>
@@ -267,7 +264,7 @@ export default function UnifiedProductScreen({ mode = 'canonical' }) {
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <button className="back-btn" onClick={goBack}>
-            {t.common.back}
+            {t('common.back')}
           </button>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
@@ -283,7 +280,9 @@ export default function UnifiedProductScreen({ mode = 'canonical' }) {
               {localName}
             </div>
             <div style={{ color: 'var(--text-dim)', fontSize: 12 }}>
-              {product.brand || getCategoryLabel(product.category, 'ru') || t.product.foodCategory}
+              {product.brand ||
+                getCategoryLabel(product.category, 'ru') ||
+                t('product.foodCategory')}
             </div>
           </div>
           <button
@@ -371,7 +370,7 @@ export default function UnifiedProductScreen({ mode = 'canonical' }) {
               <span className="category-badge grocery">Nutri-Score {product.nutriscore}</span>
             )}
             {product.source === 'demo' && (
-              <span className="category-badge grocery">{t.common.demo}</span>
+              <span className="category-badge grocery">{t('common.demo')}</span>
             )}
             {product.source === 'off' && (
               <span className="category-badge grocery">Open Food Facts</span>
@@ -382,7 +381,7 @@ export default function UnifiedProductScreen({ mode = 'canonical' }) {
 
           <div style={{ display: 'flex', gap: 10 }}>
             <button className="btn btn-primary btn-full" onClick={goToAI}>
-              {t.common.askAI}
+              {t('common.askAI')}
             </button>
             <button
               className="btn btn-secondary btn-full"
@@ -390,49 +389,45 @@ export default function UnifiedProductScreen({ mode = 'canonical' }) {
               onClick={goToAlternatives}
               style={{ opacity: demoProduct ? 1 : 0.5 }}
             >
-              {t.common.alternatives}
+              {t('common.alternatives')}
             </button>
           </div>
         </div>
 
         <div className="section" style={{ marginBottom: 16 }}>
-          <div className="section-title">{t.product.characteristics}</div>
+          <div className="section-title">{t('product.characteristics')}</div>
           <div style={{ display: 'grid', gap: 10 }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
               <InfoCard
-                label={lang === 'kz' ? 'Санат' : 'Категория'}
+                label={t('product.category')}
                 value={getCategoryLabel(product.category, 'ru') || product.category || '—'}
               />
               <InfoCard
-                label={lang === 'kz' ? 'Халал' : 'Халал'}
+                label={t('product.halalLabel')}
                 value={
                   product.halalStatus === 'yes'
-                    ? 'Да'
+                    ? t('common.yes')
                     : product.halalStatus === 'no'
-                      ? 'Нет'
-                      : 'Неизвестно'
+                      ? t('common.no')
+                      : t('common.unknown')
                 }
               />
             </div>
             <InfoCard
-              label={lang === 'kz' ? 'Өндіруші' : 'Производитель'}
-              value={manufacturerText || t.product.noManufacturer}
+              label={t('product.manufacturerLabel')}
+              value={manufacturerText || t('product.noManufacturer')}
             />
             {product.description && (
-              <InfoCard
-                label={lang === 'kz' ? 'Сипаттама' : 'Описание'}
-                value={product.description}
-                multiline
-              />
+              <InfoCard label={t('product.description')} value={product.description} multiline />
             )}
           </div>
         </div>
 
         <div className="section" style={{ marginBottom: 16 }}>
           <div className="section-title">
-            {t.product.nutrition}{' '}
+            {t('product.nutrition')}{' '}
             <span style={{ color: 'var(--text-dim)', fontSize: 12, fontWeight: 500 }}>
-              {t.product.nutritionPer100}
+              {t('product.nutritionPer100')}
             </span>
           </div>
           <NutritionGrid nutrition={product.nutritionPer100} t={t} />
@@ -441,16 +436,16 @@ export default function UnifiedProductScreen({ mode = 'canonical' }) {
             product.nutritionPer100?.salt != null) && (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 10 }}>
               {product.nutritionPer100?.sugar != null && (
-                <InfoChip label={t.product.sugarOf} value={`${product.nutritionPer100.sugar} г`} />
+                <InfoChip
+                  label={t('product.sugarOf')}
+                  value={`${product.nutritionPer100.sugar} г`}
+                />
               )}
               {product.nutritionPer100?.fiber != null && (
-                <InfoChip label={t.product.fiber} value={`${product.nutritionPer100.fiber} г`} />
+                <InfoChip label={t('product.fiber')} value={`${product.nutritionPer100.fiber} г`} />
               )}
               {product.nutritionPer100?.salt != null && (
-                <InfoChip
-                  label={lang === 'kz' ? 'Тұз' : 'Соль'}
-                  value={`${product.nutritionPer100.salt} г`}
-                />
+                <InfoChip label={t('product.salt')} value={`${product.nutritionPer100.salt} г`} />
               )}
             </div>
           )}
@@ -458,13 +453,13 @@ export default function UnifiedProductScreen({ mode = 'canonical' }) {
 
         {(product.ingredients || product.allergens?.length || specsEntries.length > 0) && (
           <div className="section">
-            <div className="section-title">{t.product.more}</div>
+            <div className="section-title">{t('product.more')}</div>
             {product.ingredients && (
-              <InfoCard label={t.product.ingredients} value={product.ingredients} multiline />
+              <InfoCard label={t('product.ingredients')} value={product.ingredients} multiline />
             )}
             {product.allergens?.length > 0 && (
               <InfoCard
-                label={t.product.allergens}
+                label={t('product.allergens')}
                 value={product.allergens.join(', ')}
                 multiline
               />
@@ -475,14 +470,14 @@ export default function UnifiedProductScreen({ mode = 'canonical' }) {
                   className="btn btn-ghost btn-full"
                   onClick={() => setShowMore((value) => !value)}
                 >
-                  {showMore ? t.product.hide : t.product.more}
+                  {showMore ? t('product.hide') : t('product.more')}
                 </button>
                 {showMore && (
                   <div style={{ display: 'grid', gap: 10, marginTop: 10 }}>
                     {specsEntries.map(([key, value]) => (
                       <InfoCard
                         key={key}
-                        label={humanizeSpecKey(key, lang)}
+                        label={humanizeSpecKey(key, t)}
                         value={String(value)}
                         multiline
                       />
@@ -543,12 +538,12 @@ function InfoChip({ label, value }) {
   )
 }
 
-function humanizeSpecKey(key, lang) {
+function humanizeSpecKey(key, t) {
   const map = {
-    weight: lang === 'kz' ? 'Салмақ' : 'Вес',
-    storage: lang === 'kz' ? 'Сақтау' : 'Хранение',
-    bestBefore: lang === 'kz' ? 'Жарамдылық мерзімі' : 'Срок хранения',
-    caloriesPerUnit: lang === 'kz' ? '1 данаға ккал' : 'Ккал на штуку',
+    weight: t('product.specWeight'),
+    storage: t('product.specStorage'),
+    bestBefore: t('product.expiry'),
+    caloriesPerUnit: t('product.specCaloriesPerUnit'),
   }
   return map[key] || key
 }

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { useI18n } from '../utils/i18n.js'
+import { useI18n } from '../i18n/index.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { supabase } from '../utils/supabase.js'
 import QRCode from 'react-qr-code'
@@ -29,9 +29,8 @@ const formatLocalPhone = (local) => {
 }
 
 export default function RetailSettingsScreen() {
-  const { lang } = useI18n()
+  const { t } = useI18n()
   const { currentStore, updateStoreSettings } = useStore()
-  const isKz = lang === 'kz'
 
   const [settings, setSettings] = useState({
     name: currentStore?.name || '',
@@ -120,14 +119,12 @@ export default function RetailSettingsScreen() {
     // Client-side validation
     const ALLOWED = ['image/png', 'image/jpeg', 'image/webp']
     if (!ALLOWED.includes(file.type)) {
-      alert(
-        isKz ? 'Тек PNG, JPG, WEBP форматтары рұқсат етілген' : 'Разрешены только PNG, JPG, WEBP'
-      )
+      alert(t('retail.settings.logoFormatError'))
       if (logoInputRef.current) logoInputRef.current.value = ''
       return
     }
     if (file.size > 2 * 1024 * 1024) {
-      alert(isKz ? 'Файл 2MB-тан аспауы керек' : 'Файл не должен превышать 2MB')
+      alert(t('retail.settings.logoSizeError'))
       if (logoInputRef.current) logoInputRef.current.value = ''
       return
     }
@@ -146,13 +143,9 @@ export default function RetailSettingsScreen() {
       const msg = uploadError.message || uploadError.error || String(uploadError)
       const isBucketMissing = msg.includes('Bucket not found') || msg.includes('bucket')
       if (isBucketMissing) {
-        alert(
-          isKz
-            ? 'Bucket табылмады. Supabase Dashboard → Storage → "store-logos" bucket жасаңыз (Public: иә)'
-            : 'Bucket не найден. Создайте в Supabase Dashboard → Storage → New Bucket → name: "store-logos" (Public: вкл)'
-        )
+        alert(t('retail.settings.logoBucketError'))
       } else {
-        alert(isKz ? 'Жүктеу қатесі: ' + msg : 'Ошибка загрузки: ' + msg)
+        alert(t('retail.settings.logoUploadError') + msg)
       }
       return
     }
@@ -216,7 +209,7 @@ export default function RetailSettingsScreen() {
       setShowClearModal(false)
     } catch (e) {
       setIsClearing(false)
-      alert(isKz ? 'Қателік орын алды: ' + e.message : 'Ошибка при удалении: ' + e.message)
+      alert(t('retail.settings.clearError') + e.message)
     }
   }
   // Handles phone input: add digit / delete / paste
@@ -274,15 +267,11 @@ export default function RetailSettingsScreen() {
     <>
       <ConfirmDangerModal
         open={showClearModal}
-        title={isKz ? 'Каталогты тазарту' : 'Очистить каталог'}
-        description={
-          isKz
-            ? 'Бұл әрекет барлық жүктелген тауарларды жояды. Бұл әрекетті болдырмау мүмкін емес.'
-            : 'Это действие удалит все добавленные товары из каталога магазина. Отменить невозможно.'
-        }
-        confirmWord={isKz ? 'ТАЗАРТУ' : 'СБРОС'}
-        confirmLabel={isKz ? 'Тазарту' : 'Удалить всё'}
-        cancelLabel={isKz ? 'Болдырмау' : 'Отмена'}
+        title={t('retail.settings.clearModalTitle')}
+        description={t('retail.settings.clearModalDesc')}
+        confirmWord={t('retail.settings.clearModalWord')}
+        confirmLabel={t('retail.settings.clearModalConfirm')}
+        cancelLabel={t('retail.settings.clearModalCancel')}
         onConfirm={handleConfirmClear}
         onCancel={() => setShowClearModal(false)}
         loading={isClearing}
@@ -299,16 +288,16 @@ export default function RetailSettingsScreen() {
               margin: '0 0 4px',
             }}
           >
-            {isKz ? 'Магазин баптаулары' : 'Настройки профиля'}
+            {t('retail.settings.title')}
           </h1>
           <p style={{ fontSize: 14, color: 'var(--text-sub)', margin: 0 }}>
-            {isKz ? 'Сауда нүктесін басқару' : 'Управление торговой точкой'}
+            {t('retail.settings.subtitle')}
           </p>
         </div>
 
         {/* ── Лого магазина ── */}
         <div>
-          <div style={SECTION_LABEL_STYLE}>{isKz ? 'ЛОГОТИП' : 'ЛОГОТИП МАГАЗИНА'}</div>
+          <div style={SECTION_LABEL_STYLE}>{t('retail.settings.logoTitle')}</div>
           <div style={{ ...CARD_STYLE, padding: 16 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
               <div
@@ -344,10 +333,10 @@ export default function RetailSettingsScreen() {
                 <div
                   style={{ fontSize: 14, color: 'var(--text)', fontWeight: 600, marginBottom: 4 }}
                 >
-                  {isKz ? 'Дүкен логотипі' : 'Логотип магазина'}
+                  {t('retail.settings.logoLabel')}
                 </div>
                 <div style={{ fontSize: 12, color: 'var(--text-dim)', marginBottom: 10 }}>
-                  {isKz ? 'PNG, JPG · Макс. 2MB' : 'PNG, JPG · Макс. 2MB'}
+                  {t('retail.settings.logoHint')}
                 </div>
                 <input
                   ref={logoInputRef}
@@ -378,12 +367,8 @@ export default function RetailSettingsScreen() {
                     {logoUploading ? 'progress_activity' : 'upload'}
                   </span>
                   {logoUploading
-                    ? isKz
-                      ? 'Жүктелуде...'
-                      : 'Загружаем...'
-                    : isKz
-                      ? 'Жүктеу'
-                      : 'Загрузить'}
+                    ? t('retail.settings.logoUploading')
+                    : t('retail.settings.logoUpload')}
                 </button>
               </div>
             </div>
@@ -392,10 +377,10 @@ export default function RetailSettingsScreen() {
 
         {/* ── Основная информация ── */}
         <div>
-          <div style={SECTION_LABEL_STYLE}>{isKz ? 'НЕГІЗГІ АҚПАРАТ' : 'ОСНОВНАЯ ИНФОРМАЦИЯ'}</div>
+          <div style={SECTION_LABEL_STYLE}>{t('retail.settings.infoTitle')}</div>
           <div style={CARD_STYLE}>
             <div style={{ padding: '16px 16px' }}>
-              <div style={FIELD_LABEL}>{isKz ? 'Дүкен атауы' : 'Название магазина'}</div>
+              <div style={FIELD_LABEL}>{t('retail.settings.nameLabel')}</div>
               <input
                 type="text"
                 value={settings.name}
@@ -407,7 +392,7 @@ export default function RetailSettingsScreen() {
             <div style={DIVIDER} />
 
             <div style={{ padding: '16px 16px' }}>
-              <div style={FIELD_LABEL}>{isKz ? 'Мекенжай' : 'Фактический адрес'}</div>
+              <div style={FIELD_LABEL}>{t('retail.settings.addressLabel')}</div>
               <input
                 type="text"
                 value={settings.address}
@@ -419,7 +404,7 @@ export default function RetailSettingsScreen() {
             <div style={DIVIDER} />
 
             <div style={{ padding: '16px 16px' }}>
-              <div style={FIELD_LABEL}>{isKz ? 'Телефон' : 'Телефон'}</div>
+              <div style={FIELD_LABEL}>{t('retail.settings.phoneLabel')}</div>
               <input
                 type="tel"
                 value={formatLocalPhone(settings.phone)}
@@ -434,22 +419,20 @@ export default function RetailSettingsScreen() {
 
         {/* ── Описание магазина ── */}
         <div>
-          <div style={SECTION_LABEL_STYLE}>{isKz ? 'СИПАТТАМА' : 'ОПИСАНИЕ'}</div>
+          <div style={SECTION_LABEL_STYLE}>{t('retail.settings.descTitle')}</div>
           <div style={CARD_STYLE}>
             <div style={{ padding: '16px' }}>
               <div style={FIELD_LABEL}>
-                {isKz ? 'Қысқаша сипаттама' : 'Краткое описание'}
+                {t('retail.settings.shortDescLabel')}
                 <span style={{ fontSize: 11, color: 'var(--text-dim)', marginLeft: 6 }}>
-                  {isKz ? '(Басты экранда көрінеді)' : '(Видно на главном экране)'}
+                  {t('retail.settings.shortDescHint')}
                 </span>
               </div>
               <input
                 type="text"
                 value={settings.short_description}
                 onChange={(e) => handleChange('short_description', e.target.value)}
-                placeholder={
-                  isKz ? 'Мысалы: Табиғи өнімдер дүкені' : 'Например: Магазин натуральных продуктов'
-                }
+                placeholder={t('retail.settings.shortDescPlaceholder')}
                 maxLength={120}
                 style={INPUT_STYLE}
               />
@@ -464,19 +447,15 @@ export default function RetailSettingsScreen() {
 
             <div style={{ padding: '16px' }}>
               <div style={FIELD_LABEL}>
-                {isKz ? 'Толық сипаттама' : 'Полное описание'}
+                {t('retail.settings.fullDescLabel')}
                 <span style={{ fontSize: 11, color: 'var(--text-dim)', marginLeft: 6 }}>
-                  {isKz ? '(«Толығырақ» батырмасы арқылы)' : '(По кнопке «Подробнее»)'}
+                  {t('retail.settings.fullDescHint')}
                 </span>
               </div>
               <textarea
                 value={settings.description}
                 onChange={(e) => handleChange('description', e.target.value)}
-                placeholder={
-                  isKz
-                    ? 'Дүкен тарихы, ерекшеліктері, жұмыс уақыты...'
-                    : 'История магазина, особенности, режим работы...'
-                }
+                placeholder={t('retail.settings.fullDescPlaceholder')}
                 rows={4}
                 style={{
                   ...INPUT_STYLE,
@@ -491,7 +470,7 @@ export default function RetailSettingsScreen() {
 
         {/* ── Контакты и соцсети ── */}
         <div>
-          <div style={SECTION_LABEL_STYLE}>{isKz ? 'БАЙЛАНЫС' : 'КОНТАКТЫ И СОЦСЕТИ'}</div>
+          <div style={SECTION_LABEL_STYLE}>{t('retail.settings.contactsTitle')}</div>
           <div style={CARD_STYLE}>
             {[
               {
@@ -608,14 +587,14 @@ export default function RetailSettingsScreen() {
               >
                 progress_activity
               </span>
-              {isKz ? 'Сақталуда...' : 'Сохраняем...'}
+              {t('retail.settings.saving')}
             </>
           ) : (
             <>
               <span className="material-symbols-outlined" style={{ fontSize: 18 }}>
                 save
               </span>
-              {isKz ? 'Сақтау' : 'Сохранить настройки'}
+              {t('retail.settings.save')}
             </>
           )}
         </button>
@@ -635,7 +614,7 @@ export default function RetailSettingsScreen() {
             <span className="material-symbols-outlined" style={{ fontSize: 16 }}>
               check_circle
             </span>
-            {isKz ? 'Сәтті сақталды' : 'Сохранено успешно'}
+            {t('retail.settings.saved')}
           </div>
         )}
         {saveStatus === 'error' && (
@@ -652,7 +631,7 @@ export default function RetailSettingsScreen() {
             <span className="material-symbols-outlined" style={{ fontSize: 16 }}>
               error
             </span>
-            {isKz ? 'Қате орын алды' : 'Ошибка сохранения. Попробуйте ещё раз.'}
+            {t('retail.settings.saveError')}
           </div>
         )}
 
@@ -669,7 +648,7 @@ export default function RetailSettingsScreen() {
               paddingLeft: 4,
             }}
           >
-            {isKz ? 'МАГАЗИНГА ШАҚЫРУ' : 'ПРИГЛАШЕНИЕ В МАГАЗИН'}
+            {t('retail.settings.inviteTitle')}
           </div>
           <div
             style={{
@@ -710,12 +689,10 @@ export default function RetailSettingsScreen() {
               </div>
               <div>
                 <div style={{ fontSize: 15, color: 'var(--text)', fontWeight: 600 }}>
-                  {isKz ? 'QR-код арқылы қосылу' : 'Подключение по QR-коду'}
+                  {t('retail.settings.qrConnect')}
                 </div>
                 <div style={{ fontSize: 12, color: 'var(--text-sub)', marginTop: 2 }}>
-                  {isKz
-                    ? 'Клиенттер бұл кодты сканерлеп магазинге қосыла алады'
-                    : 'Клиенты сканируют код для входа в магазин'}
+                  {t('retail.settings.qrHint')}
                 </div>
               </div>
             </div>
@@ -742,13 +719,7 @@ export default function RetailSettingsScreen() {
               <span className="material-symbols-outlined" style={{ fontSize: 18 }}>
                 {showQR ? 'visibility_off' : 'qr_code'}
               </span>
-              {showQR
-                ? isKz
-                  ? 'Жасыру'
-                  : 'Скрыть QR-код'
-                : isKz
-                  ? 'QR-кодты көрсету'
-                  : 'Показать QR-код'}
+              {showQR ? t('retail.settings.hideQr') : t('retail.settings.showQr')}
             </button>
 
             {showQR && (
@@ -802,7 +773,7 @@ export default function RetailSettingsScreen() {
 
                 <div style={{ textAlign: 'center' }}>
                   <div style={{ fontSize: 12, color: 'var(--text-dim)', marginBottom: 4 }}>
-                    {isKz ? 'Сілтеме:' : 'Ссылка:'}
+                    {t('retail.settings.linkLabel')}
                   </div>
                   <div
                     style={{
@@ -841,7 +812,7 @@ export default function RetailSettingsScreen() {
                     <span className="material-symbols-outlined" style={{ fontSize: 16 }}>
                       content_copy
                     </span>
-                    {isKz ? 'Көшіру' : 'Копировать'}
+                    {t('retail.settings.copy')}
                   </button>
 
                   <button
@@ -863,7 +834,7 @@ export default function RetailSettingsScreen() {
                     <span className="material-symbols-outlined" style={{ fontSize: 16 }}>
                       download
                     </span>
-                    {isKz ? 'Жүктеу PNG' : 'Скачать PNG'}
+                    {t('retail.settings.downloadPng')}
                   </button>
                 </div>
               </div>
@@ -884,7 +855,7 @@ export default function RetailSettingsScreen() {
               paddingLeft: 4,
             }}
           >
-            {isKz ? 'ХАБАРЛАНДЫРУЛАР' : 'УВЕДОМЛЕНИЯ'}
+            {t('retail.settings.notifyTitle')}
           </div>
           <div
             style={{
@@ -906,12 +877,10 @@ export default function RetailSettingsScreen() {
                 <div
                   style={{ fontSize: 15, color: 'var(--text)', fontWeight: 500, marginBottom: 4 }}
                 >
-                  {isKz ? 'Жоқ тауарлар' : 'Отсутствующие товары'}
+                  {t('retail.settings.notifyMissingTitle')}
                 </div>
                 <div style={{ fontSize: 12, color: 'var(--text-sub)' }}>
-                  {isKz
-                    ? 'Сатып алушылар таба алмаған тауарлар туралы хабарлау'
-                    : 'Пуш-уведомление, если клиент не нашел товар'}
+                  {t('retail.settings.notifyMissingHint')}
                 </div>
               </div>
               <div
@@ -958,10 +927,10 @@ export default function RetailSettingsScreen() {
                 <div
                   style={{ fontSize: 15, color: 'var(--text)', fontWeight: 500, marginBottom: 4 }}
                 >
-                  {isKz ? 'Күнделікті есеп' : 'Ежедневный отчет'}
+                  {t('retail.settings.notifyDailyTitle')}
                 </div>
                 <div style={{ fontSize: 12, color: 'var(--text-sub)' }}>
-                  {isKz ? 'Кешкі сканерлеу статистикасы' : 'Сводка сканирований каждый вечер'}
+                  {t('retail.settings.notifyDailyHint')}
                 </div>
               </div>
               <div
@@ -1008,7 +977,7 @@ export default function RetailSettingsScreen() {
               paddingLeft: 4,
             }}
           >
-            {isKz ? 'ҚАУІПТІ АЙМАҚ' : 'ОПАСНАЯ ЗОНА'}
+            {t('retail.settings.dangerTitle')}
           </div>
           <div
             style={{
@@ -1028,12 +997,10 @@ export default function RetailSettingsScreen() {
             >
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 15, color: '#EF4444', fontWeight: 500, marginBottom: 4 }}>
-                  {isKz ? 'Каталогты тазарту' : 'Очистить каталог'}
+                  {t('retail.settings.clearCatalog')}
                 </div>
                 <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>
-                  {isKz
-                    ? 'Барлық жүктелген тауарларды өшіру'
-                    : 'Удалить все добавленные товары из системы'}
+                  {t('retail.settings.clearCatalogDesc')}
                 </div>
               </div>
               <button
@@ -1051,7 +1018,7 @@ export default function RetailSettingsScreen() {
                   flexShrink: 0,
                 }}
               >
-                {isKz ? 'Тазарту' : 'Сброс'}
+                {t('retail.settings.clearBtn')}
               </button>
             </div>
           </div>

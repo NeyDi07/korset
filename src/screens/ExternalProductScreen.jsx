@@ -3,7 +3,7 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { useProfile } from '../contexts/ProfileContext.jsx'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { buildProductAIPath, buildScanPath } from '../utils/routes.js'
-import { useI18n } from '../utils/i18n.js'
+import { useI18n } from '../i18n/index.js'
 import { useLocalName } from '../utils/localName.js'
 import { getDisplayQuantity } from '../utils/parseQuantity.js'
 import { ALLERGEN_NAMES, OFF_ALLERGEN_MAP } from '../constants/allergens.js'
@@ -29,7 +29,7 @@ function detectHalal(labelsTag = []) {
   return null
 }
 
-function toExternalProductShape(raw, lang) {
+function toExternalProductShape(raw, t) {
   if (!raw) return null
 
   // Already normalized canonical product from lookup/cache.
@@ -37,7 +37,7 @@ function toExternalProductShape(raw, lang) {
     const canonical = coerceProductEntity(raw)
     return {
       ean: canonical.ean,
-      name: canonical.name || (lang === 'kz' ? 'Белгісіз тауар' : 'Неизвестный товар'),
+      name: canonical.name || t('product.unknownProduct'),
       brand: canonical.brand || '',
       image: canonical.image || canonical.images?.[0] || null,
       quantity: canonical.quantity || '',
@@ -55,7 +55,7 @@ function toExternalProductShape(raw, lang) {
   const nutr = raw.nutriments || {}
   return {
     ean: raw.ean,
-    name: raw.product_name || (lang === 'kz' ? 'Белгісіз тауар' : 'Неизвестный товар'),
+    name: raw.product_name || t('product.unknownProduct'),
     brand: raw.brands || '',
     image: raw.image_front_url || null,
     quantity: raw.quantity || '',
@@ -122,10 +122,10 @@ function formatNutri(val) {
 
 function NutriGrid({ nutrition, t }) {
   const items = [
-    [t.product.protein, nutrition.protein, 'г'],
-    [t.product.fat, nutrition.fat, 'г'],
-    [t.product.carbs, nutrition.carbs, 'г'],
-    [t.product.kcal, nutrition.kcal, 'ккал'],
+    [t('product.protein'), nutrition.protein, 'г'],
+    [t('product.fat'), nutrition.fat, 'г'],
+    [t('product.carbs'), nutrition.carbs, 'г'],
+    [t('product.kcal'), nutrition.kcal, 'ккал'],
   ]
   if (!items.some(([, value]) => value != null)) return null
   return (
@@ -218,7 +218,7 @@ export default function ExternalProductScreen() {
     let cancelled = false
 
     if (navState?.product) {
-      const parsed = toExternalProductShape(navState.product, lang)
+      const parsed = toExternalProductShape(navState.product, t)
       setProduct(parsed)
       setFitResult(checkFit(parsed, profile, lang))
       setStatus('found')
@@ -240,7 +240,7 @@ export default function ExternalProductScreen() {
           return
         }
 
-        const parsed = toExternalProductShape({ ...data.product, ean }, lang)
+        const parsed = toExternalProductShape({ ...data.product, ean }, t)
         if (!parsed?.name) {
           if (!cancelled) setStatus('notfound')
           return
@@ -260,7 +260,7 @@ export default function ExternalProductScreen() {
     return () => {
       cancelled = true
     }
-  }, [ean, navState, lang, profile])
+  }, [ean, navState, lang, profile, t])
 
   const nutr = useMemo(() => product?.nutrition || product?.nutritionPer100 || {}, [product])
 
@@ -286,7 +286,7 @@ export default function ExternalProductScreen() {
             animation: 'spin 0.8s linear infinite',
           }}
         />
-        <p style={{ color: 'var(--text-dim)', fontSize: 14 }}>{t.product.searchingDb}</p>
+        <p style={{ color: 'var(--text-dim)', fontSize: 14 }}>{t('product.searchingDb')}</p>
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     )
@@ -315,10 +315,10 @@ export default function ExternalProductScreen() {
             color: 'var(--text)',
           }}
         >
-          {t.scan.notFoundTitle}
+          {t('scan.notFoundTitle')}
         </div>
         <p style={{ color: 'var(--text-dim)', fontSize: 14, lineHeight: 1.6 }}>
-          {status === 'error' ? t.product.noConnection : t.product.notFoundInDb}
+          {status === 'error' ? t('product.noConnection') : t('product.notFoundInDb')}
         </p>
         <p
           style={{ color: 'var(--text-dim)', fontSize: 12, fontFamily: 'monospace', opacity: 0.6 }}
@@ -330,10 +330,10 @@ export default function ExternalProductScreen() {
           style={{ marginTop: 8 }}
           onClick={() => navigate(buildScanPath(activeStoreSlug))}
         >
-          {t.common.scanAgain}
+          {t('common.scanAgain')}
         </button>
         <button className="btn btn-secondary btn-full" onClick={() => navigate(-1)}>
-          {t.common.back}
+          {t('common.back')}
         </button>
       </div>
     )
@@ -357,10 +357,10 @@ export default function ExternalProductScreen() {
           >
             <path d="M19 12H5M12 5l-7 7 7 7" />
           </svg>
-          {t.common.back}
+          {t('common.back')}
         </button>
         <div className="header-row">
-          <div className="screen-title">{t.product.title}</div>
+          <div className="screen-title">{t('product.title')}</div>
         </div>
       </div>
 
@@ -383,7 +383,7 @@ export default function ExternalProductScreen() {
                 opacity: 0.9,
               }}
             >
-              {t.product.foodCategory}
+              {t('product.foodCategory')}
             </span>
             <NutriscoreBadge grade={product.nutriscore} />
           </div>
@@ -432,7 +432,7 @@ export default function ExternalProductScreen() {
                 navigate(buildProductAIPath(activeStoreSlug, ean, true), { state: { product } })
               }
             >
-              {t.common.askAI}
+              {t('common.askAI')}
             </button>
           </div>
 
@@ -495,10 +495,10 @@ export default function ExternalProductScreen() {
                   fontFamily: 'var(--font-display)',
                 }}
               >
-                {fits ? t.product.fits : t.product.notFits}
+                {fits ? t('product.fits') : t('product.notFits')}
               </div>
               <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginTop: 2 }}>
-                {fits ? t.product.fitsDesc : t.product.notFitsDesc}
+                {fits ? t('product.fitsDesc') : t('product.notFitsDesc')}
               </div>
             </div>
           </div>
@@ -551,9 +551,9 @@ export default function ExternalProductScreen() {
           {hasNutr && (
             <>
               <div className="section-title" style={{ marginBottom: 8 }}>
-                {t.product.nutrition}{' '}
+                {t('product.nutrition')}{' '}
                 <span style={{ color: 'var(--text-dim)', fontSize: 12, fontWeight: 500 }}>
-                  {t.product.nutritionPer100}
+                  {t('product.nutritionPer100')}
                 </span>
               </div>
               <NutriGrid nutrition={nutr} t={t} />
@@ -567,7 +567,7 @@ export default function ExternalProductScreen() {
                 type="button"
                 onClick={() => setMoreOpen((prev) => !prev)}
               >
-                {moreOpen ? t.product.hide : t.product.more}
+                {moreOpen ? t('product.hide') : t('product.more')}
                 <span style={{ marginLeft: 8, opacity: 0.9 }} aria-hidden="true">
                   {moreOpen ? '▴' : '▾'}
                 </span>
@@ -577,7 +577,7 @@ export default function ExternalProductScreen() {
                   {product.ingredients && (
                     <div style={{ marginBottom: 10 }}>
                       <div style={{ fontSize: 12, color: 'var(--text-dim)', marginBottom: 6 }}>
-                        {t.product.ingredients}
+                        {t('product.ingredients')}
                       </div>
                       <div style={{ fontSize: 13, color: 'var(--text-sub)', lineHeight: 1.55 }}>
                         {product.ingredients}
@@ -587,7 +587,7 @@ export default function ExternalProductScreen() {
                   {product.allergens?.length > 0 && (
                     <div style={{ marginBottom: 10 }}>
                       <div style={{ fontSize: 12, color: 'var(--text-dim)', marginBottom: 6 }}>
-                        {t.product.allergens}
+                        {t('product.allergens')}
                       </div>
                       <div style={{ fontSize: 13, color: 'var(--text-sub)', lineHeight: 1.55 }}>
                         {product.allergens.map((item) => ALLERGEN_NAMES[item] || item).join(', ')}
@@ -597,7 +597,7 @@ export default function ExternalProductScreen() {
                   {nutr?.sugar != null && (
                     <div style={{ marginBottom: 10 }}>
                       <div style={{ fontSize: 12, color: 'var(--text-dim)', marginBottom: 6 }}>
-                        {t.product.sugarOf}
+                        {t('product.sugarOf')}
                       </div>
                       <div style={{ fontSize: 13, color: 'var(--text-sub)' }}>
                         {formatNutri(nutr.sugar)} г
@@ -607,7 +607,7 @@ export default function ExternalProductScreen() {
                   {nutr?.fiber != null && (
                     <div>
                       <div style={{ fontSize: 12, color: 'var(--text-dim)', marginBottom: 6 }}>
-                        {t.product.fiber}
+                        {t('product.fiber')}
                       </div>
                       <div style={{ fontSize: 13, color: 'var(--text-sub)' }}>
                         {formatNutri(nutr.fiber)} г

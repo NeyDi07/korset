@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { useI18n } from '../utils/i18n.js'
+import { useI18n } from '../i18n/index.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { getImageUrl } from '../utils/imageUrl.js'
 import { formatPrice } from '../utils/formatPrice.js'
@@ -384,7 +384,37 @@ export default function RetailDashboardScreen() {
   const [period, setPeriod] = useState(7)
   const [missedFilter, setMissedFilter] = useState('all')
 
-  const d = t.retail.dashboard
+  const d = useMemo(
+    () => ({
+      title: t('retail.dashboard.title'),
+      subtitle: t('retail.dashboard.subtitle'),
+      period7d: t('retail.dashboard.period7d'),
+      period30d: t('retail.dashboard.period30d'),
+      scansTitle: t('retail.dashboard.scansTitle'),
+      uniqueCustomers: t('retail.dashboard.uniqueCustomers'),
+      missedProducts: t('retail.dashboard.missedProducts'),
+      totalProducts: t('retail.dashboard.totalProducts'),
+      lostRevenue: t('retail.dashboard.lostRevenue'),
+      lostRevenueHint: t('retail.dashboard.lostRevenueHint'),
+      catalogCoverage: t('retail.dashboard.catalogCoverage'),
+      catalogCoverageHint: t('retail.dashboard.catalogCoverageHint'),
+      topProducts: t('retail.dashboard.topProducts'),
+      loadError: t('retail.dashboard.loadError'),
+      retry: t('retail.dashboard.retry'),
+      topEmpty: t('retail.dashboard.topEmpty'),
+      noDataSub: t('retail.dashboard.noDataSub'),
+      scans: t('retail.dashboard.scans'),
+      missedTitle: t('retail.dashboard.missedTitle'),
+      missedEmpty: t('retail.dashboard.missedEmpty'),
+      missedEmptySub: t('retail.dashboard.missedEmptySub'),
+      notInCatalog: t('retail.dashboard.notInCatalog'),
+      outOfStock: t('retail.dashboard.outOfStock'),
+      missedFilterAll: t('retail.dashboard.missedFilterAll'),
+      missedFilterNotInCatalog: t('retail.dashboard.missedFilterNotInCatalog'),
+      missedFilterOutOfStock: t('retail.dashboard.missedFilterOutOfStock'),
+    }),
+    [t]
+  )
   const enabled = Boolean(storeId)
   const periodLabel = period === 7 ? d.period7d : d.period30d
 
@@ -527,7 +557,7 @@ export default function RetailDashboardScreen() {
           loading={scansQ.isLoading}
         />
         <MetricCard
-          label={d.uniqueCustomers ?? 'Покупателей'}
+          label={d.uniqueCustomers}
           sub={periodLabel}
           value={uniqueQ.isError ? '—' : (uniqueQ.data ?? 0).toLocaleString()}
           icon="group"
@@ -577,7 +607,7 @@ export default function RetailDashboardScreen() {
             <span className="material-symbols-outlined" style={{ fontSize: 14, color: '#F87171' }}>
               trending_down
             </span>
-            {d.lostRevenue ?? 'Упущённая выручка'}
+            {d.lostRevenue}
           </div>
           {lostQ.isLoading ? (
             <div className="retail-skel" style={{ height: 28, width: 120, borderRadius: 6 }} />
@@ -595,7 +625,7 @@ export default function RetailDashboardScreen() {
             </div>
           )}
           <div style={{ fontSize: 11, color: 'var(--text-dim)' }}>
-            {periodLabel} · {d.lostRevenueHint ?? 'Оценочно — товары искали, но не нашли'}
+            {periodLabel} · {d.lostRevenueHint}
           </div>
         </div>
         <span
@@ -635,7 +665,7 @@ export default function RetailDashboardScreen() {
             <span className="material-symbols-outlined" style={{ fontSize: 14, color: '#38BDF8' }}>
               fact_check
             </span>
-            {d.catalogCoverage ?? 'Покрытие каталога'}
+            {d.catalogCoverage}
           </div>
           <div
             style={{
@@ -677,7 +707,7 @@ export default function RetailDashboardScreen() {
           />
         </div>
         <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 5 }}>
-          {d.catalogCoverageHint ?? 'Доля сканов где товар нашёлся в наличии'}
+          {d.catalogCoverageHint}
         </div>
       </div>
 

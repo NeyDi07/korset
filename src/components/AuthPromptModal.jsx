@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { buildAuthNavigateState } from '../utils/authFlow.js'
-import { useI18n } from '../utils/i18n.js'
+import { useI18n } from '../i18n/index.js'
 
 /**
  * AuthPromptModal — non-destructive bottom-sheet modal that nudges a guest
@@ -61,7 +61,7 @@ export default function AuthPromptModal({ open, onClose, title, description }) {
     navigate('/auth', {
       state: buildAuthNavigateState(location, {
         reason: 'profile_required',
-        message: t.profile.authRequiredMsg,
+        message: t('profile.authRequiredMsg'),
       }),
     })
   }
@@ -153,7 +153,7 @@ export default function AuthPromptModal({ open, onClose, title, description }) {
                 lineHeight: 1.3,
               }}
             >
-              {title || t.profile.authPromptTitle}
+              {title || t('profile.authPromptTitle')}
             </div>
           </div>
 
@@ -166,7 +166,7 @@ export default function AuthPromptModal({ open, onClose, title, description }) {
               margin: '0 0 22px',
             }}
           >
-            {description || t.profile.authPromptDesc}
+            {description || t('profile.authPromptDesc')}
           </p>
 
           {/* Buttons */}
@@ -187,7 +187,7 @@ export default function AuthPromptModal({ open, onClose, title, description }) {
                 fontFamily: 'var(--font-body, var(--font-display))',
               }}
             >
-              {t.profile.authPromptCancel}
+              {t('profile.authPromptCancel')}
             </button>
             <button
               type="button"
@@ -206,7 +206,7 @@ export default function AuthPromptModal({ open, onClose, title, description }) {
                 boxShadow: '0 6px 18px rgba(124,58,237,0.32)',
               }}
             >
-              {t.profile.authPromptConfirm}
+              {t('profile.authPromptConfirm')}
             </button>
           </div>
         </div>

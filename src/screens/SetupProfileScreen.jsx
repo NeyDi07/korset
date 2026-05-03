@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../utils/supabase.js'
 import { useAuth } from '../contexts/AuthContext.jsx'
@@ -7,7 +7,7 @@ import {
   writeCachedProfileAvatar,
   writeCachedProfileName,
 } from '../utils/userIdentity.js'
-import { useI18n } from '../utils/i18n.js'
+import { useI18n } from '../i18n/index.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { AVATAR_PRESETS } from '../constants/avatarPresets.js'
 import ProfileAvatar from '../components/ProfileAvatar.jsx'
@@ -124,7 +124,7 @@ function AvatarChoice({ selected, onClick, children }) {
 function AvatarGrid({
   fileInputRef,
   uploadingAvatar,
-  texts,
+  t,
   customAvatarUrl,
   selectedAvatarId,
   setSelectedAvatarId,
@@ -186,7 +186,7 @@ function AvatarGrid({
               </svg>
             </div>
             <div style={{ fontSize: 12, fontWeight: 600 }}>
-              {uploadingAvatar ? '...' : texts.gallery}
+              {uploadingAvatar ? '...' : t('profileSetup.gallery')}
             </div>
           </div>
         </button>
@@ -245,7 +245,7 @@ export default function SetupProfileScreen() {
   const [searchParams] = useSearchParams()
   const { currentStore } = useStore()
   const { user, displayName, avatarId, refreshAccountProfile, applyProfileSnapshot } = useAuth()
-  const { lang } = useI18n()
+  const { t } = useI18n()
   const fileInputRef = useRef(null)
 
   const editMode = searchParams.get('mode') === 'edit'
@@ -282,31 +282,6 @@ export default function SetupProfileScreen() {
     selectedAvatarId === 'custom' ? Boolean(customAvatarUrl) : Boolean(selectedAvatarId)
   const progress = (step / stepCount) * 100
 
-  const texts = useMemo(
-    () => ({
-      setupTitle: lang === 'kz' ? 'Профильді аяқтау' : 'Завершите профиль',
-      setupSubtitle:
-        lang === 'kz' ? 'Атыңызды және аватарыңызды баптаңыз' : 'Укажите имя и выберите аватар',
-      editTitle: lang === 'kz' ? 'Профильді өңдеу' : 'Редактировать профиль',
-      nameLabel: lang === 'kz' ? 'Аты немесе лақап аты' : 'Имя или псевдоним',
-      namePlaceholder: lang === 'kz' ? 'Атыңызды енгізіңіз' : 'Введите имя',
-      avatarTitle: lang === 'kz' ? 'Аватар' : 'Аватар',
-      avatarSubtitle:
-        lang === 'kz'
-          ? 'Фото жүктеңіз немесе дайын нұсқаны таңдаңыз'
-          : 'Загрузите фото или выберите готовый вариант',
-      save: lang === 'kz' ? 'Сақтау' : 'Сохранить',
-      continue: lang === 'kz' ? 'Жалғастыру' : 'Продолжить',
-      finish: lang === 'kz' ? 'Дайын' : 'Готово',
-      gallery: lang === 'kz' ? 'Галерея' : 'Галерея',
-      invalid:
-        lang === 'kz' ? 'Тек әріптер, сандар және бос орын' : 'Только буквы, цифры и пробелы',
-      minName:
-        lang === 'kz' ? 'Аты кемінде 3 таңбадан тұруы керек' : 'Имя должно быть минимум из 3 букв',
-    }),
-    [lang]
-  )
-
   const goBack = () => {
     if (editMode) {
       navigate(backTarget)
@@ -321,11 +296,11 @@ export default function SetupProfileScreen() {
     const regex = /^[a-zA-Zа-яА-ЯәіңғүұқөһӘІҢҒҮҰҚӨҺ0-9\s]*$/
     setName(value)
     if (!regex.test(value)) {
-      setNameError(texts.invalid)
+      setNameError(t('profileSetup.invalid'))
       return
     }
     if (value.trim().length > 0 && value.trim().length < 3) {
-      setNameError(texts.minName)
+      setNameError(t('profileSetup.minName'))
       return
     }
     setNameError('')
@@ -346,7 +321,7 @@ export default function SetupProfileScreen() {
       setCustomAvatarUrl(data.publicUrl)
       setSelectedAvatarId('custom')
     } catch (error) {
-      alert(error.message || 'Ошибка загрузки фото')
+      alert(error.message || t('common.photoUploadError'))
     } finally {
       setUploadingAvatar(false)
       if (event.target) event.target.value = ''
@@ -461,7 +436,7 @@ export default function SetupProfileScreen() {
                 letterSpacing: '-0.02em',
               }}
             >
-              {texts.editTitle}
+              {t('profileSetup.editTitle')}
             </h1>
           </div>
 
@@ -476,7 +451,7 @@ export default function SetupProfileScreen() {
                 marginBottom: 12,
               }}
             >
-              {texts.nameLabel}
+              {t('profileSetup.nameLabel')}
             </div>
             <div
               style={{
@@ -490,7 +465,7 @@ export default function SetupProfileScreen() {
                 value={name}
                 onChange={handleNameChange}
                 maxLength={24}
-                placeholder={texts.namePlaceholder}
+                placeholder={t('profileSetup.namePlaceholder')}
                 style={{
                   width: '100%',
                   background: 'transparent',
@@ -526,7 +501,7 @@ export default function SetupProfileScreen() {
                 marginBottom: 12,
               }}
             >
-              {texts.avatarTitle}
+              {t('profileSetup.avatarTitle')}
             </div>
             <div
               style={{
@@ -536,12 +511,12 @@ export default function SetupProfileScreen() {
                 marginBottom: 18,
               }}
             >
-              {texts.avatarSubtitle}
+              {t('profileSetup.avatarSubtitle')}
             </div>
             <AvatarGrid
               fileInputRef={fileInputRef}
               uploadingAvatar={uploadingAvatar}
-              texts={texts}
+              t={t}
               customAvatarUrl={customAvatarUrl}
               selectedAvatarId={selectedAvatarId}
               setSelectedAvatarId={setSelectedAvatarId}
@@ -567,7 +542,7 @@ export default function SetupProfileScreen() {
               boxShadow: loading ? 'none' : '0 18px 36px rgba(124,58,237,0.24)',
             }}
           >
-            {loading ? '...' : texts.save}
+            {loading ? '...' : t('profileSetup.save')}
           </button>
         </div>
       </div>
@@ -624,7 +599,7 @@ export default function SetupProfileScreen() {
             <div
               style={{ fontSize: 12, fontWeight: 700, color: '#A78BFA', letterSpacing: '0.12em' }}
             >
-              {lang === 'kz' ? `${step} / ${stepCount}` : `ШАГ ${step} ИЗ ${stepCount}`}
+              {t('profileSetup.stepOf', { step, stepCount })}
             </div>
           </div>
           <div style={{ width: 42 }} />
@@ -661,7 +636,7 @@ export default function SetupProfileScreen() {
                 marginBottom: 14,
               }}
             >
-              {texts.nameLabel}
+              {t('profileSetup.nameLabel')}
             </div>
             <div
               style={{
@@ -672,7 +647,7 @@ export default function SetupProfileScreen() {
                 marginBottom: 10,
               }}
             >
-              {texts.setupTitle}
+              {t('profileSetup.setupTitle')}
             </div>
             <div
               style={{
@@ -682,7 +657,7 @@ export default function SetupProfileScreen() {
                 marginBottom: 18,
               }}
             >
-              {texts.setupSubtitle}
+              {t('profileSetup.setupSubtitle')}
             </div>
             <div
               style={{
@@ -696,7 +671,7 @@ export default function SetupProfileScreen() {
                 value={name}
                 onChange={handleNameChange}
                 maxLength={24}
-                placeholder={texts.namePlaceholder}
+                placeholder={t('profileSetup.namePlaceholder')}
                 style={{
                   width: '100%',
                   background: 'transparent',
@@ -732,7 +707,7 @@ export default function SetupProfileScreen() {
                 marginBottom: 14,
               }}
             >
-              {texts.avatarTitle}
+              {t('profileSetup.avatarTitle')}
             </div>
             <div
               style={{
@@ -743,7 +718,7 @@ export default function SetupProfileScreen() {
                 marginBottom: 10,
               }}
             >
-              {lang === 'kz' ? 'Аватарды таңдаңыз' : 'Выберите аватар'}
+              {t('profileSetup.chooseAvatar')}
             </div>
             <div
               style={{
@@ -753,12 +728,12 @@ export default function SetupProfileScreen() {
                 marginBottom: 18,
               }}
             >
-              {texts.avatarSubtitle}
+              {t('profileSetup.avatarSubtitle')}
             </div>
             <AvatarGrid
               fileInputRef={fileInputRef}
               uploadingAvatar={uploadingAvatar}
-              texts={texts}
+              t={t}
               customAvatarUrl={customAvatarUrl}
               selectedAvatarId={selectedAvatarId}
               setSelectedAvatarId={setSelectedAvatarId}
@@ -787,7 +762,7 @@ export default function SetupProfileScreen() {
             boxShadow: loading ? 'none' : '0 18px 36px rgba(124,58,237,0.24)',
           }}
         >
-          {loading ? '...' : step === 1 ? texts.continue : texts.finish}
+          {loading ? '...' : step === 1 ? t('profileSetup.continue') : t('profileSetup.finish')}
         </button>
       </div>
     </div>
