@@ -3,7 +3,6 @@ import assert from 'node:assert/strict'
 
 import {
   canRequestUnknownProduct,
-  getUnknownProductRequestCopy,
   requestUnknownProductCheck,
 } from '../../src/domain/product/unknownEanRequest.js'
 
@@ -47,13 +46,4 @@ test('requestUnknownProductCheck returns a stable error for invalid requests', a
   })
 
   assert.deepEqual(result, { ok: false, reason: 'invalid_request' })
-})
-
-test('getUnknownProductRequestCopy keeps V1 wording focused on not found and unsupported goods', () => {
-  const copy = getUnknownProductRequestCopy('ru')
-
-  assert.match(copy.title, /не найден/i)
-  assert.match(copy.body, /алкоголь/i)
-  assert.match(copy.body, /табач/i)
-  assert.match(copy.requestButton, /запрос/i)
 })

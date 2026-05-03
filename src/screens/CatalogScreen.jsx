@@ -15,7 +15,7 @@ import { useStore } from '../contexts/StoreContext.jsx'
 import { useOffline } from '../contexts/OfflineContext.jsx'
 import { useI18n } from '../i18n/index.js'
 import { getLocalName } from '../utils/localName.js'
-import { getGlobalDemoProducts, getStoreCatalogProducts } from '../utils/storeCatalog.js'
+import { getStoreCatalogProducts } from '../utils/storeCatalog.js'
 import { getCatalogFromIndexedDB } from '../utils/offlineDB.js'
 import { buildProductPath, buildComparePath } from '../utils/routes.js'
 import { supabase } from '../utils/supabase.js'
@@ -128,8 +128,7 @@ export default function CatalogScreen() {
   const baseProducts = useMemo(() => {
     if (storeId && catalogProducts.length > 0) return catalogProducts
     if (!isOnline && offlineCatalog.length > 0) return offlineCatalog
-    if (currentStore?.slug) return getStoreCatalogProducts(currentStore.slug)
-    return getGlobalDemoProducts()
+    return []
   }, [storeId, catalogProducts, currentStore, isOnline, offlineCatalog])
 
   const categoryCountMap = useMemo(() => {

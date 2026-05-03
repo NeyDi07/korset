@@ -9,7 +9,7 @@ import { useI18n } from '../i18n/index.js'
 import { useLocalName } from '../utils/localName.js'
 import { getDisplayQuantity } from '../utils/parseQuantity.js'
 import { checkProductFit, formatPrice, getCategoryLabel } from '../utils/fitCheck.js'
-import { resolveProductByRef, getDemoProductForEntity } from '../domain/product/resolver.js'
+import { resolveProductByRef } from '../domain/product/resolver.js'
 import { coerceProductEntity } from '../domain/product/normalizers.js'
 import { HeartIcon } from '../components/icons/HeartIcon.jsx'
 
@@ -167,7 +167,6 @@ export default function UnifiedProductScreen({ mode = 'canonical' }) {
     }
   }, [id, ean, mode, location.state, storeId])
 
-  const demoProduct = useMemo(() => getDemoProductForEntity(product), [product])
   const fitResult = useMemo(
     () => (product ? checkProductFit(product, profile) : { fits: true, reasons: [] }),
     [product, profile]
@@ -385,9 +384,9 @@ export default function UnifiedProductScreen({ mode = 'canonical' }) {
             </button>
             <button
               className="btn btn-secondary btn-full"
-              disabled={!demoProduct}
+              disabled={!product}
               onClick={goToAlternatives}
-              style={{ opacity: demoProduct ? 1 : 0.5 }}
+              style={{ opacity: product ? 1 : 0.5 }}
             >
               {t('common.alternatives')}
             </button>

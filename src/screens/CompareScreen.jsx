@@ -95,7 +95,7 @@ function getMfrText(product) {
 }
 
 // ── Row definitions ──────────────────────────────────────────────────────────
-function buildRows(productA, productB, t) {
+function buildRows(productA, productB, t, lang) {
   const cat = productA.category || productB.category
   const rows = []
 
@@ -275,7 +275,7 @@ export default function CompareScreen() {
 
   const rows = useMemo(() => {
     if (!productA || !productB) return []
-    return buildRows(productA, productB, t)
+    return buildRows(productA, productB, t, lang)
   }, [productA, productB, t])
 
   // LLM call after initial render

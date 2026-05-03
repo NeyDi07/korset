@@ -5,11 +5,7 @@ import { useI18n } from '../i18n/index.js'
 import { useLocalName, getLocalName } from '../utils/localName.js'
 import { useStore } from '../contexts/StoreContext.jsx'
 import { checkProductFit, formatPrice } from '../utils/fitCheck.js'
-import {
-  getAnyKnownProductByRef,
-  getGlobalDemoProducts,
-  getStoreCatalogProducts,
-} from '../utils/storeCatalog.js'
+import { getAnyKnownProductByRef, getStoreCatalogProducts } from '../utils/storeCatalog.js'
 import { buildProductAIPath, buildProductPath } from '../utils/routes.js'
 
 export default function AlternativesScreen() {
@@ -25,10 +21,7 @@ export default function AlternativesScreen() {
     () => getAnyKnownProductByRef(ean, activeStoreSlug),
     [ean, activeStoreSlug]
   )
-  const baseProducts = useMemo(
-    () => (activeStoreSlug ? getStoreCatalogProducts(activeStoreSlug) : getGlobalDemoProducts()),
-    [activeStoreSlug]
-  )
+  const baseProducts = useMemo(() => getStoreCatalogProducts(activeStoreSlug), [activeStoreSlug])
 
   const alternatives = useMemo(() => {
     if (!product) return []

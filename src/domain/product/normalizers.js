@@ -25,39 +25,6 @@ const OFF_ALLERGEN_MAP = {
   'en:soy': 'soy', // alias для en:soybeans (встречается в старых дампах OFF)
 }
 
-export function normalizeDemoProduct(row) {
-  return withProductImage(
-    enrichQuantity(
-      createEmptyProduct({
-        source: 'demo',
-        demoId: row.id,
-        ean: row.ean,
-        name: row.name,
-        brand: row.manufacturer?.name || row.brand || null,
-        category: row.category || 'grocery',
-        subcategory: row.subcategory || null,
-        quantity: row.quantity || row.specs?.weight || null,
-        group: row.group || null,
-        images: row.images || [],
-        description: row.description || null,
-        ingredients: row.ingredients || null,
-        allergens: normalizeStringArray(row.allergens),
-        dietTags: normalizeStringArray(row.dietTags),
-        tags: normalizeStringArray(row.tags),
-        halalStatus: normalizeHalalStatus(row.halalStatus ?? row.halal),
-        nutritionPer100: normalizeNutrition(row.nutritionPer100 || row.nutrition),
-        manufacturer: normalizeManufacturer(row.manufacturer, row.country),
-        specs: normalizeSpecs(row.specs),
-        priceKzt: row.priceKzt,
-        shelf: row.shelf || null,
-        stockStatus: row.stockStatus || null,
-        nutriscore: normalizeNutriscore(row.nutriscore),
-        qualityScore: row.qualityScore ?? null,
-      })
-    )
-  )
-}
-
 export function normalizeGlobalProduct(row, storeOverlay = null) {
   const product = enrichQuantity(
     createEmptyProduct({
@@ -151,7 +118,8 @@ export function normalizeCacheProduct(row) {
   return withProductImage(product)
 }
 
-export function normalizeOFFProduct(ean, product, enrichment = null) {
+// @deprecated — OFF removed; kept for reference only
+function _normalizeOFFProduct_UNUSED(ean, product, enrichment = null) {
   const allergens = [
     ...new Set(
       (product.allergens_tags || product.allergens_hierarchy || [])
@@ -240,12 +208,8 @@ export function coerceProductEntity(productLike) {
       'qualityScore' in productLike)
   if (hasGlobalShape) return withProductImage(enrichQuantity(createEmptyProduct(productLike)))
 
-  if (productLike.id && String(productLike.id).startsWith('p'))
-    return normalizeDemoProduct(productLike)
   if (productLike.normalized_name || productLike.normalized_nutriments_json)
     return normalizeCacheProduct(productLike)
-  if (productLike.product_name || productLike.nutriments || productLike.allergens_tags)
-    return normalizeOFFProduct(productLike.ean, productLike)
   if (productLike.ingredients_raw || productLike.halal_status || productLike.nutriments_json)
     return normalizeGlobalProduct(productLike)
 

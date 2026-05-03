@@ -369,7 +369,7 @@ function ShelfField({ productId, initialShelf, p, shelfMutation }) {
         value={draft}
         onChange={(e) => setDraft(e.target.value)}
         onBlur={handleBlur}
-        placeholder={t('common.shelfPlaceholder')}
+        placeholder={p.shelfPlaceholder}
         style={{
           width: '100%',
           fontSize: 15,
@@ -1176,6 +1176,7 @@ export default function RetailProductsScreen() {
       saveError: t('retail.products.saveError'),
       priceLabel: t('retail.products.priceLabel'),
       shelfLabel: t('retail.products.shelfLabel'),
+      shelfPlaceholder: t('common.shelfPlaceholder'),
       inStock: t('retail.products.inStock'),
       lowStock: t('retail.products.lowStock'),
       outOfStock: t('retail.products.outOfStock'),

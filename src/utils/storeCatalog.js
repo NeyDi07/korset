@@ -1,6 +1,3 @@
-import products from '../data/products.json'
-import { STORE_PRODUCT_MAP } from '../data/stores.js'
-import { getStoreInventory } from '../data/storeInventories.js'
 import { supabase } from './supabase.js'
 import { parseJson } from '../domain/product/model.js'
 import { enrichQuantity } from './parseQuantity.js'
@@ -43,45 +40,24 @@ function applyStoreOverlay(product, overlay = null, storeSlug = null) {
   }
 }
 
-function getBaseProducts() {
-  return products.filter((product) => product?.ean)
-}
-
 export function getGlobalDemoProducts() {
-  return getBaseProducts().map((product) => applyStoreOverlay(product))
+  return []
 }
 
 export function getStoreCatalogProducts(storeSlug) {
-  if (!storeSlug || !STORE_PRODUCT_MAP[storeSlug]) return []
-  const allowedEans = new Set(STORE_PRODUCT_MAP[storeSlug])
-  const inventoryMap = new Map(getStoreInventory(storeSlug).map((item) => [item.ean, item]))
-
-  return getBaseProducts()
-    .filter((product) => allowedEans.has(product.ean))
-    .map((product) => applyStoreOverlay(product, inventoryMap.get(product.ean) || null, storeSlug))
+  return []
 }
 
-export function getGlobalProductByEan(ean) {
-  return getGlobalDemoProducts().find((product) => matchesProductEan(product, ean)) || null
+export function getGlobalProductByEan(_ean) {
+  return null
 }
 
-export function getStoreCatalogProductByEan(storeSlug, ean) {
-  return (
-    getStoreCatalogProducts(storeSlug).find((product) => matchesProductEan(product, ean)) || null
-  )
+export function getStoreCatalogProductByEan(_storeSlug, _ean) {
+  return null
 }
 
-export function getAnyKnownProductByRef(ref, storeSlug = null) {
-  if (!ref) return null
-  return (
-    getStoreCatalogProducts(storeSlug).find(
-      (product) => matchesProductEan(product, ref) || product.id === ref
-    ) ||
-    getGlobalDemoProducts().find(
-      (product) => matchesProductEan(product, ref) || product.id === ref
-    ) ||
-    null
-  )
+export function getAnyKnownProductByRef(_ref, _storeSlug = null) {
+  return null
 }
 
 export function getProductByEan(ean, storeSlug = null) {

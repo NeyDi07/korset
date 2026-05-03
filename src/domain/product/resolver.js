@@ -1,4 +1,3 @@
-import localProducts from '../../data/products.json'
 import { supabase } from '../../utils/supabase.js'
 import { enrichProductAI } from '../../services/ai.js'
 import { getGlobalProductByEan, getStoreCatalogProductByEan } from '../../utils/storeCatalog.js'
@@ -16,7 +15,6 @@ import {
 } from '../../utils/userIdentity.js'
 import { getProductFromIndexedDB, addPendingScan } from '../../utils/offlineDB.js'
 import {
-  normalizeDemoProduct,
   normalizeGlobalProduct,
   normalizeCacheProduct,
   coerceProductEntity,
@@ -38,29 +36,6 @@ const CATALOG_ONLINE_TTL_MS = 60 * 60 * 1000
 export function notifyCatalogWarmed(storeId) {
   _catalogCachedAt = Date.now()
   _catalogWarmedStoreId = storeId || null
-}
-
-const demoProducts = localProducts.map(normalizeDemoProduct)
-const demoById = new Map(demoProducts.map((product) => [product.demoId, product]))
-const demoByEan = new Map(demoProducts.map((product) => [product.ean, product]))
-
-export function getDemoProductById(id) {
-  return id ? demoById.get(id) || null : null
-}
-
-export function getDemoProductByEan(ean) {
-  return ean ? demoByEan.get(String(ean)) || null : null
-}
-
-export function getAllDemoProducts() {
-  return demoProducts.slice()
-}
-
-export function getDemoProductForEntity(product) {
-  if (!product) return null
-  return (
-    getDemoProductById(product.demoId || product.id) || getDemoProductByEan(product.ean) || null
-  )
 }
 
 async function findStoreProduct(ean, storeId) {
@@ -428,19 +403,6 @@ async function _resolveProductByEanImpl(normalizedEan, storeId, options) {
   }
 
   if (isOffline) {
-    // Fallback в offline: demo product если есть в локальных данных
-    const demoProduct = coerceProductEntity(
-      getGlobalProductByEan(normalizedEan) || getDemoProductByEan(normalizedEan)
-    )
-    if (demoProduct) {
-      return finalizeResolvedProduct(demoProduct, {
-        ean: normalizedEan,
-        foundStatus: 'found_global',
-        storeId,
-        fitResult: options.fitResult,
-        logScan: options.logScan,
-      })
-    }
     if (options.logScan) {
       await Promise.allSettled([
         logScan({
@@ -518,18 +480,10 @@ export async function resolveProductByEan(ean, storeId = null, options = {}) {
 
 export async function resolveProductByRef(ref = {}, storeId = null) {
   const routeRef =
-    ref.canonicalId && !ref.id && !ref.ean && !ref.demoId
-      ? parseRouteProductRef(ref.canonicalId)
-      : ref
+    ref.canonicalId && !ref.id && !ref.ean ? parseRouteProductRef(ref.canonicalId) : ref
 
-  const demoId = routeRef.demoId || null
   const globalId = routeRef.id && isUuid(routeRef.id) ? routeRef.id : null
   const ean = routeRef.ean || null
-
-  if (demoId) {
-    const demoProduct = getDemoProductById(demoId)
-    if (demoProduct) return demoProduct
-  }
 
   if (globalId) {
     const globalProduct = await findGlobalProductById(globalId)
@@ -542,10 +496,6 @@ export async function resolveProductByRef(ref = {}, storeId = null) {
 
   if (routeRef.canonicalId) {
     const parsed = parseRouteProductRef(routeRef.canonicalId)
-    if (parsed.demoId) {
-      const demoProduct = getDemoProductById(parsed.demoId)
-      if (demoProduct) return demoProduct
-    }
     if (parsed.id) {
       const globalProduct = await findGlobalProductById(parsed.id)
       if (globalProduct) return globalProduct
@@ -608,7 +558,7 @@ async function hydrateProductRefs(rows) {
     }
   }
 
-  const missingCacheEans = eans.filter((ean) => !globalByEan.has(ean) && !demoByEan.has(ean))
+  const missingCacheEans = eans.filter((ean) => !globalByEan.has(ean))
   if (missingCacheEans.length) {
     const { data } = await supabase
       .from('external_product_cache')
@@ -624,8 +574,6 @@ async function hydrateProductRefs(rows) {
     if (row.global_product_id && globalById.has(row.global_product_id))
       product = globalById.get(row.global_product_id)
     if (!product && row.ean && globalByEan.has(row.ean)) product = globalByEan.get(row.ean)
-    if (!product && row.ean) product = coerceProductEntity(getGlobalProductByEan(row.ean)) || null
-    if (!product && row.ean && demoByEan.has(row.ean)) product = demoByEan.get(row.ean)
     if (!product && row.ean && cacheByEan.has(row.ean)) product = cacheByEan.get(row.ean)
     if (!product && row.ean)
       product = coerceProductEntity({ ean: row.ean, name: `Товар ${row.ean}`, source: 'unknown' })

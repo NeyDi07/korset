@@ -1,5 +1,3 @@
-// NOTE: getGlobalDemoProducts импортируется лениво в getAlternatives — чтобы unit-тесты checkProductFit
-// не тянули products.json (Node статик-импорт JSON требует with { type: 'json' }, чего Vite раньше не делал).
 import { ALLERGEN_NAMES, getAllergenName } from '../constants/allergens.js'
 import { formatPrice } from './formatPrice.js'
 import {
@@ -562,11 +560,9 @@ export function checkProductFit(product, profile) {
   }
 }
 
-// Async версия — использует dynamic import для изоляции products.json от unit-тестов fitCheck.
 export async function getAlternatives(product, profile) {
-  const { getGlobalDemoProducts } = await import('./storeCatalog.js')
   const priority = profile.priority || 'balanced'
-  const baseProducts = getGlobalDemoProducts()
+  const baseProducts = []
 
   const sortFn = (a, b) => {
     if (priority === 'price') return (a.priceKzt || Infinity) - (b.priceKzt || Infinity)

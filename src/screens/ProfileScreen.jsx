@@ -355,7 +355,7 @@ function MoonGlyph({ filled }) {
  * a tactile, animated feel without any of the layout-based jankiness
  * that the previous (sliding thumb + box-shadow) implementation had.
  */
-function ThemeModeToggle({ theme, onToggle, label }) {
+function ThemeModeToggle({ theme, onToggle, label, t }) {
   return (
     <SegmentedToggle
       ariaLabel={label}
@@ -1289,6 +1289,7 @@ export default function ProfileScreen() {
                       theme={theme}
                       onToggle={toggleTheme}
                       label={`${t('profile.theme')}: ${theme === 'light' ? 'Light' : 'Dark'}`}
+                      t={t}
                     />
                   ),
                 },

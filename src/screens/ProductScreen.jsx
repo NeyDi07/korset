@@ -16,7 +16,6 @@ import { coerceProductEntity } from '../domain/product/normalizers.js'
 import { resolveProductByEan, enrichmentEvents } from '../domain/product/resolver.js'
 import {
   canRequestUnknownProduct,
-  getUnknownProductRequestCopy,
   requestUnknownProductCheck,
 } from '../domain/product/unknownEanRequest.js'
 import {
@@ -150,7 +149,6 @@ export default function ProductScreen() {
 
   const product = fullProduct || baseProduct
   const localName = useLocalName(product)
-  const unknownCopy = getUnknownProductRequestCopy(lang)
   const canRequestUnknown = canRequestUnknownProduct({ ean, storeId })
 
   const isFavorite = checkIsFavorite(product?.ean)
@@ -269,10 +267,10 @@ export default function ProductScreen() {
           </div>
           <div>
             <p style={{ color: 'var(--text)', fontSize: 20, fontWeight: 800, marginBottom: 8 }}>
-              {unknownCopy.title}
+              {t('product.unknownEan.title')}
             </p>
             <p style={{ color: 'var(--text-sub)', fontSize: 14, lineHeight: 1.65, margin: 0 }}>
-              {unknownCopy.body}
+              {t('product.unknownEan.body')}
             </p>
           </div>
           {ean && (
@@ -297,12 +295,14 @@ export default function ProductScreen() {
               onClick={handleUnknownProductRequest}
               disabled={unknownRequestStatus === 'sending' || unknownRequestStatus === 'sent'}
             >
-              {unknownRequestStatus === 'sent' ? unknownCopy.requested : unknownCopy.requestButton}
+              {unknownRequestStatus === 'sent'
+                ? t('product.unknownEan.requested')
+                : t('product.unknownEan.requestButton')}
             </button>
           )}
           {unknownRequestStatus === 'error' && (
             <p style={{ color: 'var(--red)', fontSize: 12, margin: 0 }}>
-              {unknownCopy.requestFailed}
+              {t('product.unknownEan.requestFailed')}
             </p>
           )}
           <button
@@ -310,7 +310,7 @@ export default function ProductScreen() {
             style={{ marginTop: canRequestUnknown ? 0 : 8 }}
             onClick={() => navigate(buildCatalogPath(activeStoreSlug))}
           >
-            {canRequestUnknown ? unknownCopy.scanAnother : t('product.backToList')}
+            {canRequestUnknown ? t('product.unknownEan.scanAnother') : t('product.backToList')}
           </button>
         </div>
       </div>
