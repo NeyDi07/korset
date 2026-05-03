@@ -259,6 +259,12 @@ Pipeline: arbuz-import, arbuz-catalog-parser, korzinavdom-parser — все ис
 - IMPLEMENTED 2026-05-03: V1 unknown EAN request slice. `ProductScreen` not-found state now shows unsupported alcohol/tobacco wording and a "Request product check" action for valid EAN + store id. Logic lives in `src/domain/product/unknownEanRequest.js`, tests in `tests/unit/unknownEanRequest.test.mjs`. After the i18n migration landed, the copy was moved into `src/locales/{ru,kz}/product.json` under `product.unknownEan.*`; domain helper remains copy-free.
 - POST-I18N ADAPTATION 2026-05-03: Verified the new i18n architecture (`src/i18n/*`, flat locale JSON, RU fallback, Intl format helpers, `check-i18n`). Fixed safe migration seams: `CompareScreen` rows now include `lang` in `useMemo` deps, `ThemeModeToggle` receives `t` explicitly, and Retail Products shelf placeholder comes from the translation props. Verification: unknown EAN test passed, i18n unit tests passed via direct Node runs, `check-i18n` passed, `npm run build` passed, `npm run lint` passed with warnings only.
 - SCANSCREEN REDESIGN PREP 2026-05-03: User provided a light-theme ScanScreen visual reference and SVG icons. First safe step completed before redesign: `src/screens/ScanScreen.jsx` now has inline SVG components for gallery, torch on/off, compare active mirror state, history placeholder, and camera-switch filled state. No layout/scanner behavior redesign yet. Build passed; lint passed with warnings only.
+- DEMO REMOVAL + CLEANUP 2026-05-03 (3 commits: 8961791, c732f00, ea9298b):
+  Demo products fully removed. storeCatalog.js: 157→20 lines (4 stubs). normalizers.js: OFF+demo functions removed.
+  resolver.js: clean — session cache → IndexedDB → Supabase RPC → AI enrich bg → "not found".
+  AIScreen: fixed TDZ crash (useLocalName called before product) + product now passed via location.state from ProductScreen.
+  ScanScreen.css placeholder created (import existed, file missing → build fail).
+  Known P1 backlog: AlternativesScreen broken (getAnyKnownProductByRef → null) — needs rewrite using StoreContext.catalogProducts.
 
 - Лучшее применение Codex в Körset — не косметические UI-правки, а системные зоны с большим мультипликатором: Data Moat, pipeline обогащения, DB/RLS, внимательный рефакторинг монолитов.
 - Самая сильная точка пользы: превращать разрозненную логику в надёжные потоки, инварианты, проверяемые скрипты и точечные архитектурные улучшения.
