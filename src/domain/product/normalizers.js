@@ -5,8 +5,6 @@ import {
   normalizeNutrition,
   normalizeManufacturer,
   normalizeSpecs,
-  normalizeHalalStatus,
-  normalizeNutriscore,
   parseJson,
   withProductImage,
 } from './model.js'

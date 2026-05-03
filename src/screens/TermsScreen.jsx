@@ -1,55 +1,94 @@
 import { useNavigate } from 'react-router-dom'
 import { useI18n } from '../i18n/index.js'
+import { markdownToHtml } from '../legal/markdown.js'
+import ruMd from '../legal/terms-ru.md?raw'
+import kzMd from '../legal/terms-kz.md?raw'
+
+const TERMS = { ru: ruMd, kz: kzMd }
 
 export default function TermsScreen() {
   const navigate = useNavigate()
-  const { t } = useI18n()
+  const { lang, t } = useI18n()
+
+  const date = new Date().toLocaleDateString(lang === 'kz' ? 'kk-KZ' : 'ru-RU')
+  const md = (TERMS[lang] || TERMS.ru).replace('{date}', date)
+  const html = markdownToHtml(md)
 
   return (
     <div
       className="screen"
-      style={{ padding: '20px', minHeight: '100vh', background: 'var(--bg-app)' }}
+      style={{
+        paddingTop: 'max(16px, env(safe-area-inset-top))',
+        paddingBottom: 'max(32px, env(safe-area-inset-bottom))',
+        overflowY: 'auto',
+      }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', marginBottom: 20 }}>
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '0 22px 16px' }}>
         <button
           onClick={() => navigate(-1)}
+          aria-label={t('common.back')}
           style={{
-            background: 'none',
-            border: 'none',
+            width: 44,
+            height: 44,
+            borderRadius: 14,
+            border: '1px solid var(--glass-border)',
+            background: 'var(--glass-bg)',
             color: 'var(--text)',
             cursor: 'pointer',
-            padding: 0,
-            marginRight: 15,
+            display: 'grid',
+            placeItems: 'center',
+            flexShrink: 0,
           }}
         >
           <svg
-            width="24"
-            height="24"
+            width="20"
+            height="20"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            strokeWidth="2"
+            strokeWidth="2.2"
             strokeLinecap="round"
             strokeLinejoin="round"
           >
-            <polyline points="15 18 9 12 15 6" />
+            <path d="M15 18l-6-6 6-6" />
           </svg>
         </button>
-        <h1
+        <div
           style={{
-            fontSize: 24,
-            margin: 0,
-            color: 'var(--text)',
             fontFamily: 'var(--font-display)',
+            fontSize: 22,
+            letterSpacing: 0.5,
+            color: 'var(--text)',
+            lineHeight: 1.2,
           }}
         >
-          Пользовательское соглашение
-        </h1>
+          {t('profile.terms')}
+        </div>
       </div>
-      <div className="glass-card" style={{ padding: 20 }}>
-        <p style={{ color: 'var(--text-dim)' }}>
-          Текст пользовательского соглашения появится здесь (Этап 4).
-        </p>
+
+      {/* Content */}
+      <div style={{ padding: '0 22px 40px' }}>
+        <div
+          className="glass-card"
+          style={{ padding: '24px 20px' }}
+          dangerouslySetInnerHTML={{
+            __html: html
+              .replace(
+                /<h3>/g,
+                '<h3 style="color:var(--text);margin:18px 0 6px;font-size:14px;font-weight:700">'
+              )
+              .replace(
+                /<p>/g,
+                '<p style="color:var(--text-sub);font-size:13px;line-height:1.65;margin:6px 0">'
+              )
+              .replace(
+                /<ul>/g,
+                '<ul style="padding-left:20px;margin:6px 0;color:var(--text-sub);font-size:13px;line-height:1.65">'
+              )
+              .replace(/<li>/g, '<li style="margin-bottom:4px">'),
+          }}
+        />
       </div>
     </div>
   )

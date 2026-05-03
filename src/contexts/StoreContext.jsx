@@ -353,9 +353,8 @@ export function StoreProvider({ children }) {
             history: buildHistoryPath(currentStore.slug),
             profile: buildProfilePath(currentStore.slug),
             publicPage: buildStorePublicPath(currentStore.slug),
-            product: (ean, external = false) => buildProductPath(currentStore.slug, ean, external),
-            productAI: (ean, external = false) =>
-              buildProductAIPath(currentStore.slug, ean, external),
+            product: (ean) => buildProductPath(currentStore.slug, ean),
+            productAI: (ean) => buildProductAIPath(currentStore.slug, ean),
             productAlternatives: (ean) => buildProductAlternativesPath(currentStore.slug, ean),
           }
         : null,
@@ -368,8 +367,9 @@ export function StoreProvider({ children }) {
       isStoreApp,
       isStorePublic,
       isPublicMarketing,
-      rememberStoreEnabled,
       updateStoreSettings,
+      rememberStore,
+      clearRememberedStore,
     ]
   )
 

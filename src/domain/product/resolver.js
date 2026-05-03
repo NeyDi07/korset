@@ -72,9 +72,9 @@ async function findStoreProduct(ean, storeId) {
 
     if (storeId) query = query.eq('store_id', storeId)
 
-    const { data, error } = await query.maybeSingle()
+    const { data } = await query.maybeSingle()
     if (data?.global_product_id) {
-      const { data: globalRow, error: globalError } = await supabase
+      const { data: globalRow } = await supabase
         .from('global_products')
         .select('*')
         .eq('id', data.global_product_id)
@@ -122,7 +122,7 @@ async function findStoreProduct(ean, storeId) {
 
 async function findGlobalProductByEan(ean) {
   try {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('global_products')
       .select('*')
       .eq('ean', ean)

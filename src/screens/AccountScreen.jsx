@@ -150,7 +150,7 @@ export default function AccountScreen() {
 
   const email = user.email
   const createdAt = user.created_at || user.createdAt
-  const userId = user.id
+
   const isStoreOwner = currentStore?.owner_id === user.id
 
   const handleResetPassword = async () => {

@@ -161,7 +161,7 @@ export default function AuthScreen() {
     try {
       const { error } = await supabase.auth.verifyOtp({ email, token, type: 'signup' })
       if (error) throw error
-    } catch (err) {
+    } catch {
       setError(t('auth.otpError'))
     } finally {
       setLoading(false)

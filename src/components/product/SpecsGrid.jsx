@@ -1,5 +1,5 @@
 import { useI18n } from '../../i18n/index.js'
-import { getDisplayQuantity, computePricePerUnit } from '../../utils/parseQuantity.js'
+import { computePricePerUnit } from '../../utils/parseQuantity.js'
 import { formatPrice } from '../../utils/fitCheck.js'
 
 export default function SpecsGrid({ product }) {

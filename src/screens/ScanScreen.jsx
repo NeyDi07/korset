@@ -6,9 +6,11 @@ import { useOffline } from '../contexts/OfflineContext.jsx'
 import { buildProductPath, buildComparePath } from '../utils/routes.js'
 import { useI18n } from '../i18n/index.js'
 import { loadSoundSettings } from '../utils/soundSettings.js'
+import { buildTermsPath, buildPrivacyPath } from '../utils/routes.js'
+import TermsConsentSheet, { isTermsAccepted } from '../components/TermsConsentSheet.jsx'
 import './ScanScreen.css'
 
-// ─── Звук успешного сканирования (Web Audio API, без файлов) ──────────────────
+// Success scan sound via Web Audio API, without asset files.
 let globalAudioCtx = null
 
 function playSuccessBeep() {
@@ -36,9 +38,9 @@ function playSuccessBeep() {
       osc.stop(startTime + duration + 0.01)
     }
 
-    // Körset signature chime: мягкий восходящий чайм C5 → E5 (большая терция)
-    playNote(523.25, now, 0.18, 0.22) // C5 — тёплая основа
-    playNote(659.25, now + 0.085, 0.13, 0.2) // E5 — яркий акцент
+    // Korset signature chime: a soft ascending C5 to E5 major third.
+    playNote(523.25, now, 0.18, 0.22) // C5 base
+    playNote(659.25, now + 0.085, 0.13, 0.2) // E5 accent
   } catch {
     /* noop */
   }
@@ -301,7 +303,7 @@ function ScanHintSheet({ open, onClose, t }) {
           <li>{t('scan.compareHintStep3')}</li>
         </ol>
         <button type="button" className="scan-sheet__button" onClick={onClose}>
-          {t('common.ok')}
+          {t('scan.gotIt')}
         </button>
       </div>
     </div>
@@ -362,6 +364,7 @@ export default function ScanScreen() {
   const [focusPt, setFocusPt] = useState(null)
   const [galleryState, setGalleryState] = useState('idle')
   const [galleryError, setGalleryError] = useState(null)
+  const [consentOpen, setConsentOpen] = useState(() => !isTermsAccepted())
   const [recentScans, setRecentScans] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem('korset_recent_scans') || '[]')
@@ -437,6 +440,7 @@ export default function ScanScreen() {
   const focusTimer = useRef(null)
   const mountedRef = useRef(true)
   const startScannerRef = useRef(null)
+  const startSeqRef = useRef(0)
   const ID = 'korset-scan-view'
 
   const stopScanner = useCallback(async () => {
@@ -454,13 +458,16 @@ export default function ScanScreen() {
 
   const startScanner = useCallback(
     async (cameraList, idx) => {
+      const startSeq = ++startSeqRef.current
       busyRef.current = true
       setStatus('starting')
       setTorchOn(false)
+      await stopScanner()
+      if (!mountedRef.current || startSeq !== startSeqRef.current) return
 
       try {
         const { Html5Qrcode, Html5QrcodeSupportedFormats } = await import('html5-qrcode')
-        if (!mountedRef.current) return
+        if (!mountedRef.current || startSeq !== startSeqRef.current) return
 
         const scanner = new Html5Qrcode(ID, {
           verbose: false,
@@ -475,6 +482,21 @@ export default function ScanScreen() {
         })
         scannerRef.current = scanner
 
+        const scanConfig = {
+          fps: 15,
+          qrbox: (viewfinderWidth, viewfinderHeight) => {
+            const safeWidth = Math.max(160, viewfinderWidth - 24)
+            const safeHeight = Math.max(120, viewfinderHeight - 24)
+            const width = Math.min(340, Math.max(220, Math.floor(viewfinderWidth * 0.82)))
+            const height = Math.min(210, Math.max(140, Math.floor(width * 0.58)))
+            return {
+              width: Math.min(width, safeWidth),
+              height: Math.min(height, safeHeight),
+            }
+          },
+          disableFlip: false,
+        }
+
         let cameraConfig
         if (cameraList.length > 0 && cameraList[idx]) {
           cameraConfig = { deviceId: { exact: cameraList[idx].id } }
@@ -485,78 +507,108 @@ export default function ScanScreen() {
             : { facingMode: 'environment' }
         }
 
-        await scanner.start(
-          cameraConfig,
-          { fps: 25, qrbox: { width: 300, height: 180 }, aspectRatio: 1.777, disableFlip: false },
-          async (ean) => {
-            if (busyRef.current || !mountedRef.current) return
-            busyRef.current = true
-            playSuccessBeep()
-            try {
-              if (loadSoundSettings().vibration) {
-                navigator.vibrate?.(60)
-              }
-            } catch {
-              /* noop */
+        const onScanSuccess = async (ean) => {
+          if (busyRef.current || !mountedRef.current) return
+          busyRef.current = true
+          playSuccessBeep()
+          try {
+            if (loadSoundSettings().vibration) {
+              navigator.vibrate?.(60)
             }
-            if (compareModeRef.current) {
-              // Compare mode: wait for product before deciding flow
-              setSearching(true)
-              const [result] = await Promise.all([
-                lookupProduct(ean, storeRef.current?.id || slugRef.current),
-                stopScanner(),
-              ])
-              if (!mountedRef.current) return
+          } catch {
+            /* noop */
+          }
+          if (compareModeRef.current) {
+            // Compare mode: wait for product before deciding flow
+            setSearching(true)
+            const [result] = await Promise.all([
+              lookupProduct(ean, storeRef.current?.id || slugRef.current),
+              stopScanner(),
+            ])
+            if (!mountedRef.current) return
 
-              if (result.type === 'local' || result.type === 'external') {
-                const scannedProduct = result.product
-                const pinned = pinnedProductRef.current
-                if (!pinned) {
-                  // First scan in compare mode — pin product A
-                  rememberScan(scannedProduct)
-                  pinnedProductRef.current = scannedProduct
-                  setPinnedProduct(scannedProduct)
-                  setSearching(false)
-                  busyRef.current = false
-                  startScannerRef.current?.(cameraList, idx)
-                } else {
-                  // Second scan — keep both products visible before explicit compare action.
-                  rememberScan(scannedProduct)
-                  secondCompareProductRef.current = scannedProduct
-                  setSecondCompareProduct(scannedProduct)
-                  setSearching(false)
-                  busyRef.current = false
-                }
-              } else {
-                setNotFoundEan(ean)
+            if (result.type === 'local' || result.type === 'external') {
+              const scannedProduct = result.product
+              const pinned = pinnedProductRef.current
+              if (!pinned) {
+                // First scan in compare mode: pin product A.
+                rememberScan(scannedProduct)
+                pinnedProductRef.current = scannedProduct
+                setPinnedProduct(scannedProduct)
                 setSearching(false)
                 busyRef.current = false
-                clearTimeout(nfTimer.current)
-                nfTimer.current = setTimeout(() => setNotFoundEan(null), 5000)
                 startScannerRef.current?.(cameraList, idx)
+              } else {
+                // Second scan: keep both products visible before explicit compare action.
+                rememberScan(scannedProduct)
+                secondCompareProductRef.current = scannedProduct
+                setSecondCompareProduct(scannedProduct)
+                setSearching(false)
+                busyRef.current = false
               }
             } else {
-              // Normal mode: OPTIMISTIC — navigate immediately, lookup in background
-              setScanFlash(true)
-              setTimeout(() => {
-                if (mountedRef.current) setScanFlash(false)
-              }, 350)
-              stopScanner()
-              lookupProduct(ean, storeRef.current?.id || slugRef.current)
-                .then((r) => {
-                  if (r?.product) rememberScan(r.product)
-                })
-                .catch(() => {})
-              navigate(buildProductPath(slugRef.current, ean), {
-                state: { ean, fromScan: true },
-              })
+              setNotFoundEan(ean)
+              setSearching(false)
+              busyRef.current = false
+              clearTimeout(nfTimer.current)
+              nfTimer.current = setTimeout(() => setNotFoundEan(null), 5000)
+              startScannerRef.current?.(cameraList, idx)
             }
-          },
-          () => {}
-        )
+          } else {
+            // Normal mode: navigate immediately, then enrich recent scans in background.
+            setScanFlash(true)
+            setTimeout(() => {
+              if (mountedRef.current) setScanFlash(false)
+            }, 350)
+            stopScanner()
+            lookupProduct(ean, storeRef.current?.id || slugRef.current)
+              .then((r) => {
+                if (r?.product) rememberScan(r.product)
+              })
+              .catch(() => {})
+            navigate(buildProductPath(slugRef.current, ean), {
+              state: { ean, fromScan: true },
+            })
+          }
+        }
+
+        const cameraAttempts = [
+          cameraConfig,
+          cameraList[idx]?.id,
+          { facingMode: { ideal: 'environment' } },
+          { facingMode: 'environment' },
+          { facingMode: 'user' },
+          cameraList[0]?.id,
+        ].filter(Boolean)
+        let lastStartError = null
+        for (const config of cameraAttempts) {
+          if (!mountedRef.current || startSeq !== startSeqRef.current) return
+          try {
+            await scanner.start(config, scanConfig, onScanSuccess, () => {})
+            if (!mountedRef.current || startSeq !== startSeqRef.current) {
+              try {
+                await scanner.stop()
+                scanner.clear()
+              } catch {
+                /* noop */
+              }
+              return
+            }
+            lastStartError = null
+            break
+          } catch (err) {
+            lastStartError = err
+          }
+        }
+        if (lastStartError) throw lastStartError
 
         if (!mountedRef.current) {
-          await stopScanner()
+          try {
+            await scanner.stop()
+            scanner.clear()
+          } catch {
+            /* noop */
+          }
           return
         }
         setStatus('ready')
@@ -605,6 +657,7 @@ export default function ScanScreen() {
     init()
     return () => {
       mountedRef.current = false
+      startSeqRef.current += 1
       stopScanner()
       clearTimeout(nfTimer.current)
       clearTimeout(torchTimer.current)
@@ -767,6 +820,7 @@ export default function ScanScreen() {
 
   const toggleCompareMode = useCallback(() => {
     const next = !compareModeActive
+    const shouldRestartScanner = !next && Boolean(secondCompareProductRef.current)
     setCompareModeActive(next)
     compareModeRef.current = next
     if (next) {
@@ -778,8 +832,11 @@ export default function ScanScreen() {
       setSecondCompareProduct(null)
       pinnedProductRef.current = null
       secondCompareProductRef.current = null
+      setSearching(false)
+      busyRef.current = false
+      if (shouldRestartScanner) startScannerRef.current?.(cameras, camIdx)
     }
-  }, [compareModeActive])
+  }, [cameras, camIdx, compareModeActive])
 
   const closeCompareHint = useCallback(() => {
     localStorage.setItem('korset_compare_scan_hint_seen', '1')
@@ -787,6 +844,7 @@ export default function ScanScreen() {
   }, [])
 
   const cancelCompareMode = useCallback(() => {
+    const shouldRestartScanner = Boolean(secondCompareProductRef.current)
     setCompareModeActive(false)
     compareModeRef.current = false
     setPinnedProduct(null)
@@ -795,7 +853,7 @@ export default function ScanScreen() {
     secondCompareProductRef.current = null
     setSearching(false)
     busyRef.current = false
-    startScannerRef.current?.(cameras, camIdx)
+    if (shouldRestartScanner) startScannerRef.current?.(cameras, camIdx)
   }, [cameras, camIdx])
 
   const openCompareResult = useCallback(() => {
@@ -806,6 +864,13 @@ export default function ScanScreen() {
       state: { productA: first, productB: second },
     })
   }, [navigate])
+
+  const retryCamera = useCallback(() => {
+    busyRef.current = false
+    setSearching(false)
+    setStatus('starting')
+    startScannerRef.current?.(cameras, camIdx)
+  }, [cameras, camIdx])
 
   const handleManualSubmit = useCallback(
     async (e) => {
@@ -850,720 +915,197 @@ export default function ScanScreen() {
     [manualInput, stopScanner, navigate, cameras, camIdx, rememberScan, t]
   )
 
-  return (
-    <div
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        background: '#000',
-        display: 'flex',
-        flexDirection: 'column',
-        zIndex: 10,
-      }}
-    >
-      {/* ── Шапка ── */}
-      <div
-        style={{
-          flexShrink: 0,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          paddingTop: 'max(12px, env(safe-area-inset-top))',
-          paddingBottom: 10,
-          paddingLeft: 12,
-          paddingRight: 12,
-          background: 'var(--glass-bg)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          borderBottom: '1px solid var(--glass-soft-border)',
-          zIndex: 20,
-          gap: 8,
-        }}
-      >
-        <button
-          onClick={() => navigate(-1)}
-          style={{
-            width: 38,
-            height: 38,
-            borderRadius: 12,
-            background: 'var(--glass-subtle)',
-            border: '1px solid var(--glass-border)',
-            color: 'var(--text)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            flexShrink: 0,
-          }}
-        >
-          <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
-            arrow_back
-          </span>
-        </button>
+  const dockLift = manualFocused ? Math.min(keyboardOffset, 340) : 0
+  const canSwitchCamera = cameras.length > 1
+  const hasManualValue = manualInput.trim().length > 0
 
-        <div style={{ textAlign: 'center', flex: 1 }}>
-          <p style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)', lineHeight: 1.2 }}>
-            {t('scan.scanTitle') || t('scan.title')}
-          </p>
-          <p
-            style={{
-              fontSize: 11,
-              fontWeight: 600,
-              color: currentStore ? '#34D399' : '#F59E0B',
-              marginTop: 2,
-            }}
+  return (
+    <div className="scan-screen">
+      <div className="scan-stage" onClick={handleTapFocus} onTouchEnd={handleTapFocus}>
+        <div id={ID} className="scan-video-host" />
+
+        <div className="scan-topbar">
+          <button
+            type="button"
+            className="scan-glass-icon"
+            onClick={() => navigate(-1)}
+            aria-label={t('common.back')}
           >
-            {currentStore ? `📍 ${currentStore.name}` : t('scan.globalMode')}
-          </p>
+            <span className="material-symbols-outlined">arrow_back_ios_new</span>
+          </button>
+          <div className="scan-title-pill">
+            <h1>{t('scan.scanTitle') || t('scan.title')}</h1>
+          </div>
+          <div className="scan-topbar__spacer" />
         </div>
 
-        <div style={{ width: 38, flexShrink: 0 }} />
-      </div>
-
-      {/* ── Видео-зона (60%) ── */}
-      <div
-        style={{
-          flex: 6,
-          position: 'relative',
-          overflow: 'hidden',
-          cursor: 'crosshair',
-          minHeight: 0,
-        }}
-        onClick={handleTapFocus}
-        onTouchEnd={handleTapFocus}
-      >
-        <div id={ID} style={{ width: '100%', height: '100%' }} />
-
-        {/* Маска + прицел */}
         {status === 'ready' && !searching && (
-          <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
-            <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}>
-              <defs>
-                <mask id="scan-cutout">
-                  <rect width="100%" height="100%" fill="white" />
-                  <rect
-                    x="50%"
-                    y="50%"
-                    width="300"
-                    height="180"
-                    rx="12"
-                    transform="translate(-150,-90)"
-                    fill="black"
-                  />
-                </mask>
-              </defs>
-              <rect width="100%" height="100%" fill="rgba(0,0,0,0.52)" mask="url(#scan-cutout)" />
-            </svg>
-
-            <div
-              style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                width: 300,
-                height: 180,
-                transform: 'translate(-50%,-50%)',
-              }}
-            >
-              {[
-                {
-                  top: -2,
-                  left: -2,
-                  borderTop: '2.5px solid #A78BFA',
-                  borderLeft: '2.5px solid #A78BFA',
-                  borderRadius: '8px 0 0 0',
-                },
-                {
-                  top: -2,
-                  right: -2,
-                  borderTop: '2.5px solid #A78BFA',
-                  borderRight: '2.5px solid #A78BFA',
-                  borderRadius: '0 8px 0 0',
-                },
-                {
-                  bottom: -2,
-                  left: -2,
-                  borderBottom: '2.5px solid #A78BFA',
-                  borderLeft: '2.5px solid #A78BFA',
-                  borderRadius: '0 0 0 8px',
-                },
-                {
-                  bottom: -2,
-                  right: -2,
-                  borderBottom: '2.5px solid #A78BFA',
-                  borderRight: '2.5px solid #A78BFA',
-                  borderRadius: '0 0 8px 0',
-                },
-              ].map((s, i) => (
-                <div key={i} style={{ position: 'absolute', width: 32, height: 32, ...s }} />
-              ))}
-              <div
-                style={{
-                  position: 'absolute',
-                  left: 4,
-                  right: 4,
-                  height: 2,
-                  borderRadius: 2,
-                  background:
-                    'linear-gradient(90deg, transparent 0%, #A78BFA 20%, #E9D5FF 50%, #A78BFA 80%, transparent 100%)',
-                  boxShadow: '0 0 10px 3px rgba(167,139,250,0.5)',
-                  animation: 'scanLine 1.8s ease-in-out infinite',
-                }}
-              />
+          <div className="scan-frame-layer" aria-hidden="true">
+            <div className="scan-frame">
+              <span className="corner tl" />
+              <span className="corner tr" />
+              <span className="corner bl" />
+              <span className="corner br" />
+              <span className="scan-line" />
             </div>
-
-            <div
-              style={{
-                position: 'absolute',
-                top: 'calc(50% + 102px)',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                fontSize: 13,
-                color: 'rgba(200,200,255,0.6)',
-                whiteSpace: 'nowrap',
-                textShadow: '0 1px 4px rgba(0,0,0,0.9)',
-              }}
-            >
-              {t('scan.hint')}
-            </div>
+            <p className="scan-frame-hint">{t('scan.hint')}</p>
           </div>
         )}
 
-        {/* Tap-to-focus индикатор */}
+        <CompareTray
+          active={compareModeActive && !searching}
+          firstProduct={pinnedProduct}
+          secondProduct={secondCompareProduct}
+          onCompare={openCompareResult}
+          onCancel={cancelCompareMode}
+          t={t}
+        />
+
         {focusPt && (
-          <div
-            style={{
-              position: 'absolute',
-              pointerEvents: 'none',
-              left: focusPt.x - 24,
-              top: focusPt.y - 24,
-              width: 48,
-              height: 48,
-              border: '2px solid rgba(255,255,255,0.85)',
-              borderRadius: 6,
-              animation: 'focusFade 0.9s ease forwards',
-            }}
-          />
+          <div className="scan-focus-ring" style={{ left: focusPt.x - 24, top: focusPt.y - 24 }} />
         )}
 
-        {/* Загрузка */}
         {status === 'starting' && !searching && (
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background: 'var(--bg)',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 16,
-            }}
-          >
-            <div
-              style={{
-                width: 44,
-                height: 44,
-                borderRadius: '50%',
-                border: '3px solid rgba(167,139,250,0.15)',
-                borderTop: '3px solid #A78BFA',
-                animation: 'spin 0.75s linear infinite',
-              }}
-            />
-            <p style={{ color: 'var(--text-disabled)', fontSize: 14 }}>{t('scan.startCamera')}</p>
+          <div className="scan-status-overlay">
+            <div className="scan-spinner" />
+            <p>{t('scan.startCamera')}</p>
           </div>
         )}
 
-        {/* Зелёный flash при успешном сканировании */}
-        {scanFlash && (
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background: 'rgba(52,211,153,0.45)',
-              pointerEvents: 'none',
-              zIndex: 25,
-              animation: 'scanFlash 0.35s ease-out forwards',
-            }}
-          />
-        )}
-
-        {/* Поиск товара */}
         {searching && (
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background: 'var(--glass-bg)',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 16,
-            }}
-          >
-            <div
-              style={{
-                width: 52,
-                height: 52,
-                borderRadius: '50%',
-                border: '3px solid rgba(167,139,250,0.15)',
-                borderTop: '3px solid #A78BFA',
-                animation: 'spin 0.75s linear infinite',
-              }}
-            />
-            <p style={{ color: 'var(--primary-bright)', fontSize: 15, fontWeight: 500 }}>
-              {t('scan.searching')}
-            </p>
+          <div className="scan-status-overlay">
+            <div className="scan-spinner" />
+            <p>{t('scan.searching')}</p>
           </div>
         )}
 
-        {/* Нет доступа к камере */}
         {status === 'error_permission' && (
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background: 'var(--bg)',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '32px 28px',
-              gap: 18,
-              textAlign: 'center',
-            }}
-          >
-            <div style={{ fontSize: 52 }}>📷</div>
-            <div>
-              <p style={{ color: 'var(--red)', fontSize: 16, fontWeight: 700, marginBottom: 8 }}>
-                {t('scan.cameraAccessDeniedTitle')}
-              </p>
-              <p style={{ color: 'var(--text-sub)', fontSize: 13, lineHeight: 1.7 }}>
-                {t('scan.cameraPermission')}
-              </p>
-            </div>
-            <button
-              onClick={openGallery}
-              style={{
-                padding: '13px 28px',
-                borderRadius: 14,
-                background: 'var(--primary-dim)',
-                border: '1px solid var(--primary)',
-                color: 'var(--primary)',
-                fontSize: 14,
-                fontWeight: 600,
-                cursor: 'pointer',
-              }}
-            >
+          <div className="scan-status-overlay scan-status-overlay--error">
+            <span className="material-symbols-outlined">photo_camera</span>
+            <strong>{t('scan.cameraAccessDeniedTitle')}</strong>
+            <p>{t('scan.cameraPermission')}</p>
+            <button type="button" onClick={openGallery}>
               {t('scan.galleryBtn')}
             </button>
           </div>
         )}
 
-        {/* Toast: товар не найден */}
+        {status === 'error' && (
+          <div className="scan-status-overlay scan-status-overlay--error">
+            <span className="material-symbols-outlined">camera_video_off</span>
+            <strong>{t('scan.cameraError')}</strong>
+            <p>{t('scan.cameraErrorBody')}</p>
+            <div className="scan-status-overlay__actions">
+              <button type="button" onClick={retryCamera}>
+                {t('common.retry')}
+              </button>
+              <button type="button" className="ghost" onClick={openGallery}>
+                {t('scan.galleryBtn')}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {scanFlash && <div className="scan-success-flash" />}
+
         {notFoundEan && (
-          <div
-            style={{
-              position: 'absolute',
-              bottom: 12,
-              left: '50%',
-              transform: 'translateX(-50%)',
-              background: 'var(--glass-bg)',
-              border: '1px solid var(--red)',
-              borderRadius: 14,
-              padding: '10px 20px',
-              textAlign: 'center',
-              backdropFilter: 'blur(12px)',
-              animation: 'toastUp 0.25s ease',
-            }}
-          >
-            <p style={{ color: 'var(--red)', fontSize: 14, fontWeight: 700, marginBottom: 3 }}>
-              {!isOnline ? t('scan.offlineNotFound') : t('scan.notFoundToast')}
-            </p>
-            <p style={{ color: 'var(--text-disabled)', fontSize: 11, fontFamily: 'monospace' }}>
-              {notFoundEan}
-            </p>
+          <div className="scan-toast scan-toast--bad">
+            <strong>{!isOnline ? t('scan.offlineNotFound') : t('scan.notFoundToast')}</strong>
+            <span>{notFoundEan}</span>
           </div>
         )}
 
-        {/* Toast: ошибка галереи */}
         {galleryState === 'error' && (
-          <div
-            style={{
-              position: 'absolute',
-              bottom: 12,
-              left: 16,
-              right: 16,
-              background: 'var(--glass-bg)',
-              border: '1px solid var(--red)',
-              borderRadius: 14,
-              padding: '12px 16px',
-              textAlign: 'center',
-              backdropFilter: 'blur(10px)',
-              animation: 'toastUp 0.2s ease',
-            }}
-          >
-            <p style={{ color: 'var(--red)', fontSize: 13, fontWeight: 600 }}>
+          <div className="scan-toast scan-toast--bad wide">
+            <strong>
               {galleryError === 'noBarcode' ? t('scan.galleryNoBarcode') : t('scan.galleryError')}
-            </p>
+            </strong>
           </div>
         )}
 
-        {/* Toast: фонарик недоступен */}
         {torchErr && (
-          <div
-            style={{
-              position: 'absolute',
-              top: 12,
-              left: '50%',
-              transform: 'translateX(-50%)',
-              zIndex: 40,
-              whiteSpace: 'nowrap',
-              background: 'var(--glass-bg)',
-              border: '1px solid var(--red)',
-              borderRadius: 12,
-              padding: '8px 16px',
-              fontSize: 12,
-              color: 'var(--red)',
-              fontWeight: 500,
-              backdropFilter: 'blur(10px)',
-            }}
-          >
-            ⚠️ {t('scan.torchUnavailable')}
-          </div>
-        )}
-
-        {/* Compare mode banner */}
-        {compareModeActive && !searching && (
-          <div
-            style={{
-              position: 'absolute',
-              top: 8,
-              left: 16,
-              right: 16,
-              zIndex: 31,
-              background: 'var(--primary-dim)',
-              border: '1.5px solid var(--primary)',
-              borderRadius: 14,
-              padding: '8px 14px',
-              backdropFilter: 'blur(10px)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 10,
-              pointerEvents: 'none',
-            }}
-          >
-            <span
-              className="material-symbols-outlined"
-              style={{ fontSize: 16, color: 'var(--primary)', flexShrink: 0 }}
-            >
-              compare_arrows
-            </span>
-            <span
-              style={{ fontSize: 12, fontWeight: 700, color: 'var(--primary)', lineHeight: 1.4 }}
-            >
-              {pinnedProduct
-                ? `${t('compare.modeBannerPinned') || t('scan.comparePinned')}: ${pinnedProduct.name}`
-                : t('compare.modeBanner') || t('scan.compareSelect')}
-            </span>
+          <div className="scan-toast scan-toast--top">
+            <strong>{t('scan.torchUnavailable')}</strong>
           </div>
         )}
       </div>
 
-      {/* ── Нижняя панель (40%) ── */}
       <div
-        style={{
-          flex: 4,
-          background: 'var(--bg)',
-          borderTop: '1px solid var(--glass-soft-border)',
-          display: 'flex',
-          flexDirection: 'column',
-          overflow: 'hidden',
-          minHeight: 0,
-        }}
+        className={`scan-dock ${manualFocused ? 'is-keyboard' : ''}`}
+        style={{ transform: `translate3d(0, -${dockLift}px, 0)` }}
       >
-        {/* Кнопки управления */}
-        <div style={{ display: 'flex', alignItems: 'stretch', gap: 8, padding: '12px 16px 0' }}>
-          <button
-            onClick={toggleTorch}
-            style={{
-              flex: 1,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 4,
-              padding: '10px 4px',
-              borderRadius: 14,
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              background: torchOn ? 'rgba(253,230,138,0.15)' : 'rgba(255,255,255,0.04)',
-              border: `1.5px solid ${torchOn ? 'rgba(253,230,138,0.5)' : 'rgba(255,255,255,0.08)'}`,
-              color: torchOn ? '#FDE68A' : 'rgba(180,180,220,0.8)',
-              boxShadow: torchOn ? '0 0 14px rgba(253,230,138,0.15)' : 'none',
-            }}
-          >
-            <IconTorch on={torchOn} size={20} />
-            <span style={{ fontSize: 10, fontWeight: 600, lineHeight: 1 }}>{t('scan.torch')}</span>
-          </button>
-
-          <button
-            onClick={openGallery}
-            style={{
-              flex: 1,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 4,
-              padding: '10px 4px',
-              borderRadius: 14,
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              background:
-                galleryState === 'scanning' ? 'rgba(167,139,250,0.15)' : 'rgba(255,255,255,0.04)',
-              border: `1.5px solid ${galleryState === 'scanning' ? 'rgba(167,139,250,0.4)' : 'rgba(255,255,255,0.08)'}`,
-              color: galleryState === 'scanning' ? '#A78BFA' : 'rgba(180,180,220,0.8)',
-            }}
-          >
-            {galleryState === 'scanning' ? (
-              <div
-                style={{
-                  width: 20,
-                  height: 20,
-                  borderRadius: '50%',
-                  border: '2px solid rgba(167,139,250,0.25)',
-                  borderTop: '2px solid #A78BFA',
-                  animation: 'spin 0.8s linear infinite',
-                }}
-              />
-            ) : (
-              <IconGallery size={20} />
-            )}
-            <span style={{ fontSize: 10, fontWeight: 600, lineHeight: 1 }}>
-              {t('scan.gallery')}
-            </span>
-          </button>
-
-          {cameras.length > 1 && (
-            <button
-              onClick={switchCamera}
-              style={{
-                flex: 1,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 4,
-                padding: '10px 4px',
-                borderRadius: 14,
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                background: 'var(--glass-subtle)',
-                border: '1.5px solid var(--glass-soft-border)',
-                color: 'var(--text-disabled)',
-              }}
-            >
-              <IconSwitchCamera size={20} />
-              <span style={{ fontSize: 10, fontWeight: 600, lineHeight: 1 }}>
-                {t('scan.cameraSwitch')}
-              </span>
-            </button>
-          )}
-
-          <button
+        <div className="scan-actions">
+          <ScanActionButton
+            active={compareModeActive}
+            label={t('scan.compare')}
+            tone="compare"
+            icon={<IconCompare active={compareModeActive} size={24} />}
             onClick={toggleCompareMode}
-            style={{
-              flex: 1,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 4,
-              padding: '10px 4px',
-              borderRadius: 14,
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              background: compareModeActive ? 'var(--primary-dim)' : 'var(--glass-subtle)',
-              border: `1.5px solid ${compareModeActive ? 'var(--primary)' : 'var(--glass-soft-border)'}`,
-              color: compareModeActive ? 'var(--primary)' : 'var(--text-disabled)',
-              boxShadow: compareModeActive ? 'var(--shadow-soft)' : 'none',
-            }}
-          >
-            <IconCompare active={compareModeActive} size={20} />
-            <span style={{ fontSize: 10, fontWeight: 600, lineHeight: 1 }}>
-              {t('scan.compare')}
-            </span>
-          </button>
+          />
+          <ScanActionButton
+            active={torchOn}
+            label={t('scan.torch')}
+            tone="torch"
+            icon={<IconTorch on={torchOn} size={24} />}
+            onClick={toggleTorch}
+          />
+          <ScanActionButton
+            disabled={!canSwitchCamera}
+            label={t('scan.cameraSwitch')}
+            tone="camera"
+            icon={<IconSwitchCamera filled={false} size={24} />}
+            onClick={switchCamera}
+          />
+          <ScanActionButton
+            active={galleryState === 'scanning'}
+            label={t('scan.gallery')}
+            tone="gallery"
+            icon={
+              galleryState === 'scanning' ? (
+                <span className="scan-mini-spinner" />
+              ) : (
+                <IconGallery size={24} />
+              )
+            }
+            onClick={openGallery}
+          />
         </div>
 
-        {/* Ручной ввод штрихкода */}
         <form
+          className={`scan-manual-form ${hasManualValue ? 'has-value' : ''}`}
           onSubmit={handleManualSubmit}
-          style={{ display: 'flex', gap: 8, padding: '10px 16px 0', alignItems: 'center' }}
         >
-          <div
-            style={{
-              flex: 1,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              background: 'var(--input-bg)',
-              border: `1px solid ${manualError ? 'var(--red)' : 'var(--input-border)'}`,
-              borderRadius: 12,
-              padding: '0 12px',
-              height: 42,
-            }}
-          >
-            <span
-              className="material-symbols-outlined"
-              style={{ fontSize: 17, color: 'var(--text-faint)', flexShrink: 0 }}
-            >
-              search
-            </span>
+          <label className={`scan-manual-input ${manualError ? 'has-error' : ''}`}>
+            <span className="material-symbols-outlined">search</span>
             <input
               type="text"
               inputMode="numeric"
               pattern="[0-9]*"
               placeholder={t('scan.manualInputPlaceholder')}
               value={manualInput}
+              onFocus={() => setManualFocused(true)}
+              onBlur={() => setManualFocused(false)}
               onChange={(e) => {
                 setManualInput(e.target.value.replace(/\D/g, ''))
                 setManualError(null)
               }}
-              style={{
-                flex: 1,
-                background: 'none',
-                border: 'none',
-                outline: 'none',
-                color: 'var(--text)',
-                fontSize: 14,
-                fontFamily: 'monospace',
-              }}
             />
-          </div>
+          </label>
           <button
-            type="submit"
-            style={{
-              width: 42,
-              height: 42,
-              borderRadius: 12,
-              background: 'var(--primary-dim)',
-              border: '1.5px solid var(--primary)',
-              color: 'var(--primary)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              flexShrink: 0,
-            }}
+            type="button"
+            className="scan-history-btn"
+            onClick={() => setHistoryOpen(true)}
+            aria-label={t('scan.recentScans')}
           >
-            <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
-              arrow_forward
-            </span>
+            <IconHistory size={24} />
           </button>
+          {hasManualValue && (
+            <button type="submit" className="scan-submit-btn" aria-label={t('scan.manualSubmit')}>
+              <span className="material-symbols-outlined">arrow_forward</span>
+            </button>
+          )}
         </form>
-        {manualError && (
-          <p style={{ fontSize: 11, color: '#F87171', padding: '4px 16px 0', lineHeight: 1 }}>
-            {manualError}
-          </p>
-        )}
-
-        {/* История сканирований */}
-        {recentScans.length > 0 && (
-          <div style={{ flex: 1, minHeight: 0, overflow: 'hidden', marginTop: 10 }}>
-            <p
-              style={{
-                fontSize: 11,
-                color: 'var(--text-sub)',
-                fontWeight: 700,
-                letterSpacing: '0.06em',
-                textTransform: 'uppercase',
-                padding: '0 16px',
-                marginBottom: 8,
-              }}
-            >
-              {t('scan.recentScans')}
-            </p>
-            <div
-              style={{
-                display: 'flex',
-                gap: 10,
-                overflowX: 'auto',
-                padding: '0 16px',
-                paddingBottom: 'max(10px, env(safe-area-inset-bottom))',
-                scrollbarWidth: 'none',
-              }}
-            >
-              {recentScans.map((scan) => (
-                <button
-                  key={scan.ean}
-                  onClick={() => navigate(buildProductPath(slugRef.current, scan.ean))}
-                  style={{
-                    flexShrink: 0,
-                    width: 60,
-                    background: 'none',
-                    border: 'none',
-                    padding: 0,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: 5,
-                  }}
-                >
-                  <div
-                    style={{
-                      width: 56,
-                      height: 56,
-                      borderRadius: 12,
-                      overflow: 'hidden',
-                      background: 'var(--glass-subtle)',
-                      border: '1px solid var(--glass-soft-border)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    {scan.image_url ? (
-                      <img
-                        src={scan.image_url}
-                        alt={scan.name}
-                        style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-                      />
-                    ) : (
-                      <span
-                        className="material-symbols-outlined"
-                        style={{ fontSize: 22, color: 'var(--text-disabled)' }}
-                      >
-                        barcode
-                      </span>
-                    )}
-                  </div>
-                  <p
-                    style={{
-                      fontSize: 10,
-                      color: 'var(--text-sub)',
-                      textAlign: 'center',
-                      width: '100%',
-                      overflow: 'hidden',
-                      display: '-webkit-box',
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: 'vertical',
-                      lineHeight: 1.3,
-                    }}
-                  >
-                    {scan.name}
-                  </p>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
+        {manualError && <p className="scan-manual-error">{manualError}</p>}
       </div>
 
       <input
@@ -1574,27 +1116,23 @@ export default function ScanScreen() {
         onChange={handleGalleryFile}
       />
 
-      <style>{`
-        #${ID} video {
-          width:100%!important;height:100%!important;
-          object-fit:cover!important;
-          position:absolute!important;top:0!important;left:0!important;
-        }
-        #${ID} img,#${ID} canvas{display:none!important;}
-        #${ID}>div{background:transparent!important;border:none!important;}
-        @keyframes scanFlash{0%{opacity:1}100%{opacity:0}}
-        @keyframes scanLine{
-          0%{top:6px;opacity:0.5}10%{opacity:1}90%{opacity:1}100%{top:calc(100% - 8px);opacity:0.5}
-        }
-        @keyframes spin{to{transform:rotate(360deg)}}
-        @keyframes focusFade{
-          0%{opacity:1;transform:scale(1.15)}60%{opacity:0.7;transform:scale(1)}100%{opacity:0;transform:scale(0.92)}
-        }
-        @keyframes toastUp{
-          from{opacity:0;transform:translateX(-50%) translateY(10px)}
-          to{opacity:1;transform:translateX(-50%) translateY(0)}
-        }
-      `}</style>
+      <ScanHintSheet open={compareHintOpen} onClose={closeCompareHint} t={t} />
+      <RecentScansSheet
+        open={historyOpen}
+        scans={recentScans}
+        onClose={() => setHistoryOpen(false)}
+        onSelect={(scan) => {
+          setHistoryOpen(false)
+          navigate(buildProductPath(slugRef.current, scan.ean))
+        }}
+        t={t}
+      />
+      <TermsConsentSheet
+        open={consentOpen}
+        onAccept={() => setConsentOpen(false)}
+        onNavigateTerms={() => navigate(buildTermsPath(storeSlug))}
+        onNavigatePolicy={() => navigate(buildPrivacyPath(storeSlug))}
+      />
     </div>
   )
 }

@@ -208,29 +208,31 @@ Pipeline: arbuz-import, arbuz-catalog-parser, korzinavdom-parser — все ис
 ### Сессия 5 — Code Quality & i18n Gaps — ВЫПОЛНЕНО ✅
 
 **Удалено (мёртвый код):**
-- `src/screens/UnifiedProductScreen.jsx` (548 строк) — не в роутере, нигде не используется
-- `src/screens/ExternalProductScreen.jsx` (625 строк) — OFF эпоха, API удалён (410 Gone)
+- `src/screens/UnifiedProductScreen.jsx` (548 строк) — не в роутере
+- `src/screens/ExternalProductScreen.jsx` (625 строк) — OFF эпоха
 - `buildRetailLoginPath()`, `buildSoundSettingsPath()`, `buildProductPath(..., true)` — мёртвые хелперы
 - Ветка `isExternal` в AIScreen.jsx — недостижима
 
 **Исправлено (баги):**
-- CompareScreen.jsx:242 — **ReferenceError** (useLocalName до объявления productA) — **КРИТИЧЕСКИЙ БАГ**
+- CompareScreen.jsx:242 — **ReferenceError** (useLocalName до объявления productA)
 
 **i18n доделано:**
-- FaqScreen.jsx → `faq.json` (RU+KZ), 10 вопросов-ответов, +18 ключей на язык
+- FaqScreen.jsx → `faq.json` (RU+KZ), 10 QA
 - AccountScreen.jsx → убраны 20+ мёртвых `|| '...'` fallback'ов
-- HomeScreen.jsx → 4 лендинг-строки в `home.json` + KZ (retail feat + CTA)
-- ErrorBoundary.jsx → i18n-fallback'и (готов к передаче `t` пропа)
+- HomeScreen.jsx → 4 лендинг-строки в `home.json` + KZ
+- ErrorBoundary.jsx → i18n-fallback'и
 
-**Code quality:**
-- Убран `console.warn` из ProfileScreen (2 места)
-- Убран `console.log` из nameNormalizer (2 места)
-- `useCallback` для `rememberStore`/`clearRememberedStore` в StoreContext
-- Импорт `useMemo` в ProductScreen — проверен, используется (ложная тревога аудита)
-
-**Добавлено:**
-- `src/locales/{ru,kz}/faq.json` — новый неймспейс (15-й)
-- `src/i18n/loader.js` — обновлён (15 неймспейсов)
+**Code quality (рутинная чистка):**
+- 22 lint warnings устранены (71 → 49), 0 errors
+- Убраны неиспользуемые импорты в 15 файлах:
+  SpecsGrid, nameNormalizer, normalizers, resolver, AboutScreen, AccountScreen, AuthScreen,
+  CatalogScreen, ProfileScreen, QRPrintScreen, HistoryScreen, SoundSettingsScreen,
+  TermsScreen, imageUrl, soundSettings
+- `catch (err)` → `catch (_err)` где err не использовался
+- `imageUrl(url, options)` → `imageUrl(url)` — options был неиспользуемым опционалом
+- StoreContext: `rememberStore`/`clearRememberedStore` → useCallback, убран лишний deps
+- sw.js: убран неиспользуемый global event
+- Двойные пустые строки почищены в AboutScreen, SoundSettingsScreen, TermsScreen, nameNormalizer
 
 ---
 
@@ -259,6 +261,8 @@ Pipeline: arbuz-import, arbuz-catalog-parser, korzinavdom-parser — все ис
 - IMPLEMENTED 2026-05-03: V1 unknown EAN request slice. `ProductScreen` not-found state now shows unsupported alcohol/tobacco wording and a "Request product check" action for valid EAN + store id. Logic lives in `src/domain/product/unknownEanRequest.js`, tests in `tests/unit/unknownEanRequest.test.mjs`. After the i18n migration landed, the copy was moved into `src/locales/{ru,kz}/product.json` under `product.unknownEan.*`; domain helper remains copy-free.
 - POST-I18N ADAPTATION 2026-05-03: Verified the new i18n architecture (`src/i18n/*`, flat locale JSON, RU fallback, Intl format helpers, `check-i18n`). Fixed safe migration seams: `CompareScreen` rows now include `lang` in `useMemo` deps, `ThemeModeToggle` receives `t` explicitly, and Retail Products shelf placeholder comes from the translation props. Verification: unknown EAN test passed, i18n unit tests passed via direct Node runs, `check-i18n` passed, `npm run build` passed, `npm run lint` passed with warnings only.
 - SCANSCREEN REDESIGN PREP 2026-05-03: User provided a light-theme ScanScreen visual reference and SVG icons. First safe step completed before redesign: `src/screens/ScanScreen.jsx` now has inline SVG components for gallery, torch on/off, compare active mirror state, history placeholder, and camera-switch filled state. No layout/scanner behavior redesign yet. Build passed; lint passed with warnings only.
+- SCANSCREEN REDESIGN IMPLEMENTED 2026-05-03: `ScanScreen` is now a full-screen premium glass scanner UI driven by `src/screens/ScanScreen.css`, with live camera background, adaptive scan frame/line, SVG action dock, manual EAN input, recent scans bottom sheet, and V1 compare mode limited to 2 products. Compare first scan pins product in an in-scanner tray; second scan shows CTA before navigating to CompareScreen. Compare help sheet is shown once via `localStorage` key `korset_compare_scan_hint_seen`. Camera reliability improved for older devices: dynamic qrbox, lower fps, multiple camera constraint fallbacks, stale-start guard via `startSeqRef`, and browser test confirmed one video stream. ScanScreen z-index now sits above BottomNav; camera host does not intercept pointer events. Verification: `npm run build` passed, `npm run lint` passed with warnings only, `node scripts/check-i18n.mjs` passed, Playwright fake-camera smoke check passed for video, compare hint, and recent sheet.
+- SCANSCREEN POLISH 2026-05-03: Manual EAN bar now matches the mockup more closely: empty state is input + recent/history only; submit arrow appears only after digits are entered. Added non-permission camera failure recovery overlay with Retry + Gallery, using `scan.cameraErrorBody`. RU title changed from "Сканировать" to "Сканирование". Re-verified with build, lint, i18n, and Playwright fake-camera screenshot/interaction checks.
 - DEMO REMOVAL + CLEANUP 2026-05-03 (3 commits: 8961791, c732f00, ea9298b):
   Demo products fully removed. storeCatalog.js: 157→20 lines (4 stubs). normalizers.js: OFF+demo functions removed.
   resolver.js: clean — session cache → IndexedDB → Supabase RPC → AI enrich bg → "not found".

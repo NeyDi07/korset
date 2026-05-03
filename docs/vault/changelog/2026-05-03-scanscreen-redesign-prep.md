@@ -24,3 +24,63 @@ User provided a light-theme ScanScreen visual reference and custom SVG icons. Th
 
 - `npm run build` — passed.
 - `npm run lint` — passed with warnings only.
+
+---
+
+# 2026-05-03 — ScanScreen V1 redesign implemented
+
+## Summary
+
+The ScanScreen redesign moved from icon preparation to a production V1 implementation. The screen is now a full-screen scanner experience with live camera as the background, adaptive glass UI controls, manual barcode entry, recent scans, and a scoped two-product compare flow.
+
+## Completed
+
+- Rebuilt the ScanScreen layout into componentized React helpers plus `src/screens/ScanScreen.css`.
+- Preserved live `html5-qrcode` scanning while replacing the old inline-style panel UI with a full-screen camera stage.
+- Added adaptive scan frame, animated scan line, focus flash, success flash, loading/error overlays, and glass action dock.
+- Added bottom-sheet UX for one-time compare guidance, stored with `localStorage` key `korset_compare_scan_hint_seen`.
+- Added recent scans bottom sheet from local recent scan storage.
+- Implemented V1 compare scope for exactly two products:
+  - first scan pins product A inside the scanner;
+  - second scan pins product B;
+  - user taps explicit compare CTA to navigate to CompareScreen.
+- Added keyboard-aware manual input lift using `visualViewport`.
+- Added RU/KZ locale keys for all new scan texts.
+
+## Scanner reliability improvements
+
+- Reduced scanner fps from 25 to 15 to lower load on weak phones.
+- Replaced fixed qrbox with dynamic sizing based on camera viewport.
+- Added camera-start fallback sequence: exact selected device, plain device id, ideal environment, environment, user, first camera id.
+- Added stale-start guard with `startSeqRef` so React StrictMode or slow async camera startup cannot leave duplicate streams.
+- Set scanner video host to `pointer-events: none` so camera internals cannot block UI controls.
+- Raised ScanScreen above BottomNav to avoid bottom-sheet and action click interception.
+- Added CSS fallbacks around `color-mix()` and `backdrop-filter` for weaker/older browsers.
+
+## Verification
+
+- `npm run build` — passed.
+- `npm run lint` — passed with warnings only.
+- `node scripts/check-i18n.mjs` — passed.
+- Playwright fake-camera smoke check:
+  - one active video stream;
+  - scanner frame/action dock rendered;
+  - compare hint opens;
+  - recent scans sheet opens;
+  - BottomNav no longer overlays ScanScreen.
+
+## Follow-up polish in the same session
+
+- Manual EAN input now matches the reference mockup more closely:
+  - empty state shows only the manual input and recent/history button;
+  - submit arrow appears only after the user enters digits.
+- Added a non-permission camera failure recovery overlay:
+  - Retry starts camera again;
+  - Gallery remains available as a fallback.
+- RU scan title changed to "Сканирование" to match the provided reference direction.
+- Added `scan.cameraErrorBody` in RU/KZ locales.
+- Re-ran verification:
+  - `npm run build` — passed;
+  - `npm run lint` — passed with warnings only;
+  - `node scripts/check-i18n.mjs` — passed;
+  - Playwright fake-camera check confirmed one stream, no submit button in empty manual state, submit appears after EAN input, and compare hint opens.

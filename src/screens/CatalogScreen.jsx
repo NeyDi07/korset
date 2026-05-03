@@ -15,7 +15,7 @@ import { useStore } from '../contexts/StoreContext.jsx'
 import { useOffline } from '../contexts/OfflineContext.jsx'
 import { useI18n } from '../i18n/index.js'
 import { getLocalName } from '../utils/localName.js'
-import { getStoreCatalogProducts } from '../utils/storeCatalog.js'
+
 import { getCatalogFromIndexedDB } from '../utils/offlineDB.js'
 import { buildProductPath, buildComparePath } from '../utils/routes.js'
 import { supabase } from '../utils/supabase.js'

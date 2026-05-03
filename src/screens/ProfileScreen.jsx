@@ -19,7 +19,6 @@ import {
   buildNotificationSettingsPath,
   buildPrivacyPath,
   buildProfileEditPath,
-  buildProfilePath,
   buildFaqPath,
   buildAboutPath,
   buildTermsPath,
@@ -29,6 +28,7 @@ import AuthPromptModal from '../components/AuthPromptModal.jsx'
 import SegmentedToggle from '../components/SegmentedToggle.jsx'
 import Toggle from '../components/Toggle.jsx'
 import SupportBottomSheet from '../components/SupportBottomSheet.jsx'
+import { resetTermsAccepted } from '../components/TermsConsentSheet.jsx'
 import { ALLERGENS } from '../constants/allergens.js'
 import { DIET_GOALS } from '../constants/dietGoals.js'
 import { buildAuthNavigateState } from '../utils/authFlow.js'
@@ -398,7 +398,6 @@ export default function ProfileScreen() {
   // Lazy-loaded mini-grids for favorites/history tabs (top 6 each).
   // null = not loaded yet, [] = loaded but empty, [items] = loaded with content.
   const [topFavorites, setTopFavorites] = useState(null)
-  const [bannerBusy, setBannerBusy] = useState(false)
   const [soundSettings, setSoundSettings] = useState(() => loadSoundSettings())
   const [topHistory, setTopHistory] = useState(null)
   const [loadingTab, setLoadingTab] = useState(null)
@@ -424,7 +423,7 @@ export default function ProfileScreen() {
         if (error) throw error
         const hydrated = await hydrateProductsFromFavoriteRows(data || [])
         if (!cancelled) setTopFavorites(hydrated)
-      } catch (err) {
+      } catch {
         // favorites fetch failed silently
         if (!cancelled) setTopFavorites([])
       } finally {
@@ -474,7 +473,7 @@ export default function ProfileScreen() {
           .slice(0, 6)
           .map(({ _time, ...rest }) => rest)
         if (!cancelled) setTopHistory(merged)
-      } catch (err) {
+      } catch {
         // history fetch failed silently
         if (!cancelled) setTopHistory([])
       } finally {
@@ -1617,6 +1616,32 @@ export default function ProfileScreen() {
                 Körset v1.0.0 · kz
               </span>
             </div>
+          </div>
+
+          {/* ── DEV: preview consent sheet ── */}
+          <div style={{ textAlign: 'center', padding: '0 22px 20px' }}>
+            <button
+              type="button"
+              id="dev-reset-consent-btn"
+              onClick={() => {
+                resetTermsAccepted()
+                window.location.href = '/scan'
+              }}
+              style={{
+                padding: '8px 18px',
+                borderRadius: 10,
+                border: '1px dashed var(--glass-soft-border)',
+                background: 'transparent',
+                color: 'var(--text-dim)',
+                fontFamily: 'var(--font-body)',
+                fontSize: 11,
+                fontWeight: 600,
+                cursor: 'pointer',
+                letterSpacing: 0.3,
+              }}
+            >
+              🧪 Сбросить согласие (DEV)
+            </button>
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 const CDN_HOST = 'cdn.korset.app'
 
-export function getImageUrl(url, options = {}) {
+export function getImageUrl(url) {
   if (!url) return null
   if (!url.includes(CDN_HOST)) return url
   return url

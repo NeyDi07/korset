@@ -1,4 +1,4 @@
-/* global self, clients, event */
+/* global self, clients */
 import { precacheAndRoute } from 'workbox-precaching'
 import { registerRoute } from 'workbox-routing'
 import { NetworkFirst, CacheFirst } from 'workbox-strategies'

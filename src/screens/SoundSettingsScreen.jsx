@@ -1,9 +1,7 @@
 import { useNavigate } from 'react-router-dom'
-import { useI18n } from '../i18n/index.js'
 
 export default function SoundSettingsScreen() {
   const navigate = useNavigate()
-  const { t } = useI18n()
 
   return (
     <div

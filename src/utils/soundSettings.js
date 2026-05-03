@@ -9,7 +9,7 @@ export function loadSoundSettings() {
     if (raw) {
       return { ...DEFAULT_SOUND_SETTINGS, ...JSON.parse(raw) }
     }
-  } catch (err) {
+  } catch (_err) {
     // noop
   }
   return DEFAULT_SOUND_SETTINGS
@@ -18,7 +18,7 @@ export function loadSoundSettings() {
 export function saveSoundSettings(settings) {
   try {
     localStorage.setItem('korset_sound_settings', JSON.stringify(settings))
-  } catch (err) {
+  } catch (_err) {
     // noop
   }
 }

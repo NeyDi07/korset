@@ -1,5 +1,3 @@
-import { PACKAGING_TYPES } from './attributeExtractor.js'
-
 const PACKAGING_ABBREV = [
   'КНВРТ',
   'ТБА',
