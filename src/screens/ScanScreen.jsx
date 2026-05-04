@@ -438,7 +438,6 @@ export default function ScanScreen() {
   const torchTimer = useRef(null)
   const nfTimer = useRef(null)
   const focusTimer = useRef(null)
-  const cameraPressTimer = useRef(null)
   const mountedRef = useRef(true)
   const startScannerRef = useRef(null)
   const startSeqRef = useRef(0)
@@ -663,20 +662,17 @@ export default function ScanScreen() {
       clearTimeout(nfTimer.current)
       clearTimeout(torchTimer.current)
       clearTimeout(focusTimer.current)
-      clearTimeout(cameraPressTimer.current)
       cleanupAudioContext()
     }
   }, []) // eslint-disable-line
 
   const switchCamera = useCallback(async () => {
     if (cameras.length < 2) return
-    clearTimeout(cameraPressTimer.current)
-    setCameraSwitchPressed(true)
-    cameraPressTimer.current = setTimeout(() => setCameraSwitchPressed(false), 260)
     busyRef.current = false
     await stopScanner()
     const nextIdx = (camIdx + 1) % cameras.length
     setCamIdx(nextIdx)
+    setCameraSwitchPressed(nextIdx !== 0)
     setSearching(false)
     startScanner(cameras, nextIdx)
   }, [cameras, camIdx, stopScanner, startScanner])

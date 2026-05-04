@@ -201,8 +201,8 @@ export default function FaqScreen() {
                 width: 46,
                 height: 46,
                 borderRadius: 14,
-                background: 'linear-gradient(135deg, rgba(124,58,237,0.18), rgba(236,72,153,0.12))',
-                border: '1px solid rgba(124,58,237,0.25)',
+                background: 'var(--glass-subtle)',
+                border: '1px solid var(--glass-soft-border)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -283,8 +283,8 @@ export default function FaqScreen() {
             className="glass-card"
             style={{
               padding: '22px',
-              background: 'linear-gradient(135deg, rgba(124,58,237,0.08), rgba(236,72,153,0.06))',
-              border: '1px solid rgba(124,58,237,0.2)',
+              background: 'var(--glass-subtle)',
+              border: '1px solid var(--glass-soft-border)',
             }}
           >
             <div
@@ -319,7 +319,7 @@ export default function FaqScreen() {
                 padding: '12px 18px',
                 borderRadius: 14,
                 border: 'none',
-                background: '#2AABEE',
+                background: 'var(--primary)',
                 color: '#fff',
                 fontFamily: 'var(--font-body)',
                 fontSize: 14,

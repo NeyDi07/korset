@@ -190,9 +190,6 @@ export default function AboutScreen() {
           style={{
             padding: '40px 24px 32px',
             textAlign: 'center',
-            background: 'var(--card)',
-            border: '1px solid var(--border)',
-            boxShadow: 'var(--shadow-card)',
           }}
         >
           {/* Logo container */}

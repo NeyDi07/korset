@@ -377,6 +377,24 @@ function ThemeModeToggle({ theme, onToggle, label, t }) {
   )
 }
 
+function useScrollRestore(key) {
+  const ref = useRef(null)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const cache = window.__korset_scroll_cache || (window.__korset_scroll_cache = {})
+    if (cache[key] !== undefined) {
+      el.scrollTop = cache[key]
+    }
+    const handleScroll = () => {
+      cache[key] = el.scrollTop
+    }
+    el.addEventListener('scroll', handleScroll, { passive: true })
+    return () => el.removeEventListener('scroll', handleScroll)
+  }, [key])
+  return ref
+}
+
 export default function ProfileScreen() {
   const navigate = useNavigate()
   const location = useLocation()
@@ -387,6 +405,7 @@ export default function ProfileScreen() {
   const { favoritesCount, scanCount } = useUserData()
   const { currentStore } = useStore()
   const { theme, toggleTheme } = useTheme()
+  const scrollRef = useScrollRestore('profile')
 
   const [allergenInput, setAllergenInput] = useState('')
   // Active stats tab: 'favorites' | 'preferences' | 'history' | null
@@ -527,6 +546,7 @@ export default function ProfileScreen() {
 
       <div
         className="screen"
+        ref={scrollRef}
         style={{
           paddingTop: 0,
           paddingBottom: 100,
@@ -1596,7 +1616,7 @@ export default function ProfileScreen() {
                         <span
                           style={{
                             fontFamily: 'var(--font-display)',
-                            fontSize: 14,
+                            fontSize: 15,
                             fontWeight: item.labelStyle?.fontWeight || 500,
                             color: item.labelStyle?.color || 'var(--text)',
                           }}

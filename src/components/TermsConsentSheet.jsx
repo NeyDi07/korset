@@ -70,7 +70,7 @@ export default function TermsConsentSheet({ open, onAccept, onNavigateTerms, onN
           background: 'var(--bg-card)',
           borderTop: '1px solid var(--glass-border)',
           borderRadius: '20px 20px 0 0',
-          padding: '0 24px calc(28px + env(safe-area-inset-bottom))',
+          padding: '0 24px calc(96px + env(safe-area-inset-bottom))', // 96px accommodates bottom nav height
           animation: 'tcSlideUp 0.32s cubic-bezier(0.32,0.72,0,1)',
         }}
       >

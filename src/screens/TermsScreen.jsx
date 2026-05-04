@@ -71,7 +71,7 @@ export default function TermsScreen() {
       <div style={{ padding: '0 22px 40px' }}>
         <div
           className="glass-card"
-          style={{ padding: '24px 20px' }}
+          style={{ padding: '24px 20px', textAlign: 'left' }}
           dangerouslySetInnerHTML={{
             __html: html
               .replace(

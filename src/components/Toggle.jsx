@@ -3,31 +3,36 @@ export default function Toggle({ checked, onChange, disabled = false }) {
     <button
       type="button"
       disabled={disabled}
+      role="switch"
+      aria-checked={checked}
       onClick={(e) => {
         e.stopPropagation()
         if (!disabled) onChange(!checked)
       }}
       style={{
-        width: 50,
-        height: 30,
+        position: 'relative',
+        width: 48,
+        height: 28,
         borderRadius: 999,
-        border: '1px solid var(--glass-soft-border)',
-        background: checked ? 'linear-gradient(135deg,#7C3AED,#EC4899)' : 'var(--glass-bg)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: checked ? 'flex-end' : 'flex-start',
-        padding: 3,
+        border: checked ? '1px solid var(--primary)' : '1px solid var(--glass-soft-border)',
+        background: checked ? 'var(--primary)' : 'var(--glass-subtle)',
+        padding: 0,
         cursor: disabled ? 'not-allowed' : 'pointer',
         opacity: disabled ? 0.5 : 1,
+        transition: 'all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1)',
       }}
     >
       <span
         style={{
+          position: 'absolute',
+          top: 2,
+          left: checked ? 22 : 2,
           width: 22,
           height: 22,
           borderRadius: '50%',
           background: '#fff',
-          boxShadow: checked ? '0 0 20px rgba(168,85,247,0.35)' : 'none',
+          boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+          transition: 'all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1)',
         }}
       />
     </button>

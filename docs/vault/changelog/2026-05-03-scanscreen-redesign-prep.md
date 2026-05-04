@@ -34,6 +34,17 @@ User provided a light-theme ScanScreen visual reference and custom SVG icons. Th
   - `node scripts/check-i18n.mjs` — passed.
   - `npm run lint` — passed with warnings only.
 
+## 2026-05-04 frame and camera toggle polish
+
+- Raised the central scan frame slightly so it sits visually higher in the live camera composition.
+- Kept the hint aligned with the raised frame.
+- Changed the camera switch icon fill from a temporary press flash to a persistent toggle:
+  - filled while the selected camera index is not the first camera;
+  - unfilled after switching back to the first camera.
+- Verification:
+  - `npm run build` — passed.
+  - `npm run lint` — passed with warnings only.
+
 ---
 
 # 2026-05-03 — ScanScreen V1 redesign implemented

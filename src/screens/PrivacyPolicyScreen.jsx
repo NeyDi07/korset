@@ -55,9 +55,9 @@ export default function PrivacyPolicyScreen() {
         </button>
         <div
           style={{
-            fontFamily: '"Bebas Neue", "Arial Narrow", sans-serif',
-            fontSize: 26,
-            letterSpacing: 1,
+            fontFamily: 'var(--font-display)',
+            fontSize: 22,
+            letterSpacing: 0.5,
             color: 'var(--text)',
             lineHeight: 1,
           }}
@@ -69,7 +69,7 @@ export default function PrivacyPolicyScreen() {
       <div style={{ padding: '0 22px 40px' }}>
         <div
           className="glass-card"
-          style={{ padding: '24px 20px' }}
+          style={{ padding: '24px 20px', textAlign: 'left' }}
           dangerouslySetInnerHTML={{
             __html: html
               .replace(/<h3>/g, '<h3 style="color:var(--text);margin:16px 0 0">')

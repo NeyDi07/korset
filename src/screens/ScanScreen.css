@@ -128,7 +128,7 @@
   --scan-frame-h: clamp(184px, 28vh, 250px);
   position: absolute;
   left: 50%;
-  top: 46%;
+  top: 43%;
   width: min(86vw, 390px);
   height: var(--scan-frame-h);
   transform: translate3d(-50%, -50%, 0);
@@ -202,7 +202,7 @@
   position: absolute;
   left: 24px;
   right: 24px;
-  top: calc(46% + clamp(104px, 16vh, 150px));
+  top: calc(43% + clamp(104px, 16vh, 150px));
   margin: 0;
   text-align: center;
   font-size: 13px;
@@ -750,7 +750,7 @@
 
 @media (max-height: 690px) {
   .scan-frame {
-    top: 42%;
+    top: 39%;
     --scan-frame-h: clamp(160px, 25vh, 210px);
   }
 
