@@ -73,6 +73,14 @@ function saveRecentScan(product) {
 }
 
 // ─── Иконки ────────────────────────────────────────────────────────────────────
+function formatManualEan(value) {
+  const digits = value.replace(/\D/g, '').slice(0, 13)
+  if (digits.length <= 8) return digits.replace(/(\d{4})(?=\d)/g, '$1 ')
+  return digits.replace(/^(\d{1})(\d{0,6})(\d{0,6}).*/, (_, a, b, c) =>
+    [a, b, c].filter(Boolean).join(' ')
+  )
+}
+
 function IconGallery({ size = 22 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -985,9 +993,14 @@ export default function ScanScreen() {
             <span className="material-symbols-outlined">photo_camera</span>
             <strong>{t('scan.cameraAccessDeniedTitle')}</strong>
             <p>{t('scan.cameraPermission')}</p>
-            <button type="button" onClick={openGallery}>
-              {t('scan.galleryBtn')}
-            </button>
+            <div className="scan-status-overlay__actions">
+              <button type="button" onClick={retryCamera}>
+                {t('common.retry')}
+              </button>
+              <button type="button" className="ghost" onClick={openGallery}>
+                {t('scan.galleryBtn')}
+              </button>
+            </div>
           </div>
         )}
 
@@ -1082,12 +1095,15 @@ export default function ScanScreen() {
               type="text"
               inputMode="numeric"
               pattern="[0-9]*"
+              autoComplete="off"
+              maxLength={17}
+              aria-describedby="scan-manual-helper"
               placeholder={t('scan.manualInputPlaceholder')}
-              value={manualInput}
+              value={formatManualEan(manualInput)}
               onFocus={() => setManualFocused(true)}
               onBlur={() => setManualFocused(false)}
               onChange={(e) => {
-                setManualInput(e.target.value.replace(/\D/g, ''))
+                setManualInput(e.target.value.replace(/\D/g, '').slice(0, 13))
                 setManualError(null)
               }}
             />
@@ -1106,6 +1122,13 @@ export default function ScanScreen() {
             </button>
           )}
         </form>
+        {(manualFocused || hasManualValue) && (
+          <p id="scan-manual-helper" className="scan-manual-helper">
+            {hasManualValue
+              ? t('scan.manualHelperActive', { count: manualInput.length })
+              : t('scan.manualHelper')}
+          </p>
+        )}
         {manualError && <p className="scan-manual-error">{manualError}</p>}
       </div>
 

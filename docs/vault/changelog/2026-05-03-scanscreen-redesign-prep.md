@@ -45,6 +45,24 @@ User provided a light-theme ScanScreen visual reference and custom SVG icons. Th
   - `npm run build` — passed.
   - `npm run lint` — passed with warnings only.
 
+## 2026-05-04 permission and manual EAN UX polish
+
+- Improved the camera permission-denied state:
+  - explains that the user did not grant camera access;
+  - explains camera use is safe and only for barcode scanning;
+  - advises reopening the screen/browser permission flow when needed;
+  - keeps Retry and Gallery fallback actions available.
+- Improved manual EAN entry:
+  - stores only raw digits;
+  - limits input to 13 digits;
+  - displays grouped digits for readability;
+  - shows a small helper/counter explaining that valid EAN is 8 or 13 digits.
+- Added RU/KZ i18n keys for the new permission and manual helper copy.
+- Verification:
+  - `npm run build` — passed.
+  - `node scripts/check-i18n.mjs` — passed.
+  - `npm run lint` — passed with warnings only.
+
 ---
 
 # 2026-05-03 — ScanScreen V1 redesign implemented
